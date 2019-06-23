@@ -100,15 +100,16 @@ class Toolbar extends Component {
 	onLogout= () =>{
 		//console.log("onLogout");
 		//Redirecting to the Setting page
-		this.props.toolbarActions.ShowScreen("settings");
-		// //this.props.toolbarActions.SetLoggedIn(false);
-		// //let settings = PosStorage.getSettings();
+		//this.props.toolbarActions.ShowScreen("settings");
+		this.props.toolbarActions.SetLoggedIn(false);
+		let settings = PosStorage.getSettings();
 
 		// // Save with empty token - This will force username/password validation
-		// PosStorage.saveSettings( settings.semaUrl, settings.site, settings.user, settings.password, settings.uiLanguage, "", settings.siteId );
-		// this.props.settingsActions.setSettings(PosStorage.getSettings());
+	    PosStorage.saveSettings( settings.semaUrl, settings.site, settings.user, settings.password, settings.uiLanguage, "", settings.siteId );
+		this.props.settingsActions.setSettings(PosStorage.getSettings());
 		//As we are not going to the Login, the reason no reason to disable the token
-		//Communications.setToken("");
+		Communications.setToken("");
+		this.props.toolbarActions.ShowScreen("settings");
 
 	};
 

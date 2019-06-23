@@ -8,6 +8,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.facebook.react.modules.storage.ReactDatabaseSupplier;
 
 import org.pgsqlite.SQLitePluginPackage;
 
@@ -46,5 +47,7 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
 	SoLoader.init(this, /* native exopackage */ false);
+	long size = 500L * 1024L * 1024L;
+	com.facebook.react.modules.storage.ReactDatabaseSupplier.getInstance(getApplicationContext()).setMaximumSize(size);
   }
 }

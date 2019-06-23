@@ -145,6 +145,7 @@ class ProductList extends Component {
 				)
 			];
 
+			console.log(productMrp)
 			if (productMrp) {
 				return productMrp.priceAmount;
 			}

@@ -124,6 +124,7 @@ class SettingsButton extends Component {
 
 class Settings extends Component {
 	constructor(props) {
+		let setting = PosStorage.getSettings();
 		super(props);
 		this.url = React.createRef();
 		this.site = React.createRef();
@@ -132,7 +133,8 @@ class Settings extends Component {
 		this.password = React.createRef();
 		this.state = {
 			animating: false,
-			selectedLanguage: {}
+			selectedLanguage: {},
+			isLoggedIn: setting.token.length > 0 || false
 		};
 
 		this.onShowLanguages = this.onShowLanguages.bind(this);
@@ -156,7 +158,9 @@ class Settings extends Component {
 							height: 100
 						}}>
 						<Text style={[styles.headerText]}>
-							{i18n.t('settings')}
+							{Communications._token
+								? i18n.t('settings')
+								: 'LOGIN REQUIRED'}
 						</Text>
 					</View>
 					<View
@@ -254,11 +258,15 @@ class Settings extends Component {
 								flex: 1,
 								alignItems: 'center'
 							}}>
-							<SettingsButton
-								pressFn={this.onSaveSettings}
-								enableFn={this.enableSaveSettings.bind(this)}
-								label={i18n.t('save-settings')}
-							/>
+							{this.state.isLoggedIn && (
+								<SettingsButton
+									pressFn={this.onSaveSettings}
+									enableFn={this.enableSaveSettings.bind(
+										this
+									)}
+									label={i18n.t('save-settings')}
+								/>
+							)}
 							<SettingsButton
 								pressFn={this.onConnection.bind(this)}
 								enableFn={this.enableConnectionOrSync.bind(
@@ -266,18 +274,22 @@ class Settings extends Component {
 								)}
 								label={i18n.t('connect')}
 							/>
-							<SettingsButton
-								pressFn={this.onClearAll.bind(this)}
-								enableFn={this.enableClearAll.bind(this)}
-								label={i18n.t('clear')}
-							/>
-							<SettingsButton
-								pressFn={this.onSynchronize.bind(this)}
-								enableFn={this.enableConnectionOrSync.bind(
-									this
-								)}
-								label={i18n.t('sync-now')}
-							/>
+							{this.state.isLoggedIn && (
+								<SettingsButton
+									pressFn={this.onClearAll.bind(this)}
+									enableFn={this.enableClearAll.bind(this)}
+									label={i18n.t('clear')}
+								/>
+							)}
+							{this.state.isLoggedIn && (
+								<SettingsButton
+									pressFn={this.onSynchronize.bind(this)}
+									enableFn={this.enableConnectionOrSync.bind(
+										this
+									)}
+									label={i18n.t('sync-now')}
+								/>
+							)}
 						</View>
 					</View>
 				</KeyboardAwareScrollView>
@@ -293,20 +305,21 @@ class Settings extends Component {
 		try {
 			if (PosStorage.getCustomerTypes()) {
 				if (PosStorage.getCustomerTypes().length > 0) {
-					return (
-						<TouchableHighlight
-							onPress={() => this.onCancelSettings()}>
-							<Image
-								source={require('../images/icons8-cancel-50.png')}
-								style={{ marginRight: 100 }}
-							/>
-						</TouchableHighlight>
-					);
+					if (Communications._token) {
+						return (
+							<TouchableHighlight
+								onPress={() => this.onCancelSettings()}>
+								<Image
+									source={require('../images/icons8-cancel-50.png')}
+									style={{ marginRight: 100 }}
+								/>
+							</TouchableHighlight>
+						);
+					}
 				}
 			}
 			return null;
-		} catch (error) {
-		}
+		} catch (error) {}
 	}
 
 	getUrl() {
@@ -364,9 +377,7 @@ class Settings extends Component {
 			});
 			//Added by Jean Pierre
 			Synchronization.getLatestSales();
-		} catch (error) {
-
-		}
+		} catch (error) {}
 	}
 	_getSyncResults(syncResult) {
 		try {
@@ -419,9 +430,7 @@ class Settings extends Component {
 					)}`;
 				}
 			}
-		} catch (error) {
-
-		}
+		} catch (error) {}
 	}
 	onClearAll() {
 		console.log('Settings:onClearAll');
@@ -464,9 +473,7 @@ class Settings extends Component {
 				PosStorage.getLastSalesSync()
 			);
 			Synchronization.setConnected(saveConnected);
-		} catch (error) {
-
-		}
+		} catch (error) {}
 	}
 
 	onConnection() {
@@ -549,9 +556,7 @@ class Settings extends Component {
 												);
 											});
 										})
-										.catch(error => {
-
-										});
+										.catch(error => {});
 								}
 								this.setState({ animating: false });
 								Alert.alert(
@@ -564,9 +569,7 @@ class Settings extends Component {
 									this.closeHandler();
 								}
 							})
-							.catch(error => {
-
-							});
+							.catch(error => {});
 					} else {
 						this.setState({ animating: false });
 						message =
@@ -583,7 +586,6 @@ class Settings extends Component {
 					}
 				})
 				.catch(result => {
-
 					console.log(
 						'Failed- status ' +
 							result.status +

@@ -5,7 +5,6 @@ import Toolbar from './Toolbar';
 import CustomerViews from './customers/CustomerViews';
 import CustomerBar from './customers/CustomerBar';
 import OrderView from './orders/OrderView';
-import Login from './Login';
 import CustomerEdit from './customers/CustomerEdit';
 import Settings from './Settings';
 
@@ -24,6 +23,7 @@ import Synchronization from '../services/Synchronization';
 import SiteReport from './reports/SiteReport';
 import Communications from '../services/Communications';
 import Events from 'react-native-simple-events';
+import SplashScreen from './SplashScreen';
 
 console.ignoredYellowBox = ['Warning: isMounted', 'Setting a timer'];
 
@@ -273,7 +273,8 @@ class PosApp extends Component {
 		if (!this.props.showScreen.isLoggedIn) {
 			return (
 				//<Login />
-				<Settings />
+				//<Settings />
+				<SplashScreen />
 			);
 		} else {
 			return (
@@ -344,6 +345,8 @@ class ScreenSwitcher extends Component {
 		switch (this.props.currentScreen.screenToShow) {
 			case 'settings':
 				return <Settings />;
+			case 'splash':
+				return <SplashScreen/>
 			case 'report':
 				return (
 					<View style={{ flex: 1 }}>
