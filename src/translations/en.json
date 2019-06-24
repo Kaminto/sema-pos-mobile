@@ -22,7 +22,7 @@
   "password-label": "Password",
   "password-placeholder": "Password",
   "save-settings": "Save Settings",
-  "connect": "Connect",
+  "connect": "Login",
   "clear": "Clear...",
   "sync-now": "Synchronize Now",
   "successful-connection": "Successfully connected to the SEMA service",
