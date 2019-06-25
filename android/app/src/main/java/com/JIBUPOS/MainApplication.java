@@ -11,6 +11,7 @@ import com.facebook.soloader.SoLoader;
 import com.facebook.react.modules.storage.ReactDatabaseSupplier;
 
 import org.pgsqlite.SQLitePluginPackage;
+import org.devio.rn.splashscreen.SplashScreenReactPackage; // Splash screen
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +29,8 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
             new SQLitePluginPackage(),   // register SQLite Plugin here
           	new MainReactPackage(),
-			new RNLanguagesPackage()
+			      new RNLanguagesPackage(),
+            new SplashScreenReactPackage()   // Splash Screen plugin
       );
     }
 

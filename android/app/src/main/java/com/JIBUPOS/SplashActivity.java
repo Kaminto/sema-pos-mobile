@@ -1,4 +1,4 @@
-package com.JIBUPOS;
+package com.semapos;
 
 import android.content.Intent;
 import android.os.Bundle;

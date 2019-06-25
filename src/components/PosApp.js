@@ -7,6 +7,8 @@ import CustomerBar from './customers/CustomerBar';
 import OrderView from './orders/OrderView';
 import CustomerEdit from './customers/CustomerEdit';
 import Settings from './Settings';
+import SplashScreen from 'react-native-splash-screen';
+import Login from './Login';
 
 import { bindActionCreators } from 'redux';
 
@@ -23,7 +25,7 @@ import Synchronization from '../services/Synchronization';
 import SiteReport from './reports/SiteReport';
 import Communications from '../services/Communications';
 import Events from 'react-native-simple-events';
-import SplashScreen from './SplashScreen';
+import Splash from './Splash';
 
 console.ignoredYellowBox = ['Warning: isMounted', 'Setting a timer'];
 
@@ -99,7 +101,7 @@ class PosApp extends Component {
 			// }
 			else {
 				console.log('PosApp - Settings not complete');
-				this.props.toolbarActions.SetLoggedIn(true); // So that the login screen doesn't show
+				// this.props.toolbarActions.SetLoggedIn(false); // So that the login screen doesn't show
 				this.props.toolbarActions.ShowScreen('settings');
 			}
 		});
@@ -153,6 +155,7 @@ class PosApp extends Component {
 			this.onClearLoggedSales.bind(this)
 		);
 		console.log('PosApp = Mounted-Done');
+		SplashScreen.hide();
 	}
 	componentWillUnmount() {
 		Events.rm('CustomersUpdated', 'customerUpdate1');
@@ -272,9 +275,10 @@ class PosApp extends Component {
 		);
 		if (!this.props.showScreen.isLoggedIn) {
 			return (
-				//<Login />
-				//<Settings />
-				<SplashScreen />
+				// <Login />
+				// <Settings />
+				<Splash />
+				// <CustomerBar />
 			);
 		} else {
 			return (
@@ -345,8 +349,10 @@ class ScreenSwitcher extends Component {
 		switch (this.props.currentScreen.screenToShow) {
 			case 'settings':
 				return <Settings />;
+			case 'login':
+				return <Login />;
 			case 'splash':
-				return <SplashScreen/>
+				return <Splash />
 			case 'report':
 				return (
 					<View style={{ flex: 1 }}>

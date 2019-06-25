@@ -2,23 +2,14 @@ import React, { Component } from 'react';
 import { View, StyleSheet, ImageBackground, Image } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-export default class SplashScreen extends Component {
+export default class Splash extends Component {
 	render() {
 		return (
 			<View style={{ flex: 1 }}>
 				<ImageBackground
-					source={require('../images/swe-login.jpg')}
+					source={require('../images/jibublue.png')}
 					resizeMode="cover"
 					style={styles.imgBackground}>
-					<View style={{ flex: 1, alignItems: 'center' }}>
-						<View style={{ marginTop: '1.5%' }}>
-							<Image
-								source={require('../images/swe-logo.png')}
-								resizeMode="stretch"
-								style={styles.logoSize}
-							/>
-						</View>
-					</View>
 				</ImageBackground>
 
 				{/**Adding a spinner */}
