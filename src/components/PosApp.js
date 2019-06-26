@@ -8,7 +8,6 @@ import CustomerBar from './customers/CustomerBar';
 import OrderView from './orders/OrderView';
 import CustomerEdit from './customers/CustomerEdit';
 import Settings from './Settings';
-import SplashScreen from 'react-native-splash-screen';
 import Login from './Login';
 
 import { bindActionCreators } from 'redux';
@@ -121,7 +120,7 @@ class PosApp extends Component {
 			'connectionChange',
 			this.handleConnectivityChange
 		);
-		
+
 		Events.on(
 			'CustomersUpdated',
 			'customerUpdate1',
@@ -180,7 +179,7 @@ class PosApp extends Component {
 			'connectionChange',
 			this.handleConnectivityChange
 		);
-		
+
 	}
 
 	onEditCustomer(customer) {
@@ -278,7 +277,7 @@ class PosApp extends Component {
 		if (this.state.isLoading) {
 			return <LoadSplashScreen />;
 		  }
-	  
+
 		return this.getLoginOrHomeScreen();
 	}
 
@@ -286,12 +285,12 @@ class PosApp extends Component {
 		console.log('getLoginOrHomeScreen - isLoggedIn: ' +
 				this.props.showScreen.isLoggedIn
 		);
-		
+
 		if (!this.props.showScreen.isLoggedIn) {
 			return (
 				// <Login />
 				<Settings />
-	
+
 			);
 		} else {
 			return (
@@ -411,7 +410,7 @@ class LoadSplashScreen extends Component {
 		);
 	}
   }
-  
+
 
 function mapStateToProps(state, props) {
 	return {
