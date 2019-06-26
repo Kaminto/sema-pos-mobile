@@ -131,6 +131,15 @@ class CustomerEdit extends Component {
 					resetScrollToCoords={{ x: 0, y: 0 }}
 					scrollEnabled={false}>
 					<View style={{ flex: 1, alignItems: 'center' }}>
+					    <CustomerProperty
+							reference="customerName"
+							marginTop="1%"
+							placeHolder={i18n.t('account-name')}
+							parent={this}
+							kbType="default"
+							valueFn={this.getName}
+							ref={this.name}
+						/>
 						<CustomerProperty
 							reference="customerNumber"
 							marginTop={0}
@@ -140,15 +149,7 @@ class CustomerEdit extends Component {
 							valueFn={this.getTelephoneNumber}
 							ref={this.phone}
 						/>
-						<CustomerProperty
-							reference="customerName"
-							marginTop="1%"
-							placeHolder={i18n.t('account-name')}
-							parent={this}
-							kbType="default"
-							valueFn={this.getName}
-							ref={this.name}
-						/>
+						
 						<CustomerProperty
 							reference="customerAddress"
 							marginTop="1%"

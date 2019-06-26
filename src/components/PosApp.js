@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, NetInfo } from 'react-native';
+import { View, StyleSheet, Text, ImageBackground, Image, NetInfo } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import Toolbar from './Toolbar';
 import CustomerViews from './customers/CustomerViews';
@@ -7,6 +8,8 @@ import CustomerBar from './customers/CustomerBar';
 import OrderView from './orders/OrderView';
 import CustomerEdit from './customers/CustomerEdit';
 import Settings from './Settings';
+import SplashScreen from 'react-native-splash-screen';
+import Login from './Login';
 
 import { bindActionCreators } from 'redux';
 
@@ -23,7 +26,7 @@ import Synchronization from '../services/Synchronization';
 import SiteReport from './reports/SiteReport';
 import Communications from '../services/Communications';
 import Events from 'react-native-simple-events';
-import SplashScreen from './SplashScreen';
+import Splash from './Splash';
 
 console.ignoredYellowBox = ['Warning: isMounted', 'Setting a timer'];
 
@@ -33,7 +36,8 @@ class PosApp extends Component {
 
 		this.state = {
 			synchronization: { productsLoaded: false },
-			isConnected: false
+			isConnected: false,
+			isLoading: true
 		};
 		this.posStorage = PosStorage;
 	}
@@ -88,21 +92,26 @@ class PosApp extends Component {
 			if (this.isLoginComplete()) {
 				console.log('PosApp - Auto login - All settings exist');
 				this.props.toolbarActions.SetLoggedIn(true);
+				this.setState({ isLoading: false });
 				this.props.toolbarActions.ShowScreen('main');
 				console.log('PosApp - starting synchronization');
 				Synchronization.scheduleSync();
 			}
 			//Making setting page as Main Page
-			// else if (this.isSettingsComplete()) {
-			// 	console.log("PosApp - login required - No Token");
-			// 	this.props.toolbarActions.SetLoggedIn(false);
-			// }
+			else if (this.isSettingsComplete()) {
+				console.log("PosApp - login required - No Token");
+				// this.props.toolbarActions.SetLoggedIn(false);
+				this.setState({ isLoading: false });
+				this.props.toolbarActions.ShowScreen('settings');
+			}
 			else {
 				console.log('PosApp - Settings not complete');
-				this.props.toolbarActions.SetLoggedIn(true); // So that the login screen doesn't show
+				this.setState({ isLoading: false });
+				// this.props.toolbarActions.SetLoggedIn(false); // So that the login screen doesn't show
 				this.props.toolbarActions.ShowScreen('settings');
 			}
 		});
+
 		NetInfo.isConnected.fetch().then(isConnected => {
 			console.log('Network is ' + (isConnected ? 'online' : 'offline'));
 			this.props.networkActions.NetworkConnection(isConnected);
@@ -112,6 +121,7 @@ class PosApp extends Component {
 			'connectionChange',
 			this.handleConnectivityChange
 		);
+		
 		Events.on(
 			'CustomersUpdated',
 			'customerUpdate1',
@@ -153,7 +163,9 @@ class PosApp extends Component {
 			this.onClearLoggedSales.bind(this)
 		);
 		console.log('PosApp = Mounted-Done');
+		SplashScreen.hide();
 	}
+
 	componentWillUnmount() {
 		Events.rm('CustomersUpdated', 'customerUpdate1');
 		Events.rm('ProductsUpdated', 'productsUpdate1');
@@ -168,6 +180,7 @@ class PosApp extends Component {
 			'connectionChange',
 			this.handleConnectivityChange
 		);
+		
 	}
 
 	onEditCustomer(customer) {
@@ -262,19 +275,23 @@ class PosApp extends Component {
 	};
 
 	render() {
+		if (this.state.isLoading) {
+			return <LoadSplashScreen />;
+		  }
+	  
 		return this.getLoginOrHomeScreen();
 	}
 
 	getLoginOrHomeScreen() {
-		console.log(
-			'getLoginOrHomeScreen - isLoggedIn: ' +
+		console.log('getLoginOrHomeScreen - isLoggedIn: ' +
 				this.props.showScreen.isLoggedIn
 		);
+		
 		if (!this.props.showScreen.isLoggedIn) {
 			return (
-				//<Login />
-				//<Settings />
-				<SplashScreen />
+				// <Login />
+				<Settings />
+	
 			);
 		} else {
 			return (
@@ -307,6 +324,7 @@ class PosApp extends Component {
 		}
 		return false;
 	}
+
 	isSettingsComplete() {
 		let settings = this.posStorage.getSettings();
 		if (this.posStorage.getCustomerTypes()) {
@@ -345,8 +363,10 @@ class ScreenSwitcher extends Component {
 		switch (this.props.currentScreen.screenToShow) {
 			case 'settings':
 				return <Settings />;
+			case 'login':
+				return <Login />;
 			case 'splash':
-				return <SplashScreen/>
+				return <Splash />
 			case 'report':
 				return (
 					<View style={{ flex: 1 }}>
@@ -370,6 +390,28 @@ class ScreenSwitcher extends Component {
 		}
 	}
 }
+
+class LoadSplashScreen extends Component {
+	render() {
+		return (
+			<View style={{ flex: 1 }}>
+				<ImageBackground
+					source={require('../images/jibublue.png')}
+					resizeMode="cover"
+					style={styles.imgBackground}>
+				</ImageBackground>
+
+				{/**Adding a spinner */}
+				<Spinner
+					visible={true}
+					// textContent={'LOADING...'}
+					textStyle={styles.spinnerTextStyle}
+				/>
+			</View>
+		);
+	}
+  }
+  
 
 function mapStateToProps(state, props) {
 	return {
@@ -418,5 +460,19 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		color: '#333333',
 		marginBottom: 5
-	}
+	},
+	imgBackground: {
+		width: '100%',
+		height: '100%',
+		flex: 1
+	},
+	logoSize: {
+		width: 200,
+		height: 200
+	},
+	spinnerTextStyle: {
+		color: '#002b80',
+		fontSize: 50,
+		fontWeight: 'bold'
+	  }
 });

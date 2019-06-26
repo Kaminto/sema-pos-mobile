@@ -148,7 +148,7 @@ class Settings extends Component {
 	render() {
 		return (
 			<ScrollView style={{ flex: 1 }}>
-				<View style={{ flexDirection: 'row' }}>
+				{/* <View style={{ flexDirection: 'row' }}>
 					<View
 						style={{
 							flexDirection: 'row',
@@ -171,7 +171,7 @@ class Settings extends Component {
 						}}>
 						{this.getSettingsCancel()}
 					</View>
-				</View>
+				</View> */}
 
 				<KeyboardAwareScrollView
 					style={{ flex: 1 }}
