@@ -161,7 +161,7 @@ class OrderPaymentScreen extends Component {
 						marginRight: 100
 					}}>
 					<Button
-						title="Backdate Receipt"
+						title="Change Receipt Date"
 						onPress={this.showDateTimePicker}
 					/>
 					<DateTimePicker
