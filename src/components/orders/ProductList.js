@@ -88,7 +88,8 @@ class ProductList extends Component {
 		for(let i=0;i<this.props.products.length;i++){
 			let prod=this.props.products[i];
 			if(ids.indexOf(prod.productId)>=0){
-				if(this.getItemPrice(prod)> 0){
+				//Admitting products with zero as price too
+				if(this.getItemPrice(prod)>=0){
 					result.push(prod);
 				}
 			}
@@ -145,7 +146,7 @@ class ProductList extends Component {
 				)
 			];
 
-			console.log(productMrp)
+			//console.log(productMrp)
 			if (productMrp) {
 				return productMrp.priceAmount;
 			}

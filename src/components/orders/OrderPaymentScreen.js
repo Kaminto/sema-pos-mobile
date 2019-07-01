@@ -542,6 +542,7 @@ class OrderPaymentScreen extends Component {
 				payoff -= priceTotal;
 				if (payoff > this.props.selectedCustomer.dueAmount) {
 					// Overpayment... this is an error
+					alert("The PAY OFF AMOUNT IS GREATER THAN THE DUE AMOUNT. THE DUE AMOUNT IS "+this.props.selectedCustomer.dueAmount);
 					return false;
 				}
 			} else {

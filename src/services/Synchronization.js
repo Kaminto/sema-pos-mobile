@@ -416,6 +416,11 @@ class Synchronization {
 						localReceipts: salesReceipts.length
 					});
 					salesReceipts.forEach(receipt => {
+						alert(JSON.stringify(receipt.sale))
+						console.log("***********************")
+						console.log(receipt.sale)
+						console.log("***********************")
+						
 						Communications.createReceipt(receipt.sale)
 							.then(result => {
 								console.log(

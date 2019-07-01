@@ -23,7 +23,9 @@ import PosStorage from '../database/PosStorage';
 import * as SettingsActions from '../actions/SettingsActions';
 import * as ToolbarActions from '../actions/ToolBarActions';
 import * as CustomerActions from '../actions/CustomerActions';
+import * as AuthActions from '../actions/AuthActions';
 import ModalDropdown from 'react-native-modal-dropdown';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import Events from 'react-native-simple-events';
 
@@ -131,10 +133,12 @@ class Settings extends Component {
 		this.user = React.createRef();
 		this.supportedLanguages = React.createRef();
 		this.password = React.createRef();
+
 		this.state = {
 			animating: false,
 			selectedLanguage: {},
-			isLoggedIn: setting.token.length > 0 || false
+			isLoggedIn: setting.token.length > 0 || false,
+			isLoading:false
 		};
 
 		this.onShowLanguages = this.onShowLanguages.bind(this);
@@ -144,6 +148,7 @@ class Settings extends Component {
 
 	componentDidMount() {
 		console.log('Settings:Mounted');
+		this.props.authActions.isAuth((PosStorage.getSettings().token.length > 0 || false));
 	}
 
 	render() {
@@ -298,6 +303,11 @@ class Settings extends Component {
 						<ActivityIndicator size="large" />
 					</View>
 				)}
+				<Spinner
+					visible={this.state.isLoading}
+					textContent={'SYNCHRONIZING. PLEASE WAIT ...'}
+					textStyle={styles.spinnerTextStyle}
+				/>
 			</ScrollView>
 		);
 	}
@@ -351,6 +361,7 @@ class Settings extends Component {
 	}
 
 	onSaveSettings() {
+		this.setState({isLoading:true})
 		// TODO - Validate fields and set focus to invalid field;
 		this.saveSettings(
 			this.props.settings.token,
@@ -363,7 +374,9 @@ class Settings extends Component {
 	}
 	onSynchronize() {
 		try {
+			this.setState({isLoading:true})
 			Synchronization.synchronize().then(syncResult => {
+				this.setState({isLoading:false})
 				console.log(
 					'Synchronization-result: ' + JSON.stringify(syncResult)
 				);
@@ -519,6 +532,8 @@ class Settings extends Component {
 										}
 									);
 								} else {
+
+									this.props.authActions.isAuth(true);
 									this.saveSettings(
 										result.response.token,
 										siteId
@@ -649,6 +664,7 @@ class Settings extends Component {
 			siteId
 		);
 		this.props.settingsActions.setSettings(PosStorage.getSettings());
+		this.setState({isLoading:false})
 	}
 
 	getDefaultUILanguage() {
@@ -700,7 +716,8 @@ function mapDispatchToProps(dispatch) {
 	return {
 		toolbarActions: bindActionCreators(ToolbarActions, dispatch),
 		settingsActions: bindActionCreators(SettingsActions, dispatch),
-		customerActions: bindActionCreators(CustomerActions, dispatch)
+		customerActions: bindActionCreators(CustomerActions, dispatch),
+		authActions: bindActionCreators(AuthActions, dispatch)
 	};
 }
 
@@ -775,5 +792,10 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		alignItems: 'center',
 		justifyContent: 'center'
-	}
+	},
+	spinnerTextStyle: {
+		color: '#002b80',
+		fontSize: 50,
+		fontWeight: 'bold'
+	  },
 });

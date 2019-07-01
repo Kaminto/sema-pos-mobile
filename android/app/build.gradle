@@ -99,8 +99,8 @@ android {
         applicationId "com.semapos"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 69
-        versionName "0.6.9"
+        versionCode 70
+        versionName "0.7.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }

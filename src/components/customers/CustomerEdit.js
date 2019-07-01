@@ -149,7 +149,7 @@ class CustomerEdit extends Component {
 							valueFn={this.getTelephoneNumber}
 							ref={this.phone}
 						/>
-						
+
 						<CustomerProperty
 							reference="customerAddress"
 							marginTop="1%"
@@ -373,10 +373,18 @@ class CustomerEdit extends Component {
 		return /^\d+$/.test(text);
 	}
 
+	isValidPhoneNumber(text){
+		let test= /^\d{10}$/.test(text);
+		if(!test){
+			alert("Telephone number should be at least 10 digits long. Example 07xxxxxxxx");
+		}
+		return test;
+	}
+
 	onEdit() {
 		let salesChannelId = -1;
 		let customerTypeId = -1;
-		if (this._textIsEmpty(this.phone.current.state.propertyText)) {
+		if (this._textIsEmpty(this.phone.current.state.propertyText) || !this.isValidPhoneNumber(this.phone.current.state.propertyText)) {
 			this.phone.current.refs.customerNumber.focus();
 			return;
 		}

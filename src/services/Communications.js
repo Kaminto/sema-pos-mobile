@@ -9,7 +9,6 @@ class Communications {
 		this._password = '';
 		this._token = '';
 		this._siteId = '';
-		this._secret='jfbnve98rh394nr9u';
 	}
 	initialize(url, site, user, password) {
 		if (!url.endsWith('/')) {
