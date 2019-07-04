@@ -653,7 +653,8 @@ class Synchronization {
 
 	getLatestSales() {
 		let date = new Date();
-		date.setDate(date.getDate() - 30);
+		//date.setDate(date.getDate() - 30);
+		date.setDate(date.getDate() - 7);
 		let settings = PosStorage.getSettings();
 		Communications.getReceiptsBySiteIdAndDate(settings.siteId, date).then(
 			json => {
