@@ -466,7 +466,7 @@ class CustomerEdit extends Component {
 				salesChannelId,
 				customerTypeId,
 				this.frequency.current.state.propertyText,
-				this.secondPhoneNumber.state.propertyText
+				this.secondPhoneNumber.current.state.propertyText
 			);
 		} else {
 			let newCustomer = PosStorage.createCustomer(
@@ -477,7 +477,7 @@ class CustomerEdit extends Component {
 				salesChannelId,
 				customerTypeId,
 				this.frequency.current.state.propertyText,
-				this.secondPhoneNumber.state.propertyText
+				this.secondPhoneNumber.current.state.propertyText
 			);
 			this.props.customerActions.setCustomers(PosStorage.getCustomers());
 			this.props.customerActions.CustomerSelected(newCustomer);

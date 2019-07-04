@@ -139,6 +139,9 @@ class CustomerList extends Component {
 					<View style={{flex: 1.5}}>
 						<Text style={[styles.baseItem]}>{item.phoneNumber}</Text>
 					</View>
+					<View style={{flex: 1.5}}>
+						<Text style={[styles.baseItem]}>{item.secondPhoneNumber||''}</Text>
+					</View>
 					<View style={{flex: 2}}>
 						<Text style={[styles.baseItem]}>{item.address}</Text>
 					</View>
@@ -257,6 +260,9 @@ class CustomerList extends Component {
 				</View>
 				<View style={[ {flex: 1.5}]}>
 					<Text style={[styles.headerItem]}>{i18n.t('telephone-number')}</Text>
+				</View>
+				<View style={[ {flex: 1.5}]}>
+					<Text style={[styles.headerItem]}>2nd Phone Number</Text>
 				</View>
 				<View style={ [ {flex: 2}]}>
 					<Text style={[styles.headerItem]}>{i18n.t('address')}</Text>

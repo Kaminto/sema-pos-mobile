@@ -547,7 +547,8 @@ class Settings extends Component {
 									Synchronization.scheduleSync();
 
 									let date = new Date();
-									date.setDate(date.getDate() - 30);
+									//date.setDate(date.getDate() - 30);
+									date.setDate(date.getDate() - 7);
 									Communications.getReceiptsBySiteIdAndDate(
 										siteId,
 										date

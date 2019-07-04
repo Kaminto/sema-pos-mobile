@@ -375,7 +375,8 @@ class PosStorage {
 		siteId,
 		salesChannelId,
 		customerTypeId,
-		frequency
+		frequency,
+		secondPhoneNumber
 	) {
 		const now = new Date();
 		return this.createCustomerFull(
@@ -387,44 +388,10 @@ class PosStorage {
 			customerTypeId,
 			now,
 			now,
-			frequency
+			frequency,
+			secondPhoneNumber
 		);
 	}
-
-	// createCustomerFull(phone, name, address, siteId, salesChannelId,
-	// 	customerTypeId, createdDate, updatedDate) {
-	// 	const newCustomer = {
-	// 		customerId: uuidv1(),
-	// 		name: name,
-	// 		phoneNumber: phone,
-	// 		address: address,
-	// 		siteId: siteId,
-	// 		dueAmount: 0,
-	// 		salesChannelId: salesChannelId,
-	// 		customerTypeId: customerTypeId,
-	// 		createdDate: createdDate,
-	// 		updatedDate: updatedDate
-
-	// 	};
-
-	// 	let key = this.makeCustomerKey(newCustomer);
-	// 	this.customers.push(newCustomer);
-	// 	newCustomer.syncAction = "create";
-	// 	this.customersKeys.push(key);
-	// 	this.pendingCustomers.push(key);
-	// 	let keyArray = [
-	// 		[customersKey, this.stringify(this.customersKeys)], // Array of customer keys
-	// 		[key, this.stringify(newCustomer)], // The new customer
-	// 		[pendingCustomersKey, this.stringify(this.pendingCustomers)] // Array pending customer
-	// 	];
-	// 	AsyncStorage.multiSet(keyArray).then(error => {
-	// 		console.log("PosStorage:createCustomer: Error: " + error);
-	// 		if (error) {
-	// 			console.log("PosStorage:createCustomer: Error: " + error);
-	// 		}
-	// 	});
-	// 	return newCustomer;
-	// }
 
 	createCustomerFull(
 		phone,
@@ -435,7 +402,8 @@ class PosStorage {
 		customerTypeId,
 		createdDate,
 		updatedDate,
-		frequency
+		frequency,
+		secondPhoneNumber
 	) {
 
 		const newCustomer = {
@@ -449,7 +417,8 @@ class PosStorage {
 			customerTypeId: customerTypeId,
 			createdDate: createdDate,
 			updatedDate: updatedDate,
-			frequency: frequency
+			frequency: frequency,
+			secondPhoneNumber:secondPhoneNumber
 		};
 
 		let key = this.makeCustomerKey(newCustomer);
@@ -538,7 +507,8 @@ class PosStorage {
 		address,
 		salesChannelId,
 		customerTypeId,
-		frequency
+		frequency,
+		secondPhoneNumber
 	) {
 		let key = this.makeCustomerKey(customer);
 		customer.name = name;
@@ -549,6 +519,7 @@ class PosStorage {
 		customer.updatedDate = new Date();
 		customer.syncAction = 'update';
 		customer.frequency = frequency;
+		customer.secondPhoneNumber=secondPhoneNumber
 
 		if (customer.reminder_date) {
 			customer.reminder_date = moment(customer.reminder_date).format(
@@ -852,8 +823,11 @@ class PosStorage {
 				let oldest = this.salesKeys[0];
 				let firstDate = new Date(oldest.saleDateTime);
 				firstDate = new Date(
-					firstDate.getTime() + 30 * 24 * 60 * 60 * 1000
+					firstDate.getTime() + 7 * 24 * 60 * 60 * 1000
 				);
+				// firstDate = new Date(
+				// 	firstDate.getTime() + 30 * 24 * 60 * 60 * 1000
+				// );
 				const now = new Date();
 				if (firstDate < now) {
 					// Older than 30 days remove it
