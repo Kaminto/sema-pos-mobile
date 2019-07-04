@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@color/bleu"/>
+
+    <item>
+        <bitmap
+            android:gravity="center|fill"
+            android:src="@drawable/jibublue"/>
+    </item>
+
+    <!-- <item>
+        <bitmap
+            android:gravity="top"
+            android:src="@mipmap/ic_launcher"/>
+    </item> -->
+</layer-list>
