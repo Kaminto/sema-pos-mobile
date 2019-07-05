@@ -22,8 +22,6 @@ export default class Splash extends Component {
 		);
 	}
 }
-
-
 const styles = StyleSheet.create({
 	imgBackground: {
 		width: '100%',

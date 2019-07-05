@@ -73,6 +73,7 @@ class CustomerEdit extends Component {
 		super(props);
 		this.state = { isEditInProgress: false };
 		this.phone = React.createRef();
+		this.secondPhoneNumber = React.createRef();
 		this.name = React.createRef();
 		this.address = React.createRef();
 		this.customerChannel = React.createRef();
@@ -141,6 +142,15 @@ class CustomerEdit extends Component {
 							ref={this.name}
 						/>
 						<CustomerProperty
+							reference="customerName"
+							marginTop="1%"
+							placeHolder={i18n.t('account-name')}
+							parent={this}
+							kbType="default"
+							valueFn={this.getName}
+							ref={this.name}
+						/>
+						<CustomerProperty
 							reference="customerNumber"
 							marginTop={0}
 							placeHolder={i18n.t('telephone-number')}
@@ -149,7 +159,20 @@ class CustomerEdit extends Component {
 							valueFn={this.getTelephoneNumber}
 							ref={this.phone}
 						/>
+<<<<<<< HEAD
 						
+=======
+						<CustomerProperty
+							reference="secondPhoneNumber"
+							marginTop={0}
+							placeHolder="Second Phone Number"
+							parent={this}
+							kbType="phone-pad"
+							valueFn={this.getSecondTelephoneNumber}
+							ref={this.secondPhoneNumber}
+						/>
+
+>>>>>>> test
 						<CustomerProperty
 							reference="customerAddress"
 							marginTop="1%"
@@ -259,6 +282,7 @@ class CustomerEdit extends Component {
 			</View>
 		);
 	}
+
 	getTelephoneNumber(me) {
 		if (me.props.isEdit) {
 			return me.props.selectedCustomer.phoneNumber;
@@ -266,6 +290,17 @@ class CustomerEdit extends Component {
 			return '';
 		}
 	}
+
+	getSecondTelephoneNumber(me) {
+		try {
+			if (me.props.isEdit) {
+				return me.props.selectedCustomer.secondPhoneNumber;
+			} else {
+				return '';
+			}
+		} catch (error) {}
+	}
+
 	getName(me) {
 		if (me.props.isEdit) {
 			return me.props.selectedCustomer.name;
@@ -373,25 +408,51 @@ class CustomerEdit extends Component {
 		return /^\d+$/.test(text);
 	}
 
+	isValidPhoneNumber(text) {
+		let test = /^\d{10}$/.test(text);
+		if (!test) {
+			alert(
+				'Telephone number should be at least 10 digits long. Example 07xxxxxxxx'
+			);
+		}
+		return test;
+	}
+
 	onEdit() {
 		let salesChannelId = -1;
 		let customerTypeId = -1;
-		if (this._textIsEmpty(this.phone.current.state.propertyText)) {
+
+		if (
+			this._textIsEmpty(this.phone.current.state.propertyText) ||
+			!this.isValidPhoneNumber(this.phone.current.state.propertyText)
+		) {
 			this.phone.current.refs.customerNumber.focus();
 			return;
 		}
+
+		if (
+			!this._textIsEmpty(this.secondPhoneNumber.current.state.propertyText) &&
+			!this.isValidPhoneNumber(this.secondPhoneNumber.current.state.propertyText)
+		) {
+			this.secondPhoneNumber.current.refs.secondPhoneNumber.focus();
+			return;
+		}
+
 		if (this._textIsEmpty(this.name.current.state.propertyText)) {
 			this.name.current.refs.customerName.focus();
 			return;
 		}
+
 		if (this._textIsEmpty(this.address.current.state.propertyText)) {
 			this.address.current.refs.customerAddress.focus();
 			return;
 		}
+
 		if (this.customerChannel.current.state.selectedIndex === -1) {
 			this.customerChannel.current.show();
 			return;
 		}
+
 		if (this._textIsEmpty(this.frequency.current.state.propertyText)) {
 			this.frequency.current.refs.customerFrequency.focus();
 			return;
@@ -417,7 +478,8 @@ class CustomerEdit extends Component {
 				this.address.current.state.propertyText,
 				salesChannelId,
 				customerTypeId,
-				this.frequency.current.state.propertyText
+				this.frequency.current.state.propertyText,
+				this.secondPhoneNumber.current.state.propertyText
 			);
 		} else {
 			let newCustomer = PosStorage.createCustomer(
@@ -427,7 +489,8 @@ class CustomerEdit extends Component {
 				this.props.settings.siteId,
 				salesChannelId,
 				customerTypeId,
-				this.frequency.current.state.propertyText
+				this.frequency.current.state.propertyText,
+				this.secondPhoneNumber.current.state.propertyText
 			);
 			this.props.customerActions.setCustomers(PosStorage.getCustomers());
 			this.props.customerActions.CustomerSelected(newCustomer);
