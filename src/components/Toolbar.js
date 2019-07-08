@@ -79,7 +79,7 @@ class Toolbar extends Component {
 	}
 
 	getLogoutUI() {
-		if (this.props.showScreen.screenToShow !== 'settings') {
+		if (this.props.auth.status) {
 			return (
 				<TouchableHighlight onPress={() => this.onLogout()}>
 					<Text style={[styles.text_style, { marginRight: 20 }]}>

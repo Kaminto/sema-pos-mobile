@@ -130,7 +130,8 @@ class OrderPaymentScreen extends Component {
 
 	getLimitDate=()=>{
 		let date = new Date();
-		date.setDate(date.getDate() -1);
+		let days= date.getDay()===1?2:1
+		date.setDate(date.getDate() -days);
 		return date;
 	}
 
@@ -160,12 +161,11 @@ class OrderPaymentScreen extends Component {
 						marginRight: 100
 					}}>
 					<Button
-						title="Backdate Receipt"
+						title="Change Receipt Date"
 						onPress={this.showDateTimePicker}
 					/>
 					<DateTimePicker
 						maximumDate={new Date()}
-						minimumDate={this.getLimitDate()}
 						isVisible={this.state.isDateTimePickerVisible}
 						onConfirm={this.handleDatePicked}
 						onCancel={this.hideDateTimePicker}
@@ -542,7 +542,13 @@ class OrderPaymentScreen extends Component {
 				payoff -= priceTotal;
 				if (payoff > this.props.selectedCustomer.dueAmount) {
 					// Overpayment... this is an error
-					alert("The PAY OFF AMOUNT IS GREATER THAN THE DUE AMOUNT. THE DUE AMOUNT IS "+this.props.selectedCustomer.dueAmount);
+					Alert.alert(
+						'INVALID PAY OF AMOUNT',
+						'The PAY OFF AMOUNT IS GREATER THAN THE DUE AMOUNT. THE DUE AMOUNT IS '+this.props.selectedCustomer.dueAmount,
+						[{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+						{ cancelable: false }
+					);
+
 					return false;
 				}
 			} else {
