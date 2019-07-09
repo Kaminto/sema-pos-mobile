@@ -6,6 +6,7 @@ const { React, AsyncStorage } = require('react-native');
 import { capitalizeWord } from '../services/Utilities';
 import Events from 'react-native-simple-events';
 import moment from 'moment-timezone';
+import {realmStorage} from './RealmStorage'
 
 const uuidv1 = require('uuid/v1');
 
@@ -1449,6 +1450,7 @@ class PosStorage {
 		console.log(
 			'Pos Storage:setKey() Key: ' + key + ' Value: ' + stringValue
 		);
+		realmStorage.setItem(key, stringValue);
 		return AsyncStorage.setItem(key, stringValue);
 	}
 
