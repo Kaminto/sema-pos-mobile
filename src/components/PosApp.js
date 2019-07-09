@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Text, ImageBackground, Image, NetInfo } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
 
 import Toolbar from './Toolbar';
 import CustomerViews from './customers/CustomerViews';
