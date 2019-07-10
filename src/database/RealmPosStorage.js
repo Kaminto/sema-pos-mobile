@@ -43,26 +43,9 @@ class RealmPosStorage {
 		});
     }
     
-
-	// multiGet(keyArray){
-    //     console.log(keyArray.length + " number of keys.");
-    //     let semaobjects = [];
-    //     realm.write(() => {
-    //         for(i=0;i<keyArray.length;i++){			
-    //                 let value = realm.objectForPrimaryKey('SemaRealm', keyArray[i]);
-    //                 let semaobject = [keyArray[i], value.data];
-    //                 console.log(value.data);
-    //                 // semaobjects[i] = semaobject;
-    //                 semaobjects.push(semaobject);
-    //         }
-    //      });
-	// 	return semaobjects;
-
-    // }
     
     multiGet = keyArray => {
         var promise = new Promise(function(resolve, reject) {
-            console.log(keyArray.length + " number of keys.");
             let result = [];
             realm.write(() => {
                 for(i=0;i<keyArray.length;i++){			
@@ -82,17 +65,17 @@ class RealmPosStorage {
 
 	multiSet(keyArray){
         realm.write(() => {
-		for(i=0;i<keyArray.length;i++){
-				let key = keyArray[i][0];
-				let value = keyArray[i][1];
-                // realm.create('SemaRealm', {id: key, data: value})
-                let obj = realm.objectForPrimaryKey('SemaRealm', key);
-                if(obj != null)
-                realm.create('SemaRealm', {id: key, data: value}, true);
-                else
-                realm.create('SemaRealm', {id: key, data: value});
-        }
-    });
+            for(i=0;i<keyArray.length;i++){
+                    let key = keyArray[i][0];
+                    let value = keyArray[i][1];
+                    // realm.create('SemaRealm', {id: key, data: value})
+                    let obj = realm.objectForPrimaryKey('SemaRealm', key);
+                    if(obj != null)
+                    realm.create('SemaRealm', {id: key, data: value}, true);
+                    else
+                    realm.create('SemaRealm', {id: key, data: value});
+            }
+         });
 
 	}
 
