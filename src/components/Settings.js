@@ -305,7 +305,7 @@ class Settings extends Component {
 				)}
 				<Spinner
 					visible={this.state.isLoading}
-					textContent={'SYNCHRONIZING. PLEASE WAIT ...'}
+					textContent={'Synchronizing...'}
 					textStyle={styles.spinnerTextStyle}
 				/>
 			</ScrollView>

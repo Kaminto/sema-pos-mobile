@@ -151,7 +151,7 @@ class OrderPaymentScreen extends Component {
 					}}>
 					{this.getCancelButton()}
 				</View>
-
+                if (!this.isPayoffOnly()) {
 				<View
 					style={{
 						flex: 1,
@@ -171,6 +171,7 @@ class OrderPaymentScreen extends Component {
 						onCancel={this.hideDateTimePicker}
 					/>
 				</View>
+				}
 
 				<View
 					style={{

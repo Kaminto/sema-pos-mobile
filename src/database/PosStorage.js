@@ -6,7 +6,9 @@ const { React } = require('react-native');
 import { capitalizeWord } from '../services/Utilities';
 import Events from 'react-native-simple-events';
 import moment from 'moment-timezone';
-import RealmPosStorage from './RealmPosStorage';
+// import RealmPosStorage from './RealmPosStorage';
+var Realm = require('realm');
+let realm ;
 
 const uuidv1 = require('uuid/v1');
 
@@ -94,6 +96,17 @@ class PosStorage {
 			interval: 10 * 60 * 1000
 		};
 		this.inventoriesKeys = []; // 30 days of inventories
+
+        // Realm schema creation
+		const SEMA_SCHEMA = {
+            name: 'SemaRealm',
+            primaryKey: 'id',
+            properties: {
+                id: 'string',
+                data: 'string'
+            }
+        };
+		realm = new Realm({schema: [SEMA_SCHEMA]});
 	}
 
 	initialize(forceNew) {
@@ -160,7 +173,7 @@ class PosStorage {
 								this.stringify(this.reminderData)
 							]
 						];
-						RealmPosStorage.multiSet(keyArray).then(error => {
+						this.multiSet(keyArray).then(error => {
 							console.log(
 								'PosStorage:initialize: Error: ' + error
 							);
@@ -189,7 +202,7 @@ class PosStorage {
 							reminderDataItemKey
 						];
 
-						let results = RealmPosStorage.multiGet(keyArray).then(
+						let results = this.multiGet(keyArray).then(
 							function(results) {
 								console.log(
 									'PosStorage Multi-Key' + results.length
@@ -257,6 +270,73 @@ class PosStorage {
 		});
 	}
 
+	// Realm access methods start
+	getItem(key) {
+		let value;
+		realm.write(() => {
+			value = realm.objectForPrimaryKey('SemaRealm', key);
+        });
+        console.log(value);
+		return value.data;
+
+	}
+
+	setItem(key, value){
+		realm.write(() => {
+            let obj = realm.objectForPrimaryKey('SemaRealm', key);
+            if(obj != null)
+               realm.create('SemaRealm', {id: key, data: value}, true);
+            else
+		       realm.create('SemaRealm', {id: key, data: value});
+     	});
+
+	}
+
+	removeItem(key) {
+		realm.write(() => {
+			let semaobject = realm.objectForPrimaryKey('SemaRealm', key);
+			realm.delete(semaobject);
+		});
+    }
+    
+    
+    multiGet = keyArray => {
+        var promise = new Promise(function(resolve, reject) {
+            let result = [];
+            realm.write(() => {
+                for(i=0;i<keyArray.length;i++){			
+                        let value = realm.objectForPrimaryKey('SemaRealm', keyArray[i]);
+                        let semaobject = [keyArray[i], value.data];
+                        console.log(value.data);
+                        // semaobjects[i] = semaobject;
+                        result.push(semaobject);
+                }
+             });
+          resolve(result);
+        });
+      
+        return promise;
+      };
+
+
+	multiSet(keyArray){
+        realm.write(() => {
+            for(i=0;i<keyArray.length;i++){
+                    let key = keyArray[i][0];
+                    let value = keyArray[i][1];
+                    // realm.create('SemaRealm', {id: key, data: value})
+                    let obj = realm.objectForPrimaryKey('SemaRealm', key);
+                    if(obj != null)
+                    realm.create('SemaRealm', {id: key, data: value}, true);
+                    else
+                    realm.create('SemaRealm', {id: key, data: value});
+            }
+         });
+
+	}
+
+	// End of Realm methods
+
 	getLastCustomerSync() {
 		return this.lastCustomerSync;
 	}
@@ -306,7 +386,7 @@ class PosStorage {
 			[reminderDataItemKey, this.stringify(this.reminderDataKeys)]
 		];
 
-		RealmPosStorage.multiSet(keyArray).then(error => {
+		this.multiSet(keyArray).then(error => {
 			if (error) {
 				console.log('PosStorage:clearDataOnly: Error: ' + error);
 			}
@@ -348,7 +428,7 @@ class PosStorage {
 			//[remoteReceiptsKey, this.stringify(this.receipts)]
 		];
 
-		RealmPosStorage.multiSet(keyArray).then(error => {
+		this.multiSet(keyArray).then(error => {
 			if (error) {
 				console.log('PosStorage:clearDataOnly: Error: ' + error);
 			}
@@ -393,41 +473,6 @@ class PosStorage {
 		);
 	}
 
-	// createCustomerFull(phone, name, address, siteId, salesChannelId,
-	// 	customerTypeId, createdDate, updatedDate) {
-	// 	const newCustomer = {
-	// 		customerId: uuidv1(),
-	// 		name: name,
-	// 		phoneNumber: phone,
-	// 		address: address,
-	// 		siteId: siteId,
-	// 		dueAmount: 0,
-	// 		salesChannelId: salesChannelId,
-	// 		customerTypeId: customerTypeId,
-	// 		createdDate: createdDate,
-	// 		updatedDate: updatedDate
-
-	// 	};
-
-	// 	let key = this.makeCustomerKey(newCustomer);
-	// 	this.customers.push(newCustomer);
-	// 	newCustomer.syncAction = "create";
-	// 	this.customersKeys.push(key);
-	// 	this.pendingCustomers.push(key);
-	// 	let keyArray = [
-	// 		[customersKey, this.stringify(this.customersKeys)], // Array of customer keys
-	// 		[key, this.stringify(newCustomer)], // The new customer
-	// 		[pendingCustomersKey, this.stringify(this.pendingCustomers)] // Array pending customer
-	// 	];
-	// 	RealmPosStorage.multiSet(keyArray).then(error => {
-	// 		console.log("PosStorage:createCustomer: Error: " + error);
-	// 		if (error) {
-	// 			console.log("PosStorage:createCustomer: Error: " + error);
-	// 		}
-	// 	});
-	// 	return newCustomer;
-	// }
-
 	createCustomerFull(
 		phone,
 		name,
@@ -464,7 +509,7 @@ class PosStorage {
 			[key, this.stringify(newCustomer)], // The new customer
 			[pendingCustomersKey, this.stringify(this.pendingCustomers)] // Array pending customer
 		];
-		RealmPosStorage.multiSet(keyArray).then(error => {
+		this.multiSet(keyArray).then(error => {
 			console.log('PosStorage:createCustomer: Error: ' + error);
 			if (error) {
 				console.log('PosStorage:createCustomer: Error: ' + error);
@@ -500,7 +545,7 @@ class PosStorage {
 			[key, this.stringify(customer)], // Customer keys
 			[pendingCustomersKey, this.stringify(this.pendingCustomers)] // Array pending customer
 		];
-		RealmPosStorage.multiSet(keyArray).then(error => {
+		this.multiSet(keyArray).then(error => {
 			if (error) {
 				console.log('PosStorage:updateCustomer: Error: ' + error);
 			}
@@ -524,7 +569,7 @@ class PosStorage {
 				[key, this.stringify(customer)], // The customer being deleted
 				[pendingCustomersKey, this.stringify(this.pendingCustomers)] // Array pending customer
 			];
-			RealmPosStorage.multiSet(keyArray).then(error => {
+			this.multiSet(keyArray).then(error => {
 				if (error) {
 					console.log('PosStorage:deleteCustomer: Error: ' + error);
 				}
@@ -565,7 +610,7 @@ class PosStorage {
 			[key, this.stringify(customer)], // Customer keys
 			[pendingCustomersKey, this.stringify(this.pendingCustomers)] // Array pending customer
 		];
-		RealmPosStorage.multiSet(keyArray).then(error => {
+		this.multiSet(keyArray).then(error => {
 			if (error) {
 				console.log('PosStorage:updateCustomer: Error: ' + error);
 			}
@@ -591,7 +636,7 @@ class PosStorage {
 		}
 		this.customersKeys = keyArray;
 		keyValueArray.push([customersKey, this.stringify(keyArray)]);
-		RealmPosStorage.multiSet(keyValueArray).then(error => {
+		this.multiSet(keyValueArray).then(error => {
 			if (error) {
 				console.log('PosStorage:addCustomers: Error: ' + error);
 			}
@@ -711,7 +756,7 @@ class PosStorage {
 								], // Array of customer keys
 								[customerKey, this.stringify(customer)] // The customer being deleted
 							];
-							RealmPosStorage.multiSet(keyArray).then(error => {
+							this.multiSet(keyArray).then(error => {
 								if (error) {
 									console.log(
 										'PosStorage:mergeRemoteCustomers: Error: ' +
@@ -762,7 +807,7 @@ class PosStorage {
 		return new Promise((resolve, reject) => {
 			try {
 				let that = this;
-				RealmPosStorage.multiGet(this.customersKeys).then(results => {
+				this.multiGet(this.customersKeys).then(results => {
 					that.customers = results.map(result => {
 						return that.parseJson(result[1]);
 					});
@@ -782,7 +827,7 @@ class PosStorage {
 			let keyArray = [
 				[pendingCustomersKey, this.stringify(this.pendingCustomers)]
 			];
-			RealmPosStorage.multiSet(keyArray).then(error => {
+			this.multiSet(keyArray).then(error => {
 				if (error) {
 					console.log(
 						'PosStorage:removePendingCustomer: Error: ' + error
@@ -860,7 +905,7 @@ class PosStorage {
 				if (firstDate < now) {
 					// Older than 30 days remove it
 					this.salesKeys.shift();
-					RealmPosStorage.removeItem(oldest.saleKey).then(error => {
+					this.removeItem(oldest.saleKey).then(error => {
 						if (error) {
 							console.log('error removing ' + oldest.saleKey);
 						} else {
@@ -878,7 +923,7 @@ class PosStorage {
 				[pendingSalesKey, this.stringify(this.pendingSales)]
 			]; // Pending sales keys
 
-			RealmPosStorage.multiSet(keyArray).then(error => {
+			this.multiSet(keyArray).then(error => {
 				if (error) {
 					reject(error);
 				} else {
@@ -932,7 +977,7 @@ class PosStorage {
 			let keyArray = [
 				[pendingSalesKey, this.stringify(this.pendingSales)]
 			];
-			RealmPosStorage.multiSet(keyArray).then(error => {
+			this.multiSet(keyArray).then(error => {
 				if (error) {
 					return console.log(
 						'PosStorage:removePendingSale: Error: ' + error
@@ -988,7 +1033,7 @@ class PosStorage {
 		return new Promise((resolve, reject) => {
 			try {
 				let that = this;
-				RealmPosStorage.multiGet(this.productsKeys).then(results => {
+				this.multiGet(this.productsKeys).then(results => {
 					that.products = results.map(result => {
 						return that.parseJson(result[1]);
 					});
@@ -1291,7 +1336,7 @@ class PosStorage {
 					if (firstDate < now) {
 						// Older than 32 days remove it
 						this.inventoriesKeys.shift();
-						RealmPosStorage.removeItem(oldest.inventoryKey).then(
+						this.removeItem(oldest.inventoryKey).then(
 							error => {
 								if (error) {
 									console.log(
@@ -1310,7 +1355,7 @@ class PosStorage {
 					[inventoryKey, this.stringify(inventory)],
 					[inventoriesKey, this.stringify(this.inventoriesKeys)]
 				]; // Array of date/time inventory keys
-				RealmPosStorage.multiSet(keyArray).then(error => {
+				this.multiSet(keyArray).then(error => {
 					if (error) {
 						reject(error);
 					} else {
@@ -1454,27 +1499,23 @@ class PosStorage {
 	async getKey( key) {
 		try {
 			console.log("Pos Storage:getKey()" + key);
-			const value = await RealmPosStorage.getItem(key );
+			const value = await this.getItem(key );
 			return value;
 		} catch (error) {
 			console.log("Pos Storage Error retrieving data");
 		}
 	}
 
-	// getKey(key) {
-	// 	return RealmPosStorage.getItem(key);
-	// }
-
 	setKey(key, stringValue) {
 		console.log(
 			'Pos Storage:setKey() Key: ' + key + ' Value: ' + stringValue
 		);
-		return RealmPosStorage.setItem(key, stringValue);
+		return this.setItem(key, stringValue);
 	}
 
 	async removeKey(key) {
 		try {
-			await RealmPosStorage.removeItem(key);
+			await this.removeItem(key);
 		} catch (error) {
 			console.log('Pos Storage Error removing data' + error);
 		}
