@@ -151,7 +151,7 @@ class OrderPaymentScreen extends Component {
 					}}>
 					{this.getCancelButton()}
 				</View>
-                if (!this.isPayoffOnly()) {
+
 				<View
 					style={{
 						flex: 1,
@@ -171,7 +171,6 @@ class OrderPaymentScreen extends Component {
 						onCancel={this.hideDateTimePicker}
 					/>
 				</View>
-				}
 
 				<View
 					style={{
@@ -543,7 +542,13 @@ class OrderPaymentScreen extends Component {
 				payoff -= priceTotal;
 				if (payoff > this.props.selectedCustomer.dueAmount) {
 					// Overpayment... this is an error
-					alert("The PAY OFF AMOUNT IS GREATER THAN THE DUE AMOUNT. THE DUE AMOUNT IS "+this.props.selectedCustomer.dueAmount);
+					Alert.alert(
+						'INVALID PAY OF AMOUNT',
+						'The PAY OFF AMOUNT IS GREATER THAN THE DUE AMOUNT. THE DUE AMOUNT IS '+this.props.selectedCustomer.dueAmount,
+						[{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+						{ cancelable: false }
+					);
+
 					return false;
 				}
 			} else {

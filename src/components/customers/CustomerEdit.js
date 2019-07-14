@@ -68,6 +68,52 @@ class CustomerProperty extends Component {
 	};
 }
 
+class PhoneProperty extends Component {
+	constructor(props) {
+		super(props);
+		this.state = { propertyText: this.props.valueFn(this.props.parent) };
+	}
+
+	render() {
+		return (
+			<View
+				style={[
+					{ marginTop: this.props.marginTop },
+					styles.inputContainer
+				]}>
+				<TextInput
+					ref={this.props.reference}
+					style={[styles.phoneInputText]}
+					underlineColorAndroid="transparent"
+					placeholder={this.props.placeHolder}
+					value={this.state.propertyText}
+					keyboardType={this.props.kbType}
+					onChangeText={this.onChangeText}
+				/>
+			</View>
+		);
+	}
+	onChangeText = text => {
+		if (this.props.reference === 'customerFrequency') {
+			if (text) {
+				if (/^\d+$/.test(text)) {
+					this.setState({
+						propertyText: text
+					});
+				} else {
+					alert('Digits only please');
+				}
+			} else {
+				this.setState({
+					propertyText: ''
+				});
+			}
+		} else {
+			this.setState({ propertyText: text });
+		}
+	};
+}
+
 class CustomerEdit extends Component {
 	constructor(props) {
 		super(props);
@@ -141,25 +187,32 @@ class CustomerEdit extends Component {
 							valueFn={this.getName}
 							ref={this.name}
 						/>
-						<CustomerProperty
-							reference="customerNumber"
-							marginTop={0}
-							placeHolder={i18n.t('telephone-number')}
-							parent={this}
-							kbType="phone-pad"
-							valueFn={this.getTelephoneNumber}
-							ref={this.phone}
-						/>
-						<CustomerProperty
-							reference="secondPhoneNumber"
-							marginTop={0}
-							placeHolder="Second Phone Number"
-							parent={this}
-							kbType="phone-pad"
-							valueFn={this.getSecondTelephoneNumber}
-							ref={this.secondPhoneNumber}
-						/>
+						<View
+							style={{
+								flex: 1,
+								flexDirection: 'row',
+								alignItems: 'center'
+							}}>
+							<PhoneProperty
+								reference="customerNumber"
+								marginTop="1%"
+								placeHolder={i18n.t('telephone-number')}
+								parent={this}
+								kbType="phone-pad"
+								valueFn={this.getTelephoneNumber}
+								ref={this.phone}
+							/>
 
+							<PhoneProperty
+								reference="secondPhoneNumber"
+								marginTop="1%"
+								placeHolder={i18n.t('second-phone-number')}
+								parent={this}
+								kbType="phone-pad"
+								valueFn={this.getSecondTelephoneNumber}
+								ref={this.secondPhoneNumber}
+							/>
+						</View>
 						<CustomerProperty
 							reference="customerAddress"
 							marginTop="1%"
@@ -418,10 +471,14 @@ class CustomerEdit extends Component {
 		}
 
 		if (
-			!this._textIsEmpty(this.secondPhoneNumber.current.state.propertyText) &&
-			!this.isValidPhoneNumber(this.secondPhoneNumber.current.state.propertyText)
+			!this._textIsEmpty(
+				this.secondPhoneNumber.current.state.propertyText
+			) &&
+			!this.isValidPhoneNumber(
+				this.secondPhoneNumber.current.state.propertyText
+			)
 		) {
-			this.secondPhoneNumber.current.refs.customerNumber.focus();
+			this.secondPhoneNumber.current.refs.secondPhoneNumber.focus();
 			return;
 		}
 
@@ -466,7 +523,7 @@ class CustomerEdit extends Component {
 				salesChannelId,
 				customerTypeId,
 				this.frequency.current.state.propertyText,
-				this.secondPhoneNumber.state.propertyText
+				this.secondPhoneNumber.current.state.propertyText
 			);
 		} else {
 			let newCustomer = PosStorage.createCustomer(
@@ -477,7 +534,7 @@ class CustomerEdit extends Component {
 				salesChannelId,
 				customerTypeId,
 				this.frequency.current.state.propertyText,
-				this.secondPhoneNumber.state.propertyText
+				this.secondPhoneNumber.current.state.propertyText
 			);
 			this.props.customerActions.setCustomers(PosStorage.getCustomers());
 			this.props.customerActions.CustomerSelected(newCustomer);
@@ -586,6 +643,14 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white',
 		width: 400,
 		margin: 5
+	},
+	phoneInputText: {
+		fontSize: 24,
+		alignSelf: 'center',
+		backgroundColor: 'white',
+		width: 195,
+		margin: 5,
+		paddingRight:5
 	},
 	dropdownText: {
 		fontSize: 24

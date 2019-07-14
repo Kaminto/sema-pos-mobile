@@ -298,13 +298,13 @@ class PosStorage {
 			realm.delete(semaobject);
 		});
     }
-    
-    
+
+
     multiGet = keyArray => {
         var promise = new Promise(function(resolve, reject) {
             let result = [];
             realm.write(() => {
-                for(i=0;i<keyArray.length;i++){			
+                for(i=0;i<keyArray.length;i++){
                         let value = realm.objectForPrimaryKey('SemaRealm', keyArray[i]);
                         let semaobject = [keyArray[i], value.data];
                         console.log(value.data);
@@ -314,7 +314,7 @@ class PosStorage {
              });
           resolve(result);
         });
-      
+
         return promise;
       };
 

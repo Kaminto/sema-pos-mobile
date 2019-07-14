@@ -9,7 +9,6 @@ import {
 	Dimensions,
 	Image,
 	Alert,
-	CheckBox,
 	ActivityIndicator
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -25,7 +24,6 @@ import * as ToolbarActions from '../actions/ToolBarActions';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as AuthActions from '../actions/AuthActions';
 import ModalDropdown from 'react-native-modal-dropdown';
-import Spinner from 'react-native-loading-spinner-overlay';
 
 import Events from 'react-native-simple-events';
 
@@ -138,7 +136,7 @@ class Settings extends Component {
 			animating: false,
 			selectedLanguage: {},
 			isLoggedIn: setting.token.length > 0 || false,
-			isLoading:false
+			isLoading: false
 		};
 
 		this.onShowLanguages = this.onShowLanguages.bind(this);
@@ -147,9 +145,16 @@ class Settings extends Component {
 	}
 
 	componentDidMount() {
-		console.log('Settings:Mounted');
-		this.props.authActions.isAuth((PosStorage.getSettings().token.length > 0 || false));
+		this.props.authActions.isAuth(
+			PosStorage.getSettings().token.length > 0 || false
+		);
 	}
+
+	componentDidUpdate(oldProps) {
+		if (this.props.auth.status!==oldProps.auth.status) {
+			this.setState({isLoggedIn:this.props.auth.status})
+		}
+	  }
 
 	render() {
 		return (
@@ -272,13 +277,16 @@ class Settings extends Component {
 									label={i18n.t('save-settings')}
 								/>
 							)}
-							<SettingsButton
-								pressFn={this.onConnection.bind(this)}
-								enableFn={this.enableConnectionOrSync.bind(
-									this
-								)}
-								label={i18n.t('connect')}
-							/>
+
+							{!this.state.isLoggedIn && (
+								<SettingsButton
+									pressFn={this.onConnection.bind(this)}
+									enableFn={this.enableConnectionOrSync.bind(
+										this
+									)}
+									label={i18n.t('connect')}
+								/>
+							)}
 							{this.state.isLoggedIn && (
 								<SettingsButton
 									pressFn={this.onClearAll.bind(this)}
@@ -303,11 +311,11 @@ class Settings extends Component {
 						<ActivityIndicator size="large" />
 					</View>
 				)}
-				<Spinner
-					visible={this.state.isLoading}
-					textContent={'Synchronizing...'}
-					textStyle={styles.spinnerTextStyle}
-				/>
+				{
+					this.state.isLoading &&(
+						<ActivityIndicator size="large" color="#002b80" />
+					)
+				}
 			</ScrollView>
 		);
 	}
@@ -361,7 +369,7 @@ class Settings extends Component {
 	}
 
 	onSaveSettings() {
-		this.setState({isLoading:true})
+		this.setState({ isLoading: true });
 		// TODO - Validate fields and set focus to invalid field;
 		this.saveSettings(
 			this.props.settings.token,
@@ -374,9 +382,9 @@ class Settings extends Component {
 	}
 	onSynchronize() {
 		try {
-			this.setState({isLoading:true})
+			this.setState({ isLoading: true });
 			Synchronization.synchronize().then(syncResult => {
-				this.setState({isLoading:false})
+				this.setState({ isLoading: false });
 				console.log(
 					'Synchronization-result: ' + JSON.stringify(syncResult)
 				);
@@ -532,7 +540,6 @@ class Settings extends Component {
 										}
 									);
 								} else {
-
 									this.props.authActions.isAuth(true);
 									this.saveSettings(
 										result.response.token,
@@ -547,7 +554,8 @@ class Settings extends Component {
 									Synchronization.scheduleSync();
 
 									let date = new Date();
-									date.setDate(date.getDate() - 30);
+									//date.setDate(date.getDate() - 30);
+									date.setDate(date.getDate() - 7);
 									Communications.getReceiptsBySiteIdAndDate(
 										siteId,
 										date
@@ -664,7 +672,7 @@ class Settings extends Component {
 			siteId
 		);
 		this.props.settingsActions.setSettings(PosStorage.getSettings());
-		this.setState({isLoading:false})
+		this.setState({ isLoading: false });
 	}
 
 	getDefaultUILanguage() {
@@ -710,7 +718,7 @@ Settings.propTypes = {
 };
 
 function mapStateToProps(state, props) {
-	return { settings: state.settingsReducer.settings };
+	return { settings: state.settingsReducer.settings, auth:state.authReducer };
 }
 function mapDispatchToProps(dispatch) {
 	return {
@@ -797,5 +805,5 @@ const styles = StyleSheet.create({
 		color: '#002b80',
 		fontSize: 50,
 		fontWeight: 'bold'
-	  },
+	}
 });

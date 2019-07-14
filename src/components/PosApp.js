@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, ImageBackground, Image, NetInfo } from 'react-native';
+import { View, StyleSheet, ImageBackground, Image, NetInfo } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
 
 import Toolbar from './Toolbar';
 import CustomerViews from './customers/CustomerViews';
@@ -122,7 +121,7 @@ class PosApp extends Component {
 			'connectionChange',
 			this.handleConnectivityChange
 		);
-		
+
 		Events.on(
 			'CustomersUpdated',
 			'customerUpdate1',
@@ -181,7 +180,7 @@ class PosApp extends Component {
 			'connectionChange',
 			this.handleConnectivityChange
 		);
-		
+
 	}
 
 	onEditCustomer(customer) {
@@ -279,7 +278,7 @@ class PosApp extends Component {
 		if (this.state.isLoading) {
 			return <LoadSplashScreen />;
 		  }
-	  
+
 		return this.getLoginOrHomeScreen();
 	}
 
@@ -287,12 +286,12 @@ class PosApp extends Component {
 		console.log('getLoginOrHomeScreen - isLoggedIn: ' +
 				this.props.showScreen.isLoggedIn
 		);
-		
+
 		if (!this.props.showScreen.isLoggedIn) {
 			return (
 				// <Login />
 				<Settings />
-	
+
 			);
 		} else {
 			return (
@@ -412,7 +411,7 @@ class LoadSplashScreen extends Component {
 		);
 	}
   }
-  
+
 
 function mapStateToProps(state, props) {
 	return {

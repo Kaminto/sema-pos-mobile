@@ -335,7 +335,6 @@ class Communications {
 								resolve(responseJson);
 							})
 							.catch(error => {
-								//alert(error.message);
 								console.log(
 									'createReceipt - Parse JSON: ' +
 										error.message

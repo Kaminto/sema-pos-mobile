@@ -79,7 +79,7 @@ class Toolbar extends Component {
 	}
 
 	getLogoutUI() {
-		if (this.props.showScreen.screenToShow !== 'settings') {
+		if (this.props.auth.status) {
 			return (
 				<TouchableHighlight onPress={() => this.onLogout()}>
 					<Text style={[styles.text_style, { marginRight: 20 }]}>
@@ -137,9 +137,6 @@ class Toolbar extends Component {
 	};
 
 	onLogout = () => {
-		//console.log("onLogout");
-		//Redirecting to the Setting page
-		//this.props.toolbarActions.ShowScreen("settings");
 		this.props.toolbarActions.SetLoggedIn(false);
 		let settings = PosStorage.getSettings();
 		this.props.authActions.isAuth(false);

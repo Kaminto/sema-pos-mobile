@@ -68,7 +68,7 @@ class CustomerViews {
 						}
 					}));
 					resolve();
-	
+
 				});
 		});
 	}
@@ -80,7 +80,7 @@ class CustomerViews {
 		// Add the defaults
 		salesChannels.unshift({name: i18n.t('all')});
 		salesChannels.push({name: i18n.t('credit')});
-		
+
 		salesChannels.forEach(salesChannel => {
 			channelScreen = props => (<SalesChannelScreen
 												screenProps={props.screenProps}
