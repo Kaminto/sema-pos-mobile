@@ -89,9 +89,10 @@ class ProductList extends Component {
 			let prod=this.props.products[i];
 			if(ids.indexOf(prod.productId)>=0){
 				//Admitting products with zero as price too
-				if(this.getItemPrice(prod)>=0){
-					result.push(prod);
-				}
+				// if(this.getItemPrice(prod)>=0){
+				// 	result.push(prod);
+				// }
+				result.push(prod);
 			}
 		}
 		return result;

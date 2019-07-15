@@ -177,16 +177,12 @@ class PosStorage {
 								this.stringify(this.reminderData)
 							]
 						];
-
-						this.multiSet(keyArray)
-							.then(rows => {
-								console.log('Affected : ' + rows);
-								resolve(true);
-							})
-							.catch(error => {
-								console.log(error);
-								resolve(false);
-							});
+						this.multiSet(keyArray).then(error => {
+							console.log(
+								'PosStorage:initialize: Error: ' + error
+							);
+							resolve(false);
+						});
 					} else {
 						console.log('Pos Storage: Version = ' + version);
 						this.version = version;
@@ -300,19 +296,9 @@ class PosStorage {
 	}
 
 	removeItem(key) {
-		return new Promise((resolve, reject) => {
-			try {
-				realm.write(() => {
-					let semaobject = realm.objectForPrimaryKey(
-						'SemaRealm',
-						key
-					);
-					realm.delete(semaobject);
-					resolve(semaobject);
-				});
-			} catch (error) {
-				reject(error);
-			}
+		realm.write(() => {
+			let semaobject = realm.objectForPrimaryKey('SemaRealm', key);
+			realm.delete(semaobject);
 		});
 	}
 
@@ -341,7 +327,7 @@ class PosStorage {
 		return new Promise((resolve, reject) => {
 			realm.write(() => {
 				try {
-					let count = 0;
+					let count=0;
 					for (i = 0; i < keyArray.length; i++) {
 						count++;
 						let key = keyArray[i][0];
@@ -357,7 +343,7 @@ class PosStorage {
 						else
 							realm.create('SemaRealm', { id: key, data: value });
 					}
-					resolve({ rows: count });
+					resolve({rows:count})
 				} catch (error) {
 					reject(error);
 				}
@@ -416,13 +402,11 @@ class PosStorage {
 			[reminderDataItemKey, this.stringify(this.reminderDataKeys)]
 		];
 
-		this.multiSet(keyArray)
-			.then(rows => {
-				console.log('Affected Rows: ' + rows);
-			})
-			.catch(error => {
+		this.multiSet(keyArray).then(error => {
+			if (error) {
 				console.log('PosStorage:clearDataOnly: Error: ' + error);
-			});
+			}
+		});
 	}
 
 	clearDataBeforeSynch() {
@@ -460,13 +444,11 @@ class PosStorage {
 			//[remoteReceiptsKey, this.stringify(this.receipts)]
 		];
 
-		this.multiSet(keyArray)
-			.then(rows => {
-				console.log('Affected rows ' + rows);
-			})
-			.catch(error => {
+		this.multiSet(keyArray).then(error => {
+			if (error) {
 				console.log('PosStorage:clearDataOnly: Error: ' + error);
-			});
+			}
+		});
 	}
 
 	makeCustomerKey(customer) {
@@ -546,14 +528,12 @@ class PosStorage {
 			[key, this.stringify(newCustomer)], // The new customer
 			[pendingCustomersKey, this.stringify(this.pendingCustomers)] // Array pending customer
 		];
-
-		this.multiSet(keyArray)
-			.then(rows => {
-				console.log('Affected rows ' + rows);
-			})
-			.catch(error => {
+		this.multiSet(keyArray).then(error => {
+			console.log('PosStorage:createCustomer: Error: ' + error);
+			if (error) {
 				console.log('PosStorage:createCustomer: Error: ' + error);
-			});
+			}
+		});
 		return newCustomer;
 	}
 
@@ -584,14 +564,11 @@ class PosStorage {
 			[key, this.stringify(customer)], // Customer keys
 			[pendingCustomersKey, this.stringify(this.pendingCustomers)] // Array pending customer
 		];
-
-		this.multiSet(keyArray)
-			.then(rows => {
-				console.log('Affected rows ' + rows);
-			})
-			.catch(error => {
+		this.multiSet(keyArray).then(error => {
+			if (error) {
 				console.log('PosStorage:updateCustomer: Error: ' + error);
-			});
+			}
+		});
 	}
 
 	deleteCustomer(customer) {
@@ -611,14 +588,11 @@ class PosStorage {
 				[key, this.stringify(customer)], // The customer being deleted
 				[pendingCustomersKey, this.stringify(this.pendingCustomers)] // Array pending customer
 			];
-
-			this.multiSet(keyArray)
-				.then(rows => {
-					console.log('Affected rows: ' + rows);
-				})
-				.catch(error => {
+			this.multiSet(keyArray).then(error => {
+				if (error) {
 					console.log('PosStorage:deleteCustomer: Error: ' + error);
-				});
+				}
+			});
 		}
 	}
 
@@ -655,14 +629,11 @@ class PosStorage {
 			[key, this.stringify(customer)], // Customer keys
 			[pendingCustomersKey, this.stringify(this.pendingCustomers)] // Array pending customer
 		];
-
-		this.multiSet(keyArray)
-			.then(rows => {
-				console.log('Affected rows ' + rows);
-			})
-			.catch(error => {
+		this.multiSet(keyArray).then(error => {
+			if (error) {
 				console.log('PosStorage:updateCustomer: Error: ' + error);
-			});
+			}
+		});
 	}
 
 	addRemoteCustomers(customerArray) {
@@ -684,14 +655,11 @@ class PosStorage {
 		}
 		this.customersKeys = keyArray;
 		keyValueArray.push([customersKey, this.stringify(keyArray)]);
-
-		this.multiSet(keyValueArray)
-			.then(rows => {
-				console.log('Affected rows: ' + rows);
-			})
-			.catch(error => {
+		this.multiSet(keyValueArray).then(error => {
+			if (error) {
 				console.log('PosStorage:addCustomers: Error: ' + error);
-			});
+			}
+		});
 	}
 
 	// Merge new customers into existing ones
@@ -807,17 +775,14 @@ class PosStorage {
 								], // Array of customer keys
 								[customerKey, this.stringify(customer)] // The customer being deleted
 							];
-
-							this.multiSet(keyArray)
-								.then(rows => {
-									console.log('Affected rows ' + rows);
-								})
-								.catch(error => {
+							this.multiSet(keyArray).then(error => {
+								if (error) {
 									console.log(
 										'PosStorage:mergeRemoteCustomers: Error: ' +
 											error
 									);
-								});
+								}
+							});
 						}
 					}
 				}
@@ -881,16 +846,13 @@ class PosStorage {
 			let keyArray = [
 				[pendingCustomersKey, this.stringify(this.pendingCustomers)]
 			];
-
-			this.multiSet(keyArray)
-				.then(rows => {
-					console.log('Affected rows: ' + rows);
-				})
-				.catch(error => {
+			this.multiSet(keyArray).then(error => {
+				if (error) {
 					console.log(
 						'PosStorage:removePendingCustomer: Error: ' + error
 					);
-				});
+				}
+			});
 		}
 	}
 
@@ -962,17 +924,14 @@ class PosStorage {
 				if (firstDate < now) {
 					// Older than 30 days remove it
 					this.salesKeys.shift();
-
-					this.removeItem(oldest.saleKey)
-						.then(resp => {
-							Events.trigger('RemoveLocalReceipt', saleDateKey);
-							console.log(resp);
-							console.log('Removed ' + oldest.saleKey);
-						})
-						.catch(error => {
-							console.log(error);
+					this.removeItem(oldest.saleKey).then(error => {
+						if (error) {
 							console.log('error removing ' + oldest.saleKey);
-						});
+						} else {
+							Events.trigger('RemoveLocalReceipt', saleDateKey);
+							console.log('Removed ' + oldest.saleKey);
+						}
+					});
 				}
 			}
 
@@ -983,14 +942,13 @@ class PosStorage {
 				[pendingSalesKey, this.stringify(this.pendingSales)]
 			]; // Pending sales keys
 
-			this.multiSet(keyArray)
-				.then(rows => {
-					console.log('Entries' + rows);
-					resolve(saleItemKey + saleDateKey);
-				})
-				.catch(error => {
+			this.multiSet(keyArray).then(error => {
+				if (error) {
 					reject(error);
-				});
+				} else {
+					resolve(saleItemKey + saleDateKey);
+				}
+			});
 		});
 	}
 
@@ -1038,18 +996,15 @@ class PosStorage {
 			let keyArray = [
 				[pendingSalesKey, this.stringify(this.pendingSales)]
 			];
-
-			this.multiSet(keyArray)
-				.then(rows => {
-					console.log('Affected rows ' + rows);
-
-					Events.trigger('RemoveLocalReceipt', saleId);
-				})
-				.catch(error => {
+			this.multiSet(keyArray).then(error => {
+				if (error) {
 					return console.log(
 						'PosStorage:removePendingSale: Error: ' + error
 					);
-				});
+				}
+
+				Events.trigger('RemoveLocalReceipt', saleId);
+			});
 		}
 	}
 
@@ -1400,33 +1355,28 @@ class PosStorage {
 					if (firstDate < now) {
 						// Older than 32 days remove it
 						this.inventoriesKeys.shift();
-
-						this.removeItem(oldest.inventoryKey)
-							.then(data => {
-								console.log(data);
-								console.log('Removed ' + oldest.inventoryKey);
-							})
-							.catch(error => {
-								console.log(error);
+						this.removeItem(oldest.inventoryKey).then(error => {
+							if (error) {
 								console.log(
 									'error removing ' + oldest.inventoryKey
 								);
-							});
+							} else {
+								console.log('Removed ' + oldest.inventoryKey);
+							}
+						});
 					}
 				}
 				let keyArray = [
 					[inventoryKey, this.stringify(inventory)],
 					[inventoriesKey, this.stringify(this.inventoriesKeys)]
 				]; // Array of date/time inventory keys
-
-				this.multiSet(keyArray)
-					.then(rows => {
-						console.log(rows);
-						resolve(true);
-					})
-					.catch(error => {
+				this.multiSet(keyArray).then(error => {
+					if (error) {
 						reject(error);
-					});
+					} else {
+						resolve(true);
+					}
+				});
 			}
 		});
 	}
