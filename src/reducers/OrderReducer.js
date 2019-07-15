@@ -6,7 +6,7 @@ import { ADD_PRODUCT_TO_ORDER, CLEAR_ORDER, REMOVE_PRODUCT,
 let initialState = {products:[], channel:{salesChannel:'direct'}, flow:{page:'products'}, payment:{ cash: 0, credit: 0, mobile: 0}};
 
 const orderReducer = (state = initialState, action) => {
-	console.log("orderReducer: " +action.type);
+	// console.log("orderReducer: " +action.type);
 	let newState;
 	switch (action.type) {
 		case ADD_PRODUCT_TO_ORDER:

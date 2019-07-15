@@ -9,7 +9,7 @@ export const REPORT_FILTER = 'REPORT_FILTER';
 export const REMINDER_REPORT = 'REMINDER_REPORT';
 
 export function GetSalesReportData(beginDate, endDate) {
-	console.log('GetSalesReportData - action');
+	// console.log('GetSalesReportData - action');
 
 	return dispatch => {
 		getSalesData(beginDate, endDate)
@@ -30,14 +30,14 @@ export function GetSalesReportData(beginDate, endDate) {
 }
 
 export function setReportType(reportType) {
-	console.log('setReportType - action');
+	// console.log('setReportType - action');
 	return dispatch => {
 		dispatch({ type: REPORT_TYPE, data: reportType });
 	};
 }
 
 export function setReportFilter(startDate, endDate) {
-	console.log('setReportFilter - action');
+	// console.log('setReportFilter - action');
 	return dispatch => {
 		dispatch({
 			type: REPORT_FILTER,

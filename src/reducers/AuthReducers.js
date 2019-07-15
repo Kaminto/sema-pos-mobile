@@ -1,4 +1,4 @@
-import { AUTH_STATUS} from "../actions/AuthActions"
+import { AUTH_STATUS} from "../actions/AuthActions";
 
 let initialState = { status :false};
 

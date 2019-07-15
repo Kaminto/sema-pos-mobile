@@ -43,7 +43,7 @@
   "search-placeholder": "Rechercher Par Nom Ou Téléphone",
   "account-name": "Nom Client",
   "telephone-number": "# Téléphone",
-  "second-phone-number": "Second Téléphone",
+  "second-phone-number": "#2 Téléphone",
   "backdating": "Changer la date de facturation",
   "over-due-amount-title": "Paiement excessif",
   "over-due-amount-text": "Le montant payé ne peut pas excéder le prix des produits achetés par le client.",

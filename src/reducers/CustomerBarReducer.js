@@ -1,5 +1,5 @@
 
-import { SHOW_HIDE_CUSTOMERS} from "../actions/CustomerBarActions"
+import { SHOW_HIDE_CUSTOMERS} from "../actions/CustomerBarActions";
 
 let initialState = { showView :{showCustomers:true, showNewOrder:false}};
 

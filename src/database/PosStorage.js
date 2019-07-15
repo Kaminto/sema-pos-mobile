@@ -457,7 +457,8 @@ class PosStorage {
 		siteId,
 		salesChannelId,
 		customerTypeId,
-		frequency
+		frequency,
+		secondPhoneNumber
 	) {
 		const now = new Date();
 		return this.createCustomerFull(
@@ -469,7 +470,8 @@ class PosStorage {
 			customerTypeId,
 			now,
 			now,
-			frequency
+			frequency,
+			secondPhoneNumber
 		);
 	}
 
@@ -482,7 +484,8 @@ class PosStorage {
 		customerTypeId,
 		createdDate,
 		updatedDate,
-		frequency
+		frequency,
+		secondPhoneNumber
 	) {
 
 		const newCustomer = {
@@ -496,7 +499,8 @@ class PosStorage {
 			customerTypeId: customerTypeId,
 			createdDate: createdDate,
 			updatedDate: updatedDate,
-			frequency: frequency
+			frequency: frequency,
+			secondPhoneNumber: secondPhoneNumber
 		};
 
 		let key = this.makeCustomerKey(newCustomer);

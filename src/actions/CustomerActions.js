@@ -5,7 +5,7 @@ export const CUSTOMERS_SEARCH = 'CUSTOMERS_SEARCH';
 
 
 export function CustomerSelected( customer){
-	console.log("CustomerSelected - action");
+	// console.log("CustomerSelected - action");
 	const data = customer;
 	return (dispatch) => {
 		dispatch({type: CUSTOMER_SELECTED, data:data});
@@ -13,14 +13,14 @@ export function CustomerSelected( customer){
 }
 
 export function setCustomers( customers ) {
-	console.log("setCustomers - action. No of customers " + customers.length);
+	// console.log("setCustomers - action. No of customers " + customers.length);
 
 	return (dispatch) => {dispatch({type: CUSTOMERS_SET, data:customers})};
 
 }
 
 export function SearchCustomers( searchString ) {
-	console.log("SearchCustomers - action. Search is " + searchString);
+	// console.log("SearchCustomers - action. Search is " + searchString);
 
 	return (dispatch) => {dispatch({type: CUSTOMERS_SEARCH, data: searchString})};
 }

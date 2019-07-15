@@ -1,5 +1,5 @@
 
-import { SHOW_SCREEN, SET_LOGGED_IN} from "../actions/ToolBarActions"
+import { SHOW_SCREEN, SET_LOGGED_IN} from "../actions/ToolBarActions";
 
 let initialState = { showScreen :{screenToShow:"main", isLoggedIn:false}};
 

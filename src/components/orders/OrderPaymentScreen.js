@@ -152,25 +152,7 @@ class OrderPaymentScreen extends Component {
 					{this.getCancelButton()}
 				</View>
 
-				<View
-					style={{
-						flex: 1,
-						marginTop: 10,
-						marginBottom: 10,
-						marginLeft: 100,
-						marginRight: 100
-					}}>
-					<Button
-						title="Change Receipt Date"
-						onPress={this.showDateTimePicker}
-					/>
-					<DateTimePicker
-						maximumDate={new Date()}
-						isVisible={this.state.isDateTimePickerVisible}
-						onConfirm={this.handleDatePicked}
-						onCancel={this.hideDateTimePicker}
-					/>
-				</View>
+				{this.getBackDateComponent()}
 
 				<View
 					style={{
@@ -259,6 +241,36 @@ class OrderPaymentScreen extends Component {
 						source={require('../../images/icons8-cancel-50.png')}
 					/>
 				</TouchableHighlight>
+			);
+		} else {
+			return null;
+		}
+	}
+
+	getBackDateComponent() {
+		if (
+			!this.isPayoffOnly()
+		) {
+			return (
+				<View
+					style={{
+						flex: 1,
+						marginTop: 10,
+						marginBottom: 10,
+						marginLeft: 100,
+						marginRight: 100
+					}}>
+					<Button
+						title="Change Receipt Date"
+						onPress={this.showDateTimePicker}
+					/>
+					<DateTimePicker
+						maximumDate={new Date()}
+						isVisible={this.state.isDateTimePickerVisible}
+						onConfirm={this.handleDatePicked}
+						onCancel={this.hideDateTimePicker}
+					/>
+				</View>
 			);
 		} else {
 			return null;
