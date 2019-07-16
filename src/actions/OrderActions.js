@@ -6,35 +6,57 @@ export const SET_ORDER_CHANNEL = 'SET_CHANNEL';
 export const SET_ORDER_FLOW = 'SET_ORDER_FLOW';
 export const SET_PAYMENT = 'SET_PAYMENT';
 
-
-export function AddProductToOrder( product, quantity ) {
+export function AddProductToOrder(product, quantity, price) {
 	// console.log("AddProductToOrder - action");
-	return (dispatch) => { dispatch({type: ADD_PRODUCT_TO_ORDER, data:{product:product, quantity:quantity}})};
+	return dispatch => {
+		dispatch({
+			type: ADD_PRODUCT_TO_ORDER,
+			data: { product: product, quantity: quantity, unitPrice:price }
+		});
+	};
 }
 
-export function RemoveProductFromOrder( product ) {
+export function RemoveProductFromOrder(product, price) {
 	// console.log("RemoveProductFromOrder - action");
-	return (dispatch) => { dispatch({type: REMOVE_PRODUCT, data:{product:product}})};
+	return dispatch => {
+		dispatch({ type: REMOVE_PRODUCT, data: { product: product, unitPrice:price } });
+	};
 }
 
-export function SetProductQuantity( product, quantity ) {
+export function SetProductQuantity(product, quantity, price) {
 	// console.log("SetProductQuantity - action");
-	return (dispatch) => { dispatch({type: SET_PRODUCT_QUANTITY, data:{product:product, quantity:quantity}})};
+	return dispatch => {
+		dispatch({
+			type: SET_PRODUCT_QUANTITY,
+			data: { product: product, quantity: quantity, unitPrice:price }
+		});
+	};
 }
 
-export function SetOrderChannel( channel) {
+export function SetOrderChannel(channel) {
 	// console.log("SetOrderChannel - action");
-	return (dispatch) => { dispatch({type: SET_ORDER_CHANNEL, data:{channel:{salesChannel:channel}}})};
+	return dispatch => {
+		dispatch({
+			type: SET_ORDER_CHANNEL,
+			data: { channel: { salesChannel: channel } }
+		});
+	};
 }
-export function SetOrderFlow( page) {
+export function SetOrderFlow(page) {
 	// console.log("SetOrderFlow - action");
-	return (dispatch) => { dispatch({type: SET_ORDER_FLOW, data:{flow:{page:page}}})};
+	return dispatch => {
+		dispatch({ type: SET_ORDER_FLOW, data: { flow: { page: page } } });
+	};
 }
-export function SetPayment( payment) {
+export function SetPayment(payment) {
 	// console.log("SetPayment - action");
-	return (dispatch) => { dispatch({type: SET_PAYMENT, data:{payment:payment}})};
+	return dispatch => {
+		dispatch({ type: SET_PAYMENT, data: { payment: payment } });
+	};
 }
-export function ClearOrder( payment) {
+export function ClearOrder(payment) {
 	// console.log("ClearOrder - action");
-	return (dispatch) => { dispatch({type: CLEAR_ORDER, data:{}})};
+	return dispatch => {
+		dispatch({ type: CLEAR_ORDER, data: {} });
+	};
 }

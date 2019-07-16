@@ -117,7 +117,8 @@ class ProductList extends Component {
 
 	onPressItem = item => {
 		console.log('onPressItem');
-		this.props.orderActions.AddProductToOrder(item, 1);
+		const unitPrice=this.getItemPrice(item)
+		this.props.orderActions.AddProductToOrder(item, 1, unitPrice);
 	};
 
 	getItemBackground = index => {

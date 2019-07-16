@@ -159,10 +159,12 @@ class OrderItems extends Component {
 
 	onDone = ()=>{
 		this.setState( {isQuantityVisible:false} );
+		let unitPrice=this.getItemPrice(this.state.selectedItem.product);
+
 		if( this.state.accumulator ===0  ){
-			this.props.orderActions.RemoveProductFromOrder( this.state.selectedItem.product );
+			this.props.orderActions.RemoveProductFromOrder( this.state.selectedItem.product, unitPrice );
 		}else{
-			this.props.orderActions.SetProductQuantity( this.state.selectedItem.product, this.state.accumulator );
+			this.props.orderActions.SetProductQuantity( this.state.selectedItem.product, this.state.accumulator, unitPrice );
 		}
 	};
 	getItemPrice = (item) =>{
