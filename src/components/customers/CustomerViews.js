@@ -1,7 +1,11 @@
 import React from 'react';
-import { createStackNavigator, createBottomTabNavigator, createAppContainer  } from 'react-navigation';
-import CustomerList from "./CustomerList";
-import PosStorage from "../../database/PosStorage";
+import {
+	createStackNavigator,
+	createBottomTabNavigator,
+	createAppContainer
+} from 'react-navigation';
+import CustomerList from './CustomerList';
+import PosStorage from '../../database/PosStorage';
 import { capitalizeWord } from '../../services/Utilities';
 
 import i18n from '../../app/i18n';
@@ -13,20 +17,35 @@ class SalesChannelScreen extends React.Component {
 		this.isFocused = false;
 	}
 
-	componentWillUpdate(){
-		console.log(`${capitalizeWord(this.props.filter)}Screen -componentWillUpdate: Focused : ${this.props.navigation.isFocused()}`);
-		if(this.props.navigation.isFocused() === true && this.isFocused === false){
+	componentWillUpdate() {
+		console.log(
+			`${capitalizeWord(
+				this.props.filter
+			)}Screen -componentWillUpdate: Focused : ${this.props.navigation.isFocused()}`
+		);
+		if (
+			this.props.navigation.isFocused() === true &&
+			this.isFocused === false
+		) {
 			this.isFocused = true;
-			console.log(`${capitalizeWord(this.props.filter)}Screen focus received`);
-			this.props.screenProps.parent.props.customerActions.SearchCustomers("");
-		} else if(this.props.navigation.isFocused() === false){
+			console.log(
+				`${capitalizeWord(this.props.filter)}Screen focus received`
+			);
+			this.props.screenProps.parent.props.customerActions.SearchCustomers(
+				''
+			);
+		} else if (this.props.navigation.isFocused() === false) {
 			this.isFocused = false;
 		}
 	}
 
 	render() {
+		console.log(this.props.filter);
 		return (
-			<CustomerList filter={this.props.filter} customerInfo={this.props.screenProps}/>
+			<CustomerList
+				filter={this.props.filter}
+				customerInfo={this.props.screenProps}
+			/>
 		);
 	}
 }
@@ -41,35 +60,52 @@ class CustomerViews {
 
 	buildNavigator() {
 		return new Promise(resolve => {
-			console.log("buildNavigator");
+			console.log('buildNavigator');
 			this.views = {};
-			PosStorage.loadSalesChannels()
-				.then(savedSalesChannels => {
-					this.createScreens(savedSalesChannels);
-					this.navigator = createAppContainer(createBottomTabNavigator(this.views, {
-						tabBarOptions: {
-						activeTintColor: '#F0F0F0',
-						activeBackgroundColor: "#18376A",
-						inactiveTintColor: '#000000',
-						inactiveBackgroundColor: 'white',
-						style: { borderTopColor: 'black', borderTopWidth: 3 },
-						// style: {padding:0, margin:0, borderColor:'red', borderWidth:5, justifyContent: 'center', alignItems: 'center' },
-						labelStyle: {
-							fontSize: 18,
-							padding: 12
-						},
-						tabStyle: { justifyContent: 'center', alignItems: 'center' },
-						// tabStyle: {
-						//     borderBottomColor: '#ebcccc',
-						//     width: 100,
-						//     height:600,
-						//     // backgroundColor:"yellow"
-						// }
-						}
-					}));
-					resolve();
+			PosStorage.loadSalesChannels().then(savedSalesChannels => {
+				this.createScreens(savedSalesChannels);
 
-				});
+				this.navigator = createAppContainer(
+					createBottomTabNavigator(this.views, {
+						initialRouteName: 'All',
+						tabBarOptions: {
+							activeTintColor: '#F0F0F0',
+							activeBackgroundColor: '#18376A',
+							inactiveTintColor: '#000000',
+							inactiveBackgroundColor: 'white',
+							style: {
+								borderTopColor: 'black',
+								borderTopWidth: 3
+							},
+							// style: {padding:0, margin:0, borderColor:'red', borderWidth:5, justifyContent: 'center', alignItems: 'center' },
+							labelStyle: {
+								fontSize: 18,
+								padding: 12
+							},
+							tabStyle: {
+								justifyContent: 'center',
+								alignItems: 'center'
+							}
+							// tabStyle: {
+							//     borderBottomColor: '#ebcccc',
+							//     width: 100,
+							//     height:600,
+							//     // backgroundColor:"yellow"
+							// }
+						},
+						defaultNavigationOptions: ({ navigation }) => ({
+							tabBarOnPress: ({ navigation, defaultHandler }) => {
+								console.log(
+									'onPress --:',
+									navigation.state.routeName
+								);
+								defaultHandler();
+							}
+						})
+					})
+				);
+				resolve();
+			});
 		});
 	}
 
@@ -78,25 +114,21 @@ class CustomerViews {
 		let channelScreen;
 
 		// Add the defaults
-		salesChannels.unshift({name: i18n.t('all')});
-		salesChannels.push({name: i18n.t('credit')});
+		salesChannels.unshift({ name: i18n.t('all') });
+		salesChannels.push({ name: i18n.t('credit') });
 
 		salesChannels.forEach(salesChannel => {
-			channelScreen = props => (<SalesChannelScreen
-												screenProps={props.screenProps}
-												navigation={props.navigation}
-												filter={salesChannel.name} />);
+			channelScreen = props => (
+				<SalesChannelScreen
+					screenProps={props.screenProps}
+					navigation={props.navigation}
+					filter={salesChannel.name}
+				/>
+			);
 
 			this.views[`${capitalizeWord(salesChannel.name)}`] = {
-				screen: channelScreen,
-				navigationOptions: {
-					tabBarLabel: capitalizeWord(salesChannel.name),
-					tabBarOnPress: scene => {
-						let output = `${capitalizeWord(salesChannel.name)}-Tab ${scene.navigation.state.routeName}`;
-						console.log(output);
-					}
-				}
-			}
+				screen: channelScreen
+			};
 		});
 	}
 }
