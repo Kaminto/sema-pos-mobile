@@ -24,7 +24,6 @@
     "react-native-keyboard-aware-scroll-view": "~0.8.0",
     "react-native-languages": "^3.0.2",
     "react-native-loading-spinner-overlay": "^1.0.1",
-    "react-native-localize": "^1.1.4",
     "react-native-modal-datetime-picker": "^7.5.0",
     "react-native-modal-dropdown": "~0.6.2",
     "react-native-simple-events": "~1.0.1",
