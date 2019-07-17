@@ -113,6 +113,7 @@ const getSalesData = (beginDate, endDate) => {
 								sku: lineItem.product.sku,
 								description: lineItem.product.description,
 								quantity: Number(lineItem.quantity),
+								category: Number(lineItem.product.categoryId),
 								pricePerSku:
 									parseFloat(lineItem.price_total) /
 									Number(lineItem.quantity),
@@ -216,19 +217,35 @@ const createInventory = (salesData, inventorySettings, products) => {
 	let emptyProducts = [];
 	for (let index = 0; index < products.length; index++) {
 		if (isNotIncluded(products[index], salesAndProducts.salesItems)) {
-			emptyProducts.push({
-				sku: products[index].sku,
-				description: products[index].description,
-				quantity: 0,
-				totalSales: 0,
-				totalLiters: 0,
-				litersPerSku: products[index].unitPerProduct
-			});
+			if(!['Test', '0224', '0220', '0212', '0210', '0200', '0180', '0170', '0150', '0142', '0141', '0140'].includes(products[index].sku) &&
+			!products[index].description.includes("refill")) {
+				emptyProducts.push({
+					sku: products[index].sku,
+					description: products[index].description,
+					quantity: 0,
+					totalSales: 0,
+					totalLiters: 0,
+					litersPerSku: products[index].unitPerProduct
+				});
+		   }
 		}
 	}
 	salesAndProducts.salesItems = salesAndProducts.salesItems.concat(
 		emptyProducts
 	);
+
+	for (let index = 0; index < salesAndProducts.salesItems.length; index++) {
+		if(
+			['Test', '0224', '0220', '0212', '0210', '0200', '0180', '0170', '0150', '0142', '0141', '0140']
+			.includes(salesAndProducts.salesItems[index].sku)
+			|| salesAndProducts.salesItems[index].description.includes("refill")) {
+			console.log(salesAndProducts.salesItems[index].sku + " KaJibu " + salesAndProducts.salesItems[index].description)
+			salesAndProducts.salesItems.splice(index, 1);
+			}
+			salesAndProducts.salesItems[index].description = salesAndProducts.salesItems[index].description.replace("new", "");
+
+	}
+
 	let inventoryData = {
 		salesAndProducts: salesAndProducts,
 		inventory: inventorySettings

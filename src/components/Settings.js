@@ -159,31 +159,6 @@ class Settings extends Component {
 	render() {
 		return (
 			<ScrollView style={{ flex: 1 }}>
-				{/* <View style={{ flexDirection: 'row' }}>
-					<View
-						style={{
-							flexDirection: 'row',
-							flex: 1,
-							alignItems: 'center',
-							height: 100
-						}}>
-						<Text style={[styles.headerText]}>
-							{Communications._token
-								? i18n.t('settings')
-								: 'LOGIN REQUIRED'}
-						</Text>
-					</View>
-					<View
-						style={{
-							flexDirection: 'row-reverse',
-							flex: 1,
-							alignItems: 'center',
-							height: 100
-						}}>
-						{this.getSettingsCancel()}
-					</View>
-				</View> */}
-
 				<KeyboardAwareScrollView
 					style={{ flex: 1 }}
 					resetScrollToCoords={{ x: 0, y: 0 }}

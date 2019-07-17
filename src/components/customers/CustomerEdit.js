@@ -94,7 +94,8 @@ class PhoneProperty extends Component {
 		);
 	}
 	onChangeText = text => {
-		if (this.props.reference === 'customerFrequency') {
+		if (this.props.reference === 'customerFrequency' ||
+		this.props.reference === 'customerNumber' || this.props.reference === 'secondPhoneNumber') {
 			if (text) {
 				if (/^\d+$/.test(text)) {
 					this.setState({
