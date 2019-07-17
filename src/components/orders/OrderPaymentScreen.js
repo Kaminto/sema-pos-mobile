@@ -108,7 +108,8 @@ class OrderPaymentScreen extends Component {
 			isMobile: false,
 			isCompleteOrderVisible: false,
 			isDateTimePickerVisible: false,
-			receiptDate: new Date()
+			receiptDate: new Date(),
+			canProceed: true
 		};
 	}
 	componentDidMount() {
@@ -129,12 +130,12 @@ class OrderPaymentScreen extends Component {
 		this.hideDateTimePicker();
 	};
 
-	getLimitDate=()=>{
+	getLimitDate = () => {
 		let date = new Date();
-		let days= date.getDay()===1?2:1
-		date.setDate(date.getDate() -days);
+		let days = date.getDay() === 1 ? 2 : 1;
+		date.setDate(date.getDate() - days);
 		return date;
-	}
+	};
 
 	render() {
 		return (
@@ -205,7 +206,9 @@ class OrderPaymentScreen extends Component {
 										{ paddingTop: 20, paddingBottom: 20 },
 										styles.buttonText
 									]}>
-									{i18n.t('complete-sale')}
+									{!this.isPayoffOnly()
+										? i18n.t('complete-sale')
+										: i18n.t('payoff')}
 								</Text>
 							</TouchableHighlight>
 						</View>
@@ -250,9 +253,7 @@ class OrderPaymentScreen extends Component {
 	}
 
 	getBackDateComponent() {
-		if (
-			!this.isPayoffOnly()
-		) {
+		if (!this.isPayoffOnly()) {
 			return (
 				<View
 					style={{
@@ -338,7 +339,39 @@ class OrderPaymentScreen extends Component {
 	}
 
 	onCompleteOrder = () => {
-		this.setState({ isCompleteOrderVisible: true });
+		if (this.isPayoffOnly()) {
+			let payoff = 0;
+			try {
+				if (this.props.payment.hasOwnProperty('cashToDisplay')) {
+					payoff = parseFloat(this.props.payment.cashToDisplay);
+				} else if (
+					this.props.payment.hasOwnProperty('mobileToDisplay')
+				) {
+					payoff = parseFloat(this.props.payment.mobileToDisplay);
+				}
+
+				if (payoff > this.props.selectedCustomer.dueAmount) {
+					Alert.alert(
+						i18n.t('over-due-amount-title'),
+						i18n.t('over-due-amount-text') +
+							this.props.selectedCustomer.dueAmount,
+						[
+							{
+								text: 'OK',
+								onPress: () => console.log('OK Pressed')
+							}
+						],
+						{ cancelable: false }
+					);
+				} else {
+					this.setState({ isCompleteOrderVisible: true });
+				}
+			} catch (err) {
+				console.log('formatAndSaveSale ' + err.message);
+			}
+		} else {
+			this.setState({ isCompleteOrderVisible: true });
+		}
 	};
 	onCancelOrder = () => {
 		this.props.orderActions.SetOrderFlow('products');
@@ -557,14 +590,22 @@ class OrderPaymentScreen extends Component {
 				payoff -= priceTotal;
 				if (payoff > this.props.selectedCustomer.dueAmount) {
 					// Overpayment... this is an error
+
 					Alert.alert(
-						'INVALID PAY OFF AMOUNT',
-						'The PAY OFF AMOUNT IS GREATER THAN THE DUE AMOUNT. THE DUE AMOUNT IS '+this.props.selectedCustomer.dueAmount,
-						[{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+						i18n.t('over-due-amount-title'),
+						i18n.t('over-due-amount-text') +
+							this.props.selectedCustomer.dueAmount,
+						[
+							{
+								text: 'OK',
+								onPress: () => console.log('OK Pressed')
+							}
+						],
 						{ cancelable: false }
 					);
 
-					return false;
+					//return false;
+					payoff = 0;
 				}
 			} else {
 				payoff = 0;

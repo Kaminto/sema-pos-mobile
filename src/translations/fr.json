@@ -46,7 +46,7 @@
   "second-phone-number": "#2 Téléphone",
   "backdating": "Changer la date de facturation",
   "over-due-amount-title": "Paiement excessif",
-  "over-due-amount-text": "Le montant payé ne peut pas excéder le prix des produits achetés par le client.",
+  "over-due-amount-text": "Le montant du paiement est supérieur au montant dû. Le montant dû est : ",
 
   "address": "Adresse",
   "balance": "Balance",
@@ -96,6 +96,7 @@
   "total-liters": "Total Litres",
   "price-per-sku": "Prix/SKU",
   "total-sales": "Total Ventes",
+  "payoff":"Payer la dette",
 
   "previous": "Précédent",
   "current": "Actuel",

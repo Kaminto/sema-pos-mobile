@@ -45,8 +45,8 @@
   "telephone-number": "Telephone #",
   "second-phone-number": "Telephone #2",
   "backdating": "Change Receipt Date",
-  "over-due-amount-title": "Over Due Payment",
-  "over-due-amount-text": "The amount paid cannot exceed to cost of goods and customer amount due",
+  "over-due-amount-title": "Over Due Amount",
+  "over-due-amount-text": "The payoff amount is greater than the due amount. The due amount is : ",
 
 
   "address": "Address",
@@ -97,6 +97,7 @@
   "total-liters": "Total Liters",
   "price-per-sku": "Price/SKU",
   "total-sales": "Total Sales",
+  "payoff":"Loan Settlement",
 
   "previous": "Previous",
   "current": "Current",
