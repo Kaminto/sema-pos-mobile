@@ -276,9 +276,8 @@ class PosApp extends Component {
 
 	render() {
 		if (this.state.isLoading) {
-			return <LoadSplashScreen />;
+			return <Splash />;
 		  }
-
 		return this.getLoginOrHomeScreen();
 	}
 
@@ -290,8 +289,8 @@ class PosApp extends Component {
 		if (!this.props.showScreen.isLoggedIn) {
 			return (
 				// <Login />
-				// <Settings />
-				<Splash />
+				<Settings />
+				// <Splash />
 			);
 		} else {
 			return (
@@ -393,6 +392,7 @@ class ScreenSwitcher extends Component {
 
 class LoadSplashScreen extends Component {
 	render() {
+		console.log("LoadSplashScreen styx");
 		return (
 			<View style={{ flex: 1 }}>
 				<ImageBackground

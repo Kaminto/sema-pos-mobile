@@ -4,6 +4,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class Splash extends Component {
 	render() {
+		console.log(" Main SplashScreen styx")
 		return (
 			<View style={{ flex: 1 }}>
 				<ImageBackground

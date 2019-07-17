@@ -5,7 +5,6 @@
  */
 
 import RNLanguages from 'react-native-languages';
-import * as RNLocalize from "react-native-localize";
 import i18n from './i18n';
 import React, { Component } from 'react';
 
