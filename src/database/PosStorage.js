@@ -349,11 +349,7 @@ class PosStorage {
 						// realm.create('SemaRealm', {id: key, data: value})
 						let obj = realm.objectForPrimaryKey('SemaRealm', key);
 						if (obj != null)
-							realm.create(
-								'SemaRealm',
-								{ id: key, data: value },
-								true
-							);
+							realm.create('SemaRealm', { id: key, data: value }, true);
 						else
 							realm.create('SemaRealm', { id: key, data: value });
 					}

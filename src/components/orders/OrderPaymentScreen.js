@@ -38,6 +38,7 @@ class PaymentDescription extends Component {
 		);
 	}
 }
+
 class PaymentMethod extends Component {
 	render() {
 		return (
@@ -220,6 +221,7 @@ class OrderPaymentScreen extends Component {
 			</KeyboardAwareScrollView>
 		);
 	}
+
 	getSaleAmount() {
 		if (!this.isPayoffOnly()) {
 			return (
@@ -382,6 +384,7 @@ class OrderPaymentScreen extends Component {
 			this.updatePayment(0, this.calculateOrderDue().toFixed(2));
 		});
 	};
+
 	valuePaymentChange = textValue => {
 		if (!textValue.endsWith('.')) {
 			let cashValue = parseFloat(textValue);
@@ -555,7 +558,7 @@ class OrderPaymentScreen extends Component {
 				if (payoff > this.props.selectedCustomer.dueAmount) {
 					// Overpayment... this is an error
 					Alert.alert(
-						'INVALID PAY OF AMOUNT',
+						'INVALID PAY OFF AMOUNT',
 						'The PAY OFF AMOUNT IS GREATER THAN THE DUE AMOUNT. THE DUE AMOUNT IS '+this.props.selectedCustomer.dueAmount,
 						[{ text: 'OK', onPress: () => console.log('OK Pressed') }],
 						{ cancelable: false }

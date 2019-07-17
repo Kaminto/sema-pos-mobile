@@ -290,8 +290,8 @@ class PosApp extends Component {
 		if (!this.props.showScreen.isLoggedIn) {
 			return (
 				// <Login />
-				<Settings />
-
+				// <Settings />
+				<Splash />
 			);
 		} else {
 			return (

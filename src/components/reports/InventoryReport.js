@@ -193,6 +193,7 @@ class InventoryReport extends Component {
 			return null;
 		}
 	}
+
 	getInventoryCurrentMeterForEdit(){
 		let value = this.props.inventoryData.inventory.currentMeter;
 		if( value == null) return "";
@@ -247,7 +248,7 @@ class InventoryReport extends Component {
 	}
 
 	getRow = (item) => {
-		console.log("SalesReport - getRow");
+		console.log("InventoryReport - getRow");
 		return (
 			<View style={[{ flex: 1, flexDirection: 'row', alignItems: 'center' }, styles.rowBackground]}>
 				<View style={[{ flex: 1 }]}>
@@ -283,11 +284,13 @@ class InventoryReport extends Component {
 			</View>
 		);
 	};
+
 	getInventorySkuForEdit(currentPrev, item){
 		let value = this.getInventorySkuForDisplay(currentPrev, item);
 		if( value == '-') return "";
 		else return value.toFixed(2);
 	}
+
 	onCancelEditCurrentSku(){
 		this.setState({currentSkuEdit:""});
 		this.setState({refresh: !this.state.refresh});
@@ -312,9 +315,6 @@ class InventoryReport extends Component {
 			// TODO - Show alert
 		}
 	}
-
-
-
 
 	showHeader = () => {
 		return (
@@ -363,6 +363,7 @@ class InventoryReport extends Component {
 			</View>
 		);
 	}
+
 	getInventorySkuForDisplay(currentPrev, item ){
 		let inventoryArray = (currentPrev) ? this.props.inventoryData.inventory.currentProductSkus : this.props.inventoryData.inventory.previousProductSkus;
 		for( let index = 0; index < inventoryArray.length; index ++ ){
@@ -407,6 +408,7 @@ class InventoryReport extends Component {
 		}
 		return '-';
 	}
+
 	getOutput(){
 		let sales = 0;
 		let inventory = 0;
@@ -450,6 +452,7 @@ class InventoryReport extends Component {
 			return "-";		// No data
 		}
 	}
+
 	getTotalProduction(){
 		let current = this.getInventoryMeterForDisplay(true);
 		let previous = this.getInventoryMeterForDisplay(false);
@@ -459,6 +462,7 @@ class InventoryReport extends Component {
 			return (parseFloat(current) - parseFloat(previous)).toFixed(2) + ' L';
 		}
 	}
+
 	getWastage(){
 		let totalProduction = this.getTotalProduction();
 		let output = this.getOutput();
@@ -476,16 +480,18 @@ class InventoryReport extends Component {
 			}
 		}
 
-
 	}
+
 	displayCurrentMeter(){
 		this.setState({currentMeterVisible:true});
 
 	}
+
 	onCancelCurrentMeter(){
 		this.setState({currentMeterVisible:false});
 
 	}
+
 	onOkCurrentMeter( sku, newQuantity){
 		this.setState({currentMeterVisible:false});
 		let update = null;
@@ -503,7 +509,6 @@ class InventoryReport extends Component {
 	}
 
 }
-
 
 function mapStateToProps(state, props) {
 	return {

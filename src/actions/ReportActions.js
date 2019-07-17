@@ -209,6 +209,7 @@ const getInventoryData = (beginDate, endDate, products) => {
 			});
 	});
 };
+
 const createInventory = (salesData, inventorySettings, products) => {
 	let salesAndProducts = { ...salesData };
 	salesAndProducts.salesItems = salesData.salesItems.slice();
@@ -279,6 +280,7 @@ const getInventoryItem = (beginDate, products) => {
 		});
 	});
 };
+
 const initializeInventory = () => {
 	return {
 		date: null,
@@ -288,9 +290,11 @@ const initializeInventory = () => {
 		previousProductSkus: []
 	};
 };
+
 export const initializeSalesData = () => {
 	return { totalLiters: null, totalSales: null, salesItems: [] };
 };
+
 export const initializeInventoryData = () => {
 	return {
 		salesAndProducts: initializeSalesData(),
