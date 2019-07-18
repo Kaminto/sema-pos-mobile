@@ -1330,6 +1330,7 @@ class PosStorage {
 	getProductMrps() {
 		return this.productMrpDict;
 	}
+	
 	getProductMrpKey(productMrp) {
 		return '' + productMrp.productId + '-' + productMrp.salesChannelId; // ProductId and salesChannelId are unique key
 	}
