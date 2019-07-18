@@ -18,6 +18,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as OrderActions from '../../actions/OrderActions';
 import * as CustomerBarActions from '../../actions/CustomerBarActions';
+import * as CustomerActions from '../../actions/CustomerActions';
 import PosStorage from '../../database/PosStorage';
 
 import * as Utilities from '../../services/Utilities';
@@ -474,6 +475,7 @@ class OrderPaymentScreen extends Component {
 		this.setState({ isCompleteOrderVisible: false });
 		if (this.saleSuccess) {
 			this.props.customerBarActions.ShowHideCustomers(1);
+			this.props.customerActions.CustomerSelected({});
 		} else {
 			Alert.alert(
 				'Invalid payment amount. ',
@@ -676,7 +678,8 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
 	return {
 		orderActions: bindActionCreators(OrderActions, dispatch),
-		customerBarActions: bindActionCreators(CustomerBarActions, dispatch)
+		customerBarActions: bindActionCreators(CustomerBarActions, dispatch),
+		customerActions: bindActionCreators(CustomerActions, dispatch),
 	};
 }
 

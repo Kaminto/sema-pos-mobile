@@ -82,17 +82,6 @@ class CustomerBar extends Component {
 	componentWillUnmount() {
 		Events.rm('onOrder', 'toolbarEvent1');
 	}
-
-	componentDidUpdate(oldProps) {
-		if (!oldProps.showView.showCustomers && this.props.showView.showCustomers) {
-			this.setState({
-				addFunction: false,
-				orderFunction: false,
-				editFunction: false,
-				deleteFunction: false
-			});
-		}
-	}
 	onOrder() {
 		console.log('CustomerBar: onOrder');
 		this.onOrder();
@@ -142,7 +131,7 @@ class CustomerBar extends Component {
 				}
 				enabled={
 					this.state.orderFunction &&
-					this.props.selectedCustomer.hasOwnProperty('name')
+					this.hashName(this.props.selectedCustomer)
 				}
 			/>
 		);
@@ -161,6 +150,15 @@ class CustomerBar extends Component {
 			return null;
 		}
 	}
+
+	hashName = customer => {
+		if (customer) {
+			if (customer.hasOwnProperty('name')) {
+				return this.props.selectedCustomer.name.length > 0;
+			}
+		}
+		return false;
+	};
 
 	showEditButton() {
 		if (this.props.showView.showCustomers) {
@@ -345,6 +343,7 @@ class CustomerBar extends Component {
 	doCancelOrder = () => {
 		this.props.orderActions.ClearOrder();
 		this.props.customerBarActions.ShowHideCustomers(1);
+		this.props.customerActions.CustomerSelected({});
 		this.setState({ addFunction: true });
 		this.setState({ editFunction: true });
 		this.setState({ deleteFunction: true });
