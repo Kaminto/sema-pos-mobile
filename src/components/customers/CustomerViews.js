@@ -40,7 +40,7 @@ class SalesChannelScreen extends React.Component {
 	}
 
 	render() {
-		console.log(this.props.filter);
+		console.log(this.props.filter + " customers.");
 		return (
 			<CustomerList
 				filter={this.props.filter}
@@ -63,48 +63,29 @@ class CustomerViews {
 			console.log('buildNavigator');
 			this.views = {};
 			PosStorage.loadSalesChannels().then(savedSalesChannels => {
-				this.createScreens(savedSalesChannels);
-
-				this.navigator = createAppContainer(
-					createBottomTabNavigator(this.views, {
-						initialRouteName: 'All',
+					this.createScreens(savedSalesChannels);
+					this.navigator = createBottomTabNavigator(this.views, {
 						tabBarOptions: {
-							activeTintColor: '#F0F0F0',
-							activeBackgroundColor: '#18376A',
-							inactiveTintColor: '#000000',
-							inactiveBackgroundColor: 'white',
-							style: {
-								borderTopColor: 'black',
-								borderTopWidth: 3
-							},
-							// style: {padding:0, margin:0, borderColor:'red', borderWidth:5, justifyContent: 'center', alignItems: 'center' },
-							labelStyle: {
-								fontSize: 18,
-								padding: 12
-							},
-							tabStyle: {
-								justifyContent: 'center',
-								alignItems: 'center'
-							}
-							// tabStyle: {
-							//     borderBottomColor: '#ebcccc',
-							//     width: 100,
-							//     height:600,
-							//     // backgroundColor:"yellow"
-							// }
+						activeTintColor: '#F0F0F0',
+						activeBackgroundColor: "#18376A",
+						inactiveTintColor: '#000000',
+						inactiveBackgroundColor: 'white',
+						style: { borderTopColor: 'black', borderTopWidth: 3 },
+						// style: {padding:0, margin:0, borderColor:'red', borderWidth:5, justifyContent: 'center', alignItems: 'center' },
+						labelStyle: {
+							fontSize: 18,
+							padding: 12
 						},
-						defaultNavigationOptions: ({ navigation }) => ({
-							tabBarOnPress: ({ navigation, defaultHandler }) => {
-								console.log(
-									'onPress --:',
-									navigation.state.routeName
-								);
-								defaultHandler();
-							}
-						})
-					})
-				);
-				resolve();
+						tabStyle: { justifyContent: 'center', alignItems: 'center' },
+						// tabStyle: {
+						//     borderBottomColor: '#ebcccc',
+						//     width: 100,
+						//     height:600,
+						//     // backgroundColor:"yellow"
+						// }
+						}
+					});
+					resolve();
 			});
 		});
 	}

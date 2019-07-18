@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, ImageBackground, Image, NetInfo } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { createAppContainer } from 'react-navigation';
 
 import Toolbar from './Toolbar';
 import CustomerViews from './customers/CustomerViews';
@@ -41,6 +42,7 @@ class PosApp extends Component {
 		};
 		this.posStorage = PosStorage;
 	}
+
 	componentDidMount() {
 		console.log('PosApp - componentDidMount enter');
 		this.posStorage.initialize(false).then(isInitialized => {
@@ -389,28 +391,6 @@ class ScreenSwitcher extends Component {
 		}
 	}
 }
-
-class LoadSplashScreen extends Component {
-	render() {
-		console.log("LoadSplashScreen styx");
-		return (
-			<View style={{ flex: 1 }}>
-				<ImageBackground
-					source={require('../images/jibublue.png')}
-					resizeMode="cover"
-					style={styles.imgBackground}>
-				</ImageBackground>
-
-				{/**Adding a spinner */}
-				<Spinner
-					visible={true}
-					// textContent={'LOADING...'}
-					textStyle={styles.spinnerTextStyle}
-				/>
-			</View>
-		);
-	}
-  }
 
 
 function mapStateToProps(state, props) {
