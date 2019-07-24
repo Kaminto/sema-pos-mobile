@@ -158,7 +158,7 @@ class Settings extends Component {
 
 	render() {
 		return (
-			<ScrollView style={{ flex: 1 }}>
+			<ScrollView style={{ flex: 1 , backgroundColor: '#fff' }}>
 				<KeyboardAwareScrollView
 					style={{ flex: 1 }}
 					resetScrollToCoords={{ x: 0, y: 0 }}

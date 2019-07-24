@@ -16,15 +16,6 @@
 		tools:replace="android:appComponentFactory"
 		android:appComponentFactory="Any character"
 		>
-        <!-- <activity
-            android:name=".SplashActivity"
-            android:screenOrientation="landscape"
-            android:theme="@style/SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity> -->
 
         <activity
             android:name=".MainActivity"

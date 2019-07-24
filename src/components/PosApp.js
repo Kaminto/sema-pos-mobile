@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ImageBackground, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ImageBackground, ActivityIndicator, Text } from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
 
 import Toolbar from './Toolbar';
@@ -8,7 +8,6 @@ import CustomerBar from './customers/CustomerBar';
 import OrderView from './orders/OrderView';
 import CustomerEdit from './customers/CustomerEdit';
 import Settings from './Settings';
-// import SplashScreen from 'react-native-splash-screen';
 import Login from './Login';
 
 import { bindActionCreators } from 'redux';
@@ -26,7 +25,6 @@ import Synchronization from '../services/Synchronization';
 import SiteReport from './reports/SiteReport';
 import Communications from '../services/Communications';
 import Events from 'react-native-simple-events';
-import Splash from './Splash';
 
 console.ignoredYellowBox = ['Warning: isMounted', 'Setting a timer'];
 
@@ -164,7 +162,6 @@ class PosApp extends Component {
 			this.onClearLoggedSales.bind(this)
 		);
 		console.log('PosApp = Mounted-Done');
-		// SplashScreen.hide();
 	}
 
 	componentWillUnmount() {
@@ -278,19 +275,8 @@ class PosApp extends Component {
 	render() {
 		if (this.state.isLoading) {
 			console.log("Temp Splash Screen - Load Splash Screen");
-			return (
-				<View style={{ flex: 1 }}>
-					<ImageBackground
-						source={require('../images/jibublue.png')}
-						resizeMode="cover"
-						style={styles.imgBackground}>
-							<ActivityIndicator  style={styles.indicator} color="#fff"></ActivityIndicator>
-					</ImageBackground>
-				</View>
-			);
-		  } else {
+		}
 			return this.getLoginOrHomeScreen();
-		  }
 	}
 
 	getLoginOrHomeScreen() {
@@ -375,8 +361,6 @@ class ScreenSwitcher extends Component {
 				return <Settings />;
 			case 'login':
 				return <Login />;
-			case 'splash':
-				return <Splash />
 			case 'report':
 				return (
 					<View style={{ flex: 1 }}>

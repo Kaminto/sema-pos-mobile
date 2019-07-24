@@ -167,6 +167,12 @@ const getSalesData = (beginDate, endDate) => {
 	});
 };
 
+const getMrps = products => {
+	let productMrp = PosStorage.getProductMrps();
+	let ids = Object.keys(productMrp).map(key => productMrp[key].productId);
+	return (result = products.filter(prod => ids.includes(prod.productId)));
+};
+
 export function GetInventoryReportData(beginDate, endDate, products) {
 	console.log('GetInventoryReportData - action');
 
@@ -211,11 +217,7 @@ const getInventoryData = (beginDate, endDate, products) => {
 	});
 };
 
-const getMrps = products => {
-	let productMrp = PosStorage.getProductMrps();
-	let ids = Object.keys(productMrp).map(key => productMrp[key].productId);
-	return (result = products.filter(prod => ids.includes(prod.productId)));
-};
+
 
 const createInventory = (salesData, inventorySettings, products) => {
 	let salesAndProducts = { ...salesData };
@@ -223,32 +225,29 @@ const createInventory = (salesData, inventorySettings, products) => {
 
 	let emptyProducts = [];
 	products = products
-		.filter(p => p.categoryId === 3)
-		.filter(p => !p.description.includes('refill'));
+		.filter(p => p.categoryId === 3);
+		// .filter(p => !p.description.includes('refill'));
+
+	var productskus_excluded = [
+		'Test',
+		'0224',
+		'0220',
+		'0212',
+		'0210',
+		'0200',
+		'0180',
+		'0170',
+		'0150',
+		'0142',
+		'0141',
+		'0140'
+	];
 
 	for (const prod of products) {
 		if (isNotIncluded(prod, salesAndProducts.salesItems)) {
 			if (
-				![
-					'Test',
-					'0224',
-					'0220',
-					'0212',
-					'0210',
-					'0200',
-					'0180',
-					'0170',
-					'0150',
-					'0142',
-					'0141',
-					'0140'
-				].includes(prod.sku) && !prod.description.includes('refill')
+				!productskus_excluded.includes(prod.sku)
 			) {
-				console.log(
-					prod.sku +
-						' KaJibu included ' +
-						prod.description
-				);
 				emptyProducts.push({
 					sku: prod.sku,
 					description: prod.description,
@@ -260,40 +259,20 @@ const createInventory = (salesData, inventorySettings, products) => {
 			}
 		}
 	}
+
 	salesAndProducts.salesItems = salesAndProducts.salesItems.concat(
 		emptyProducts
 	);
 
 
-	// salesAndProducts.salesItems = salesAndProducts.salesItems
-	// 	.filter(p => p.categoryId !== 3);
-
 	for (let index = 0; index < salesAndProducts.salesItems.length; index++) {
 		if (
-			[
-				'Test',
-				'0224',
-				'0220',
-				'0212',
-				'0210',
-				'0200',
-				'0180',
-				'0170',
-				'0150',
-				'0142',
-				'0141',
-				'0140'
-			].includes(salesAndProducts.salesItems[index].sku) ||
-			salesAndProducts.salesItems[index].description.includes('refill')
+			productskus_excluded.includes(salesAndProducts.salesItems[index].sku) ||
+			salesAndProducts.salesItems[index].description === "delivery"
 		) {
+			console.log(salesAndProducts.salesItems[index].description + " excluded. Sales & Products");
 			salesAndProducts.salesItems.splice(index, 1);
 		}
-		salesAndProducts.salesItems[
-			index
-		].description = salesAndProducts.salesItems[index].description.replace(
-			'new',
-			''
-		);
 	}
 
 	let inventoryData = {

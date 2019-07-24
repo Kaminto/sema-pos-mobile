@@ -77,12 +77,6 @@ class CustomerViews {
 							padding: 12
 						},
 						tabStyle: { justifyContent: 'center', alignItems: 'center' },
-						// tabStyle: {
-						//     borderBottomColor: '#ebcccc',
-						//     width: 100,
-						//     height:600,
-						//     // backgroundColor:"yellow"
-						// }
 						}
 					});
 					resolve();

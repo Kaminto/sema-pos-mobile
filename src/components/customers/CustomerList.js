@@ -63,7 +63,7 @@ class CustomerList extends Component {
 
 	render() {
 		return (
-			<View>
+			<View style={{ backgroundColor: '#fff', width: '100%', height: '100%' }}>
 				{/*<FlatList*/}
 				{/*data={[{key: 'aaaaaaa'}, {key: 'bbbbbbbb'}]}*/}
 				{/*renderItem={({item}) => <Text>{item.key}</Text>}*/}
