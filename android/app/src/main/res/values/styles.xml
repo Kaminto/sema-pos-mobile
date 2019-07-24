@@ -5,6 +5,10 @@
         <!-- Customize your theme here. -->
 		<item name="android:statusBarColor">@color/bleu</item>
 		<item name="android:windowDisablePreview">true</item>
+        <!-- <item name="android:windowBackground">@drawable/background_splash</item> -->
+    </style>
+
+	<style name="SplashTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ImageBackground, ActivityIndicator, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
 
 import Toolbar from './Toolbar';
