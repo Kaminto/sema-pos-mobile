@@ -242,8 +242,13 @@ const createInventory = (salesData, inventorySettings, products) => {
 					'0142',
 					'0141',
 					'0140'
-				].includes(prod.sku)
+				].includes(prod.sku) && !prod.description.includes('refill')
 			) {
+				console.log(
+					prod.sku +
+						' KaJibu included ' +
+						prod.description
+				);
 				emptyProducts.push({
 					sku: prod.sku,
 					description: prod.description,
@@ -258,6 +263,7 @@ const createInventory = (salesData, inventorySettings, products) => {
 	salesAndProducts.salesItems = salesAndProducts.salesItems.concat(
 		emptyProducts
 	);
+
 
 	// salesAndProducts.salesItems = salesAndProducts.salesItems
 	// 	.filter(p => p.categoryId !== 3);
@@ -280,11 +286,6 @@ const createInventory = (salesData, inventorySettings, products) => {
 			].includes(salesAndProducts.salesItems[index].sku) ||
 			salesAndProducts.salesItems[index].description.includes('refill')
 		) {
-			console.log(
-				salesAndProducts.salesItems[index].sku +
-					' KaJibu ' +
-					salesAndProducts.salesItems[index].description
-			);
 			salesAndProducts.salesItems.splice(index, 1);
 		}
 		salesAndProducts.salesItems[

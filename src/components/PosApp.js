@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ImageBackground, Image, NetInfo } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
-import { createAppContainer } from 'react-navigation';
+import { View, StyleSheet, ImageBackground, ActivityIndicator } from 'react-native';
+import NetInfo from "@react-native-community/netinfo";
 
 import Toolbar from './Toolbar';
 import CustomerViews from './customers/CustomerViews';
@@ -9,7 +8,7 @@ import CustomerBar from './customers/CustomerBar';
 import OrderView from './orders/OrderView';
 import CustomerEdit from './customers/CustomerEdit';
 import Settings from './Settings';
-import SplashScreen from 'react-native-splash-screen';
+// import SplashScreen from 'react-native-splash-screen';
 import Login from './Login';
 
 import { bindActionCreators } from 'redux';
@@ -165,7 +164,7 @@ class PosApp extends Component {
 			this.onClearLoggedSales.bind(this)
 		);
 		console.log('PosApp = Mounted-Done');
-		SplashScreen.hide();
+		// SplashScreen.hide();
 	}
 
 	componentWillUnmount() {
@@ -278,9 +277,20 @@ class PosApp extends Component {
 
 	render() {
 		if (this.state.isLoading) {
-			return <Splash />;
+			console.log("Temp Splash Screen - Load Splash Screen");
+			return (
+				<View style={{ flex: 1 }}>
+					<ImageBackground
+						source={require('../images/jibublue.png')}
+						resizeMode="cover"
+						style={styles.imgBackground}>
+							<ActivityIndicator  style={styles.indicator} color="#fff"></ActivityIndicator>
+					</ImageBackground>
+				</View>
+			);
+		  } else {
+			return this.getLoginOrHomeScreen();
 		  }
-		return this.getLoginOrHomeScreen();
 	}
 
 	getLoginOrHomeScreen() {
@@ -292,7 +302,6 @@ class PosApp extends Component {
 			return (
 				// <Login />
 				<Settings />
-				// <Splash />
 			);
 		} else {
 			return (

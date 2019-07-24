@@ -87,6 +87,7 @@
 
   "sales": "Sales",
   "inventory": "Inventory",
+  "meter-reading": "Meter Reading",
 
   "cancel-this-order": "cancel this order",
   "cancel-order": "Cancel Order",

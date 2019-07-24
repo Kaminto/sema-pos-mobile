@@ -227,10 +227,10 @@ class SalesLog extends Component {
 						</View>
 					)}
 				</View>
-				<View style={styles.itemData}>
+				{/* <View style={styles.itemData}>
 					<Text style={styles.label}>Receipt Id: </Text>
 					<Text>{item.id}</Text>
-				</View>
+				</View> */}
 				<View style={styles.itemData}>
 					<Text style={styles.label}>Date Created: </Text>
 					<Text>

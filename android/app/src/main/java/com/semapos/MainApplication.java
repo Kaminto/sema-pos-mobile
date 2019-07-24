@@ -3,13 +3,10 @@ package com.semapos;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
-import org.devio.rn.splashscreen.SplashScreenReactPackage;
-import com.reactcommunity.rnlocalize.RNLocalizePackage;
-import com.reactcommunity.rnlanguages.RNLanguagesPackage;
-// import com.reactcommunity.rnlocalize.RNLocalizePackage;
-import com.oblador.vectoricons.VectorIconsPackage;
+import com.reactnativecommunity.netinfo.NetInfoPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import io.realm.react.RealmReactPackage;
+import com.reactcommunity.rnlanguages.RNLanguagesPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -31,13 +28,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           	new MainReactPackage(),
-            new RNGestureHandlerPackage(),
-            new SplashScreenReactPackage(),
-            new RNLocalizePackage(),
-            new RNLanguagesPackage(),
-            // new RNLocalizePackage(),
-            new VectorIconsPackage(),
-            new RealmReactPackage()
+            new NetInfoPackage(),
+            new RNDeviceInfo(),
+            new RealmReactPackage(),
+            new RNLanguagesPackage()
       );
     }
 

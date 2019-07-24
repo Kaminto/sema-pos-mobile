@@ -9,9 +9,4 @@
             android:src="@drawable/jibublue"/>
     </item>
 
-    <!-- <item>
-        <bitmap
-            android:gravity="top"
-            android:src="@mipmap/ic_launcher"/>
-    </item> -->
 </layer-list>
