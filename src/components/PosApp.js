@@ -416,36 +416,3 @@ export default connect(
 	mapStateToProps,
 	mapDispatchToProps
 )(PosApp);
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#F5FCFF'
-	},
-	welcome: {
-		fontSize: 20,
-		textAlign: 'center',
-		margin: 10
-	},
-	instructions: {
-		textAlign: 'center',
-		color: '#333333',
-		marginBottom: 5
-	},
-	imgBackground: {
-		width: '100%',
-		height: '100%',
-		flex: 1
-	},
-	logoSize: {
-		width: 200,
-		height: 200
-	},
-	spinnerTextStyle: {
-		color: '#002b80',
-		fontSize: 50,
-		fontWeight: 'bold'
-	  }
-});

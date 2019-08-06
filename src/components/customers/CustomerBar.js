@@ -59,6 +59,7 @@ class SelectedCustomerDetails extends React.Component {
 class CustomerBar extends Component {
 	constructor(props) {
 		super(props);
+		console.log("Kossa kossa " + this.props.showView.showCustomers);
 		if (this.props.showView.showCustomers) {
 			this.state = {
 				addFunction: true,
@@ -303,7 +304,7 @@ class CustomerBar extends Component {
 			console.log('CustomerBar:onOrder');
 			if (!this.props.showView.showNewOrder) {
 				this.props.customerBarActions.ShowHideCustomers(0);
-				this.setState({ addFunction: false });
+				this.setState({ addFunction: true });
 				this.setState({ editFunction: false });
 				this.setState({ deleteFunction: false });
 				this.setState({ orderFunction: true });

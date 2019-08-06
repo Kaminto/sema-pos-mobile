@@ -113,6 +113,7 @@ class OrderPaymentScreen extends Component {
 			canProceed: true
 		};
 	}
+
 	componentDidMount() {
 		console.log('OrderPaymentScreen = Mounted');
 		this.updatePayment(0, this.calculateOrderDue().toString());
@@ -127,7 +128,18 @@ class OrderPaymentScreen extends Component {
 	};
 
 	handleDatePicked = date => {
-		this.setState({ receiptDate: date });
+		var randomNumber = Math.floor(Math.random() * 59) + 1;
+		var randomnumstr;
+		if(Number(randomNumber) <= 9){
+			randomnumstr = "0" + randomNumber;
+		} else {
+			randomnumstr = randomNumber;
+		}
+		var datestr = date.toString();
+		var aftergmt = datestr.slice(-14);
+		var datestring = datestr.substring(0, 22) + randomnumstr + " " + aftergmt;
+
+		this.setState({ receiptDate: new Date(datestring) });
 		this.hideDateTimePicker();
 	};
 
@@ -280,6 +292,7 @@ class OrderPaymentScreen extends Component {
 			return null;
 		}
 	}
+
 	getCreditComponent() {
 		if (
 			!this._isAnonymousCustomer(this.props.selectedCustomer) &&
@@ -299,9 +312,11 @@ class OrderPaymentScreen extends Component {
 			return null;
 		}
 	}
+
 	_roundToDecimal(value) {
 		return parseFloat(value.toFixed(2));
 	}
+
 	_isAnonymousCustomer(customer) {
 		return PosStorage.getCustomerTypeByName('anonymous').id ==
 			customer.customerTypeId
@@ -319,6 +334,7 @@ class OrderPaymentScreen extends Component {
 			}, 0);
 		}
 	}
+
 	calculateAmountDue() {
 		return this.props.selectedCustomer.dueAmount;
 	}
@@ -374,6 +390,7 @@ class OrderPaymentScreen extends Component {
 			this.setState({ isCompleteOrderVisible: true });
 		}
 	};
+
 	onCancelOrder = () => {
 		this.props.orderActions.SetOrderFlow('products');
 	};
@@ -472,7 +489,7 @@ class OrderPaymentScreen extends Component {
 	};
 
 	closeHandler = () => {
-		this.setState({ isCompleteOrderVisible: false });
+		this.setState( {isCompleteOrderVisible: false} );
 		if (this.saleSuccess) {
 			this.props.customerBarActions.ShowHideCustomers(1);
 			this.props.customerActions.CustomerSelected({});
@@ -675,11 +692,12 @@ function mapStateToProps(state, props) {
 		selectedCustomer: state.customerReducer.selectedCustomer
 	};
 }
+
 function mapDispatchToProps(dispatch) {
 	return {
 		orderActions: bindActionCreators(OrderActions, dispatch),
 		customerBarActions: bindActionCreators(CustomerBarActions, dispatch),
-		customerActions: bindActionCreators(CustomerActions, dispatch),
+		customerActions: bindActionCreators(CustomerActions, dispatch)
 	};
 }
 

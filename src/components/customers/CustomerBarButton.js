@@ -17,7 +17,7 @@ class CustomerBarButton extends React.Component {
 		return (enabled) ? {opacity:1} : {opacity:.3};
 	}
 }
-// export default CustomerBarButton
+
 export default CustomerBarButton;
 const styles = StyleSheet.create({
 

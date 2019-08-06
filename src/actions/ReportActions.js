@@ -217,19 +217,15 @@ const getInventoryData = (beginDate, endDate, products) => {
 	});
 };
 
-
-
 const createInventory = (salesData, inventorySettings, products) => {
 	let salesAndProducts = { ...salesData };
 	salesAndProducts.salesItems = salesData.salesItems.slice();
 
 	let emptyProducts = [];
-	products = products
-		.filter(p => p.categoryId === 3);
-		// .filter(p => !p.description.includes('refill'));
+	// products = products.filter(p => p.categoryId === 3);
+		// .filter(p => p.description.includes('refill'));
 
 	var productskus_excluded = [
-		'Test',
 		'0224',
 		'0220',
 		'0212',
@@ -245,9 +241,9 @@ const createInventory = (salesData, inventorySettings, products) => {
 
 	for (const prod of products) {
 		if (isNotIncluded(prod, salesAndProducts.salesItems)) {
-			if (
-				!productskus_excluded.includes(prod.sku)
-			) {
+			// if (
+			// 	!productskus_excluded.includes(prod.sku)
+			// ) {
 				emptyProducts.push({
 					sku: prod.sku,
 					description: prod.description,
@@ -256,7 +252,7 @@ const createInventory = (salesData, inventorySettings, products) => {
 					totalLiters: 0,
 					litersPerSku: prod.unitPerProduct
 				});
-			}
+			// }
 		}
 	}
 
@@ -264,16 +260,12 @@ const createInventory = (salesData, inventorySettings, products) => {
 		emptyProducts
 	);
 
-
-	for (let index = 0; index < salesAndProducts.salesItems.length; index++) {
-		if (
-			productskus_excluded.includes(salesAndProducts.salesItems[index].sku) ||
-			salesAndProducts.salesItems[index].description === "delivery"
-		) {
-			console.log(salesAndProducts.salesItems[index].description + " excluded. Sales & Products");
-			salesAndProducts.salesItems.splice(index, 1);
-		}
-	}
+	// for (let index = 0; index < salesAndProducts.salesItems.length; index++) {
+	// 	if (productskus_excluded.includes(salesAndProducts.salesItems[index].sku)) {
+	// 		console.log(salesAndProducts.salesItems[index].description + " excluded. Sales & Products" + salesAndProducts.salesItems[index].sku);
+	// 		salesAndProducts.salesItems.splice(index, 1);
+	// 	}
+	// }
 
 	let inventoryData = {
 		salesAndProducts: salesAndProducts,

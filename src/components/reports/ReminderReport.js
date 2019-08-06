@@ -193,9 +193,11 @@ class RemindersReport extends Component {
 		} else {
 			return (
 				<FlatList
+				    style={{  flex: 1, width: '100%', height: '100%' }}
 					ListHeaderComponent={this.showHeader}
 					extraData={this.state.refresh}
 					data={this.props.reminderData.reminderDetails}
+					stickyHeaderIndices={[0]}
 					renderItem={({ item, index, separators }) => (
 						<TouchableHighlight
 							onPress={() => this.onPressItem(item)}
@@ -215,7 +217,7 @@ class RemindersReport extends Component {
 	render() {
 		if (this.props.reportType === 'reminders') {
 			return (
-				<View style={{ flex: 1 }}>
+				<View style={{ flex: 1, width: '100%', height: '100%' }}>
 					<View
 						style={{
 							flex: 0.7,

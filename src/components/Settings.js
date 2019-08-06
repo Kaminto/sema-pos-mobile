@@ -158,140 +158,142 @@ class Settings extends Component {
 
 	render() {
 		return (
-			<ScrollView style={{ flex: 1 , backgroundColor: '#fff' }}>
-				<KeyboardAwareScrollView
-					style={{ flex: 1 }}
-					resetScrollToCoords={{ x: 0, y: 0 }}
-					scrollEnabled={false}>
-					<View style={{ flex: 1, alignItems: 'center' }}>
-						<SettingsProperty
-							parent={this}
-							marginTop={10}
-							placeHolder={i18n.t('service-url-placeholder')}
-							label={i18n.t('service-url-label')}
-							isSecure={false}
-							valueFn={this.getUrl.bind(this)}
-							ref={this.url}
-						/>
-						<SettingsProperty
-							parent={this}
-							marginTop={marginSpacing}
-							placeHolder={i18n.t('site-placeholder') + 'Flag'}
-							isSecure={false}
-							label={i18n.t('site-label')}
-							valueFn={this.getSite.bind(this)}
-							ref={this.site}
-						/>
-						<SettingsProperty
-							parent={this}
-							marginTop={marginSpacing}
-							placeHolder={i18n.t(
-								'username-or-email-placeholder'
-							)}
-							label={i18n.t('username-or-email-placeholder')}
-							isSecure={false}
-							valueFn={this.getUser.bind(this)}
-							ref={this.user}
-						/>
-						<SettingsProperty
-							parent={this}
-							marginTop={marginSpacing}
-							placeHolder={i18n.t('password-placeholder')}
-							label={i18n.t('password-label')}
-							isSecure={true}
-							valueFn={this.getPassword.bind(this)}
-							ref={this.password}
-						/>
-
-						<View
-							style={[
-								{
-									marginTop: '1%',
-									flexDirection: 'row',
-									alignItems: 'center'
-								}
-							]}>
-							<ModalDropdown
-								style={{ width: 250 }}
-								textStyle={styles.dropdownText}
-								dropdownTextStyle={[
-									styles.dropdownText,
-									{ width: 250 }
-								]}
-								dropdownStyle={{
-									borderColor: 'black',
-									borderWidth: 2
-								}}
-								ref={this.supportedLanguages}
-								defaultValue={this.getDefaultUILanguage()}
-								defaultIndex={this.getDefaultUILanguageIndex()}
-								options={supportedUILanguages.map(
-									lang => lang.name
-								)}
-								onSelect={this.onLanguageSelected}
+			<View style={styles.container}>
+				<ScrollView style={{ flex: 1 }}>
+					<KeyboardAwareScrollView
+						style={{ flex: 1 }}
+						resetScrollToCoords={{ x: 0, y: 0 }}
+						scrollEnabled={false}>
+						<View style={{ flex: 1, alignItems: 'center', backgroundColor: 'white' }}>
+							<SettingsProperty
+								parent={this}
+								marginTop={10}
+								placeHolder={i18n.t('service-url-placeholder')}
+								label={i18n.t('service-url-label')}
+								isSecure={false}
+								valueFn={this.getUrl.bind(this)}
+								ref={this.url}
 							/>
-							<TouchableHighlight
-								underlayColor="#c0c0c0"
-								onPress={this.onShowLanguages}>
-								<Text style={{ fontSize: 40 }}>{'\u2B07'}</Text>
-							</TouchableHighlight>
-						</View>
+							<SettingsProperty
+								parent={this}
+								marginTop={marginSpacing}
+								placeHolder={i18n.t('site-placeholder') + 'Flag'}
+								isSecure={false}
+								label={i18n.t('site-label')}
+								valueFn={this.getSite.bind(this)}
+								ref={this.site}
+							/>
+							<SettingsProperty
+								parent={this}
+								marginTop={marginSpacing}
+								placeHolder={i18n.t(
+									'username-or-email-placeholder'
+								)}
+								label={i18n.t('username-or-email-placeholder')}
+								isSecure={false}
+								valueFn={this.getUser.bind(this)}
+								ref={this.user}
+							/>
+							<SettingsProperty
+								parent={this}
+								marginTop={marginSpacing}
+								placeHolder={i18n.t('password-placeholder')}
+								label={i18n.t('password-label')}
+								isSecure={true}
+								valueFn={this.getPassword.bind(this)}
+								ref={this.password}
+							/>
 
-						<View
-							style={{
-								flexDirection: 'row',
-								flex: 1,
-								alignItems: 'center'
-							}}>
-							{this.state.isLoggedIn && (
-								<SettingsButton
-									pressFn={this.onSaveSettings}
-									enableFn={this.enableSaveSettings.bind(
-										this
+							<View
+								style={[
+									{
+										marginTop: '1%',
+										flexDirection: 'row',
+										alignItems: 'center'
+									}
+								]}>
+								<ModalDropdown
+									style={{ width: 250 }}
+									textStyle={styles.dropdownText}
+									dropdownTextStyle={[
+										styles.dropdownText,
+										{ width: 250 }
+									]}
+									dropdownStyle={{
+										borderColor: 'black',
+										borderWidth: 2
+									}}
+									ref={this.supportedLanguages}
+									defaultValue={this.getDefaultUILanguage()}
+									defaultIndex={this.getDefaultUILanguageIndex()}
+									options={supportedUILanguages.map(
+										lang => lang.name
 									)}
-									label={i18n.t('save-settings')}
+									onSelect={this.onLanguageSelected}
 								/>
-							)}
+								<TouchableHighlight
+									underlayColor="#c0c0c0"
+									onPress={this.onShowLanguages}>
+									<Text style={{ fontSize: 40 }}>{'\u2B07'}</Text>
+								</TouchableHighlight>
+							</View>
 
-							{!this.state.isLoggedIn && (
-								<SettingsButton
-									pressFn={this.onConnection.bind(this)}
-									enableFn={this.enableConnectionOrSync.bind(
-										this
-									)}
-									label={i18n.t('connect')}
-								/>
-							)}
-							{this.state.isLoggedIn && (
-								<SettingsButton
-									pressFn={this.onClearAll.bind(this)}
-									enableFn={this.enableClearAll.bind(this)}
-									label={i18n.t('clear')}
-								/>
-							)}
-							{this.state.isLoggedIn && (
-								<SettingsButton
-									pressFn={this.onSynchronize.bind(this)}
-									enableFn={this.enableConnectionOrSync.bind(
-										this
-									)}
-									label={i18n.t('sync-now')}
-								/>
-							)}
+							<View
+								style={{
+									flexDirection: 'row',
+									flex: 1,
+									alignItems: 'center'
+								}}>
+								{this.state.isLoggedIn && (
+									<SettingsButton
+										pressFn={this.onSaveSettings}
+										enableFn={this.enableSaveSettings.bind(
+											this
+										)}
+										label={i18n.t('save-settings')}
+									/>
+								)}
+
+								{!this.state.isLoggedIn && (
+									<SettingsButton
+										pressFn={this.onConnection.bind(this)}
+										enableFn={this.enableConnectionOrSync.bind(
+											this
+										)}
+										label={i18n.t('connect')}
+									/>
+								)}
+								{this.state.isLoggedIn && (
+									<SettingsButton
+										pressFn={this.onClearAll.bind(this)}
+										enableFn={this.enableClearAll.bind(this)}
+										label={i18n.t('clear')}
+									/>
+								)}
+								{this.state.isLoggedIn && (
+									<SettingsButton
+										pressFn={this.onSynchronize.bind(this)}
+										enableFn={this.enableConnectionOrSync.bind(
+											this
+										)}
+										label={i18n.t('sync-now')}
+									/>
+								)}
+							</View>
 						</View>
-					</View>
-				</KeyboardAwareScrollView>
-				{this.state.animating && (
-					<View style={styles.activityIndicator}>
-						<ActivityIndicator size="large" />
-					</View>
-				)}
-				{
-					this.state.isLoading &&(
-						<ActivityIndicator size="large" color="#002b80" />
-					)
-				}
-			</ScrollView>
+					</KeyboardAwareScrollView>
+					{this.state.animating && (
+						<View style={styles.activityIndicator}>
+							<ActivityIndicator size="large" />
+						</View>
+					)}
+					{
+						this.state.isLoading &&(
+							<ActivityIndicator size="large" color="#002b80" />
+						)
+					}
+				</ScrollView>
+				</View>
 		);
 	}
 	getSettingsCancel() {
@@ -710,6 +712,18 @@ export default connect(
 )(Settings);
 
 const styles = StyleSheet.create({
+	imgBackground: {
+		width: '100%',
+		height: '100%',
+		flex: 1
+	},
+	container: {
+		flex: 1,
+		width: '100%',
+		height: '100%',
+		backgroundColor: '#fff'
+	},
+
 	headerText: {
 		fontSize: 24,
 		color: 'black',

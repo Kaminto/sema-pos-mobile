@@ -377,6 +377,7 @@ class Synchronization {
 				});
 		});
 	}
+
 	synchronizeCustomerTypes() {
 		return new Promise(resolve => {
 			console.log('Synchronization:synchronizeCustomerTypes - Begin');

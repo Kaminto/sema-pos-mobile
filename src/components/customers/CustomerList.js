@@ -46,7 +46,7 @@ class CustomerList extends Component {
 
 	onScrollCustomerTo(data) {
 		console.log('onScrollCustomerTo');
-		// Commented oto scrollToItem requires getItemLayout and getItemLayout fails with
+		// Commented onto scrollToItem requires getItemLayout and getItemLayout fails with
 		// searches. Expect since not all items are rendered on sea
 		// this.flatListRef.scrollToItem({animated: false, item: data.customer, viewPosition:0.5});
 	}
@@ -76,6 +76,7 @@ class CustomerList extends Component {
 					data={this.prepareData()}
 					ListHeaderComponent={this.showHeader}
 					extraData={this.state.refresh}
+					// extraData={this.state}
 					renderItem={({ item, index, separators }) => (
 						<TouchableHighlight
 							onPress={() => this.onPressItem(item)}
@@ -96,6 +97,7 @@ class CustomerList extends Component {
 			</View>
 		);
 	}
+
 	prepareData = () => {
 		this.salesChannels = PosStorage.getSalesChannelsForDisplay();
 
@@ -113,6 +115,7 @@ class CustomerList extends Component {
 		}
 		return data;
 	};
+
 	filterItems = data => {
 		let filteredItems = data.filter(item => {
 			let salesChannel = this._getSalesChannelName(
@@ -120,9 +123,9 @@ class CustomerList extends Component {
 				this.salesChannels
 			);
 
-			if (this._isAnonymousCustomer(item)) {
-				return true; // Anonymous client is always shown
-			}
+			// if (this._isAnonymousCustomer(item)) {
+			// 	return true; // Anonymous client is always shown
+			// }
 
 			// If there is a search string
 			if (this.state.searchString.length > 0) {

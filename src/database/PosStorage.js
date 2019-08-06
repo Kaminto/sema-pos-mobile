@@ -291,12 +291,21 @@ class PosStorage {
 	}
 
 	setItem(key, value) {
-		realm.write(() => {
-			let obj = realm.objectForPrimaryKey('SemaRealm', key);
-			if (obj != null)
-				realm.create('SemaRealm', { id: key, data: value }, true);
-			else realm.create('SemaRealm', { id: key, data: value });
-		});
+		return new Promise((resolve, reject) => {
+			try {
+				realm.write(() => {
+					let obj = realm.objectForPrimaryKey('SemaRealm', key);
+					if (obj != null){
+						realm.create('SemaRealm', { id: key, data: value }, true);
+					}
+					else {
+						realm.create('SemaRealm', { id: key, data: value });
+					}
+				});
+			} catch (error) {
+				reject(error);
+			}
+	  });
 	}
 
 	removeItem(key) {
@@ -1330,7 +1339,7 @@ class PosStorage {
 	getProductMrps() {
 		return this.productMrpDict;
 	}
-	
+
 	getProductMrpKey(productMrp) {
 		return '' + productMrp.productId + '-' + productMrp.salesChannelId; // ProductId and salesChannelId are unique key
 	}
@@ -1560,7 +1569,6 @@ class PosStorage {
 
 	async getKey(key) {
 		try {
-			console.log('Pos Storage:getKey()' + key);
 			const value = await this.getItem(key);
 			return value;
 		} catch (error) {
@@ -1568,11 +1576,11 @@ class PosStorage {
 		}
 	}
 
-	setKey(key, stringValue) {
+	async setKey(key, stringValue) {
 		console.log(
 			'Pos Storage:setKey() Key: ' + key + ' Value: ' + stringValue
 		);
-		return this.setItem(key, stringValue);
+		return await this.setItem(key, stringValue);
 	}
 
 	async removeKey(key) {
