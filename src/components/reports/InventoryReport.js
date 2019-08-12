@@ -29,7 +29,7 @@ class InventoryEdit extends Component {
 
 					<View style={[styles.editInventory]}>
 						<View style={{marginTop:5}}>
-							<Text style={{fontSize:28, fontWeight:'bold'}}>{i18n.t('meter-reading')}</Text>
+							<Text style={{fontSize:28, fontWeight:'bold'}}>{i18n.t('inventory')}</Text>
 						</View>
 						<View style={{flexDirection:'row',alignItems: 'center', justifyContent:'center', marginTop:20}}>
 							<Text style={{fontSize:18, fontWeight:'bold', flex:.7, paddingLeft:20}}>{this.props.title}</Text>

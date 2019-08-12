@@ -243,11 +243,12 @@ class CustomerList extends Component {
 			? true
 			: false;
 	}
+
 	onLongPressItem = (item, event) => {
 		this.setState({ refresh: !this.state.refresh });
 		let actions = [i18n.t('edit'), i18n.t('delete')];
 		this.props.customerActions.CustomerSelected(item);
-		if (!this._isAnonymousCustomer(item)) {
+		// if (!this._isAnonymousCustomer(item)) {
 			if (event && event.target) {
 				UIManager.showPopupMenu(
 					event.target,
@@ -256,7 +257,7 @@ class CustomerList extends Component {
 					this.onPopupEvent.bind(this)
 				);
 			}
-		}
+		// }
 	};
 	onPopupEvent(eventName, index) {
 		if (eventName !== 'itemSelected') return;

@@ -97,13 +97,13 @@ class PhoneProperty extends Component {
 		if (this.props.reference === 'customerFrequency' ||
 		this.props.reference === 'customerNumber' || this.props.reference === 'secondPhoneNumber') {
 			if (text) {
-				if (/^\d+$/.test(text)) {
+				// if (/^\d+$/.test(text)) {
 					this.setState({
 						propertyText: text
 					});
-				} else {
-					alert('Digits only please');
-				}
+				// } else {
+				// 	alert('Digits only please');
+				// }
 			} else {
 				this.setState({
 					propertyText: ''
@@ -118,7 +118,10 @@ class PhoneProperty extends Component {
 class CustomerEdit extends Component {
 	constructor(props) {
 		super(props);
-		this.state = { isEditInProgress: false };
+		this.state = {
+			isEditInProgress: false,
+			salescid: 0 };
+		this.saleschannelid = 0;
 		this.phone = React.createRef();
 		this.secondPhoneNumber = React.createRef();
 		this.name = React.createRef();
@@ -126,21 +129,24 @@ class CustomerEdit extends Component {
 		this.customerChannel = React.createRef();
 		this.customerType = React.createRef();
 		this.frequency = React.createRef();
+
 		this.salesChannels = PosStorage.getSalesChannelsForDisplay();
 		this.channelOptions = this.salesChannels.map(channel => {
 			return channel.displayName;
 		});
-		this.customerTypes = PosStorage.getCustomerTypesForDisplay();
+
+		this.customerTypes = PosStorage.getCustomerTypesForDisplay(this.saleschannelid);
 		this.customerTypeOptions = this.customerTypes.map(customerType => {
-			return customerType.displayName;
+			   return customerType.displayName;
 		});
 		this.customerTypesIndicies = this.customerTypes.map(customerType => {
 			return customerType.id;
 		});
 	}
 	componentDidMount() {
-		console.log('CustomerEdit = Mounted');
+		console.log('CustomerEdit = Mounted' + this.state.salescid);
 	}
+
 
 	render() {
 		return (
@@ -177,7 +183,7 @@ class CustomerEdit extends Component {
 				<KeyboardAwareScrollView
 					style={{ flex: 1 }}
 					resetScrollToCoords={{ x: 0, y: 0 }}
-					scrollEnabled={false}>
+					scrollEnabled={true}>
 					<View style={{ flex: 1, alignItems: 'center' }}>
 						<CustomerProperty
 							reference="customerName"
@@ -256,6 +262,7 @@ class CustomerEdit extends Component {
 								defaultValue={this.getDefaultChannelValue()}
 								defaultIndex={this.getDefaultChannelIndex()}
 								options={this.channelOptions}
+								onSelect={(index, value) => { this.changeCustomerTypeList(value) }}
 							/>
 							<TouchableHighlight
 								underlayColor="#c0c0c0"
@@ -450,13 +457,32 @@ class CustomerEdit extends Component {
 	}
 
 	isValidPhoneNumber(text) {
-		let test = /^\d{10}$/.test(text);
+		let test = /^\d{9,14}$/.test(text);
 		if (!test) {
 			alert(
-				'Telephone number should be at least 10 digits long. Example 07xxxxxxxx'
+				'Phone number should be atleast 9 digits long. Example 0752XXXYYY'
 			);
 		}
 		return test;
+	}
+
+	changeCustomerTypeList(value){
+
+			let tindex = 0;
+			if(value === 'Direct') {
+				tindex = 2;
+			} else if(value === 'Reseller') {
+				tindex = 3;
+			} else if (value === 'Water Club') {
+				tindex = 4;
+			}
+			this.saleschannelid = tindex;
+            console.log("Adams" + this.saleschannelid);
+			this.setState({ salescid: tindex });
+			this.customerTypes = PosStorage.getCustomerTypesForDisplay(tindex);
+			this.customerTypeOptions = this.customerTypes.map(customerType => {
+				return customerType.displayName;
+		    });
 	}
 
 	onEdit() {
@@ -506,6 +532,7 @@ class CustomerEdit extends Component {
 				this.customerChannel.current.state.selectedIndex
 			].id;
 		}
+
 		if (this.customerType.current.state.selectedIndex === -1) {
 			this.customerType.current.show();
 			return;

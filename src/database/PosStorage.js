@@ -951,7 +951,7 @@ class PosStorage {
 	addSale(receipt) {
 		return new Promise((resolve, reject) => {
 			receipt.receiptId = uuidv1();
-			let saleDateKey = receipt.id;
+			let saleDateKey = receipt.createdDate.toISOString();
 			this.salesKeys.push({
 				saleDateTime: saleDateKey,
 				saleKey: saleItemKey + saleDateKey
@@ -1274,7 +1274,8 @@ class PosStorage {
 			return {
 				id: salesChannel.id,
 				name: salesChannel.name,
-				displayName: capitalizeWord(salesChannel.name)
+				displayName: capitalizeWord(salesChannel.name),
+				active: salesChannel.active
 			};
 		});
 	}
@@ -1297,23 +1298,40 @@ class PosStorage {
 		return null;
 	}
 
-	getCustomerTypesForDisplay() {
+	getCustomerTypesForDisplay(salesChannelId = 0) {
 		let customerTypesForDisplay = [];
-		this.customerTypes.forEach(customerType => {
-			if (customerType.name !== 'anonymous') {
-				customerTypesForDisplay.push({
-					id: customerType.id,
-					name: customerType.name,
-					displayName: capitalizeWord(customerType.name)
-				});
-			}
-		});
+		if(salesChannelId != 0) {
+			this.customerTypes.forEach(customerType => {
+				if (customerType.name !== 'anonymous' && customerType.salesChannelId == salesChannelId) {
+						customerTypesForDisplay.push({
+							id: customerType.id,
+							name: customerType.name,
+							displayName: capitalizeWord(customerType.name),
+							salesChannelId: customerType.salesChannelId
+						});
+				}
+			});
+		}
+		else {
+			this.customerTypes.forEach(customerType => {
+				if (customerType.name !== 'anonymous' && salesChannelId == 0) {
+						customerTypesForDisplay.push({
+							id: customerType.id,
+							name: customerType.name,
+							displayName: capitalizeWord(customerType.name),
+							salesChannelId: customerType.salesChannelId
+						});
+				}
+			});
+
+		}
 		return customerTypesForDisplay;
 	}
 
 	getCustomerTypes() {
 		return this.customerTypes;
 	}
+
 	getCustomerTypeByName(name) {
 		for (let i = 0; i < this.customerTypes.length; i++) {
 			if (this.customerTypes[i].name === name) {

@@ -47,7 +47,7 @@ const receiptReducer = (state = initialState, action) => {
 				date.setDate(date.getDate() - 7);
 				let this_week = moment.tz(date, moment.tz.guess()).format('YYYY-MM-DD');
                 //return moment.tz(receipt.id, moment.tz.guess()).isSameOrBefore(this_week);
-                return moment.tz(receipt.id, moment.tz.guess()).isSameOrAfter(this_week);
+                return moment.tz(receipt.createdAt, moment.tz.guess()).isSameOrAfter(this_week);
             });
             newState.remoteReceipts = remoteReceipts;
             return newState;

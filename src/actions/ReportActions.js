@@ -52,7 +52,7 @@ const getSalesData = (beginDate, endDate) => {
 
 		const filteredReceipts = loggedReceipts.filter(receipt =>
 			moment
-				.tz(new Date(receipt.id), moment.tz.guess())
+				.tz(new Date(receipt.created_at), moment.tz.guess())
 				.isBetween(beginDate, endDate)
 		);
 

@@ -24,6 +24,7 @@ import PosStorage from '../../database/PosStorage';
 import * as Utilities from '../../services/Utilities';
 import i18n from '../../app/i18n';
 import Events from 'react-native-simple-events';
+const uuidv1 = require('uuid/v1');
 
 class PaymentDescription extends Component {
 	render() {
@@ -543,8 +544,12 @@ class OrderPaymentScreen extends Component {
 			let receiptDate = this.state.receiptDate
 				? this.state.receiptDate
 				: new Date(Date.now());
+
+				console.log(receiptDate + " ---- " + uuidv1());
+
 			receipt = {
-				id: receiptDate.toISOString(),
+				// id: receiptDate.toISOString(),
+				id: uuidv1(),
 				createdDate: receiptDate,
 				currencyCode: this.props.products[0].product.priceCurrency,
 				customerId: this.props.selectedCustomer.customerId,

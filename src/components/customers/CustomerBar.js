@@ -170,8 +170,8 @@ class CustomerBar extends Component {
 					image={require('../../images/customer-edit.png')}
 					enabled={
 						this.state.editFunction &&
-						this.props.selectedCustomer.hasOwnProperty('name') &&
-						!this._isAnonymousCustomer(this.props.selectedCustomer)
+						this.props.selectedCustomer.hasOwnProperty('name')
+						// && !this._isAnonymousCustomer(this.props.selectedCustomer)
 					}
 				/>
 			);
@@ -189,8 +189,8 @@ class CustomerBar extends Component {
 					image={require('../../images/customer-delete.png')}
 					enabled={
 						this.state.deleteFunction &&
-						this.props.selectedCustomer.hasOwnProperty('name') &&
-						!this._isAnonymousCustomer(this.props.selectedCustomer)
+						this.props.selectedCustomer.hasOwnProperty('name')
+						// && !this._isAnonymousCustomer(this.props.selectedCustomer)
 					}
 				/>
 			);
@@ -209,9 +209,9 @@ class CustomerBar extends Component {
 					enabled={
 						this.state.deleteFunction &&
 						this.props.selectedCustomer.hasOwnProperty('name') &&
-						!this._isAnonymousCustomer(
-							this.props.selectedCustomer
-						) &&
+						// !this._isAnonymousCustomer(
+						// 	this.props.selectedCustomer
+						// ) &&
 						this.props.selectedCustomer.dueAmount > 0
 					}
 				/>
@@ -242,8 +242,8 @@ class CustomerBar extends Component {
 	onDelete = () => {
 		if (
 			this.state.deleteFunction &&
-			this.props.selectedCustomer.hasOwnProperty('name') &&
-			!this._isAnonymousCustomer(this.props.selectedCustomer)
+			this.props.selectedCustomer.hasOwnProperty('name')
+			// && !this._isAnonymousCustomer(this.props.selectedCustomer)
 		) {
 			console.log('CustomerBar:onDelete');
 			let alertMessage =
@@ -288,8 +288,8 @@ class CustomerBar extends Component {
 	onEdit = () => {
 		if (
 			this.state.editFunction &&
-			this.props.selectedCustomer.hasOwnProperty('name') &&
-			!this._isAnonymousCustomer(this.props.selectedCustomer)
+			this.props.selectedCustomer.hasOwnProperty('name')
+			// && !this._isAnonymousCustomer(this.props.selectedCustomer)
 		) {
 			console.log('CustomerBar:onEdit');
 			this.props.toolbarActions.ShowScreen('editCustomer');
