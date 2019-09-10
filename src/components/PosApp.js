@@ -25,6 +25,7 @@ import Synchronization from '../services/Synchronization';
 import SiteReport from './reports/SiteReport';
 import Communications from '../services/Communications';
 import Events from 'react-native-simple-events';
+import Splash from './Splash';
 
 console.ignoredYellowBox = ['Warning: isMounted', 'Setting a timer'];
 
@@ -288,6 +289,7 @@ class PosApp extends Component {
 			return (
 				// <Login />
 				<Settings />
+
 			);
 		} else {
 			return (
@@ -384,7 +386,6 @@ class ScreenSwitcher extends Component {
 		}
 	}
 }
-
 
 function mapStateToProps(state, props) {
 	return {

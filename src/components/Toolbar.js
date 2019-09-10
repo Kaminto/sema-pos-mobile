@@ -131,7 +131,6 @@ class Toolbar extends Component {
 		//}
 	};
 
-
 	onVersion = () => {
 		console.log('onVersion');
 		// Communications.getCustomers().then(customers => {

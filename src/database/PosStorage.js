@@ -635,7 +635,8 @@ class PosStorage {
 		address,
 		salesChannelId,
 		customerTypeId,
-		frequency
+		frequency,
+		secondPhoneNumber
 	) {
 		let key = this.makeCustomerKey(customer);
 		customer.name = name;
@@ -646,6 +647,7 @@ class PosStorage {
 		customer.updatedDate = new Date();
 		customer.syncAction = 'update';
 		customer.frequency = frequency;
+		customer.secondPhoneNumber=secondPhoneNumber
 
 		if (customer.reminder_date) {
 			customer.reminder_date = moment(customer.reminder_date).format(
@@ -961,8 +963,11 @@ class PosStorage {
 				let oldest = this.salesKeys[0];
 				let firstDate = new Date(oldest.saleDateTime);
 				firstDate = new Date(
-					firstDate.getTime() + 30 * 24 * 60 * 60 * 1000
+					firstDate.getTime() + 7 * 24 * 60 * 60 * 1000
 				);
+				// firstDate = new Date(
+				// 	firstDate.getTime() + 30 * 24 * 60 * 60 * 1000
+				// );
 				const now = new Date();
 				if (firstDate < now) {
 					// Older than 30 days remove it

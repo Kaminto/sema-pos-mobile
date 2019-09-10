@@ -614,7 +614,6 @@ class OrderPaymentScreen extends Component {
 				payoff -= priceTotal;
 				if (payoff > this.props.selectedCustomer.dueAmount) {
 					// Overpayment... this is an error
-
 					Alert.alert(
 						i18n.t('over-due-amount-title'),
 						i18n.t('over-due-amount-text') +

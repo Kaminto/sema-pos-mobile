@@ -190,9 +190,9 @@ class CustomerEdit extends Component {
 							marginTop="1%"
 							placeHolder={i18n.t('account-name')}
 							parent={this}
-							kbType="default"
-							valueFn={this.getName}
-							ref={this.name}
+							kbType="phone-pad"
+							valueFn={this.getSecondTelephoneNumber}
+							ref={this.secondPhoneNumber}
 						/>
 						<View
 							style={{
@@ -220,6 +220,7 @@ class CustomerEdit extends Component {
 								ref={this.secondPhoneNumber}
 							/>
 						</View>
+
 						<CustomerProperty
 							reference="customerAddress"
 							marginTop="1%"
