@@ -4,6 +4,7 @@ import {
 	View,
 	Text,
 	Image,
+	Linking,
 	TouchableHighlight
 } from 'react-native';
 import packageJson from '../../package.json';
@@ -129,11 +130,13 @@ class Toolbar extends Component {
 		}
 		//}
 	};
+
 	onVersion = () => {
 		console.log('onVersion');
-		Communications.getCustomers().then(customers => {
-			console.log('CUSTOMERS -' + JSON.stringify(customers));
-		});
+		// Communications.getCustomers().then(customers => {
+		// 	console.log('CUSTOMERS -' + JSON.stringify(customers));
+		// });
+		Linking.openURL("amzn://apps/android?p=com.semapos");
 	};
 
 	onLogout = () => {

@@ -10,32 +10,32 @@ export const REMOVE_LOCAL_RECEIPT = 'REMOVE_LOCAL_RECEIPT';
 export const CLEAR_LOGGED_RECEIPTS = 'CLEAR_LOGGED_RECEIPTS';
 
 export function setRemoteReceipts(remoteReceipts) {
-    console.log("setRemoteReceipts - action");
+    // console.log("setRemoteReceipts - action");
     return (dispatch) => { dispatch({ type: SET_REMOTE_RECEIPTS, data: { remoteReceipts } }) };
 }
 
 export function addRemoteReceipt(receipt) {
-    console.log('addRemoteReceipt - action');
+    // console.log('addRemoteReceipt - action');
     return dispatch => { dispatch({ type: ADD_REMOTE_RECEIPT, data: { receipt } }) };
 }
 
 export function clearLoggedReceipts(receipt) {
-    console.log('clearLoggedReceipts - action');
+    // console.log('clearLoggedReceipts - action');
     return dispatch => { dispatch({ type: CLEAR_LOGGED_RECEIPTS, data: {} }) };
 }
 
 export function setLocalReceipts(localReceipts) {
-    console.log('setLocalReceipts - action');
+    // console.log('setLocalReceipts - action');
     return dispatch => { dispatch({ type: SET_LOCAL_RECEIPTS, data: { localReceipts } }) };
 }
 
 export function removeLocalReceipt(receiptId) {
-    console.log(`removeLocalReceipt - action ${receiptId}`);
+    // console.log(`removeLocalReceipt - action ${receiptId}`);
     return dispatch => { dispatch({ type: REMOVE_LOCAL_RECEIPT, data: { receiptId } }) };
 }
 
 export function updateRemoteReceipt(receiptIndex, updatedFields) {
-    console.log('updateRemoteReceipt - action');
+    // console.log('updateRemoteReceipt - action');
     return dispatch => {
         dispatch({
             type: UPDATE_REMOTE_RECEIPT,
@@ -48,7 +48,7 @@ export function updateRemoteReceipt(receiptIndex, updatedFields) {
 }
 
 export function updateReceiptLineItem(receiptIndex, lineItemIndex, updatedFields) {
-    console.log('updateRemoteReceipt - action');
+    // console.log('updateRemoteReceipt - action');
     return dispatch => {
         dispatch({
             type: UPDATE_RECEIPT_LINE_ITEM,

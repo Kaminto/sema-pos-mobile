@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, ImageBackground, Image, NetInfo } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
+import { View, StyleSheet } from 'react-native';
+import NetInfo from "@react-native-community/netinfo";
 
 import Toolbar from './Toolbar';
 import CustomerViews from './customers/CustomerViews';
@@ -40,6 +40,7 @@ class PosApp extends Component {
 		};
 		this.posStorage = PosStorage;
 	}
+
 	componentDidMount() {
 		console.log('PosApp - componentDidMount enter');
 		this.posStorage.initialize(false).then(isInitialized => {
@@ -274,10 +275,9 @@ class PosApp extends Component {
 
 	render() {
 		if (this.state.isLoading) {
-			return <LoadSplashScreen />;
-		  }
-
-		return this.getLoginOrHomeScreen();
+			console.log("Temp Splash Screen - Load Splash Screen");
+		}
+			return this.getLoginOrHomeScreen();
 	}
 
 	getLoginOrHomeScreen() {
@@ -363,8 +363,6 @@ class ScreenSwitcher extends Component {
 				return <Settings />;
 			case 'login':
 				return <Login />;
-			case 'splash':
-				return <Splash />
 			case 'report':
 				return (
 					<View style={{ flex: 1 }}>
@@ -388,28 +386,6 @@ class ScreenSwitcher extends Component {
 		}
 	}
 }
-
-class LoadSplashScreen extends Component {
-	render() {
-		return (
-			<View style={{ flex: 1 }}>
-				<ImageBackground
-					source={require('../images/jibublue.png')}
-					resizeMode="cover"
-					style={styles.imgBackground}>
-				</ImageBackground>
-
-				{/**Adding a spinner */}
-				<Spinner
-					visible={true}
-					// textContent={'LOADING...'}
-					textStyle={styles.spinnerTextStyle}
-				/>
-			</View>
-		);
-	}
-  }
-
 
 function mapStateToProps(state, props) {
 	return {
@@ -441,36 +417,3 @@ export default connect(
 	mapStateToProps,
 	mapDispatchToProps
 )(PosApp);
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#F5FCFF'
-	},
-	welcome: {
-		fontSize: 20,
-		textAlign: 'center',
-		margin: 10
-	},
-	instructions: {
-		textAlign: 'center',
-		color: '#333333',
-		marginBottom: 5
-	},
-	imgBackground: {
-		width: '100%',
-		height: '100%',
-		flex: 1
-	},
-	logoSize: {
-		width: 200,
-		height: 200
-	},
-	spinnerTextStyle: {
-		color: '#002b80',
-		fontSize: 50,
-		fontWeight: 'bold'
-	  }
-});

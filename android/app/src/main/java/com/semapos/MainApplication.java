@@ -3,13 +3,15 @@ package com.semapos;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.netinfo.NetInfoPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import io.realm.react.RealmReactPackage;
 import com.reactcommunity.rnlanguages.RNLanguagesPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-
-import org.pgsqlite.SQLitePluginPackage;
+import com.facebook.react.modules.storage.ReactDatabaseSupplier;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,9 +27,11 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-            new SQLitePluginPackage(),   // register SQLite Plugin here
           	new MainReactPackage(),
-			new RNLanguagesPackage()
+            new NetInfoPackage(),
+            new RNDeviceInfo(),
+            new RealmReactPackage(),
+            new RNLanguagesPackage()
       );
     }
 
@@ -46,5 +50,7 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
 	SoLoader.init(this, /* native exopackage */ false);
+	// long size = 500L * 1024L * 1024L;
+	// com.facebook.react.modules.storage.ReactDatabaseSupplier.getInstance(getApplicationContext()).setMaximumSize(size);
   }
 }

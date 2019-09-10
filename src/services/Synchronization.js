@@ -377,6 +377,7 @@ class Synchronization {
 				});
 		});
 	}
+
 	synchronizeCustomerTypes() {
 		return new Promise(resolve => {
 			console.log('Synchronization:synchronizeCustomerTypes - Begin');
@@ -416,6 +417,10 @@ class Synchronization {
 						localReceipts: salesReceipts.length
 					});
 					salesReceipts.forEach(receipt => {
+						console.log("***********************")
+						console.log(receipt.sale)
+						console.log("***********************")
+
 						Communications.createReceipt(receipt.sale)
 							.then(result => {
 								console.log(

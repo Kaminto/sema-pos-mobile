@@ -76,25 +76,31 @@ class ProductList extends Component {
 
 	prepareData = () => {
 		let productMrp = PosStorage.getProductMrps();
-		let keys=Object.keys(productMrp);
-		let result=[];
-		let ids=[];
+		// let keys=Object.keys(productMrp);
+		// let result=[];
+		//let ids=[];
+		//let ids=productMrp.map(prod=>prod.productId);
+		let ids=Object.keys(productMrp).map(key=>productMrp[key].productId);
 
-		for(let i=0;i<keys.length;i++){
-			let prod=productMrp[keys[i]];
-			console.log(prod.priceAmount)
-			ids.push(prod.productId);
-		}
-		for(let i=0;i<this.props.products.length;i++){
-			let prod=this.props.products[i];
-			if(ids.indexOf(prod.productId)>=0){
-				if(this.getItemPrice(prod)>=0){
-					result.push(prod);
-				}
-			}
-		}
-		return result;
-		//return this.props.products;
+		// for(let i=0;i<keys.length;i++){
+		// 	let prod=productMrp[keys[i]];
+		// 	ids.push(prod.productId);
+		// }
+
+		return result=this.props.products.filter(prod=>ids.includes(prod.productId));
+
+		// for(let i=0;i<this.props.products.length;i++){
+		// 	let prod=this.props.products[i];
+		// 	if(ids.indexOf(prod.productId)>=0){
+		// 		//Admitting products with zero as price too
+		// 		// if(this.getItemPrice(prod)>=0){
+		// 		// 	result.push(prod);
+		// 		// }
+		// 		result.push(prod);
+		// 	}
+		// }
+		// return result;
+		// //return this.props.products;
 	};
 
 	hasMappingTable(product, productMrp) {
@@ -115,7 +121,8 @@ class ProductList extends Component {
 
 	onPressItem = item => {
 		console.log('onPressItem');
-		this.props.orderActions.AddProductToOrder(item, 1);
+		const unitPrice=this.getItemPrice(item)
+		this.props.orderActions.AddProductToOrder(item, 1, unitPrice);
 	};
 
 	getItemBackground = index => {
@@ -145,6 +152,7 @@ class ProductList extends Component {
 				)
 			];
 
+			//console.log(productMrp)
 			if (productMrp) {
 				return productMrp.priceAmount;
 			}
