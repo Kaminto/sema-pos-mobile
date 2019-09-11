@@ -1,6 +1,6 @@
 import React, {Component}  from "react";
 import { Dimensions, View,Animated } from "react-native";
-import ProductList from "./ProductList";
+import  ProductList  from "./ProductList";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as OrderActions from "../../actions/OrderActions";
@@ -31,7 +31,7 @@ class ProductListScreen extends Component {
 				console.log(`ProductListScreen-Focused - filter=${this.state.salesChannel.name}`)
 				this.props.orderActions.SetOrderChannel(this.state.salesChannel.name);
 			});
-	
+
 			Animated.timing(                  // Animate over time
 				this.state.fadeAnim,            // The animated value to drive
 				{
@@ -67,4 +67,4 @@ function mapDispatchToProps(dispatch) {
 	return {orderActions: bindActionCreators(OrderActions,dispatch)};
 }
 
-export default  connect(mapStateToProps, mapDispatchToProps)(ProductListScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(ProductListScreen);

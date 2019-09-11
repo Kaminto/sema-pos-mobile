@@ -1,4 +1,4 @@
-import React, {Component}  from "react"
+import React, {Component}  from "react";
 import { View, Modal, Text, FlatList, TouchableHighlight, StyleSheet } from "react-native";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
@@ -60,16 +60,17 @@ class OrderItems extends Component {
 
 		);
 	}
+
 	closeHandler = () =>{
 		this.setState( {isQuantityVisible:false} );
 	};
+
 	onPressItem = (item) =>{
 		this.setState( {isQuantityVisible:true} );
 		this.setState( {selectedItem:item});
 		this.setState( {accumulator: item.quantity});
 		this.setState( {firstKey:true});
 	};
-
 
 
 	getRow = (item) =>{
@@ -153,18 +154,22 @@ class OrderItems extends Component {
 			</View>
 		)
 	};
+
 	getDigitStyle = (digit) =>{
 		return (digit.id === 99 ) ? styles.clearContainer : styles.digitContainer;
 	};
 
 	onDone = ()=>{
 		this.setState( {isQuantityVisible:false} );
+		let unitPrice=this.getItemPrice(this.state.selectedItem.product);
+
 		if( this.state.accumulator ===0  ){
-			this.props.orderActions.RemoveProductFromOrder( this.state.selectedItem.product );
+			this.props.orderActions.RemoveProductFromOrder( this.state.selectedItem.product, unitPrice );
 		}else{
-			this.props.orderActions.SetProductQuantity( this.state.selectedItem.product, this.state.accumulator );
+			this.props.orderActions.SetProductQuantity( this.state.selectedItem.product, this.state.accumulator, unitPrice );
 		}
 	};
+
 	getItemPrice = (item) =>{
 		let salesChannel = PosStorage.getSalesChannelFromName(this.props.channel.salesChannel);
 		if( salesChannel ){

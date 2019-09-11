@@ -227,16 +227,16 @@ class SalesLog extends Component {
 						</View>
 					)}
 				</View>
-				<View style={styles.itemData}>
+				{/* <View style={styles.itemData}>
 					<Text style={styles.label}>Receipt Id: </Text>
 					<Text>{item.id}</Text>
-				</View>
+				</View> */}
 				<View style={styles.itemData}>
 					<Text style={styles.label}>Date Created: </Text>
 					<Text>
 						{moment
-							.tz(item.id, moment.tz.guess())
-							.format('YYYY-MM-DD HH:mm:ss')}
+							.tz(item.createdAt, moment.tz.guess())
+							.format('YYYY-MM-DD HH:mm')}
 					</Text>
 				</View>
 				<View style={styles.itemData}>
@@ -331,8 +331,8 @@ class SalesLog extends Component {
 
 		remoteReceipts.sort((a, b) => {
 			return moment
-				.tz(a.id, moment.tz.guess())
-				.isBefore(moment.tz(b.id, moment.tz.guess()))
+				.tz(a.createdAt, moment.tz.guess())
+				.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
 				? 1
 				: -1;
 		});

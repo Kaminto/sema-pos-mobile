@@ -24,7 +24,6 @@ import * as ToolbarActions from '../actions/ToolBarActions';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as AuthActions from '../actions/AuthActions';
 import ModalDropdown from 'react-native-modal-dropdown';
-import Spinner from 'react-native-loading-spinner-overlay';
 
 import Events from 'react-native-simple-events';
 
@@ -137,7 +136,8 @@ class Settings extends Component {
 			animating: false,
 			selectedLanguage: {},
 			isLoggedIn: setting.token.length > 0 || false,
-			isLoading:false
+
+			isLoading: false
 		};
 
 		this.onShowLanguages = this.onShowLanguages.bind(this);
@@ -146,168 +146,155 @@ class Settings extends Component {
 	}
 
 	componentDidMount() {
-		console.log('Settings:Mounted');
-		this.props.authActions.isAuth((PosStorage.getSettings().token.length > 0 || false));
+		this.props.authActions.isAuth(
+			PosStorage.getSettings().token.length > 0 || false
+		);
 	}
+
+	componentDidUpdate(oldProps) {
+		if (this.props.auth.status!==oldProps.auth.status) {
+			this.setState({isLoggedIn:this.props.auth.status})
+		}
+	  }
 
 	render() {
 		return (
-			<ScrollView style={{ flex: 1 }}>
-				{/* <View style={{ flexDirection: 'row' }}>
-					<View
-						style={{
-							flexDirection: 'row',
-							flex: 1,
-							alignItems: 'center',
-							height: 100
-						}}>
-						<Text style={[styles.headerText]}>
-							{Communications._token
-								? i18n.t('settings')
-								: 'LOGIN REQUIRED'}
-						</Text>
-					</View>
-					<View
-						style={{
-							flexDirection: 'row-reverse',
-							flex: 1,
-							alignItems: 'center',
-							height: 100
-						}}>
-						{this.getSettingsCancel()}
-					</View>
-				</View> */}
+			<View style={styles.container}>
+				<ScrollView style={{ flex: 1 }}>
+					<KeyboardAwareScrollView
+						style={{ flex: 1 }}
+						resetScrollToCoords={{ x: 0, y: 0 }}
+						scrollEnabled={false}>
+						<View style={{ flex: 1, alignItems: 'center', backgroundColor: 'white' }}>
+							<SettingsProperty
+								parent={this}
+								marginTop={10}
+								placeHolder={i18n.t('service-url-placeholder')}
+								label={i18n.t('service-url-label')}
+								isSecure={false}
+								valueFn={this.getUrl.bind(this)}
+								ref={this.url}
+							/>
+							<SettingsProperty
+								parent={this}
+								marginTop={marginSpacing}
+								placeHolder={i18n.t('site-placeholder') + 'Flag'}
+								isSecure={false}
+								label={i18n.t('site-label')}
+								valueFn={this.getSite.bind(this)}
+								ref={this.site}
+							/>
+							<SettingsProperty
+								parent={this}
+								marginTop={marginSpacing}
+								placeHolder={i18n.t(
+									'username-or-email-placeholder'
+								)}
+								label={i18n.t('username-or-email-placeholder')}
+								isSecure={false}
+								valueFn={this.getUser.bind(this)}
+								ref={this.user}
+							/>
+							<SettingsProperty
+								parent={this}
+								marginTop={marginSpacing}
+								placeHolder={i18n.t('password-placeholder')}
+								label={i18n.t('password-label')}
+								isSecure={true}
+								valueFn={this.getPassword.bind(this)}
+								ref={this.password}
+							/>
 
-				<KeyboardAwareScrollView
-					style={{ flex: 1 }}
-					resetScrollToCoords={{ x: 0, y: 0 }}
-					scrollEnabled={false}>
-					<View style={{ flex: 1, alignItems: 'center' }}>
-						<SettingsProperty
-							parent={this}
-							marginTop={10}
-							placeHolder={i18n.t('service-url-placeholder')}
-							label={i18n.t('service-url-label')}
-							isSecure={false}
-							valueFn={this.getUrl.bind(this)}
-							ref={this.url}
-						/>
-						<SettingsProperty
-							parent={this}
-							marginTop={marginSpacing}
-							placeHolder={i18n.t('site-placeholder') + 'Flag'}
-							isSecure={false}
-							label={i18n.t('site-label')}
-							valueFn={this.getSite.bind(this)}
-							ref={this.site}
-						/>
-						<SettingsProperty
-							parent={this}
-							marginTop={marginSpacing}
-							placeHolder={i18n.t(
-								'username-or-email-placeholder'
-							)}
-							label={i18n.t('username-or-email-placeholder')}
-							isSecure={false}
-							valueFn={this.getUser.bind(this)}
-							ref={this.user}
-						/>
-						<SettingsProperty
-							parent={this}
-							marginTop={marginSpacing}
-							placeHolder={i18n.t('password-placeholder')}
-							label={i18n.t('password-label')}
-							isSecure={true}
-							valueFn={this.getPassword.bind(this)}
-							ref={this.password}
-						/>
+							<View
+								style={[
+									{
+										marginTop: '1%',
+										flexDirection: 'row',
+										alignItems: 'center'
+									}
+								]}>
+								<ModalDropdown
+									style={{ width: 250 }}
+									textStyle={styles.dropdownText}
+									dropdownTextStyle={[
+										styles.dropdownText,
+										{ width: 250 }
+									]}
+									dropdownStyle={{
+										borderColor: 'black',
+										borderWidth: 2
+									}}
+									ref={this.supportedLanguages}
+									defaultValue={this.getDefaultUILanguage()}
+									defaultIndex={this.getDefaultUILanguageIndex()}
+									options={supportedUILanguages.map(
+										lang => lang.name
+									)}
+									onSelect={this.onLanguageSelected}
+								/>
+								<TouchableHighlight
+									underlayColor="#c0c0c0"
+									onPress={this.onShowLanguages}>
+									<Text style={{ fontSize: 40 }}>{'\u2B07'}</Text>
+								</TouchableHighlight>
+							</View>
 
-						<View
-							style={[
-								{
-									marginTop: '1%',
+							<View
+								style={{
 									flexDirection: 'row',
+									flex: 1,
 									alignItems: 'center'
-								}
-							]}>
-							<ModalDropdown
-								style={{ width: 250 }}
-								textStyle={styles.dropdownText}
-								dropdownTextStyle={[
-									styles.dropdownText,
-									{ width: 250 }
-								]}
-								dropdownStyle={{
-									borderColor: 'black',
-									borderWidth: 2
-								}}
-								ref={this.supportedLanguages}
-								defaultValue={this.getDefaultUILanguage()}
-								defaultIndex={this.getDefaultUILanguageIndex()}
-								options={supportedUILanguages.map(
-									lang => lang.name
+								}}>
+								{this.state.isLoggedIn && (
+									<SettingsButton
+										pressFn={this.onSaveSettings}
+										enableFn={this.enableSaveSettings.bind(
+											this
+										)}
+										label={i18n.t('save-settings')}
+									/>
 								)}
-								onSelect={this.onLanguageSelected}
-							/>
-							<TouchableHighlight
-								underlayColor="#c0c0c0"
-								onPress={this.onShowLanguages}>
-								<Text style={{ fontSize: 40 }}>{'\u2B07'}</Text>
-							</TouchableHighlight>
-						</View>
 
-						<View
-							style={{
-								flexDirection: 'row',
-								flex: 1,
-								alignItems: 'center'
-							}}>
-							{this.state.isLoggedIn && (
-								<SettingsButton
-									pressFn={this.onSaveSettings}
-									enableFn={this.enableSaveSettings.bind(
-										this
-									)}
-									label={i18n.t('save-settings')}
-								/>
-							)}
-							<SettingsButton
-								pressFn={this.onConnection.bind(this)}
-								enableFn={this.enableConnectionOrSync.bind(
-									this
+								{!this.state.isLoggedIn && (
+									<SettingsButton
+										pressFn={this.onConnection.bind(this)}
+										enableFn={this.enableConnectionOrSync.bind(
+											this
+										)}
+										label={i18n.t('connect')}
+									/>
 								)}
-								label={i18n.t('connect')}
-							/>
-							{this.state.isLoggedIn && (
-								<SettingsButton
-									pressFn={this.onClearAll.bind(this)}
-									enableFn={this.enableClearAll.bind(this)}
-									label={i18n.t('clear')}
-								/>
-							)}
-							{this.state.isLoggedIn && (
-								<SettingsButton
-									pressFn={this.onSynchronize.bind(this)}
-									enableFn={this.enableConnectionOrSync.bind(
-										this
-									)}
-									label={i18n.t('sync-now')}
-								/>
-							)}
+								{this.state.isLoggedIn && (
+									<SettingsButton
+										pressFn={this.onClearAll.bind(this)}
+										enableFn={this.enableClearAll.bind(this)}
+										label={i18n.t('clear')}
+									/>
+								)}
+								{this.state.isLoggedIn && (
+									<SettingsButton
+										pressFn={this.onSynchronize.bind(this)}
+										enableFn={this.enableConnectionOrSync.bind(
+											this
+										)}
+										label={i18n.t('sync-now')}
+									/>
+								)}
+							</View>
 						</View>
-					</View>
-				</KeyboardAwareScrollView>
-				{this.state.animating && (
-					<View style={styles.activityIndicator}>
-						<ActivityIndicator size="large" />
-					</View>
-				)}
-				<Spinner
-					visible={this.state.isLoading}
-					textContent={'SYNCHRONIZING. PLEASE WAIT ...'}
-					textStyle={styles.spinnerTextStyle}
-				/>
-			</ScrollView>
+					</KeyboardAwareScrollView>
+					{this.state.animating && (
+						<View style={styles.activityIndicator}>
+							<ActivityIndicator size="large" />
+						</View>
+					)}
+					{
+						this.state.isLoading &&(
+							<ActivityIndicator size="large" color="#002b80" />
+						)
+					}
+				</ScrollView>
+				</View>
 		);
 	}
 	getSettingsCancel() {
@@ -360,7 +347,7 @@ class Settings extends Component {
 	}
 
 	onSaveSettings() {
-		this.setState({isLoading:true})
+		this.setState({ isLoading: true });
 		// TODO - Validate fields and set focus to invalid field;
 		this.saveSettings(
 			this.props.settings.token,
@@ -373,9 +360,9 @@ class Settings extends Component {
 	}
 	onSynchronize() {
 		try {
-			this.setState({isLoading:true})
+			this.setState({ isLoading: true });
 			Synchronization.synchronize().then(syncResult => {
-				this.setState({isLoading:false})
+				this.setState({ isLoading: false });
 				console.log(
 					'Synchronization-result: ' + JSON.stringify(syncResult)
 				);
@@ -531,7 +518,6 @@ class Settings extends Component {
 										}
 									);
 								} else {
-
 									this.props.authActions.isAuth(true);
 									this.saveSettings(
 										result.response.token,
@@ -664,7 +650,7 @@ class Settings extends Component {
 			siteId
 		);
 		this.props.settingsActions.setSettings(PosStorage.getSettings());
-		this.setState({isLoading:false})
+		this.setState({ isLoading: false });
 	}
 
 	getDefaultUILanguage() {
@@ -710,7 +696,7 @@ Settings.propTypes = {
 };
 
 function mapStateToProps(state, props) {
-	return { settings: state.settingsReducer.settings };
+	return { settings: state.settingsReducer.settings, auth:state.authReducer };
 }
 function mapDispatchToProps(dispatch) {
 	return {
@@ -727,6 +713,18 @@ export default connect(
 )(Settings);
 
 const styles = StyleSheet.create({
+	imgBackground: {
+		width: '100%',
+		height: '100%',
+		flex: 1
+	},
+	container: {
+		flex: 1,
+		width: '100%',
+		height: '100%',
+		backgroundColor: '#fff'
+	},
+
 	headerText: {
 		fontSize: 24,
 		color: 'black',
@@ -797,5 +795,5 @@ const styles = StyleSheet.create({
 		color: '#002b80',
 		fontSize: 50,
 		fontWeight: 'bold'
-	  },
+	}
 });

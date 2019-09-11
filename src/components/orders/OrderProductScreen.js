@@ -1,4 +1,4 @@
-import {createBottomTabNavigator} from "react-navigation";
+import {createAppContainer, createBottomTabNavigator} from "react-navigation";
 import ProductListScreen from './ProductListScreen';
 
 export default OrderProductScreen = createBottomTabNavigator({

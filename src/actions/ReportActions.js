@@ -9,7 +9,7 @@ export const REPORT_FILTER = 'REPORT_FILTER';
 export const REMINDER_REPORT = 'REMINDER_REPORT';
 
 export function GetSalesReportData(beginDate, endDate) {
-	console.log('GetSalesReportData - action');
+	// console.log('GetSalesReportData - action');
 
 	return dispatch => {
 		getSalesData(beginDate, endDate)
@@ -30,14 +30,14 @@ export function GetSalesReportData(beginDate, endDate) {
 }
 
 export function setReportType(reportType) {
-	console.log('setReportType - action');
+	// console.log('setReportType - action');
 	return dispatch => {
 		dispatch({ type: REPORT_TYPE, data: reportType });
 	};
 }
 
 export function setReportFilter(startDate, endDate) {
-	console.log('setReportFilter - action');
+	// console.log('setReportFilter - action');
 	return dispatch => {
 		dispatch({
 			type: REPORT_FILTER,
@@ -52,7 +52,7 @@ const getSalesData = (beginDate, endDate) => {
 
 		const filteredReceipts = loggedReceipts.filter(receipt =>
 			moment
-				.tz(new Date(receipt.id), moment.tz.guess())
+				.tz(new Date(receipt.created_at), moment.tz.guess())
 				.isBetween(beginDate, endDate)
 		);
 
@@ -113,6 +113,7 @@ const getSalesData = (beginDate, endDate) => {
 								sku: lineItem.product.sku,
 								description: lineItem.product.description,
 								quantity: Number(lineItem.quantity),
+								category: Number(lineItem.product.categoryId),
 								pricePerSku:
 									parseFloat(lineItem.price_total) /
 									Number(lineItem.quantity),
@@ -166,11 +167,17 @@ const getSalesData = (beginDate, endDate) => {
 	});
 };
 
+const getMrps = products => {
+	let productMrp = PosStorage.getProductMrps();
+	let ids = Object.keys(productMrp).map(key => productMrp[key].productId);
+	return (result = products.filter(prod => ids.includes(prod.productId)));
+};
+
 export function GetInventoryReportData(beginDate, endDate, products) {
 	console.log('GetInventoryReportData - action');
 
 	return dispatch => {
-		getInventoryData(beginDate, endDate, products)
+		getInventoryData(beginDate, endDate, getMrps(products))
 			.then(inventoryData => {
 				dispatch({
 					type: INVENTORY_REPORT,
@@ -209,25 +216,57 @@ const getInventoryData = (beginDate, endDate, products) => {
 			});
 	});
 };
+
 const createInventory = (salesData, inventorySettings, products) => {
 	let salesAndProducts = { ...salesData };
 	salesAndProducts.salesItems = salesData.salesItems.slice();
+
 	let emptyProducts = [];
-	for (let index = 0; index < products.length; index++) {
-		if (isNotIncluded(products[index], salesAndProducts.salesItems)) {
-			emptyProducts.push({
-				sku: products[index].sku,
-				description: products[index].description,
-				quantity: 0,
-				totalSales: 0,
-				totalLiters: 0,
-				litersPerSku: products[index].unitPerProduct
-			});
+	// products = products.filter(p => p.categoryId === 3);
+		// .filter(p => p.description.includes('refill'));
+
+	var productskus_excluded = [
+		'0224',
+		'0220',
+		'0212',
+		'0210',
+		'0200',
+		'0180',
+		'0170',
+		'0150',
+		'0142',
+		'0141',
+		'0140'
+	];
+
+	for (const prod of products) {
+		if (isNotIncluded(prod, salesAndProducts.salesItems)) {
+			// if (
+			// 	!productskus_excluded.includes(prod.sku)
+			// ) {
+				emptyProducts.push({
+					sku: prod.sku,
+					description: prod.description,
+					quantity: 0,
+					totalSales: 0,
+					totalLiters: 0,
+					litersPerSku: prod.unitPerProduct
+				});
+			// }
 		}
 	}
+
 	salesAndProducts.salesItems = salesAndProducts.salesItems.concat(
 		emptyProducts
 	);
+
+	// for (let index = 0; index < salesAndProducts.salesItems.length; index++) {
+	// 	if (productskus_excluded.includes(salesAndProducts.salesItems[index].sku)) {
+	// 		console.log(salesAndProducts.salesItems[index].description + " excluded. Sales & Products" + salesAndProducts.salesItems[index].sku);
+	// 		salesAndProducts.salesItems.splice(index, 1);
+	// 	}
+	// }
+
 	let inventoryData = {
 		salesAndProducts: salesAndProducts,
 		inventory: inventorySettings
@@ -279,6 +318,7 @@ const getInventoryItem = (beginDate, products) => {
 		});
 	});
 };
+
 const initializeInventory = () => {
 	return {
 		date: null,
@@ -288,9 +328,11 @@ const initializeInventory = () => {
 		previousProductSkus: []
 	};
 };
+
 export const initializeSalesData = () => {
 	return { totalLiters: null, totalSales: null, salesItems: [] };
 };
+
 export const initializeInventoryData = () => {
 	return {
 		salesAndProducts: initializeSalesData(),

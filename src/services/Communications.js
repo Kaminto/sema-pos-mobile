@@ -9,7 +9,6 @@ class Communications {
 		this._password = '';
 		this._token = '';
 		this._siteId = '';
-		this._secret='jfbnve98rh394nr9u';
 	}
 	initialize(url, site, user, password) {
 		if (!url.endsWith('/')) {
@@ -336,7 +335,6 @@ class Communications {
 								resolve(responseJson);
 							})
 							.catch(error => {
-								//alert(error.message);
 								console.log(
 									'createReceipt - Parse JSON: ' +
 										error.message
@@ -520,20 +518,39 @@ class Communications {
 			});
 	}
 
-	getReminders() {
+	// getReminders() {
+	// 	let options = {
+	// 		method: 'GET',
+	// 		headers: {
+	// 			Accept: 'application/json',
+	// 			Authorization: 'Bearer' + this._token
+	// 		}
+	// 	};
+	// 	let url = 'sema/reminders?site-id='+ this._siteId;
+	// 	that = this;
+	// 	return fetch(that._url + url, options)
+	// 		.then(response => response.json())
+	// 		.catch(error => console.log('ERROR ' + error));
+	// }
+
+	getReminders(){
 		let options = {
-			method: 'GET',
-			headers: {
-				Accept: 'application/json',
-				Authorization: 'Bearer' + this._token
-			}
-		};
-		let url = 'sema/reminders?site-id='+ this._siteId;
-		that = this;
-		return fetch(that._url + url, options)
-			.then(response => response.json())
-			.catch(error => console.log('ERROR ' + error));
-	}
+		 method:'GET',
+		 headers: {
+		 Accept: 'application/json',
+		 Authorization:'Bearer' + this._token
+		 }
+	 };
+		 let urlr = 'sema/reminders?site-id='+ this._siteId;
+	 that = this;
+	 return  fetch(that._url + urlr, options).then(response =>
+
+							   response.json()
+
+	 ).catch(error => console.log("ERROR "+ error));
+
+
+	 }
 
 	// let remoteReceipt = {
 	// 	receiptId: receipt.receiptId,

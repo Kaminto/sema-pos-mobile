@@ -4,6 +4,7 @@ import {
 	View,
 	Text,
 	Image,
+	Linking,
 	TouchableHighlight
 } from 'react-native';
 import packageJson from '../../package.json';
@@ -79,7 +80,7 @@ class Toolbar extends Component {
 	}
 
 	getLogoutUI() {
-		if (this.props.showScreen.screenToShow !== 'settings') {
+		if (this.props.auth.status) {
 			return (
 				<TouchableHighlight onPress={() => this.onLogout()}>
 					<Text style={[styles.text_style, { marginRight: 20 }]}>
@@ -129,11 +130,13 @@ class Toolbar extends Component {
 		}
 		//}
 	};
+
 	onVersion = () => {
 		console.log('onVersion');
-		Communications.getCustomers().then(customers => {
-			console.log('CUSTOMERS -' + JSON.stringify(customers));
-		});
+		// Communications.getCustomers().then(customers => {
+		// 	console.log('CUSTOMERS -' + JSON.stringify(customers));
+		// });
+		Linking.openURL("amzn://apps/android?p=com.semapos");
 	};
 
 	onLogout = () => {

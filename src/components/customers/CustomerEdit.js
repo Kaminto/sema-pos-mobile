@@ -68,10 +68,60 @@ class CustomerProperty extends Component {
 	};
 }
 
+class PhoneProperty extends Component {
+	constructor(props) {
+		super(props);
+		this.state = { propertyText: this.props.valueFn(this.props.parent) };
+	}
+
+	render() {
+		return (
+			<View
+				style={[
+					{ marginTop: this.props.marginTop },
+					styles.inputContainer
+				]}>
+				<TextInput
+					ref={this.props.reference}
+					style={[styles.phoneInputText]}
+					underlineColorAndroid="transparent"
+					placeholder={this.props.placeHolder}
+					value={this.state.propertyText}
+					keyboardType={this.props.kbType}
+					onChangeText={this.onChangeText}
+				/>
+			</View>
+		);
+	}
+	onChangeText = text => {
+		if (this.props.reference === 'customerFrequency' ||
+		this.props.reference === 'customerNumber' || this.props.reference === 'secondPhoneNumber') {
+			if (text) {
+				// if (/^\d+$/.test(text)) {
+					this.setState({
+						propertyText: text
+					});
+				// } else {
+				// 	alert('Digits only please');
+				// }
+			} else {
+				this.setState({
+					propertyText: ''
+				});
+			}
+		} else {
+			this.setState({ propertyText: text });
+		}
+	};
+}
+
 class CustomerEdit extends Component {
 	constructor(props) {
 		super(props);
-		this.state = { isEditInProgress: false };
+		this.state = {
+			isEditInProgress: false,
+			salescid: 0 };
+		this.saleschannelid = 0;
 		this.phone = React.createRef();
 		this.secondPhoneNumber = React.createRef();
 		this.name = React.createRef();
@@ -79,25 +129,28 @@ class CustomerEdit extends Component {
 		this.customerChannel = React.createRef();
 		this.customerType = React.createRef();
 		this.frequency = React.createRef();
+
 		this.salesChannels = PosStorage.getSalesChannelsForDisplay();
 		this.channelOptions = this.salesChannels.map(channel => {
 			return channel.displayName;
 		});
-		this.customerTypes = PosStorage.getCustomerTypesForDisplay();
+
+		this.customerTypes = PosStorage.getCustomerTypesForDisplay(this.saleschannelid);
 		this.customerTypeOptions = this.customerTypes.map(customerType => {
-			return customerType.displayName;
+			   return customerType.displayName;
 		});
 		this.customerTypesIndicies = this.customerTypes.map(customerType => {
 			return customerType.id;
 		});
 	}
 	componentDidMount() {
-		console.log('CustomerEdit = Mounted');
+		console.log('CustomerEdit = Mounted' + this.state.salescid);
 	}
+
 
 	render() {
 		return (
-			<View style={{ flex: 1 }}>
+			<View style={{ flex: 1, backgroundColor: '#fff' }}>
 				<View style={{ flexDirection: 'row' }}>
 					<View
 						style={{
@@ -130,17 +183,8 @@ class CustomerEdit extends Component {
 				<KeyboardAwareScrollView
 					style={{ flex: 1 }}
 					resetScrollToCoords={{ x: 0, y: 0 }}
-					scrollEnabled={false}>
+					scrollEnabled={true}>
 					<View style={{ flex: 1, alignItems: 'center' }}>
-					    <CustomerProperty
-							reference="customerName"
-							marginTop="1%"
-							placeHolder={i18n.t('account-name')}
-							parent={this}
-							kbType="default"
-							valueFn={this.getName}
-							ref={this.name}
-						/>
 						<CustomerProperty
 							reference="customerName"
 							marginTop="1%"
@@ -159,9 +203,7 @@ class CustomerEdit extends Component {
 							valueFn={this.getTelephoneNumber}
 							ref={this.phone}
 						/>
-<<<<<<< HEAD
-						
-=======
+
 						<CustomerProperty
 							reference="secondPhoneNumber"
 							marginTop={0}
@@ -171,8 +213,33 @@ class CustomerEdit extends Component {
 							valueFn={this.getSecondTelephoneNumber}
 							ref={this.secondPhoneNumber}
 						/>
+						<View
+							style={{
+								flex: 1,
+								flexDirection: 'row',
+								alignItems: 'center'
+							}}>
+							<PhoneProperty
+								reference="customerNumber"
+								marginTop="1%"
+								placeHolder={i18n.t('telephone-number')}
+								parent={this}
+								kbType="phone-pad"
+								valueFn={this.getTelephoneNumber}
+								ref={this.phone}
+							/>
 
->>>>>>> test
+							<PhoneProperty
+								reference="secondPhoneNumber"
+								marginTop="1%"
+								placeHolder={i18n.t('second-phone-number')}
+								parent={this}
+								kbType="phone-pad"
+								valueFn={this.getSecondTelephoneNumber}
+								ref={this.secondPhoneNumber}
+							/>
+						</View>
+
 						<CustomerProperty
 							reference="customerAddress"
 							marginTop="1%"
@@ -215,6 +282,7 @@ class CustomerEdit extends Component {
 								defaultValue={this.getDefaultChannelValue()}
 								defaultIndex={this.getDefaultChannelIndex()}
 								options={this.channelOptions}
+								onSelect={(index, value) => { this.changeCustomerTypeList(value) }}
 							/>
 							<TouchableHighlight
 								underlayColor="#c0c0c0"
@@ -409,13 +477,32 @@ class CustomerEdit extends Component {
 	}
 
 	isValidPhoneNumber(text) {
-		let test = /^\d{10}$/.test(text);
+		let test = /^\d{9,14}$/.test(text);
 		if (!test) {
 			alert(
-				'Telephone number should be at least 10 digits long. Example 07xxxxxxxx'
+				'Phone number should be atleast 9 digits long. Example 0752XXXYYY'
 			);
 		}
 		return test;
+	}
+
+	changeCustomerTypeList(value){
+
+			let tindex = 0;
+			if(value === 'Direct') {
+				tindex = 2;
+			} else if(value === 'Reseller') {
+				tindex = 3;
+			} else if (value === 'Water Club') {
+				tindex = 4;
+			}
+			this.saleschannelid = tindex;
+            console.log("Adams" + this.saleschannelid);
+			this.setState({ salescid: tindex });
+			this.customerTypes = PosStorage.getCustomerTypesForDisplay(tindex);
+			this.customerTypeOptions = this.customerTypes.map(customerType => {
+				return customerType.displayName;
+		    });
 	}
 
 	onEdit() {
@@ -431,8 +518,12 @@ class CustomerEdit extends Component {
 		}
 
 		if (
-			!this._textIsEmpty(this.secondPhoneNumber.current.state.propertyText) &&
-			!this.isValidPhoneNumber(this.secondPhoneNumber.current.state.propertyText)
+			!this._textIsEmpty(
+				this.secondPhoneNumber.current.state.propertyText
+			) &&
+			!this.isValidPhoneNumber(
+				this.secondPhoneNumber.current.state.propertyText
+			)
 		) {
 			this.secondPhoneNumber.current.refs.secondPhoneNumber.focus();
 			return;
@@ -461,6 +552,7 @@ class CustomerEdit extends Component {
 				this.customerChannel.current.state.selectedIndex
 			].id;
 		}
+
 		if (this.customerType.current.state.selectedIndex === -1) {
 			this.customerType.current.show();
 			return;
@@ -599,6 +691,14 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white',
 		width: 400,
 		margin: 5
+	},
+	phoneInputText: {
+		fontSize: 24,
+		alignSelf: 'center',
+		backgroundColor: 'white',
+		width: 195,
+		margin: 5,
+		paddingRight:5
 	},
 	dropdownText: {
 		fontSize: 24
