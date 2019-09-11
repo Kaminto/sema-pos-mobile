@@ -275,9 +275,10 @@ class PosApp extends Component {
 
 	render() {
 		if (this.state.isLoading) {
-			console.log("Temp Splash Screen - Load Splash Screen");
-		}
-			return this.getLoginOrHomeScreen();
+			// return <LoadSplashScreen />;
+		  }
+
+		return this.getLoginOrHomeScreen();
 	}
 
 	getLoginOrHomeScreen() {

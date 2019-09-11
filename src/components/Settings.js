@@ -136,6 +136,7 @@ class Settings extends Component {
 			animating: false,
 			selectedLanguage: {},
 			isLoggedIn: setting.token.length > 0 || false,
+
 			isLoading: false
 		};
 

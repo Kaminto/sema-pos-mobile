@@ -190,6 +190,25 @@ class CustomerEdit extends Component {
 							marginTop="1%"
 							placeHolder={i18n.t('account-name')}
 							parent={this}
+							kbType="default"
+							valueFn={this.getName}
+							ref={this.name}
+						/>
+						<CustomerProperty
+							reference="customerNumber"
+							marginTop={0}
+							placeHolder={i18n.t('telephone-number')}
+							parent={this}
+							kbType="phone-pad"
+							valueFn={this.getTelephoneNumber}
+							ref={this.phone}
+						/>
+
+						<CustomerProperty
+							reference="secondPhoneNumber"
+							marginTop={0}
+							placeHolder="Second Phone Number"
+							parent={this}
 							kbType="phone-pad"
 							valueFn={this.getSecondTelephoneNumber}
 							ref={this.secondPhoneNumber}
