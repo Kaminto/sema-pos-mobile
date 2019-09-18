@@ -186,6 +186,85 @@ class Synchronization {
 	synchronizeCustomers() {
 		return new Promise(resolve => {
 			console.log('Synchronization:synchronizeCustomers - Begin');
+			
+			//Sync local customers to the db
+			PosStorage.getPendingCustomers().then(pendings => {
+				pendings.forEach(customerKey => {
+					PosStorage.getCustomerFromKey(customerKey).then(
+						customer => {
+							if (customer != null) {
+								if (customer.syncAction === 'create') {
+									console.log(
+										'Synchronization:synchronizeCustomers -creating customer - ' +
+											customer.name
+									);
+									Communications.createCustomer(customer)
+										.then(() => {
+											console.log(
+												'Synchronization:synchronizeCustomers - Removing customer from pending list - ' +
+													customer.name
+											);
+											PosStorage.removePendingCustomer(
+												customerKey
+											);
+										})
+										.catch(error => {
+											console.log(
+												'Synchronization:synchronizeCustomers Create Customer failed'
+											);
+										});
+								} else if (customer.syncAction === 'delete') {
+									console.log(
+										'Synchronization:synchronizeCustomers -deleting customer - ' +
+											customer.name
+									);
+									Communications.deleteCustomer(customer)
+										.then(() => {
+											console.log(
+												'Synchronization:synchronizeCustomers - Removing customer from pending list - ' +
+													customer.name
+											);
+											PosStorage.removePendingCustomer(
+												customerKey
+											);
+										})
+										.catch(error => {
+											console.log(
+												'Synchronization:synchronizeCustomers Delete Customer failed ' +
+													error
+											);
+										});
+								} else if (customer.syncAction === 'update') {
+									console.log(
+										'Synchronization:synchronizeCustomers -updating customer - ' +
+											customer.name
+									);
+									Communications.updateCustomer(customer)
+										.then(() => {
+											console.log(
+												'Synchronization:synchronizeCustomers - Removing customer from pending list - ' +
+													customer.name
+											);
+											PosStorage.removePendingCustomer(
+												customerKey
+											);
+										})
+										.catch(error => {
+											console.log(
+												'Synchronization:synchronizeCustomers Update Customer failed ' +
+													error
+											);
+										});
+								}
+							} else {
+								PosStorage.removePendingCustomer(customerKey);
+							}
+						}
+					);
+				});
+			});
+
+			//Sync db customers
 			Communications.getCustomers(this.lastCustomerSync)
 				.then(web_customers => {
 					if (web_customers.hasOwnProperty('customers')) {
@@ -208,91 +287,91 @@ class Synchronization {
 							localCustomers: pendingCustomers.length,
 							remoteCustomers: web_customers.customers.length
 						});
-						pendingCustomers.forEach(customerKey => {
-							PosStorage.getCustomerFromKey(customerKey).then(
-								customer => {
-									if (customer != null) {
-										if (customer.syncAction === 'create') {
-											console.log(
-												'Synchronization:synchronizeCustomers -creating customer - ' +
-													customer.name
-											);
-											Communications.createCustomer(
-												customer
-											)
-												.then(() => {
-													console.log(
-														'Synchronization:synchronizeCustomers - Removing customer from pending list - ' +
-															customer.name
-													);
-													PosStorage.removePendingCustomer(
-														customerKey
-													);
-												})
-												.catch(error => {
-													console.log(
-														'Synchronization:synchronizeCustomers Create Customer failed'
-													);
-												});
-										} else if (
-											customer.syncAction === 'delete'
-										) {
-											console.log(
-												'Synchronization:synchronizeCustomers -deleting customer - ' +
-													customer.name
-											);
-											Communications.deleteCustomer(
-												customer
-											)
-												.then(() => {
-													console.log(
-														'Synchronization:synchronizeCustomers - Removing customer from pending list - ' +
-															customer.name
-													);
-													PosStorage.removePendingCustomer(
-														customerKey
-													);
-												})
-												.catch(error => {
-													console.log(
-														'Synchronization:synchronizeCustomers Delete Customer failed ' +
-															error
-													);
-												});
-										} else if (
-											customer.syncAction === 'update'
-										) {
-											console.log(
-												'Synchronization:synchronizeCustomers -updating customer - ' +
-													customer.name
-											);
-											Communications.updateCustomer(
-												customer
-											)
-												.then(() => {
-													console.log(
-														'Synchronization:synchronizeCustomers - Removing customer from pending list - ' +
-															customer.name
-													);
-													PosStorage.removePendingCustomer(
-														customerKey
-													);
-												})
-												.catch(error => {
-													console.log(
-														'Synchronization:synchronizeCustomers Update Customer failed ' +
-															error
-													);
-												});
-										}
-									} else {
-										PosStorage.removePendingCustomer(
-											customerKey
-										);
-									}
-								}
-							);
-						});
+						// pendingCustomers.forEach(customerKey => {
+						// 	PosStorage.getCustomerFromKey(customerKey).then(
+						// 		customer => {
+						// 			if (customer != null) {
+						// 				if (customer.syncAction === 'create') {
+						// 					console.log(
+						// 						'Synchronization:synchronizeCustomers -creating customer - ' +
+						// 							customer.name
+						// 					);
+						// 					Communications.createCustomer(
+						// 						customer
+						// 					)
+						// 						.then(() => {
+						// 							console.log(
+						// 								'Synchronization:synchronizeCustomers - Removing customer from pending list - ' +
+						// 									customer.name
+						// 							);
+						// 							PosStorage.removePendingCustomer(
+						// 								customerKey
+						// 							);
+						// 						})
+						// 						.catch(error => {
+						// 							console.log(
+						// 								'Synchronization:synchronizeCustomers Create Customer failed'
+						// 							);
+						// 						});
+						// 				} else if (
+						// 					customer.syncAction === 'delete'
+						// 				) {
+						// 					console.log(
+						// 						'Synchronization:synchronizeCustomers -deleting customer - ' +
+						// 							customer.name
+						// 					);
+						// 					Communications.deleteCustomer(
+						// 						customer
+						// 					)
+						// 						.then(() => {
+						// 							console.log(
+						// 								'Synchronization:synchronizeCustomers - Removing customer from pending list - ' +
+						// 									customer.name
+						// 							);
+						// 							PosStorage.removePendingCustomer(
+						// 								customerKey
+						// 							);
+						// 						})
+						// 						.catch(error => {
+						// 							console.log(
+						// 								'Synchronization:synchronizeCustomers Delete Customer failed ' +
+						// 									error
+						// 							);
+						// 						});
+						// 				} else if (
+						// 					customer.syncAction === 'update'
+						// 				) {
+						// 					console.log(
+						// 						'Synchronization:synchronizeCustomers -updating customer - ' +
+						// 							customer.name
+						// 					);
+						// 					Communications.updateCustomer(
+						// 						customer
+						// 					)
+						// 						.then(() => {
+						// 							console.log(
+						// 								'Synchronization:synchronizeCustomers - Removing customer from pending list - ' +
+						// 									customer.name
+						// 							);
+						// 							PosStorage.removePendingCustomer(
+						// 								customerKey
+						// 							);
+						// 						})
+						// 						.catch(error => {
+						// 							console.log(
+						// 								'Synchronization:synchronizeCustomers Update Customer failed ' +
+						// 									error
+						// 							);
+						// 						});
+						// 				}
+						// 			} else {
+						// 				PosStorage.removePendingCustomer(
+						// 					customerKey
+						// 				);
+						// 			}
+						// 		}
+						// 	);
+						// });
 						if (updated) {
 							Events.trigger('CustomersUpdated', {});
 						}
@@ -417,9 +496,9 @@ class Synchronization {
 						localReceipts: salesReceipts.length
 					});
 					salesReceipts.forEach(receipt => {
-						console.log("***********************")
-						console.log(receipt.sale)
-						console.log("***********************")
+						console.log('***********************');
+						console.log(receipt.sale);
+						console.log('***********************');
 
 						Communications.createReceipt(receipt.sale)
 							.then(result => {
@@ -564,7 +643,6 @@ class Synchronization {
 					}
 				})
 				.catch(error => {
-
 					resolve({ error: error.message, remoteProducts: null });
 					console.log(
 						'Synchronization.ProductsMrpsUpdated - error ' + error

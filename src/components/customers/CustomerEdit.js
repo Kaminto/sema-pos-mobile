@@ -191,8 +191,8 @@ class CustomerEdit extends Component {
 							placeHolder={i18n.t('account-name')}
 							parent={this}
 							kbType="phone-pad"
-							valueFn={this.getSecondTelephoneNumber}
-							ref={this.secondPhoneNumber}
+							valueFn={this.getName}
+							ref={this.name}
 						/>
 						<View
 							style={{

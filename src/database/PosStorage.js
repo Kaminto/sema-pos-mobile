@@ -295,17 +295,20 @@ class PosStorage {
 			try {
 				realm.write(() => {
 					let obj = realm.objectForPrimaryKey('SemaRealm', key);
-					if (obj != null){
-						realm.create('SemaRealm', { id: key, data: value }, true);
-					}
-					else {
+					if (obj != null) {
+						realm.create(
+							'SemaRealm',
+							{ id: key, data: value },
+							true
+						);
+					} else {
 						realm.create('SemaRealm', { id: key, data: value });
 					}
 				});
 			} catch (error) {
 				reject(error);
 			}
-	  });
+		});
 	}
 
 	removeItem(key) {
@@ -358,7 +361,11 @@ class PosStorage {
 						// realm.create('SemaRealm', {id: key, data: value})
 						let obj = realm.objectForPrimaryKey('SemaRealm', key);
 						if (obj != null)
-							realm.create('SemaRealm', { id: key, data: value }, true);
+							realm.create(
+								'SemaRealm',
+								{ id: key, data: value },
+								true
+							);
 						else
 							realm.create('SemaRealm', { id: key, data: value });
 					}
@@ -514,7 +521,7 @@ class PosStorage {
 		);
 	}
 
-	createCustomerFull(
+	async createCustomerFull(
 		phone,
 		name,
 		address,
@@ -546,11 +553,17 @@ class PosStorage {
 		newCustomer.syncAction = 'create';
 		this.customersKeys.push(key);
 		this.pendingCustomers.push(key);
+
 		let keyArray = [
 			[customersKey, this.stringify(this.customersKeys)], // Array of customer keys
-			[key, this.stringify(newCustomer)], // The new customer
-			[pendingCustomersKey, this.stringify(this.pendingCustomers)] // Array pending customer
+			[key, this.stringify(newCustomer)] // The new customer
 		];
+
+		// let keyArray = [
+		// 	[customersKey, this.stringify(this.customersKeys)], // Array of customer keys
+		// 	[key, this.stringify(newCustomer)], // The new customer
+		// 	[pendingCustomersKey, this.stringify(this.pendingCustomers)] // Array pending customer
+		// ];
 
 		this.multiSet(keyArray)
 			.then(rows => {
@@ -559,6 +572,20 @@ class PosStorage {
 			.catch(error => {
 				console.log('PosStorage:createCustomer: Error: ' + error);
 			});
+
+		try {
+			Communications.createCustomer(newCustomer)
+				.then(resp => {
+					console.log('Customer created successfully');
+					console.log(resp);
+				})
+				.catch(e => {
+					this.setKey(pendingCustomersKey, this.pendingCustomers);
+				});
+		} catch (error) {
+			this.setKey(pendingCustomersKey, this.pendingCustomers);
+		}
+
 		return newCustomer;
 	}
 
@@ -647,7 +674,7 @@ class PosStorage {
 		customer.updatedDate = new Date();
 		customer.syncAction = 'update';
 		customer.frequency = frequency;
-		customer.secondPhoneNumber=secondPhoneNumber
+		customer.secondPhoneNumber = secondPhoneNumber;
 
 		if (customer.reminder_date) {
 			customer.reminder_date = moment(customer.reminder_date).format(
@@ -1305,30 +1332,31 @@ class PosStorage {
 
 	getCustomerTypesForDisplay(salesChannelId = 0) {
 		let customerTypesForDisplay = [];
-		if(salesChannelId != 0) {
+		if (salesChannelId != 0) {
 			this.customerTypes.forEach(customerType => {
-				if (customerType.name !== 'anonymous' && customerType.salesChannelId == salesChannelId) {
-						customerTypesForDisplay.push({
-							id: customerType.id,
-							name: customerType.name,
-							displayName: capitalizeWord(customerType.name),
-							salesChannelId: customerType.salesChannelId
-						});
+				if (
+					customerType.name !== 'anonymous' &&
+					customerType.salesChannelId == salesChannelId
+				) {
+					customerTypesForDisplay.push({
+						id: customerType.id,
+						name: customerType.name,
+						displayName: capitalizeWord(customerType.name),
+						salesChannelId: customerType.salesChannelId
+					});
 				}
 			});
-		}
-		else {
+		} else {
 			this.customerTypes.forEach(customerType => {
 				if (customerType.name !== 'anonymous' && salesChannelId == 0) {
-						customerTypesForDisplay.push({
-							id: customerType.id,
-							name: customerType.name,
-							displayName: capitalizeWord(customerType.name),
-							salesChannelId: customerType.salesChannelId
-						});
+					customerTypesForDisplay.push({
+						id: customerType.id,
+						name: customerType.name,
+						displayName: capitalizeWord(customerType.name),
+						salesChannelId: customerType.salesChannelId
+					});
 				}
 			});
-
 		}
 		return customerTypesForDisplay;
 	}
@@ -1612,6 +1640,11 @@ class PosStorage {
 		} catch (error) {
 			console.log('Pos Storage Error removing data' + error);
 		}
+	}
+
+	async getNetInfo() {
+		const isConnected = await NetInfo.isConnected.fetch();
+		return isConnected;
 	}
 }
 // Storage is a singleton
