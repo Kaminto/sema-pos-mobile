@@ -44,6 +44,8 @@
   "account-name": "Non Kliyan",
   "telephone-number": "# Telefòn",
 
+  "product": "Product", 
+
   "address": "Adrès",
   "balance": "Balans",
   "channel": "Kanal Vant",
@@ -68,6 +70,7 @@
   "order-total": "Total Kòmand",
   "item": "Pwodui senkronizeui",
   "quantity": "Kantite",
+  "unitPrice": "Unit Price",
 
   "charge": "Fakti",
   "pay": "Peye",

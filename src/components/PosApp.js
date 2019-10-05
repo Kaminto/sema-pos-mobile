@@ -7,6 +7,7 @@ import CustomerViews from './customers/CustomerViews';
 import CustomerBar from './customers/CustomerBar';
 import OrderView from './orders/OrderView';
 import CustomerEdit from './customers/CustomerEdit';
+import CustomerDetails from './customers/CustomerDetails'
 import Settings from './Settings';
 import Login from './Login';
 
@@ -276,14 +277,14 @@ class PosApp extends Component {
 	render() {
 		if (this.state.isLoading) {
 			// return <LoadSplashScreen />;
-		  }
+		}
 
 		return this.getLoginOrHomeScreen();
 	}
 
 	getLoginOrHomeScreen() {
 		console.log('getLoginOrHomeScreen - isLoggedIn: ' +
-				this.props.showScreen.isLoggedIn
+			this.props.showScreen.isLoggedIn
 		);
 
 		if (!this.props.showScreen.isLoggedIn) {
@@ -355,7 +356,7 @@ class ViewSwitcher extends Component {
 			) : null;
 		}
 	}
-}
+} 
 
 class ScreenSwitcher extends Component {
 	render() {
@@ -372,6 +373,8 @@ class ScreenSwitcher extends Component {
 				);
 			case 'newCustomer':
 				return <CustomerEdit isEdit={false} />;
+			case 'customerDetails':
+				return <CustomerDetails />;
 			case 'editCustomer':
 				return <CustomerEdit isEdit={true} />;
 			case 'main':
