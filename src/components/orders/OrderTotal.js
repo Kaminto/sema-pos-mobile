@@ -1,32 +1,39 @@
-import React, {Component}  from "react"
+import React, { Component } from "react"
 import { View, Text, FlatList, TouchableHighlight, StyleSheet } from "react-native";
-import {bindActionCreators} from "redux";
-import {connect} from "react-redux";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 import * as OrderActions from "../../actions/OrderActions";
 import PosStorage from "../../database/PosStorage";
 import * as Utilities from "../../services/Utilities";
-
+import * as ToolbarActions from '../../actions/ToolBarActions';
 import i18n from "../../app/i18n";
 
 class OrderTotal extends Component {
 	render() {
 		return (
-			<View style = {styles.container}>
-				<Text style={[{flex: 2}, styles.totalText]}>{i18n.t('order-total')}</Text>
-				<Text style={[{flex: 3}, styles.totalText]}>{Utilities.formatCurrency(this.getAmount())}</Text>
-
+			<View style={styles.container}>
+				<Text style={[{ flex: 2 }, styles.totalText]}>{i18n.t('order-total')}</Text>
+				<Text style={[{ flex: 3 }, styles.totalText]}>{Utilities.formatCurrency(this.getAmount())}</Text>
+				<TouchableHighlight onPress={() => this.showPaymentType()}>
+					<Text >Payment Type: </Text>
+				</TouchableHighlight>
 			</View>
 		);
 	}
-	getAmount = () =>{
-		return this.props.products.reduce( (total, item) => { return(total + item.quantity * this.getItemPrice(item.product)) }, 0);
+
+	showPaymentType() {
+		this.props.toolbarActions.ShowScreen('paymentTypes');
+	}
+
+	getAmount = () => {
+		return this.props.products.reduce((total, item) => { return (total + item.quantity * this.getItemPrice(item.product)) }, 0);
 	};
 
-	getItemPrice = (product) =>{
+	getItemPrice = (product) => {
 		let salesChannel = PosStorage.getSalesChannelFromName(this.props.channel.salesChannel);
-		if( salesChannel ){
+		if (salesChannel) {
 			let productMrp = PosStorage.getProductMrps()[PosStorage.getProductMrpKeyFromIds(product.productId, salesChannel.id)];
-			if( productMrp ){
+			if (productMrp) {
 				return productMrp.priceAmount;
 			}
 		}
@@ -36,11 +43,16 @@ class OrderTotal extends Component {
 }
 
 function mapStateToProps(state, props) {
-	return {products: state.orderReducer.products,
-		channel: state.orderReducer.channel};
+	return {
+		products: state.orderReducer.products,
+		channel: state.orderReducer.channel
+	};
 }
 function mapDispatchToProps(dispatch) {
-	return {orderActions: bindActionCreators(OrderActions,dispatch)};
+	return {
+		orderActions: bindActionCreators(OrderActions, dispatch),
+		toolbarActions: bindActionCreators(ToolbarActions, dispatch)
+	};
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderTotal);
@@ -48,18 +60,18 @@ export default connect(mapStateToProps, mapDispatchToProps)(OrderTotal);
 const styles = StyleSheet.create({
 	container: {
 		flex: 2,
-		backgroundColor:"#e0e0e0",
+		backgroundColor: "#e0e0e0",
 		borderColor: '#2858a7',
-		borderTopWidth:5,
-		borderRightWidth:5,
+		borderTopWidth: 5,
+		borderRightWidth: 5,
 
 	},
-	totalText:{
-		marginTop:10,
-		fontWeight:'bold',
-		fontSize:18,
-		color:'black',
-		alignSelf:'center'
+	totalText: {
+		marginTop: 10,
+		fontWeight: 'bold',
+		fontSize: 18,
+		color: 'black',
+		alignSelf: 'center'
 	}
 
 });

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
 import PosStorage from "../../database/PosStorage";
-
+import * as ToolbarActions from '../../actions/ToolBarActions';
 import i18n from "../../app/i18n";
 
 const widthQuanityModal = 250;
@@ -66,7 +66,7 @@ class OrderItems extends Component {
 		this.setState({ isQuantityVisible: false });
 	};
 
-	
+
 	showQuantityChanger() {
 		this.props.toolbarActions.ShowScreen('quanityChanger');
 	}
@@ -199,7 +199,10 @@ function mapStateToProps(state, props) {
 	};
 }
 function mapDispatchToProps(dispatch) {
-	return { orderActions: bindActionCreators(OrderActions, dispatch) };
+	return {
+		orderActions: bindActionCreators(OrderActions, dispatch),
+		toolbarActions: bindActionCreators(ToolbarActions, dispatch)
+	};
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderItems);
