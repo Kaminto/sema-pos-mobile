@@ -322,6 +322,7 @@ class CustomerList extends Component {
 	onPressItem = item => {
 		console.log('_onPressItem');
 		this.props.customerActions.CustomerSelected(item);
+		this.props.toolbarActions.ShowScreen("customerDetails");
 		// this.setState({ selectedCustomer:item });
 		this.setState({ refresh: !this.state.refresh });
 		Events.trigger('onOrder', { customer: item });

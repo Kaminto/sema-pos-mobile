@@ -8,5 +8,5 @@
             android:gravity="center|fill"
             android:src="@drawable/jibublue"/>
     </item>
-</layer-list>
 
+</layer-list>

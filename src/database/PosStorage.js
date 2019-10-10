@@ -209,7 +209,7 @@ class PosStorage {
 							remoteReceiptsKey,
 							reminderDataItemKey
 						];
-
+						
 						let results = this.multiGet(keyArray).then(
 							function(results) {
 								console.log(
@@ -258,6 +258,7 @@ class PosStorage {
 									results[14][1]
 								); // inventoriesKey
 								this.receipts = this.parseJson(results[15][1]); // remoteReceiptsKey
+
 								this.reminderDataKeys = this.parseJson(
 									results[16][1]
 								); //reminderData
