@@ -8,6 +8,8 @@ import {
 	FlatList,
 	Image
 } from 'react-native';
+ 
+import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from 'prop-types';
 
@@ -21,7 +23,7 @@ import PosStorage from '../../database/PosStorage';
 import * as CustomerActions from '../../actions/CustomerActions';
 
 import i18n from '../../app/i18n';
-class CustomerDetails extends Component {
+class QuantityChanger extends Component {
 	constructor(props) {
 		super(props);
 
@@ -29,9 +31,20 @@ class CustomerDetails extends Component {
 			refresh: false,
 			// selectedCustomer: null,
 			searchString: '',
-			hasScrolled: false
+			hasScrolled: false,
+			tableHead: ['Quantity'],
+			tableData: [
+				['-', '10', '+'],
+				['Discounts (Show All Discounts applicable to this store)'],
+				['Kajibu', ''],
+				['20L Tap 10 Purchase', ''],
+				['Custom', 'An input field for custom discount value'],
+				['Notes'],
+				['Save', 'Remove Item']
+			]
 		};
 	}
+
 	componentDidMount() {
 		console.log(
 			'CustomerDetails:componentDidMount - filter: ' + this.props.filter
@@ -63,7 +76,10 @@ class CustomerDetails extends Component {
 		return true;
 	}
 
+
 	render() {
+	 
+		const state = this.state;
 		return (
 			<View style={{ flex: 1 }}>
 				<View style={{
@@ -72,10 +88,9 @@ class CustomerDetails extends Component {
 					backgroundColor: 'white',
 					alignItems: 'center'
 				}}>
-					<View style={[styles.leftToolbar]}>
-						<SelectedCustomerDetails
-							selectedCustomer={this.props.selectedCustomer}
-						/>
+					<View style={[styles.leftToolbar
+					]}>
+						
 						<TouchableHighlight onPress={() => this.onCancelEdit()}>
 							<Image
 								source={require('../../images/icons8-cancel-50.png')}
@@ -87,29 +102,21 @@ class CustomerDetails extends Component {
 
 				</View>
 
-
-				<View style={{ flex: 1, backgroundColor: '#fff' }}>
-
-				<FlatList
-					ref={ref => {
-						this.flatListRef = ref;
-					}}
-					// getItemLayout={this.getItemLayout}
-					data={[]}
-					ListHeaderComponent={this.showHeader}
-					extraData={this.state.refresh}
-					// extraData={this.state}
-					keyExtractor={item => item.customerId}
-					initialNumToRender={50}
-				/>
-				
+				<View style={{ flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' }}>
+					<Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
+						<Row data={state.tableHead} style={{ height: 40, backgroundColor: '#f1f8ff' }} textStyle={{ margin: 6 }} />
+						
+						<Rows data={state.tableData} textStyle={{ margin: 6 }} />
+					</Table>
 				</View>
+
+
 			</View>
 		);
 	}
-  
-	 
-  
+
+
+
 	showHeader = () => {
 		console.log('Displaying header');
 		return (
@@ -141,8 +148,8 @@ class CustomerDetails extends Component {
 			</View>
 		);
 	};
- 
- 
+
+
 	onCancelEdit() {
 		this.props.toolbarActions.ShowScreen('main');
 		var that = this;
@@ -152,12 +159,14 @@ class CustomerDetails extends Component {
 			});
 		}, 10);
 	}
- 
-   
+
+
 }
 
 
 class SelectedCustomerDetails extends React.Component {
+
+
 	render() {
 		return (
 			<View style={styles.commandBarContainer}>
@@ -212,7 +221,7 @@ function mapDispatchToProps(dispatch) {
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(CustomerDetails);
+)(QuantityChanger);
 
 const styles = StyleSheet.create({
 	headerText: {
@@ -226,7 +235,7 @@ const styles = StyleSheet.create({
 	headerItem: {
 		fontWeight: 'bold',
 		fontSize: 18
-	}, 
+	},
 	headerBackground: {
 		backgroundColor: '#ABC1DE'
 	},

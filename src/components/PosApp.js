@@ -6,8 +6,9 @@ import Toolbar from './Toolbar';
 import CustomerViews from './customers/CustomerViews';
 import CustomerBar from './customers/CustomerBar';
 import OrderView from './orders/OrderView';
+import QuantityChanger from './orders/QuantityChanger';
 import CustomerEdit from './customers/CustomerEdit';
-import CustomerDetails from './customers/CustomerDetails'
+import CustomerDetails from './customers/CustomerDetails';
 import Settings from './Settings';
 import Login from './Login';
 
@@ -356,7 +357,7 @@ class ViewSwitcher extends Component {
 			) : null;
 		}
 	}
-} 
+}
 
 class ScreenSwitcher extends Component {
 	render() {
@@ -375,6 +376,8 @@ class ScreenSwitcher extends Component {
 				return <CustomerEdit isEdit={false} />;
 			case 'customerDetails':
 				return <CustomerDetails />;
+			case 'quanityChanger':
+				return <QuantityChanger  />;
 			case 'editCustomer':
 				return <CustomerEdit isEdit={true} />;
 			case 'main':
