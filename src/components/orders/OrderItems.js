@@ -1,15 +1,28 @@
 import React, { Component } from "react";
-import { View, Modal, Text, FlatList, TouchableHighlight, StyleSheet } from "react-native";
+import { View, Text, Button, ScrollView, FlatList, TextInput, Dimensions, TouchableHighlight, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
 import PosStorage from "../../database/PosStorage";
 import * as ToolbarActions from '../../actions/ToolBarActions';
 import i18n from "../../app/i18n";
+import Modal from 'react-native-modalbox';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-const widthQuanityModal = 250;
-const heightQuanityModal = 400;
+import ToggleSwitch from 'toggle-switch-react-native';
 
+import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
+const { height, width } = Dimensions.get('window');
+const widthQuanityModal = 1000;
+const heightQuanityModal = 500;
+const inputTextWidth = 400;
+const marginInputItems = width / 2 - inputTextWidth / 2;
+
+const inputFontHeight = Math.round((24 * height) / 752);
+const marginTextInput = Math.round((5 * height) / 752);
+const marginSpacing = Math.round((20 * height) / 752);
+
+var screen = Dimensions.get('window');
 const calculatorDigits = [
 	{ id: 7, display: "7" },
 	{ id: 8, display: "8" },
@@ -30,11 +43,57 @@ class OrderItems extends Component {
 			isQuantityVisible: false,
 			selectedItem: {},
 			accumulator: 0,
-			firstKey: true
+			firstKey: true,
+			isKajibu: false,			
+			is20LTap: false,	
+			isOpen: false,
+			isDisabled: false,
+			swipeToClose: true,
+			sliderValue: 0.3,
+
+			tableHead: ['Quantity'],
+			tableData: [
+				['-', '10', '+'],
+				['Discounts (Show All Discounts applicable to this store)'],
+				['Kajibu', ''],
+				['20L Tap 10 Purchase', ''],
+				['Custom', 'An input field for custom discount value'],
+				['Notes'],
+				['Save', 'Remove Item']
+			]
 		};
 	}
 
+	onClose() {
+		console.log('Modal just closed');
+	}
+
+	onOpen() {
+		console.log('Modal just opened');
+	}
+
+	onClosingState(state) {
+		console.log('the open/close of the swipeToClose just changed');
+	}
+
+	renderList() {
+		var list = [];
+
+		for (var i = 0; i < 50; i++) {
+			list.push(<Text style={styles.text} key={i}>Elem {i}</Text>);
+		}
+
+		return list;
+	}
+
+
 	render() {
+		var BContent = (
+			<View style={[styles.btn, styles.btnModal]}>
+				<Button title="X" color="black" onPress={() => this.setState({ isOpen: false })} />
+			</View>
+		);
+		const state = this.state;
 		return (
 			<View style={styles.container}>
 				<FlatList
@@ -51,12 +110,138 @@ class OrderItems extends Component {
 					)}
 					keyExtractor={item => item.product.productId.toString()}
 				/>
-				<Modal visible={this.state.isQuantityVisible}
+
+
+				{/* <Button title="Position bottom + ScrollView" onPress={() => this.refs.modal6.open()} style={styles.btn} /> */}
+
+				<Modal style={[styles.modal4]} swipeToClose={true} position={"bottom"} ref={"modal6"} swipeArea={10}>
+					<ScrollView>
+
+						<View style={{
+							flex: 1,
+							width: "100%",
+							flexDirection: 'row',
+							justifyContent: 'center',
+							alignItems: 'stretch',
+						}}>
+							<View style={{ flex: 1, height: 50, backgroundColor: 'powderblue' }}>
+
+								<TouchableHighlight style={{ flex: 1 }}
+									onPress={() => this.counterChangedHandler('inc')}>
+									<Text style={[styles.baseItem, styles.leftMargin]}>-</Text>
+								</TouchableHighlight>
+
+							</View>
+							<View style={{ flex: 1, height: 50, backgroundColor: 'skyblue' }} >
+								<Text style={[styles.baseItem]}>{this.state.selectedItem.quantity}@{this.getItemPrice(this.state.selectedItem.product)}</Text>
+							</View>
+							<View style={{ flex: 1, height: 50, backgroundColor: 'steelblue' }}>
+								<TouchableHighlight style={{ flex: 1 }}
+									onPress={() => this.counterChangedHandler('dec')}>
+									<Text style={[styles.baseItem, styles.leftMargin]}>+</Text>
+								</TouchableHighlight>
+
+
+							</View>
+						</View>
+
+						<View style={{ flex: 1, flexDirection: 'row' }}>
+							<View style={{ flex: 1, height: 50, backgroundColor: 'steelblue' }}>
+								<Text style={[styles.baseItem]}>Price</Text>
+							</View>
+							<View style={{ flex: 1, height: 50, backgroundColor: 'steelblue' }}>
+								<Text style={[styles.baseItem]}>{(this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)).toFixed(2)}</Text>
+							</View>
+						</View>
+
+						<View style={{ flex: 1, flexDirection: 'row' }}>
+							<View style={{ flex: 1, height: 50 }}>
+								<Text style={[styles.baseItem]}>Discounts (Show all discount applicable to this store)</Text>
+							</View>
+						</View>
+
+
+						<View style={{ flex: 1, flexDirection: 'row' }}>
+							<View style={{ flex: 1, height: 50, backgroundColor: 'steelblue' }}>
+								<Text style={[styles.baseItem]}>Kajibu</Text>
+							</View>
+							<View style={{ flex: 1, height: 50, backgroundColor: 'steelblue' }}>
+								<ToggleSwitch
+									isOn={this.state.isKajibu}
+									onColor="green"
+									offColor="red"
+									labelStyle={{ color: "black", fontWeight: "900" }}
+									size="large"
+									onToggle={isOn => {
+										console.log("changed to : ", isOn);
+										this.setState({ isKajibu: isOn===true ? true : false });
+									}}
+								/>
+							</View>
+						</View>
+
+						<View style={{ flex: 1, flexDirection: 'row' }}>
+							<View style={{ flex: 1, height: 50, backgroundColor: 'steelblue' }}>
+								<Text style={[styles.baseItem]}>20L Tap 10th Purchase</Text>
+							</View>
+							<View style={{ flex: 1, height: 50, backgroundColor: 'steelblue' }}>
+								<ToggleSwitch
+									isOn={this.state.is20LTap}
+									onColor="green"
+									offColor="red"
+									labelStyle={{ color: "black", fontWeight: "900" }}
+									size="large"
+									onToggle={isOn => {
+										console.log("changed to : ", isOn);
+										
+										this.setState({ is20LTap: isOn===true ? true : false });
+									}}
+								/>
+							</View>
+						</View>
+
+						<View style={{ flex: 1, flexDirection: 'row' }}>
+							<View style={{ flex: 1, height: 50, backgroundColor: 'steelblue' }}>
+								<Text style={[styles.baseItem]}>Custom</Text>
+							</View>
+							<View style={{ flex: 1, height: 50, backgroundColor: 'steelblue' }}>
+								<TextInput
+									style={[styles.inputText]}
+									underlineColorAndroid="transparent"
+									placeholder="Custom Discount"
+								/>
+							</View>
+						</View>
+
+						<View style={{ flex: 1, flexDirection: 'row' }}>
+							<View style={{ flex: 1, height: 50 }}>
+								<Text style={[styles.baseItem]}>Notes</Text>
+							</View>
+						</View>
+
+						<View style={{ flex: 1, flexDirection: 'row' }}>
+							<View style={{ flex: 1, height: 50 }}>
+								<TextInput
+									style={[styles.inputText]}
+									underlineColorAndroid="transparent"
+									placeholder="Notes"
+								/>
+							</View>
+						</View>
+
+
+
+					</ScrollView>
+				</Modal>
+
+
+
+				{/* <Modal animationType="slide" visible={this.state.isQuantityVisible}
 					backdropColor={'red'}
 					transparent={true}
 					onRequestClose={this.closeHandler}>
 					{this.ShowQuantityContent()}
-				</Modal>
+				</Modal> */}
 			</View>
 
 		);
@@ -76,6 +261,7 @@ class OrderItems extends Component {
 		this.setState({ selectedItem: item });
 		this.setState({ accumulator: item.quantity });
 		this.setState({ firstKey: true });
+		this.refs.modal6.open();
 	};
 
 
@@ -155,6 +341,69 @@ class OrderItems extends Component {
 			this.setState({ accumulator: (this.state.accumulator * 10) + digit.id });
 		}
 	};
+
+	onAdd = () => {
+		this.setState({ isQuantityVisible: false });
+		let unitPrice = this.getItemPrice(this.state.selectedItem.product);
+		console.log('first -add', this.state.accumulator);
+		this.setState((prevState) => { return { accumulator: prevState.accumulator + 1 } })
+		//this.state.selectedItem.quantity
+		console.log('second -add', this.state.accumulator);
+		//console.log(this.state.selectedItem.quantity);
+
+		if (this.state.accumulator === 0) {
+			this.props.orderActions.RemoveProductFromOrder(this.state.selectedItem.product, unitPrice);
+		} else {
+			this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, this.state.accumulator, unitPrice);
+		}
+	};
+
+
+	counterChangedHandler = (action, value) => {
+		this.setState({ isQuantityVisible: false });
+		let unitPrice = this.getItemPrice(this.state.selectedItem.product);
+		switch (action) {
+			case 'inc':
+				if (this.state.accumulator === 0) {
+					this.refs.modal6.close();
+					this.props.orderActions.RemoveProductFromOrder(this.state.selectedItem.product, unitPrice);
+				} else {
+					this.setState((prevState) => { return { accumulator: prevState.accumulator - 1 } })
+
+					this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, this.state.accumulator, unitPrice);
+				}
+				break;
+			case 'dec':
+				if (this.state.accumulator === 0) {
+					this.refs.modal6.close();
+					this.props.orderActions.RemoveProductFromOrder(this.state.selectedItem.product, unitPrice);
+				} else {
+					this.setState((prevState) => { return { accumulator: prevState.accumulator + 1 } })
+
+					this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, this.state.accumulator, unitPrice);
+				}
+				break;
+		}
+	}
+
+
+
+	onSub = () => {
+		this.setState({ isQuantityVisible: false });
+		let unitPrice = this.getItemPrice(this.state.selectedItem.product);
+		console.log('first -sub', this.state.accumulator)
+		this.setState((prevState) => { return { accumulator: prevState.accumulator - 1 } })
+		//this.state.selectedItem.quantity
+		console.log('second - sub', this.state.accumulator);
+		//console.log(this.state.selectedItem.quantity);
+
+		if (this.state.accumulator === 0) {
+			this.props.orderActions.RemoveProductFromOrder(this.state.selectedItem.product, unitPrice);
+		} else {
+			this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, this.state.accumulator, unitPrice);
+		}
+	};
+
 	getDigit = (digit) => {
 		return (
 			<View style={this.getDigitStyle(digit)}>
@@ -179,6 +428,9 @@ class OrderItems extends Component {
 	};
 
 	getItemPrice = (item) => {
+		if (!item) {
+			return 1;
+		}
 		let salesChannel = PosStorage.getSalesChannelFromName(this.props.channel.salesChannel);
 		if (salesChannel) {
 			let productMrp = PosStorage.getProductMrps()[PosStorage.getProductMrpKeyFromIds(item.productId, salesChannel.id)];
@@ -219,6 +471,9 @@ const styles = StyleSheet.create({
 		backgroundColor: '#ABC1DE'
 	},
 	leftMargin: {
+		left: 10
+	},
+	rightMargin: {
 		left: 10
 	},
 	headerLeftMargin: {
@@ -262,6 +517,10 @@ const styles = StyleSheet.create({
 		borderWidth: 4,
 		borderRadius: 3
 	},
+	production: {
+		fontWeight: "bold",
+		fontSize: 24,
+	},
 	modalCalculator: {
 		flex: .70,
 		flexDirection: 'row',
@@ -272,6 +531,11 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 
+	},
+	inputText: {
+		fontSize: inputFontHeight,
+		alignSelf: 'center',
+		backgroundColor: 'white',
 	},
 	digitContainer: {
 		flex: 1,
@@ -306,5 +570,56 @@ const styles = StyleSheet.create({
 		fontSize: 30,
 		flex: 1,
 		textAlign: 'center'
+	},
+
+
+
+	wrapper: {
+		paddingTop: 50,
+		flex: 1
+	},
+
+	modal: {
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+
+	modal2: {
+		height: 230,
+		backgroundColor: "#3B5998"
+	},
+
+	modal3: {
+		height: 300,
+		width: 300
+	},
+
+	modal4: {
+		height: 300
+	},
+
+	btn: {
+		margin: 10,
+		backgroundColor: "#3B5998",
+		color: "white",
+		padding: 10
+	},
+	totalItem: {
+		fontWeight: "bold",
+		fontSize: 18,
+		paddingLeft: 10,
+	},
+	btnModal: {
+		position: "absolute",
+		top: 0,
+		right: 0,
+		width: 50,
+		height: 50,
+		backgroundColor: "transparent"
+	},
+
+	text: {
+		color: "black",
+		fontSize: 22
 	}
 });

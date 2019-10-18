@@ -168,6 +168,7 @@ dependencies {
 	implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    compile project(':react-native-vector-icons')
 
 	if (enableHermes) {
     def hermesPath = "../../node_modules/hermesvm/android/";
@@ -184,3 +185,9 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+
+project.ext.vectoricons = [
+    iconFontNames: [ 'Ionicons.ttf','FontAwesome.ttf','MaterialIcons.ttf', 'EvilIcons.ttf' ] // Name of the font files you want to copy
+]
+
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"

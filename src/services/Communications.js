@@ -27,6 +27,7 @@ class Communications {
 		this._siteId = siteId;
 	}
 	login() {
+		console.log("loginin");
 		let options = {
 			method: 'POST',
 			headers: {
@@ -38,12 +39,13 @@ class Communications {
 				password: this._password
 			})
 		};
-
+		console.log("loginin", options);
 		return new Promise((resolve, reject) => {
 			try {
+				console.log("this._url",this._url)
 				fetch(this._url + 'sema/login', options)
 					.then(response => {
-						console.log(response.status);
+						console.log("response",response.status);
 						if (response.status == 200) {
 							response
 								.json()
