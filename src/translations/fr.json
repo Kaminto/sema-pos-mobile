@@ -48,6 +48,9 @@
   "over-due-amount-title": "Paiement excessif",
   "over-due-amount-text": "Le montant du paiement est supérieur au montant dû. Le montant dû est : ",
 
+  "product": "Product", 
+
+
   "address": "Adresse",
   "balance": "Balance",
   "channel": "Canal de Vente",
@@ -73,7 +76,11 @@
   "order-total": "Total de la Commande",
   "item": "Article",
   "quantity": "Quantité",
+  "unitPrice": "Unit Price",
   "charge": "Facture",
+
+  "details": "Details",
+
 
   "cash": "Liquide",
   "loan": "Prêt",
