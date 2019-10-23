@@ -138,6 +138,7 @@ class CustomerBar extends Component {
 		);
 	}
 	showAddButton() {
+		console.log('Customer Check', this.props.showView)
 		if (this.props.showView.showCustomers) {
 			return (
 				<CustomerBarButton

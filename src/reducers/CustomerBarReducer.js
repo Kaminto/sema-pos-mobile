@@ -1,17 +1,17 @@
 
-import { SHOW_HIDE_CUSTOMERS} from "../actions/CustomerBarActions";
+import { SHOW_HIDE_CUSTOMERS } from "../actions/CustomerBarActions";
 
-let initialState = { showView :{showCustomers:true, showNewOrder:false}};
+let initialState = { showView: { showCustomers: true, showNewOrder: false } };
 
 const customerBarReducer = (state = initialState, action) => {
 	let newState;
-	console.log("customerBarReducer: " +action.type);
+	console.log("customerBarReducer: " + action.type);
 	switch (action.type) {
 		case SHOW_HIDE_CUSTOMERS:
-			if (action.data === 0){
-				newState = { showView :{showCustomers:false, showNewOrder:true}};
-			}else{
-				newState = { showView :{showCustomers:true, showNewOrder:false}};
+			if (action.data === 0) {
+				newState = { showView: { showCustomers: false, showNewOrder: true } };
+			} else {
+				newState = { showView: { showCustomers: true, showNewOrder: false } };
 			}
 			return newState;
 

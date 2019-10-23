@@ -37,7 +37,6 @@
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
-
 		DCBD43505F0A4DDDBF3DE594 /* libRNLanguages.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1296E28C9A044A72A50F064E /* libRNLanguages.a */; };
 		921FA4BDE3194B8F930D9A6C /* libRNLanguages-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF9112F09B64864A5D27032 /* libRNLanguages-tvOS.a */; };
 		ADBF65A491F742E6AB4E1AE8 /* libRealmReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B108E5D1EECD441FA10860C1 /* libRealmReact.a */; };
@@ -47,7 +46,6 @@
 		398D0C5045654621B25E82B1 /* libRNDeviceInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44301C97D216487BAC47B2EE /* libRNDeviceInfo-tvOS.a */; };
 		02CAAFC06685431995B29FF3 /* libRNCNetInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3745460A5FC447B996663B92 /* libRNCNetInfo.a */; };
 		9765EDCD24DB4D358AEB6C1A /* libRNCNetInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DFAE0C53B7E44B07A26878D3 /* libRNCNetInfo-tvOS.a */; };
-
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -366,7 +364,6 @@
 		35CCEA9D9E5E41B48543CAF0 /* RNCNetInfo.xcodeproj */ = {isa = PBXFileReference; name = "RNCNetInfo.xcodeproj"; path = "../node_modules/@react-native-community/netinfo/ios/RNCNetInfo.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		3745460A5FC447B996663B92 /* libRNCNetInfo.a */ = {isa = PBXFileReference; name = "libRNCNetInfo.a"; path = "libRNCNetInfo.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		DFAE0C53B7E44B07A26878D3 /* libRNCNetInfo-tvOS.a */ = {isa = PBXFileReference; name = "libRNCNetInfo-tvOS.a"; path = "libRNCNetInfo-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -401,7 +398,6 @@
 				5AEFC258E17A451587BFBF6A /* libz.tbd in Frameworks */,
 				63ADB46AC86047BD80120DC5 /* libRNDeviceInfo.a in Frameworks */,
 				02CAAFC06685431995B29FF3 /* libRNCNetInfo.a in Frameworks */,
-
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1263,7 +1259,6 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-languages/ios",
-
 					"$(SRCROOT)/../node_modules/realm/src/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
