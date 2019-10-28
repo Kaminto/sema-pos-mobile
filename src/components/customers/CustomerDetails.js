@@ -166,7 +166,7 @@ class CustomerDetails extends Component {
 
 	render() {
 		console.log('here -', this.props.reportType);
-		if (this.props.reportType === 'sales') {
+		if (this.props.reportType === 'salesLog') {
 			return (
 				<View style={{ flex: 1 }}>
 
