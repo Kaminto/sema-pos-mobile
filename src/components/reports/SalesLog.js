@@ -7,17 +7,44 @@ import {
 	Image,
 	TouchableOpacity,
 	Alert,
+	TextInput,
 	ToastAndroid
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as reportActions from '../../actions/ReportActions';
 import * as receiptActions from '../../actions/ReceiptActions';
+import * as CustomerActions from '../../actions/CustomerActions';
+import * as CustomerBarActions from '../../actions/CustomerBarActions';
 
 import i18n from '../../app/i18n';
 import moment from 'moment-timezone';
 import PosStorage from '../../database/PosStorage';
 import Events from 'react-native-simple-events';
+
+class SalesFilter extends React.Component {
+	render() {
+		return (
+			<View style={[styles.leftToolbar]}>
+				<TextInput
+					// Adding hint in Text Input using Place holder.
+					placeholder={i18n.t('salefilter-placeholder')}
+					// Making the Under line Transparent.
+					underlineColorAndroid="transparent"
+					onChangeText={this.onTextChange}
+					value={this.props.recieptSearchString}
+					style={[styles.SearchInput]}
+				/>
+			</View>
+		);
+	}
+	onTextChange = searchText => {
+		let that = this;
+		console.log(searchText);
+		that.props.parent.props.receiptActions.SearchReceipts(searchText);
+	};
+
+}
 
 class ReceiptLineItem extends Component {
 	constructor(props) {
@@ -119,7 +146,8 @@ class SalesLog extends Component {
 		super(props);
 
 		this.state = {
-			refresh: false
+			refresh: false,
+			recieptSearchString: '',
 		};
 	}
 
@@ -144,6 +172,23 @@ class SalesLog extends Component {
 		if (this.props.reportType === 'salesLog') {
 			return (
 				<View style={styles.container}>
+
+					<View style={{
+						flexDirection: 'row',
+						height: 100,
+						alignItems: 'center'
+					}}>
+						<SalesFilter parent={this} />
+
+					</View>
+					<View
+						style={{
+							height: 1,
+							backgroundColor: '#ddd',
+							width: '100%'
+						}}
+					/>
+
 					<FlatList
 						data={this.prepareData()}
 						renderItem={this.renderReceipt.bind(this)}
@@ -151,6 +196,9 @@ class SalesLog extends Component {
 						ItemSeparatorComponent={this.renderSeparator}
 						extraData={this.state.refresh}
 					/>
+					<SearchWatcher parent={this}>
+						{this.props.recieptSearchString}
+					</SearchWatcher>
 				</View>
 			);
 		}
@@ -219,13 +267,13 @@ class SalesLog extends Component {
 							</Text>
 						</View>
 					) : (
-						<View style={{ flexDirection: 'row' }}>
-							{!item.active && <Text> - </Text>}
-							<Text style={styles.receiptSyncedText}>
-								{'Synced'.toLowerCase()}
-							</Text>
-						</View>
-					)}
+							<View style={{ flexDirection: 'row' }}>
+								{!item.active && <Text> - </Text>}
+								<Text style={styles.receiptSyncedText}>
+									{'Synced'.toLowerCase()}
+								</Text>
+							</View>
+						)}
 				</View>
 				{/* <View style={styles.itemData}>
 					<Text style={styles.label}>Receipt Id: </Text>
@@ -328,7 +376,7 @@ class SalesLog extends Component {
 				totalCount
 			};
 		});
-
+		remoteReceipts = this.filterItems(remoteReceipts);
 		remoteReceipts.sort((a, b) => {
 			return moment
 				.tz(a.createdAt, moment.tz.guess())
@@ -342,11 +390,28 @@ class SalesLog extends Component {
 			siteId = PosStorage.getSettings().siteId;
 		}
 
-		// return [
-		// 	...remoteReceipts.filter(r => r.customerAccount.kiosk_id === siteId)
-		// ];
 		return remoteReceipts
 	}
+
+
+	filterItems = data => {
+		console.log("here recieptSearchString", this.state.recieptSearchString)
+		let filteredItems = data.filter(reciept => {
+			// If there is a search string
+			if (this.state.recieptSearchString.length > 0) {
+				const filterString = this.state.recieptSearchString.toLowerCase();
+				const name = reciept.customerAccount.name.toLowerCase();
+				const names = name.split(' ');
+				return name.startsWith(filterString) ||
+					(names.length > 1 &&
+						names[names.length - 1].startsWith(filterString)) ||
+						reciept.createdAt.startsWith(filterString);
+
+			}
+			return true;
+		});
+		return filteredItems;
+	};
 
 	getCustomer(customerId) {
 		return this.props.customers.filter(
@@ -371,11 +436,37 @@ class SalesLog extends Component {
 	}
 }
 
+class SearchWatcher extends React.Component {
+	render() {
+		return this.searchEvent();
+	}
+
+	// TODO: Use states instead of setTimeout
+	searchEvent() {
+		console.log('SearchWatcher');
+		let that = this;
+		setTimeout(() => {
+			if (
+				that.props.parent.props.recieptSearchString !==
+				that.props.parent.state.recieptSearchString
+			) {
+				that.props.parent.state.recieptSearchString =
+					that.props.parent.props.recieptSearchString;
+				that.props.parent.setState({
+					refresh: !that.props.parent.state.refresh
+				});
+			}
+		}, 50);
+		return null;
+	}
+}
+
 function mapStateToProps(state, props) {
 	return {
 		reportType: state.reportReducer.reportType,
 		localReceipts: state.receiptReducer.localReceipts,
 		remoteReceipts: state.receiptReducer.remoteReceipts,
+		recieptSearchString: state.receiptReducer.recieptSearchString,
 		customers: state.customerReducer.customers,
 		products: state.productReducer.products
 	};
@@ -402,12 +493,27 @@ const styles = StyleSheet.create({
 	receiptSyncedText: {
 		color: 'green'
 	},
+	SearchInput: {
+		textAlign: 'left',
+		height: 50,
+		borderWidth: 2,
 
+		borderColor: '#404040',
+		borderRadius: 10,
+		backgroundColor: '#FFFFFF',
+		flex: 0.5,
+		alignSelf: 'center',
+		marginLeft: 30
+	},
 	receiptStats: {
 		flex: 1,
 		flexDirection: 'row'
 	},
-
+	leftToolbar: {
+		flexDirection: 'row',
+		flex: 1,
+		alignItems: 'center'
+	},
 	container: {
 		flex: 1,
 		backgroundColor: '#fff'

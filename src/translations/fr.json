@@ -41,6 +41,7 @@
   "delete-all-data": "effacer toutes les données (Ceci ne peut pas être défait)",
 
   "search-placeholder": "Rechercher Par Nom Ou Téléphone",
+  "salefilter-placeholder": "Search by Name or Date",
   "account-name": "Nom Client",
   "telephone-number": "# Téléphone",
   "second-phone-number": "#2 Téléphone",
