@@ -117,6 +117,7 @@ class CustomerList extends Component {
 	};
 
 	filterItems = data => {
+		console.log("here listne", this.state.searchString)
 		let filteredItems = data.filter(item => {
 			let salesChannel = this._getSalesChannelName(
 				item.salesChannelId,

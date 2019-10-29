@@ -7,6 +7,7 @@ export const UPDATE_REMOTE_RECEIPT = 'UPDATE_REMOTE_RECEIPT';
 export const UPDATE_LOCAL_RECEIPT = 'UPDATE_LOCAL_RECEIPT';
 export const UPDATE_RECEIPT_LINE_ITEM = 'UPDATE_RECEIPT_LINE_ITEM';
 export const REMOVE_LOCAL_RECEIPT = 'REMOVE_LOCAL_RECEIPT';
+export const RECEIPT_SEARCH = 'RECEIPT_SEARCH';
 export const CLEAR_LOGGED_RECEIPTS = 'CLEAR_LOGGED_RECEIPTS';
 
 export function setRemoteReceipts(remoteReceipts) {
@@ -45,6 +46,10 @@ export function updateRemoteReceipt(receiptIndex, updatedFields) {
             }
         })
     };
+}
+
+export function SearchReceipts(searchString) {
+	return (dispatch) => { dispatch({ type: RECEIPT_SEARCH, data: searchString }) };
 }
 
 export function updateReceiptLineItem(receiptIndex, lineItemIndex, updatedFields) {
