@@ -44,8 +44,8 @@ class OrderItems extends Component {
 			selectedItem: {},
 			accumulator: 0,
 			firstKey: true,
-			isKajibu: false,			
-			is20LTap: false,	
+			isKajibu: false,
+			is20LTap: false,
 			isOpen: false,
 			isDisabled: false,
 			swipeToClose: true,
@@ -114,7 +114,13 @@ class OrderItems extends Component {
 
 				{/* <Button title="Position bottom + ScrollView" onPress={() => this.refs.modal6.open()} style={styles.btn} /> */}
 
-				<Modal style={[styles.modal4]} swipeToClose={true} position={"bottom"} ref={"modal6"} swipeArea={10}>
+
+				<Modal style={[styles.modal, styles.modal3]} coverScreen={true} position={"center"} ref={"modal6"} isDisabled={this.state.isDisabled} backdropContent={BContent}>
+					<Text style={styles.text}>Modal centered</Text>
+					<Button title={`Disable (${this.state.isDisabled ? "true" : "false"})`} onPress={() => this.setState({ isDisabled: !this.state.isDisabled })} style={styles.btn} />
+				</Modal>
+
+				<Modal style={[styles.modal4]} swipeToClose={true} position={"bottom"} ref={"modal16"} swipeArea={10}>
 					<ScrollView>
 
 						<View style={{
@@ -174,7 +180,7 @@ class OrderItems extends Component {
 									size="large"
 									onToggle={isOn => {
 										console.log("changed to : ", isOn);
-										this.setState({ isKajibu: isOn===true ? true : false });
+										this.setState({ isKajibu: isOn === true ? true : false });
 									}}
 								/>
 							</View>
@@ -193,8 +199,8 @@ class OrderItems extends Component {
 									size="large"
 									onToggle={isOn => {
 										console.log("changed to : ", isOn);
-										
-										this.setState({ is20LTap: isOn===true ? true : false });
+
+										this.setState({ is20LTap: isOn === true ? true : false });
 									}}
 								/>
 							</View>
@@ -590,8 +596,10 @@ const styles = StyleSheet.create({
 	},
 
 	modal3: {
-		height: 300,
-		width: 300
+		// height: 300,
+		// width: 500
+		width: widthQuanityModal,
+		height: heightQuanityModal,
 	},
 
 	modal4: {
