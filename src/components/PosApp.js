@@ -19,6 +19,7 @@ import * as SettingsActions from '../actions/SettingsActions';
 import * as ProductActions from '../actions/ProductActions';
 import * as ToolbarActions from '../actions/ToolBarActions';
 import * as receiptActions from '../actions/ReceiptActions';
+import * as reminderActions from "../actions/ReminderActions.js";
 
 import PosStorage from '../database/PosStorage';
 import Synchronization from '../services/Synchronization';
@@ -397,7 +398,8 @@ function mapStateToProps(state, props) {
 		settings: state.settingsReducer.settings,
 		receipts: state.receiptReducer.receipts,
 		remoteReceipts: state.receiptReducer.remoteReceipts,
-		products: state.productReducer.products
+		products: state.productReducer.products,
+		localReminders: state.reminderReducer.localReminders
 	};
 }
 
@@ -408,7 +410,8 @@ function mapDispatchToProps(dispatch) {
 		networkActions: bindActionCreators(NetworkActions, dispatch),
 		toolbarActions: bindActionCreators(ToolbarActions, dispatch),
 		settingsActions: bindActionCreators(SettingsActions, dispatch),
-		receiptActions: bindActionCreators(receiptActions, dispatch)
+		receiptActions: bindActionCreators(receiptActions, dispatch),
+		reminderActions: bindActionCreators(reminderActions, dispatch)
 	};
 }
 

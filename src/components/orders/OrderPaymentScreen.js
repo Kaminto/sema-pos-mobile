@@ -539,6 +539,7 @@ class OrderPaymentScreen extends Component {
 	formatAndSaveSale = async () => {
 		let receipt = null;
 		let priceTotal = 0;
+		let reminder = null;
 		if (!this.isPayoffOnly()) {
 			// Assumes that there is at least one product
 			let receiptDate = this.state.receiptDate
@@ -600,6 +601,10 @@ class OrderPaymentScreen extends Component {
 			});
 			receipt.total = priceTotal;
 			receipt.cogs = cogsTotal;
+
+			if(this.props.selectedCustomer.frequency != null){
+				PosStorage.setReminderDate(this.props.selectedCustomer, this.props.selectedCustomer.frequency);
+			}
 		}
 		// Check loan payoff
 		let payoff = 0;
@@ -644,6 +649,7 @@ class OrderPaymentScreen extends Component {
 				});
 			});
 
+
 			// Update dueAmount if required
 			if (receipt.amountLoan > 0) {
 				this.props.selectedCustomer.dueAmount += receipt.amountLoan;
@@ -653,7 +659,9 @@ class OrderPaymentScreen extends Component {
 					this.props.selectedCustomer.name,
 					this.props.selectedCustomer.address,
 					this.props.selectedCustomer.salesChannelId,
-					this.props.selectedCustomer.frequency
+					this.props.selectedCustomer.customerTypeId,
+					this.props.selectedCustomer.frequency,
+					this.props.selectedCustomer.secondPhoneNumber
 				);
 			} else if (payoff > 0) {
 				this.props.selectedCustomer.dueAmount -= payoff;
@@ -663,7 +671,9 @@ class OrderPaymentScreen extends Component {
 					this.props.selectedCustomer.name,
 					this.props.selectedCustomer.address,
 					this.props.selectedCustomer.salesChannelId,
-					this.props.selectedCustomer.frequency
+					this.props.selectedCustomer.customerTypeId,
+					this.props.selectedCustomer.frequency,
+					this.props.selectedCustomer.secondPhoneNumber
 				);
 			}
 		} else {
@@ -675,10 +685,32 @@ class OrderPaymentScreen extends Component {
 					this.props.selectedCustomer.name,
 					this.props.selectedCustomer.address,
 					this.props.selectedCustomer.salesChannelId,
-					this.props.selectedCustomer.frequency
+					this.props.selectedCustomer.customerTypeId,
+					this.props.selectedCustomer.frequency,
+					this.props.selectedCustomer.secondPhoneNumber
 				);
 			}
 		}
+
+		reminder = {
+			id: receipt.id + this.props.selectedCustomer.customerId,
+			customer_id: this.props.selectedCustomer.customerId,
+			dueAmount: this.props.selectedCustomer.dueAmount,
+			phoneNumber: this.props.selectedCustomer.phoneNumber,
+			name: this.props.selectedCustomer.name,
+			amountCash: receipt.amountCash,
+			total:receipt.total,
+			address: this.props.selectedCustomer.address,
+			kioskId: this.props.selectedCustomer.siteId,
+			reminder_date: this.props.selectedCustomer.reminder_date,
+			salesChannelId: this.props.selectedCustomer.salesChannelId,
+			customerTypeId: receipt.customerTypeId,
+			products: receipt.products,
+			comment: null,
+			receipt: receipt.id
+		  };
+
+		PosStorage.addReminder(reminder);
 		return true;
 	};
 

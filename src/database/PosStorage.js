@@ -33,7 +33,7 @@ const salesChannelsKey = '@Sema:SalesChannelsKey';
 const customerTypesKey = '@Sema:CustomerTypesKey';
 const productMrpsKey = '@Sema:ProductMrpsKey';
 const remoteReceiptsKey = '@Sema:remoteReceiptsKey';
-const reminderDataItemKey = '@Sema:remindersKey';
+const reminderDataKey = '@Sema:remindersDataKey';
 
 const syncIntervalKey = '@Sema:SyncIntervalKey';
 
@@ -51,6 +51,9 @@ class PosStorage {
 		// For example "@Sema:CustomerItemKey_ea6c365a-7338-11e8-a3c9-ac87a31a5361"
 		this.customersKeys = []; // Array of customer keys
 		this.customers = []; // De-referenced customers
+       // Reminder Module
+		this.reminders = [];
+	    	this.reminderDataKeys = [];
 
 		// Sales are saved in the form {dateTime, salesItemKey} where dateTime is an ISO datetime string
 		// and salestItemKey is a key to the sales item
@@ -77,7 +80,7 @@ class PosStorage {
 		this.tokenExpiration = firstSyncDate;
 
 		this.settings = {
-			semaUrl: '',
+			semaUrl: 'http://142.93.115.206:3006/',
 			site: '',
 			user: '',
 			password: '',
@@ -173,7 +176,7 @@ class PosStorage {
 							],
 							[remoteReceiptsKey, this.stringify(this.receipts)],
 							[
-								reminderDataItemKey,
+								reminderDataKey,
 								this.stringify(this.reminderData)
 							]
 						];
@@ -207,7 +210,7 @@ class PosStorage {
 							syncIntervalKey,
 							inventoriesKey,
 							remoteReceiptsKey,
-							reminderDataItemKey
+							reminderDataKey
 						];
 
 						let results = this.multiGet(keyArray).then(
@@ -418,7 +421,7 @@ class PosStorage {
 			[productMrpsKey, this.stringify(this.productMrpDict)],
 			[inventoriesKey, this.stringify(this.inventoriesKeys)],
 			[remoteReceiptsKey, this.stringify(this.receipts)],
-			[reminderDataItemKey, this.stringify(this.reminderDataKeys)]
+			[reminderDataKey, this.stringify(this.reminderDataKeys)]
 		];
 
 		this.multiSet(keyArray)
@@ -562,42 +565,85 @@ class PosStorage {
 		return newCustomer;
 	}
 
-	getRemindersPos() {
-		let reminderArray = Communications.getReminders();
-		console.log('Communications getReminders->' + reminderArray);
+	//Reminder Module
 
-		this.reminderData = reminderArray;
-		console.log('This dat REMINDER_DATA ==>' + this.reminderData);
-		return this.reminderData;
-	}
+	addReminder(reminder){
+	    let reminderKey = reminderDataKey +'_' + reminder.id;
+	    console.log("This is the reminderKey=>"+reminderKey);
+	    this.reminderDataKeys.push(reminderKey);
+	    this.reminders.push(reminder);
+	    console.log(this.reminders);
+	    console.table(this.reminders);
+	    let keyArray = [
+		[reminderKey, this.stringify(reminder)],
+		[reminderDataKey, this.stringify(this.reminderDataKeys)]
+	    ];
+	    console.log("ADDING A REMINDER TO POSSTORAGE"+ reminder);
+	    this.multiSet(keyArray).then(error =>{
+		console.log("BIGANYE,ADDING REMINDER"+ console.log(error));
+	    });
 
-	setReminderDate(customer, customerFrequency) {
-		let reminder_date = moment()
-			.add(customerFrequency, 'day')
-			.format('YYYY-MM-DD');
+  	//   this.setKey(reminderDataKey,this.stringify(this.reminders));
+    	  }
 
-		console.log('Setting reminderDate ===>' + reminder_date);
-		customer.reminder_date = reminder_date;
-		let key = this.makeCustomerKey(customer);
-		customer.syncAction = 'update';
+    	getRemindersPos(){
+//	    let filtered_receipts = this.getRemindersByDate()
+	    //console.log("Communications getReminders->"+reminderArray);
+	    let rem = [];
+	    this.reminders = this.loadReminders();//.then(reminda =>{ return reminda;});
+	    //console.log("BLOODY HELL"+this.reminders);
+	    //.then(reminders =>{return rem = reminders;});
+	    rem.push(this.reminders);
+	    //console.log("CURRENT REMINDERS=>"+ this.reminders);
+	    //let rem = this.reminders.filter(reminder => reminder.reminder_date == moment(date).add('days',1).format("YYYY-MM-DD"));
+	    //console.log("ZI REMINDER ==>"+ this.reminders);
+	    return this.reminders;
+    	}
 
-		//customer.reminder_date = reminder_date;
-		console.log(customer);
-		this.pendingCustomers.push(key);
+    	loadReminders(){
+	    console.log("loadRemindersFromKeys. No of reminders: " + this.reminders.length);
+	    return new Promise((resolve, reject)=>{
+		try{
+		let that = this;
+		this.multiGet(this.reminderDataKeys)
+		    .then(results =>{
+			that.reminders = results.map(resarray =>{
+			    return that.parseJson(resarray[1]);
+			});
+			resolve(that.reminders);
+
+		    });
+		}catch(error){
+		    reject(error);
+		}
+	    });
+
+
+
+
+    	}
+       	setReminderDate(customer, customerFrequency){
+       	   let  reminder_date = moment().add(customerFrequency,'day').format("YYYY-MM-DD");
+	   console.log('Setting reminderDate ===>'+ reminder_date);
+	   customer.reminder_date = reminder_date;
+	   let key = this.makeCustomerKey(customer);
+	   customer.syncAction = "update";
+	   //customer.reminder_date = reminder_date;
+	   console.log(customer);
+	   this.pendingCustomers.push(key);
 
 		let keyArray = [
 			[key, this.stringify(customer)], // Customer keys
 			[pendingCustomersKey, this.stringify(this.pendingCustomers)] // Array pending customer
 		];
+		this.multiSet(keyArray).then(error => {
+			if (error) {
+				console.log("PosStorage:updateCustomer: Error: " + error);
+			}
+		});
 
-		this.multiSet(keyArray)
-			.then(rows => {
-				console.log('Affected rows ' + rows);
-			})
-			.catch(error => {
-				console.log('PosStorage:updateCustomer: Error: ' + error);
-			});
-	}
+        }
+
 
 	deleteCustomer(customer) {
 		let key = this.makeCustomerKey(customer);

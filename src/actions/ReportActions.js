@@ -7,6 +7,7 @@ export const INVENTORY_REPORT = 'INVENTORY_REPORT';
 export const REPORT_TYPE = 'REPORT_TYPE';
 export const REPORT_FILTER = 'REPORT_FILTER';
 export const REMINDER_REPORT = 'REMINDER_REPORT';
+export const ADD_REMINDER = 'ADD_REMINDER';
 
 export function GetSalesReportData(beginDate, endDate) {
 	// console.log('GetSalesReportData - action');
@@ -340,26 +341,43 @@ export const initializeInventoryData = () => {
 	};
 };
 
-export function getRemindersReport() {
-	console.log('Getting Reminder Reports ');
+export function getRemindersReport(date){
+    console.log("Getting Reminder Reports ");
 
-	return dispatch => {
-		getRemindersAction()
-			.then(remindersdata => {
-				dispatch({
-					type: REMINDER_REPORT,
-					data: { reminderdata: remindersdata }
-				});
-			})
-			.catch(error => {
-				dispatch({ type: REMINDER_REPORT, data: { reminderdata: [] } });
-			});
+        return (dispatch) => {
+    	    getRemindersAction().then((remindersdata) => {
+		console.log("COMEON WORK"+  remindersdata.length);
+		console.table(remindersdata);
+	    	let rem = filterReminders(remindersdata,date);
+	    	console.log("PREPARED REMINDERS=>"+ rem);
+	    		dispatch({type:REMINDER_REPORT, data:{reminderdata:rem}});
+	    }).catch((error)=>{
+	    	console.log(error);
+	    	    	dispatch({type:REMINDER_REPORT, data:{reminderdata:[]}});
+	    });
+   	    //let reminderz  = getRemindersAction(date);
+	    //dispatch({type:REMINDER_REPORT, data:{reminderdata:reminderz}});
 	};
 }
 
+
 const getRemindersAction = () => {
-	return new Promise((resolve, reject) => {
-		let reminders = PosStorage.getRemindersPos();
-		resolve(reminders);
-	});
+    //console.log("GETTING REMINDERS FOR =>"+date);
+    return new Promise(async (resolve,reject)=>{
+    	let reminders = PosStorage.getRemindersPos();
+    	resolve(reminders);
+    });
+    //let reminders = PosStorage.getRemindersPos();
+    // let filterReminders = reminders.filter(reminder =>{ reminder.reminder_date == moment(date).add('days',1).format("YYYY-MM-DD");});
+    // return reminders;
+};
+
+const filterReminders = (reminders, date)=>{
+    console.log("This is in FILTERS "+Object.keys(reminders));
+    let filteredReminders = reminders.filter(reminder =>{
+	return reminder.reminder_date == moment(date).add(1,'days').format("YYYY-MM-DD");
+    });
+
+    console.table(filteredReminders);
+    return filteredReminders;
 };

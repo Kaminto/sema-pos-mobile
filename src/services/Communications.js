@@ -1,6 +1,7 @@
 //import React from 'react';
 //import PosStorage from '../database/PosStorage';
 import moment from 'moment-timezone';
+import PosStorage from '../database/PosStorage';
 class Communications {
 	constructor() {
 		this._url = '';
@@ -20,12 +21,14 @@ class Communications {
 		this._password = password;
 		this._token = 'not set';
 	}
+
 	setToken(token) {
 		this._token = token;
 	}
 	setSiteId(siteId) {
 		this._siteId = siteId;
 	}
+
 	login() {
 		let options = {
 			method: 'POST',
@@ -43,7 +46,7 @@ class Communications {
 			try {
 				fetch(this._url + 'sema/login', options)
 					.then(response => {
-						console.log(response.status);
+						console.log("Status " + response.status);
 						if (response.status == 200) {
 							response
 								.json()

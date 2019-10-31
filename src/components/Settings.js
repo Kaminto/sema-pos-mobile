@@ -125,9 +125,12 @@ class SettingsButton extends Component {
 class Settings extends Component {
 	constructor(props) {
 		let setting = PosStorage.getSettings();
+		console.log(setting);
 		super(props);
-		this.url = React.createRef();
-		this.site = React.createRef();
+		// this.url = React.createRef();
+		// this.site = React.createRef();
+		this.url = setting.semaUrl;
+		this.site = setting.site;
 		this.user = React.createRef();
 		this.supportedLanguages = React.createRef();
 		this.password = React.createRef();
@@ -165,7 +168,8 @@ class Settings extends Component {
 						resetScrollToCoords={{ x: 0, y: 0 }}
 						scrollEnabled={false}>
 						<View style={{ flex: 1, alignItems: 'center', backgroundColor: 'white' }}>
-							<SettingsProperty
+						{/* {this.state.isLoggedIn && (
+							 <SettingsProperty
 								parent={this}
 								marginTop={10}
 								placeHolder={i18n.t('service-url-placeholder')}
@@ -174,6 +178,9 @@ class Settings extends Component {
 								valueFn={this.getUrl.bind(this)}
 								ref={this.url}
 							/>
+							)} */}
+
+                           {this.state.isLoggedIn && (
 							<SettingsProperty
 								parent={this}
 								marginTop={marginSpacing}
@@ -183,6 +190,7 @@ class Settings extends Component {
 								valueFn={this.getSite.bind(this)}
 								ref={this.site}
 							/>
+							)}
 							<SettingsProperty
 								parent={this}
 								marginTop={marginSpacing}
@@ -349,6 +357,7 @@ class Settings extends Component {
 		this.setState({ isLoading: true });
 		// TODO - Validate fields and set focus to invalid field;
 		this.saveSettings(
+			this.props.settings.site,
 			this.props.settings.token,
 			this.props.settings.siteId
 		);
@@ -477,8 +486,8 @@ class Settings extends Component {
 	onConnection() {
 		this.setState({ animating: true });
 		Communications.initialize(
-			this.url.current.state.propertyText,
-			this.site.current.state.propertyText,
+			"http://142.93.115.206:3006/",
+			"",
 			this.user.current.state.propertyText,
 			this.password.current.state.propertyText
 		);
@@ -493,9 +502,15 @@ class Settings extends Component {
 							JSON.stringify(result.response)
 					);
 					if (result.status === 200) {
+						this.saveSettings(
+							"http://142.93.115.206:3006/",
+							result.response.token,
+							result.response.data.kiosks[0].name
+						);
+				// console.log("Response site name: " + result.response.data.kiosks[0].name);
 						Communications.getSiteId(
 							result.response.token,
-							this.site.current.state.propertyText
+							result.response.data.kiosks[0].name
 						)
 							.then(async siteId => {
 								if (siteId === -1) {
@@ -519,6 +534,7 @@ class Settings extends Component {
 								} else {
 									this.props.authActions.isAuth(true);
 									this.saveSettings(
+										result.response.data.kiosks[0].name,
 										result.response.token,
 										siteId
 									);
@@ -605,13 +621,14 @@ class Settings extends Component {
 			console.log(JSON.stringify(error));
 		}
 	}
+
 	enableConnectionOrSync() {
-		let url = this.url.current
-			? this.url.current.state.propertyText
-			: this.getUrl();
-		let site = this.site.current
-			? this.site.current.state.propertyText
-			: this.getSite();
+		// let url = this.url.current
+		// 	? this.url.current.state.propertyText
+		// 	: this.getUrl();
+		// let site = this.site.current
+		// 	? this.site.current.state.propertyText
+		// 	: this.getSite();
 		let user = this.url.current
 			? this.user.current.state.propertyText
 			: this.getUser();
@@ -620,8 +637,8 @@ class Settings extends Component {
 			: this.getPassword();
 
 		if (
-			url.length > 0 &&
-			site.length > 0 &&
+			// url.length > 0 &&
+			// site.length > 0 &&
 			user.length > 0 &&
 			password.length > 0
 		) {
@@ -631,7 +648,7 @@ class Settings extends Component {
 		}
 	}
 
-	saveSettings(token, siteId) {
+	saveSettings(site, token, siteId) {
 		// Check to see if the site has changed
 		let currentSettings = PosStorage.getSettings();
 		if (currentSettings.siteId != siteId) {
@@ -640,8 +657,8 @@ class Settings extends Component {
 		}
 
 		PosStorage.saveSettings(
-			this.url.current.state.propertyText,
-			this.site.current.state.propertyText,
+			"http://142.93.115.206:3006/",
+			site,
 			this.user.current.state.propertyText,
 			this.password.current.state.propertyText,
 			this.state.selectedLanguage,
