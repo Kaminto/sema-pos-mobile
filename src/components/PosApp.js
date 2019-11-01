@@ -9,6 +9,7 @@ import OrderView from './orders/OrderView';
 import CustomerEdit from './customers/CustomerEdit';
 import Settings from './Settings';
 import Login from './Login';
+import SemaRouter from './SemaRouter';
 
 import { bindActionCreators } from 'redux';
 
@@ -26,7 +27,6 @@ import Synchronization from '../services/Synchronization';
 import SiteReport from './reports/SiteReport';
 import Communications from '../services/Communications';
 import Events from 'react-native-simple-events';
-import Splash from './Splash';
 
 console.ignoredYellowBox = ['Warning: isMounted', 'Setting a timer'];
 
@@ -282,10 +282,6 @@ class PosApp extends Component {
 	}
 
 	getLoginOrHomeScreen() {
-		console.log('getLoginOrHomeScreen - isLoggedIn: ' +
-				this.props.showScreen.isLoggedIn
-		);
-
 		if (!this.props.showScreen.isLoggedIn) {
 			return (
 				// <Login />
@@ -295,11 +291,12 @@ class PosApp extends Component {
 		} else {
 			return (
 				<View style={{ flex: 1 }}>
-					<Toolbar />
-					<ScreenSwitcher
+					{/* <Toolbar /> */}
+					<SemaRouter />
+					{/* <ScreenSwitcher
 						currentScreen={this.props.showScreen}
 						Pos={this}
-					/>
+					/> */}
 				</View>
 			);
 		}
@@ -342,6 +339,7 @@ class PosApp extends Component {
 		return false;
 	}
 }
+
 
 class ViewSwitcher extends Component {
 	render() {

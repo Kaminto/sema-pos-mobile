@@ -39,8 +39,7 @@ const marginInputItems = width / 2 - inputTextWidth / 2;
 
 const supportedUILanguages = [
 	{ name: 'English', iso_code: 'en' },
-	{ name: 'Français', iso_code: 'fr' },
-	{ name: 'Kreyòl Ayisyen', iso_code: 'ht' }
+	{ name: 'Français', iso_code: 'fr' }
 ];
 
 class SettingsProperty extends Component {
@@ -168,17 +167,6 @@ class Settings extends Component {
 						resetScrollToCoords={{ x: 0, y: 0 }}
 						scrollEnabled={false}>
 						<View style={{ flex: 1, alignItems: 'center', backgroundColor: 'white' }}>
-						{/* {this.state.isLoggedIn && (
-							 <SettingsProperty
-								parent={this}
-								marginTop={10}
-								placeHolder={i18n.t('service-url-placeholder')}
-								label={i18n.t('service-url-label')}
-								isSecure={false}
-								valueFn={this.getUrl.bind(this)}
-								ref={this.url}
-							/>
-							)} */}
 
                            {this.state.isLoggedIn && (
 							<SettingsProperty

@@ -26,7 +26,8 @@ class RemindersReport extends Component {
 		this.state ={
 			refresh: false
 	    };
-       }
+	 }
+
 	componentDidMount() {
 		console.log("has Mounted")
 	    this.props.reportActions.getRemindersReport(this.props.dateFilter.startDate);
@@ -34,10 +35,11 @@ class RemindersReport extends Component {
 	    // this.prepareReminderCustomersData.bind(this);
 
 	}
-    	componentWillUnmount(){
+
+	componentWillUnmount(){
 
 
-		}
+	}
 
 
 	getReminders() {

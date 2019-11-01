@@ -151,7 +151,7 @@ class CustomerEdit extends Component {
 	render() {
 		return (
 			<View style={{ flex: 1, backgroundColor: '#fff' }}>
-				<View style={{ flexDirection: 'row' }}>
+				{/* <View style={{ flexDirection: 'row' }}>
 					<View
 						style={{
 							flexDirection: 'row',
@@ -176,9 +176,9 @@ class CustomerEdit extends Component {
 								style={{ marginRight: 100 }}
 							/>
 						</TouchableHighlight>
-						{/*<Image source={require('../../images/icons8-cancel-50.png')} />;*/}
+
 					</View>
-				</View>
+				</View> */}
 
 				<KeyboardAwareScrollView
 					style={{ flex: 1 }}
@@ -293,13 +293,19 @@ class CustomerEdit extends Component {
 								<Text style={{ fontSize: 40 }}>{'\u2B07'}</Text>
 							</TouchableHighlight>
 						</View>
+						<View
+							style={{
+								flex: 1,
+								flexDirection: 'row',
+								alignItems: 'center'
+							}}>
 						<View style={styles.submit}>
 							<View
 								style={{
-									justifyContent: 'center',
+									justifyContent: 'flex-start',
 									height: 90,
-									width: '30%',
-									alignItems: 'center'
+									width: '30%'
+									// alignItems: 'center'
 								}}>
 								<TouchableHighlight
 									underlayColor="#c0c0c0"
@@ -317,6 +323,33 @@ class CustomerEdit extends Component {
 									</Text>
 								</TouchableHighlight>
 							</View>
+						</View>
+
+						<View style={styles.submit}>
+							<View
+								style={{
+									justifyContent: 'flex-end',
+									height: 90,
+									width: '30%'
+									// alignItems: 'center'
+								}}>
+								<TouchableHighlight
+									underlayColor="#c0c0c0"
+									onPress={() => this.onMakeSale()}>
+									<Text
+										style={[
+											{
+												paddingTop: 30,
+												paddingBottom: 30,
+												width: 300
+											},
+											styles.buttonText
+										]}>
+										Make a Sale
+									</Text>
+								</TouchableHighlight>
+							</View>
+						</View>
 						</View>
 
 						<Modal
@@ -448,6 +481,7 @@ class CustomerEdit extends Component {
 			});
 		}, 10);
 	}
+
 	closeHandler() {
 		this.setState({ isEditInProgress: false });
 		this.onCancelEdit();
@@ -484,6 +518,92 @@ class CustomerEdit extends Component {
 			this.customerTypeOptions = this.customerTypes.map(customerType => {
 				return customerType.displayName;
 		    });
+	}
+
+	onMakeSale() {
+		let salesChannelId = -1;
+		let customerTypeId = -1;
+
+		if (
+			this._textIsEmpty(this.phone.current.state.propertyText) ||
+			!this.isValidPhoneNumber(this.phone.current.state.propertyText)
+		) {
+			this.phone.current.refs.customerNumber.focus();
+			return;
+		}
+
+		if (
+			!this._textIsEmpty(
+				this.secondPhoneNumber.current.state.propertyText
+			) &&
+			!this.isValidPhoneNumber(
+				this.secondPhoneNumber.current.state.propertyText
+			)
+		) {
+			this.secondPhoneNumber.current.refs.secondPhoneNumber.focus();
+			return;
+		}
+
+		if (this._textIsEmpty(this.name.current.state.propertyText)) {
+			this.name.current.refs.customerName.focus();
+			return;
+		}
+
+		if (this._textIsEmpty(this.address.current.state.propertyText)) {
+			this.address.current.refs.customerAddress.focus();
+			return;
+		}
+
+		if (this.customerChannel.current.state.selectedIndex === -1) {
+			this.customerChannel.current.show();
+			return;
+		}
+
+		if (this._textIsEmpty(this.frequency.current.state.propertyText)) {
+			this.frequency.current.refs.customerFrequency.focus();
+			return;
+		} else {
+			salesChannelId = this.salesChannels[
+				this.customerChannel.current.state.selectedIndex
+			].id;
+		}
+
+		if (this.customerType.current.state.selectedIndex === -1) {
+			this.customerType.current.show();
+			return;
+		} else {
+			customerTypeId = this.customerTypes[
+				this.customerType.current.state.selectedIndex
+			].id;
+		}
+		if (this.props.isEdit) {
+			this.setReminderIfExists(this.props.selectedCustomer);
+			PosStorage.updateCustomer(
+				this.props.selectedCustomer,
+				this.phone.current.state.propertyText,
+				this.name.current.state.propertyText,
+				this.address.current.state.propertyText,
+				salesChannelId,
+				customerTypeId,
+				this.frequency.current.state.propertyText,
+				this.secondPhoneNumber.current.state.propertyText
+			);
+		} else {
+			let newCustomer = PosStorage.createCustomer(
+				this.phone.current.state.propertyText,
+				this.name.current.state.propertyText,
+				this.address.current.state.propertyText,
+				this.props.settings.siteId,
+				salesChannelId,
+				customerTypeId,
+				this.frequency.current.state.propertyText,
+				this.secondPhoneNumber.current.state.propertyText
+			);
+			this.props.customerActions.setCustomers(PosStorage.getCustomers());
+			this.props.customerActions.CustomerSelected(newCustomer);
+		}
+
+		this.setState({ isEditInProgress: true });
 	}
 
 	onEdit() {

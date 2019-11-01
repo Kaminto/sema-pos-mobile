@@ -15,6 +15,7 @@
         android:theme="@style/AppTheme"
 		tools:replace="android:appComponentFactory"
 		android:appComponentFactory="Any character"
+		android:usesCleartextTraffic="true"
 		>
 
         <activity

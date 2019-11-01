@@ -1,9 +1,6 @@
 import React from 'react';
-import {
-	createStackNavigator,
-	createBottomTabNavigator,
-	createAppContainer
-} from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
+import { createAppContainer } from 'react-navigation';
 import CustomerList from './CustomerList';
 import PosStorage from '../../database/PosStorage';
 import { capitalizeWord } from '../../services/Utilities';
@@ -64,7 +61,7 @@ class CustomerViews {
 			this.views = {};
 			PosStorage.loadSalesChannels().then(savedSalesChannels => {
 					this.createScreens(savedSalesChannels);
-					this.navigator = createBottomTabNavigator(this.views, {
+					this.navigator = createAppContainer(createBottomTabNavigator(this.views, {
 						tabBarOptions: {
 						activeTintColor: '#F0F0F0',
 						activeBackgroundColor: "#18376A",
@@ -78,7 +75,7 @@ class CustomerViews {
 						},
 						tabStyle: { justifyContent: 'center', alignItems: 'center' },
 						}
-					});
+					}));
 					resolve();
 			});
 		});

@@ -4,7 +4,7 @@ import moment from 'moment-timezone';
 import PosStorage from '../database/PosStorage';
 class Communications {
 	constructor() {
-		this._url = '';
+		this._url = 'h';
 		this._site = '';
 		this._user = '';
 		this._password = '';
