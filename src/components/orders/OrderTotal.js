@@ -45,15 +45,10 @@ class OrderTotal extends Component {
 			<View style={styles.container}>
 				<Text style={[{ flex: 2 }, styles.totalText]}>{i18n.t('order-total')}</Text>
 				<Text style={[{ flex: 3 }, styles.totalText]}>{Utilities.formatCurrency(this.getAmount())}</Text>
-				<TouchableHighlight onPress={() => this.showPaymentType()}>
-					<Text style={[styles.baseItem, styles.leftMargin]}>Payment Type: {this.state.selectedPaymentType}</Text>
-				</TouchableHighlight>
+				 
 
 				<Modal style={[styles.modal4]} coverScreen={true} swipeToClose={true} position={"bottom"} ref={"modal6"} swipeArea={10}>
 					<ScrollView>
-
-
-
 
 						<View style={{ flex: 1, flexDirection: 'row' }}>
 							<View style={{ flex: 1, height: 50 }}>
