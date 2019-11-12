@@ -171,6 +171,7 @@ dependencies {
 	implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    compile project(':react-native-vector-icons')
 
 	implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
 	implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-alpha02'
@@ -191,3 +192,9 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+
+project.ext.vectoricons = [
+    iconFontNames: [ 'Ionicons.ttf' ] // Name of the font files you want to copy
+]
+
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
