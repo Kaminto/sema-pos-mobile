@@ -275,33 +275,13 @@ class PosApp extends Component {
 	};
 
 	render() {
-		if (this.state.isLoading) {
-			console.log("Temp Splash Screen - Load Splash Screen");
-		}
-			return this.getLoginOrHomeScreen();
+	 console.log(' --- Router Initialisation --- ');
+		return (
+            <SemaRouter />
+        );
+			// return this.getLoginOrHomeScreen();
 	}
-
-	getLoginOrHomeScreen() {
-		if (!this.props.showScreen.isLoggedIn) {
-			return (
-				// <Login />
-				<Settings />
-
-			);
-		} else {
-			return (
-				<View style={{ flex: 1 }}>
-					{/* <Toolbar /> */}
-					<SemaRouter />
-					{/* <ScreenSwitcher
-						currentScreen={this.props.showScreen}
-						Pos={this}
-					/> */}
-				</View>
-			);
-		}
-	}
-
+ 
 	isLoginComplete() {
 		let settings = this.posStorage.getSettings();
 		console.log('isLoginComplete ' + JSON.stringify(settings));

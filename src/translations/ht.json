@@ -30,6 +30,7 @@
   "does-not-exist": "pa ekziste",
   "is-not-active": "pa aktif",
   "network-connection": "Koneksyon Rezo",
+  "info": "Info",
   "sync-results": "Rezilta Senkronizasyon an",
   "sync-error": "Erè Senkronizasyon: {{error}}",
   "data-is-up-to-date": "Done yo a jou",

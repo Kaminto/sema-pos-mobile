@@ -62,6 +62,7 @@ class CustomerList extends Component {
 	}
 
 	render() {
+		console.log(this.props);
 		return (
 			<View style={{ backgroundColor: '#fff', width: '100%', height: '100%' }}>
 				{/*<FlatList*/}

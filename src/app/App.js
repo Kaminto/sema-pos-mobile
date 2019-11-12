@@ -39,10 +39,10 @@ export default class App extends Component {
 	};
 
 	render() {
-		return (
-			<Provider store={store}>
-				<PosApp />
-			</Provider>
-		);
+		// return (
+		// 	// <Provider store={store}>
+		// 		// <PosApp />
+		// 	// </Provider>
+		// );
 	}
 }

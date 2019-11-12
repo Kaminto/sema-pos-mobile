@@ -2,25 +2,29 @@ export const CUSTOMER_SELECTED = 'CUSTOMER_SELECTED';
 export const CUSTOMERS_LOADED = 'CUSTOMERS_LOADED';
 export const CUSTOMERS_SET = 'CUSTOMERS_SET';
 export const CUSTOMERS_SEARCH = 'CUSTOMERS_SEARCH';
+export const CUSTOMER_EDIT = 'CUSTOMER_EDIT';
 
-
-export function CustomerSelected( customer){
+export function CustomerSelected(customer) {
 	// console.log("CustomerSelected - action");
 	const data = customer;
 	return (dispatch) => {
-		dispatch({type: CUSTOMER_SELECTED, data:data});
+		dispatch({ type: CUSTOMER_SELECTED, data: data });
 	};
 }
 
-export function setCustomers( customers ) {
+export function setCustomers(customers) {
 	// console.log("setCustomers - action. No of customers " + customers.length);
 
-	return (dispatch) => {dispatch({type: CUSTOMERS_SET, data:customers})};
+	return (dispatch) => { dispatch({ type: CUSTOMERS_SET, data: customers }) };
 
 }
 
-export function SearchCustomers( searchString ) {
+export function SearchCustomers(searchString) {
 	// console.log("SearchCustomers - action. Search is " + searchString);
 
-	return (dispatch) => {dispatch({type: CUSTOMERS_SEARCH, data: searchString})};
+	return (dispatch) => { dispatch({ type: CUSTOMERS_SEARCH, data: searchString }) };
+}
+
+export function setCustomerEditStatus(status) {
+	return (dispatch) => { dispatch({ type: CUSTOMER_EDIT, data: status }) };
 }

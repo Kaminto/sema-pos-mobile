@@ -30,6 +30,7 @@
   "does-not-exist": "does not exist",
   "is-not-active": "is not active",
   "network-connection": "Network Connection",
+  "info": "Info",
   "sync-results": "Synchronization Results",
   "sync-error": "Synchronization error: {{error}}",
   "data-is-up-to-date": "Data is up to date",

@@ -36,14 +36,19 @@ class Communications {
 				Accept: 'application/json',
 				'Content-Type': 'application/json'
 			},
+			// body: JSON.stringify({
+			// 	usernameOrEmail: this._user,
+			// 	password: this._password
+			// })
 			body: JSON.stringify({
-				usernameOrEmail: this._user,
-				password: this._password
+				usernameOrEmail: "administrator",
+				password: "Let'sGrow"
 			})
 		};
-
+		console.log(this._url);
 		return new Promise((resolve, reject) => {
 			try {
+				console.log('hereh heresettings.semaUrl');
 				fetch(this._url + 'sema/login', options)
 					.then(response => {
 						console.log("Status " + response.status);
@@ -59,8 +64,8 @@ class Communications {
 								.catch(error => {
 									console.log(
 										error +
-											' INNER ' +
-											JSON.stringify(error)
+										' INNER ' +
+										JSON.stringify(error)
 									);
 									reject({
 										status: response.status,
@@ -109,7 +114,7 @@ class Communications {
 				Authorization: 'Bearer ' + token
 			}
 		};
-
+		console.log('options', options);
 		return new Promise((resolve, reject) => {
 			fetch(this._url + 'sema/kiosks', options)
 				.then(response => {
@@ -197,7 +202,7 @@ class Communications {
 							.catch(error => {
 								console.log(
 									'createCustomer - Parse JSON: ' +
-										error.message
+									error.message
 								);
 								reject();
 							});
@@ -274,7 +279,7 @@ class Communications {
 							.catch(error => {
 								console.log(
 									'updateCustomer - Parse JSON: ' +
-										error.message
+									error.message
 								);
 								reject();
 							});
@@ -340,7 +345,7 @@ class Communications {
 							.catch(error => {
 								console.log(
 									'createReceipt - Parse JSON: ' +
-										error.message
+									error.message
 								);
 								reject();
 							});
@@ -412,7 +417,7 @@ class Communications {
 		};
 		let url = `sema/site/product-mrps?site-id=${
 			getAll ? -1 : this._siteId
-		}`;
+			}`;
 
 		if (updatedSince) {
 			url = url + '&updated-date=' + updatedSince.toISOString();
@@ -536,24 +541,24 @@ class Communications {
 	// 		.catch(error => console.log('ERROR ' + error));
 	// }
 
-	getReminders(){
+	getReminders() {
 		let options = {
-		 method:'GET',
-		 headers: {
-		 Accept: 'application/json',
-		 Authorization:'Bearer' + this._token
-		 }
-	 };
-		 let urlr = 'sema/reminders?site-id='+ this._siteId;
-	 that = this;
-	 return  fetch(that._url + urlr, options).then(response =>
+			method: 'GET',
+			headers: {
+				Accept: 'application/json',
+				Authorization: 'Bearer' + this._token
+			}
+		};
+		let urlr = 'sema/reminders?site-id=' + this._siteId;
+		that = this;
+		return fetch(that._url + urlr, options).then(response =>
 
-							   response.json()
+			response.json()
 
-	 ).catch(error => console.log("ERROR "+ error));
+		).catch(error => console.log("ERROR " + error));
 
 
-	 }
+	}
 
 	// let remoteReceipt = {
 	// 	receiptId: receipt.receiptId,
