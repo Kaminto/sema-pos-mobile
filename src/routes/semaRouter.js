@@ -13,9 +13,6 @@ import Transactions from '../screens/SalesLog';
 import SalesReport from '../screens/SalesReport';
 import drawerContentComponents from "./drawerContentComponents";
 
-//import drawerContentComponents from "./CustomSidebarMenu";
-
-//Import Custom Sidebar
 import CustomSidebarMenu from './CustomSidebarMenu';
 
 class NavigationDrawerStructure extends Component {
@@ -61,7 +58,16 @@ const ListCustomerStack = createStackNavigator({
             headerTintColor: '#fff',
         }),
     },
-});
+    CustomerDetails: {
+        screen: CustomerEdit
+    }
+},
+
+    {
+        initialRouteName: 'CustomerList',
+        headerMode: 'screen',
+    }
+);
 
 const TransactionStack = createStackNavigator({
     Transactions: {
@@ -128,7 +134,7 @@ const LoginStack = createStackNavigator({
 },
     {
         initialRouteName: 'Login',
-        headerMode: 'screen',
+        headerMode: 'none',
     });
 
 

@@ -8,12 +8,14 @@ import {
 	StyleSheet,
 	Dimensions,
 	Image,
+	Picker,
 	Alert,
 	ActivityIndicator
 } from 'react-native';
+import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from 'prop-types';
-
+import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Synchronization from '../services/Synchronization';
@@ -137,6 +139,9 @@ class Login extends Component {
 
 		this.state = {
 			animating: false,
+			language: '',
+			user: '',
+			password: '',
 			selectedLanguage: {},
 			isLoggedIn: setting.token.length > 0 || false,
 			isLoading: false
@@ -155,15 +160,18 @@ class Login extends Component {
 	}
 
 	componentDidUpdate(oldProps) {
-		if (this.props.auth.status!==oldProps.auth.status) {
-			this.setState({isLoggedIn:this.props.auth.status})
+		if (this.props.auth.status !== oldProps.auth.status) {
+			this.setState({ isLoggedIn: this.props.auth.status })
 		}
-	  }
+	}
 
 	render() {
-		
-        console.log(this.props.settings);
-        console.log(this.state.isLoggedIn);
+		let serviceItems = supportedUILanguages.map((s, i) => {
+			console.log(s);
+			return <Picker.Item key={i} value={s.iso_code} label={s.name} />
+		});
+		console.log(this.props.settings);
+		console.log(this.state.isLoggedIn);
 		return (
 			<View style={styles.container}>
 				<ScrollView style={{ flex: 1 }}>
@@ -173,7 +181,7 @@ class Login extends Component {
 						scrollEnabled={false}>
 						<View style={{ flex: 1, alignItems: 'center', backgroundColor: 'white' }}>
 
-                           {/* {this.state.isLoggedIn && (
+							{/* {this.state.isLoggedIn && (
 							<SettingsProperty
 								parent={this}
 								marginTop={marginSpacing}
@@ -184,6 +192,11 @@ class Login extends Component {
 								ref={this.site}
 							/>
 							)} */}
+
+
+
+
+							{/* 							
 							<SettingsProperty
 								parent={this}
 								marginTop={marginSpacing}
@@ -203,9 +216,9 @@ class Login extends Component {
 								isSecure={true}
 								valueFn={this.getPassword.bind(this)}
 								ref={this.password}
-							/>
+							/> */}
 
-							<View
+							{/* <View
 								style={[
 									{
 										marginTop: '1%',
@@ -237,7 +250,66 @@ class Login extends Component {
 									onPress={this.onShowLanguages}>
 									<Text style={{ fontSize: 40 }}>{'\u2B07'}</Text>
 								</TouchableHighlight>
-							</View>
+							</View> */}
+
+							<Card
+								title={i18n.t('connect')}
+								containerStyle={{ width: 500, marginTop: 30 }}
+							>
+
+								<Input
+									placeholder={i18n.t(
+										'username-or-email-placeholder'
+									)}
+									label={i18n.t('username-or-email-placeholder')}
+									onChangeText={this.onChangeEmail.bind(this)}
+									leftIcon={
+										<Icon
+											name='md-mail'
+											size={24}
+											color='black'
+										/>
+									}
+								/>
+
+								<Input
+									placeholder={i18n.t('password-placeholder')}
+									label={i18n.t('password-placeholder')}
+									onChangeText={this.onChangePassword.bind(this)}
+									leftIcon={
+										<Icon
+											name='md-compass'
+											size={24}
+											color='black'
+										/>
+									}
+								/>
+
+
+								<Picker
+									selectedValue={this.state.selectedLanguage.iso_code}
+									onValueChange={(itemValue, itemIndex) => {
+										this.onLanguageSelected(itemIndex);
+									}
+									}
+								>
+									{serviceItems}
+								</Picker>
+
+								<Button
+									icon={<Icon
+										name='md-mail'
+										size={24}
+										color='black'
+										style={{ marginRight: 10 }}
+									/>}
+									onPress={this.onConnection.bind(this)}
+									buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10 }}
+									title={i18n.t('connect')} />
+
+							</Card>
+
+
 
 							<View
 								style={{
@@ -255,7 +327,7 @@ class Login extends Component {
 									/>
 								)} */}
 
-								{!this.state.isLoggedIn && (
+								{/* {!this.state.isLoggedIn && (
 									<SettingsButton
 										pressFn={this.onConnection.bind(this)}
 										enableFn={this.enableConnectionOrSync.bind(
@@ -263,7 +335,7 @@ class Login extends Component {
 										)}
 										label={i18n.t('connect')}
 									/>
-								)}
+								)} */}
 								{/* {this.state.isLoggedIn && (
 									<SettingsButton
 										pressFn={this.onClearAll.bind(this)}
@@ -289,14 +361,18 @@ class Login extends Component {
 						</View>
 					)}
 					{
-						this.state.isLoading &&(
+						this.state.isLoading && (
 							<ActivityIndicator size="large" color="#002b80" />
 						)
 					}
 				</ScrollView>
-				</View>
+			</View>
 		);
 	}
+
+
+
+
 	getSettingsCancel() {
 		try {
 			if (PosStorage.getCustomerTypes()) {
@@ -315,7 +391,7 @@ class Login extends Component {
 				}
 			}
 			return null;
-		} catch (error) {}
+		} catch (error) { }
 	}
 
 	getUrl() {
@@ -377,7 +453,7 @@ class Login extends Component {
 			});
 			//Added by Jean Pierre
 			Synchronization.getLatestSales();
-		} catch (error) {}
+		} catch (error) { }
 	}
 	_getSyncResults(syncResult) {
 		try {
@@ -421,16 +497,16 @@ class Login extends Component {
 				} else {
 					return `${syncResult.customers.localCustomers +
 						syncResult.customers.remoteCustomers} ${i18n.t(
-						'customers-updated'
-					)}
-					${syncResult.products.remoteProducts} ${i18n.t('products-updated')}
-					${syncResult.sales.localReceipts} ${i18n.t('sales-receipts-updated')}
-					${syncResult.productMrps.remoteProductMrps} ${i18n.t(
-						'product-sales-channel-prices-updated'
-					)}`;
+							'customers-updated'
+						)}
+				${syncResult.products.remoteProducts} ${i18n.t('products-updated')}
+				${syncResult.sales.localReceipts} ${i18n.t('sales-receipts-updated')}
+				${syncResult.productMrps.remoteProductMrps} ${i18n.t(
+							'product-sales-channel-prices-updated'
+						)}`;
 				}
 			}
-		} catch (error) {}
+		} catch (error) { }
 	}
 	onClearAll() {
 		console.log('Settings:onClearAll');
@@ -473,23 +549,181 @@ class Login extends Component {
 				PosStorage.getLastSalesSync()
 			);
 			Synchronization.setConnected(saveConnected);
-		} catch (error) {}
+		} catch (error) { }
 	}
 
-	onConnection() {
-	this.props.navigation.navigate('App');
-	}
+	onChangeEmail = user => {
+		console.log(user);
+		this.setState({ user });
+		//this.props.parent.forceUpdate();
+	};
 
-	onConnectiondd() {
-        this.setState({ animating: true });
-        
+	onChangePassword = password => {
+		console.log(password);
+		this.setState({ password });
+		//this.props.parent.forceUpdate();
+	};
+
+	onConnectionff() {
+		this.setState({ animating: true });
+		console.log(this.props.settings);
+		console.log(this.props);
+		console.log(this.state.user);
+		console.log(this.state.password);
 		Communications.initialize(
 			"http://142.93.115.206:3006/",
 			"",
-			this.user.current.state.propertyText,
-			this.password.current.state.propertyText
-        );
-        
+			this.state.user,
+			this.state.password
+		);
+		console.log(this.props.settings.token.length);
+		if (this.props.settings.user.length > 0 &&
+			this.props.settings.password.length > 0 &&
+			this.props.settings.token.length === 0) {
+			// Remote Login
+
+		}
+		this.props.navigation.navigate('App');
+
+		let message = i18n.t('successful-connection');
+		// Communications.login()
+		// 	.then(result => {
+		// 		console.log(
+		// 			'Passed - status' +
+		// 			result.status +
+		// 			' ' +
+		// 			JSON.stringify(result.response)
+		// 		);
+		// 		if (result.status === 200) {
+		// 			console.log(result);
+		// 			this.saveSettings(
+		// 				"http://142.93.115.206:3006/",
+		// 				result.response.token,
+		// 				result.response.data.kiosks[0].name
+		// 			);
+		// 			// console.log("Response site name: " + result.response.data.kiosks[0].name);
+		// 			Communications.getSiteId(
+		// 				result.response.token,
+		// 				result.response.data.kiosks[0].name
+		// 			)
+		// 				.then(async siteId => {
+		// 					if (siteId === -1) {
+		// 						message = i18n.t(
+		// 							'successful-connection-but',
+		// 							{
+		// 								what: this.site.current.state
+		// 									.propertyText,
+		// 								happened: i18n.t('does-not-exist')
+		// 							}
+		// 						);
+		// 					} else if (siteId === -2) {
+		// 						message = i18n.t(
+		// 							'successful-connection-but',
+		// 							{
+		// 								what: this.site.current.state
+		// 									.propertyText,
+		// 								happened: i18n.t('is-not-active')
+		// 							}
+		// 						);
+		// 					} else {
+		// 						this.props.authActions.isAuth(true);
+		// 						this.saveSettings(
+		// 							result.response.data.kiosks[0].name,
+		// 							result.response.token,
+		// 							siteId
+		// 						);
+		// 						Communications.setToken(
+		// 							result.response.token
+		// 						);
+		// 						Communications.setSiteId(siteId);
+		// 						PosStorage.setTokenExpiration();
+		// 						await Synchronization.synchronizeSalesChannels();
+		// 						Synchronization.scheduleSync();
+
+		// 						let date = new Date();
+		// 						//date.setDate(date.getDate() - 30);
+		// 						date.setDate(date.getDate() - 7);
+		// 						Communications.getReceiptsBySiteIdAndDate(
+		// 							siteId,
+		// 							date
+		// 						)
+		// 							.then(json => {
+		// 								console.log('ORIGINAL');
+		// 								console.log(JSON.stringify(json));
+		// 								console.log('END');
+
+		// 								PosStorage.addRemoteReceipts(
+		// 									json
+		// 								).then(saved => {
+		// 									console.log('SAVED');
+		// 									console.log(
+		// 										JSON.stringify(saved)
+		// 									);
+		// 									console.log('END');
+		// 									Events.trigger(
+		// 										'ReceiptsFetched',
+		// 										saved
+		// 									);
+		// 								});
+		// 							})
+		// 							.catch(error => { });
+		// 					}
+		// 					this.setState({ animating: false });
+		// 					Alert.alert(
+		// 						i18n.t('network-connection'),
+		// 						message,
+		// 						[{ text: i18n.t('ok'), style: 'cancel' }],
+		// 						{ cancelable: true }
+		// 					);
+		// 					this.props.navigation.navigate('App');
+		// 					if (siteId !== -1 && siteId !== -2) {
+		// 						this.closeHandler();
+		// 					}
+		// 				})
+		// 				.catch(error => { });
+		// 		} else {
+		// 			this.setState({ animating: false });
+		// 			message =
+		// 				result.response.msg +
+		// 				'(Error code: ' +
+		// 				result.status +
+		// 				')';
+		// 			Alert.alert(
+		// 				i18n.t('network-connection'),
+		// 				message,
+		// 				[{ text: i18n.t('ok'), style: 'cancel' }],
+		// 				{ cancelable: true }
+		// 			);
+		// 		}
+		// 	})
+		// 	.catch(result => {
+		// 		console.log(
+		// 			'Failed- status ' +
+		// 			result.status +
+		// 			' ' +
+		// 			result.response.message
+		// 		);
+		// 		this.setState({ animating: false });
+		// 		Alert.alert(
+		// 			i18n.t('network-connection'),
+		// 			result.response.message + '. (' + result.status + ')',
+		// 			[{ text: i18n.t('ok'), style: 'cancel' }],
+		// 			{ cancelable: true }
+		// 		);
+		// 	});
+		//this.props.navigation.navigate('App');
+	}
+
+	onConnection() {
+		this.setState({ animating: true });
+		console.log(this.state.user, this.state.password);
+		Communications.initialize(
+			"http://142.93.115.206:3006/",
+			"",
+			this.state.user,
+			this.state.password
+		);
+
 
 		try {
 			let message = i18n.t('successful-connection');
@@ -497,18 +731,18 @@ class Login extends Component {
 				.then(result => {
 					console.log(
 						'Passed - status' +
-							result.status +
-							' ' +
-							JSON.stringify(result.response)
+						result.status +
+						' ' +
+						JSON.stringify(result.response)
 					);
 					if (result.status === 200) {
-                        console.log(result);
+						console.log(result);
 						this.saveSettings(
 							"http://142.93.115.206:3006/",
 							result.response.token,
 							result.response.data.kiosks[0].name
 						);
-				// console.log("Response site name: " + result.response.data.kiosks[0].name);
+						// console.log("Response site name: " + result.response.data.kiosks[0].name);
 						Communications.getSiteId(
 							result.response.token,
 							result.response.data.kiosks[0].name
@@ -573,7 +807,7 @@ class Login extends Component {
 												);
 											});
 										})
-										.catch(error => {});
+										.catch(error => { });
 								}
 								this.setState({ animating: false });
 								Alert.alert(
@@ -581,13 +815,13 @@ class Login extends Component {
 									message,
 									[{ text: i18n.t('ok'), style: 'cancel' }],
 									{ cancelable: true }
-                                );
-                                this.props.navigation.navigate('App');
+								);
+								this.props.navigation.navigate('App');
 								if (siteId !== -1 && siteId !== -2) {
 									this.closeHandler();
 								}
 							})
-							.catch(error => {});
+							.catch(error => { });
 					} else {
 						this.setState({ animating: false });
 						message =
@@ -606,9 +840,9 @@ class Login extends Component {
 				.catch(result => {
 					console.log(
 						'Failed- status ' +
-							result.status +
-							' ' +
-							result.response.message
+						result.status +
+						' ' +
+						result.response.message
 					);
 					this.setState({ animating: false });
 					Alert.alert(
@@ -640,9 +874,9 @@ class Login extends Component {
 				.then(result => {
 					console.log(
 						'Passed - status' +
-							result.status +
-							' ' +
-							JSON.stringify(result.response)
+						result.status +
+						' ' +
+						JSON.stringify(result.response)
 					);
 					if (result.status === 200) {
 						this.saveSettings(
@@ -650,7 +884,7 @@ class Login extends Component {
 							result.response.token,
 							result.response.data.kiosks[0].name
 						);
-				// console.log("Response site name: " + result.response.data.kiosks[0].name);
+						// console.log("Response site name: " + result.response.data.kiosks[0].name);
 						Communications.getSiteId(
 							result.response.token,
 							result.response.data.kiosks[0].name
@@ -715,7 +949,7 @@ class Login extends Component {
 												);
 											});
 										})
-										.catch(error => {});
+										.catch(error => { });
 								}
 								this.setState({ animating: false });
 								Alert.alert(
@@ -728,7 +962,7 @@ class Login extends Component {
 									this.closeHandler();
 								}
 							})
-							.catch(error => {});
+							.catch(error => { });
 					} else {
 						this.setState({ animating: false });
 						message =
@@ -747,9 +981,9 @@ class Login extends Component {
 				.catch(result => {
 					console.log(
 						'Failed- status ' +
-							result.status +
-							' ' +
-							result.response.message
+						result.status +
+						' ' +
+						result.response.message
 					);
 					this.setState({ animating: false });
 					Alert.alert(
@@ -793,12 +1027,17 @@ class Login extends Component {
 
 	saveSettings(site, token, siteId) {
 		// Check to see if the site has changed
-		let currentSettings = PosStorage.getSettings();
+		let currentSettings = PosStorage.loadSettings();
 		if (currentSettings.siteId != siteId) {
 			// New site - clear all data
 			this._clearDataAndSync();
 		}
-
+		console.log("jonah");
+		console.log(this.props);
+		//console.log(this.user.current.state.propertyText);
+		console.log(this.state);
+		console.log(this.state.selectedLanguage);
+		console.log(token);
 		PosStorage.saveSettings(
 			"http://142.93.115.206:3006/",
 			site,
@@ -808,15 +1047,15 @@ class Login extends Component {
 			token,
 			siteId
 		);
-		this.props.settingsActions.setSettings(PosStorage.getSettings());
+		this.props.settingsActions.setSettings(PosStorage.loadSettings());
 		this.setState({ isLoading: false });
 	}
 
 	getDefaultUILanguage() {
 		console.log(
-			`CURRENT UI LANGUAGE IS ${this.props.settings.uiLanguage.name}`
+			`CURRENT UI LANGUAGE IS ${this.props.settings.uiLanguage.iso_code}`
 		);
-		return this.props.settings.uiLanguage.name;
+		return this.props.settings.uiLanguage.iso_code;
 	}
 
 	getDefaultUILanguageIndex() {
@@ -841,10 +1080,27 @@ class Login extends Component {
 					`Selected language is ${this.state.selectedLanguage.name}`
 				);
 				i18n.locale = this.state.selectedLanguage.iso_code;
+
 				Events.trigger('SalesChannelsUpdated', {});
-				this.onSaveSettings();
+				let currentSettings = PosStorage.loadSettings();
+				console.log(currentSettings);
+				PosStorage.saveSettings(
+					"http://142.93.115.206:3006/",
+					currentSettings.site,
+					currentSettings.user,
+					currentSettings.password,
+					this.state.selectedLanguage,
+					currentSettings.token,
+					currentSettings.siteId
+				);
+				this.props.settingsActions.setSettings(PosStorage.loadSettings());
+				//this.props.settings.uiLanguage.name
+				this.setState({ isLoading: false });
+
+				//this.onSaveSettings();
 			}
 		);
+		console.log(this.state.selectedLanguage);
 	}
 }
 
@@ -855,7 +1111,7 @@ class Login extends Component {
 // };
 
 function mapStateToProps(state, props) {
-	return { settings: state.settingsReducer.settings, auth:state.authReducer };
+	return { settings: state.settingsReducer.settings, auth: state.authReducer };
 }
 function mapDispatchToProps(dispatch) {
 	return {

@@ -11,6 +11,9 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from 'prop-types';
 
+import { FloatingAction } from "react-native-floating-action";
+
+
 import * as CustomerActions from '../actions/CustomerActions';
 import * as ToolbarActions from '../actions/ToolBarActions';
 
@@ -95,6 +98,16 @@ class CustomerList extends Component {
                     keyExtractor={item => item.customerId}
                     initialNumToRender={50}
                 />
+                <FloatingAction
+                        onOpen={name => {
+                            console.log(this.props);
+                            this.props.navigation.navigate('CustomerDetails', {
+                                itemId: 86,
+                                otherParam: 'anything you want here',
+                            });
+                            //alert(`selected button: ${name}`);
+                        }}
+                    />
                 {/* <SearchWatcher parent={this}>
                     {this.props.searchString}
                 </SearchWatcher> */}

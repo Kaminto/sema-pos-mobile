@@ -6,14 +6,18 @@ import {
 	TextInput,
 	StyleSheet,
 	Modal,
-	Image
+	Image,
+	Picker
 } from 'react-native';
+import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Events from 'react-native-simple-events';
+
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import * as ToolbarActions from '../actions/ToolBarActions';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -95,12 +99,12 @@ class PhoneProperty extends Component {
 	}
 	onChangeText = text => {
 		if (this.props.reference === 'customerFrequency' ||
-		this.props.reference === 'customerNumber' || this.props.reference === 'secondPhoneNumber') {
+			this.props.reference === 'customerNumber' || this.props.reference === 'secondPhoneNumber') {
 			if (text) {
 				// if (/^\d+$/.test(text)) {
-					this.setState({
-						propertyText: text
-					});
+				this.setState({
+					propertyText: text
+				});
 				// } else {
 				// 	alert('Digits only please');
 				// }
@@ -120,7 +124,9 @@ class CustomerEdit extends Component {
 		super(props);
 		this.state = {
 			isEditInProgress: false,
-			salescid: 0 };
+			salescid: 0,
+			language: ""
+		};
 		this.saleschannelid = 0;
 		this.phone = React.createRef();
 		this.secondPhoneNumber = React.createRef();
@@ -137,7 +143,7 @@ class CustomerEdit extends Component {
 
 		this.customerTypes = PosStorage.getCustomerTypesForDisplay(this.saleschannelid);
 		this.customerTypeOptions = this.customerTypes.map(customerType => {
-			   return customerType.displayName;
+			return customerType.displayName;
 		});
 		this.customerTypesIndicies = this.customerTypes.map(customerType => {
 			return customerType.id;
@@ -150,17 +156,80 @@ class CustomerEdit extends Component {
 
 	render() {
 
-        console.log(this.props.isEdit);
+		console.log(this.props.isEdit);
 
 		return (
 			<View style={{ flex: 1, backgroundColor: '#fff' }}>
-			
+
 
 				<KeyboardAwareScrollView
 					style={{ flex: 1 }}
 					resetScrollToCoords={{ x: 0, y: 0 }}
 					scrollEnabled={true}>
 					<View style={{ flex: 1, alignItems: 'center' }}>
+
+						<Card
+							containerStyle={{ width: 500, marginTop: 30 }}
+						>
+
+							<Input
+								placeholder='Name'
+								inputStyle={[styles.inputText]}
+							/>
+
+							<Input
+								placeholder='Telephone #'
+								inputStyle={[styles.inputText]}
+							/>
+
+							<Input
+								placeholder='Telephone # 2'
+								inputStyle={[styles.inputText]}
+							/>
+
+							<Input
+								placeholder='Address'
+								inputStyle={[styles.inputText]}
+							/>
+
+							<Input
+								placeholder='Frequency'
+								inputStyle={[styles.inputText]}
+							/>
+
+
+							<Picker
+								selectedValue={this.state.language}
+								onValueChange={(itemValue, itemIndex) =>
+									this.setState({ language: itemValue })
+								}>
+								<Picker.Item label="Sales Channel" value="" />
+								<Picker.Item label="Java" value="java" />
+								<Picker.Item label="JavaScript" value="js" />
+							</Picker>
+
+							<Picker
+								selectedValue={this.state.language}
+								onValueChange={(itemValue, itemIndex) =>
+									this.setState({ language: itemValue })
+								}>
+								<Picker.Item label="Customer" value="" />
+								<Picker.Item label="Java" value="java" />
+								<Picker.Item label="JavaScript" value="js" />
+							</Picker>
+
+							<Button
+
+								onPress={() => {
+									console.log('Login');
+									this.props.navigation.navigate('App');
+								}}
+								buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10 }}
+								title='Save' />
+
+						</Card>
+
+
 						<CustomerProperty
 							reference="customerName"
 							marginTop="1%"
@@ -275,57 +344,57 @@ class CustomerEdit extends Component {
 								flexDirection: 'row',
 								alignItems: 'center'
 							}}>
-						<View style={styles.submit}>
-							<View
-								style={{
-									justifyContent: 'flex-start',
-									height: 90,
-									width: '30%'
-									// alignItems: 'center'
-								}}>
-								<TouchableHighlight
-									underlayColor="#c0c0c0"
-									onPress={() => this.onEdit()}>
-									<Text
-										style={[
-											{
-												paddingTop: 30,
-												paddingBottom: 30,
-												width: 300
-											},
-											styles.buttonText
-										]}>
-										{this.getSubmitText()}
-									</Text>
-								</TouchableHighlight>
+							<View style={styles.submit}>
+								<View
+									style={{
+										justifyContent: 'flex-start',
+										height: 90,
+										width: '30%'
+										// alignItems: 'center'
+									}}>
+									<TouchableHighlight
+										underlayColor="#c0c0c0"
+										onPress={() => this.onEdit()}>
+										<Text
+											style={[
+												{
+													paddingTop: 30,
+													paddingBottom: 30,
+													width: 300
+												},
+												styles.buttonText
+											]}>
+											{this.getSubmitText()}
+										</Text>
+									</TouchableHighlight>
+								</View>
 							</View>
-						</View>
 
-						<View style={styles.submit}>
-							<View
-								style={{
-									justifyContent: 'flex-end',
-									height: 90,
-									width: '30%'
-									// alignItems: 'center'
-								}}>
-								<TouchableHighlight
-									underlayColor="#c0c0c0"
-									onPress={() => this.onMakeSale()}>
-									<Text
-										style={[
-											{
-												paddingTop: 30,
-												paddingBottom: 30,
-												width: 300
-											},
-											styles.buttonText
-										]}>
-										Make a Sale
+							<View style={styles.submit}>
+								<View
+									style={{
+										justifyContent: 'flex-end',
+										height: 90,
+										width: '30%'
+										// alignItems: 'center'
+									}}>
+									<TouchableHighlight
+										underlayColor="#c0c0c0"
+										onPress={() => this.onMakeSale()}>
+										<Text
+											style={[
+												{
+													paddingTop: 30,
+													paddingBottom: 30,
+													width: 300
+												},
+												styles.buttonText
+											]}>
+											Make a Sale
 									</Text>
-								</TouchableHighlight>
+									</TouchableHighlight>
+								</View>
 							</View>
-						</View>
 						</View>
 
 						<Modal
@@ -356,7 +425,7 @@ class CustomerEdit extends Component {
 			} else {
 				return '';
 			}
-		} catch (error) {}
+		} catch (error) { }
 	}
 
 	getName(me) {
@@ -477,23 +546,23 @@ class CustomerEdit extends Component {
 		return test;
 	}
 
-	changeCustomerTypeList(value){
+	changeCustomerTypeList(value) {
 
-			let tindex = 0;
-			if(value === 'Direct') {
-				tindex = 2;
-			} else if(value === 'Reseller') {
-				tindex = 3;
-			} else if (value === 'Water Club') {
-				tindex = 4;
-			}
-			this.saleschannelid = tindex;
-            console.log("Adams" + this.saleschannelid);
-			this.setState({ salescid: tindex });
-			this.customerTypes = PosStorage.getCustomerTypesForDisplay(tindex);
-			this.customerTypeOptions = this.customerTypes.map(customerType => {
-				return customerType.displayName;
-		    });
+		let tindex = 0;
+		if (value === 'Direct') {
+			tindex = 2;
+		} else if (value === 'Reseller') {
+			tindex = 3;
+		} else if (value === 'Water Club') {
+			tindex = 4;
+		}
+		this.saleschannelid = tindex;
+		console.log("Adams" + this.saleschannelid);
+		this.setState({ salescid: tindex });
+		this.customerTypes = PosStorage.getCustomerTypesForDisplay(tindex);
+		this.customerTypeOptions = this.customerTypes.map(customerType => {
+			return customerType.displayName;
+		});
 	}
 
 	onMakeSale() {
@@ -661,8 +730,8 @@ class CustomerEdit extends Component {
 				this.frequency.current.state.propertyText,
 				this.secondPhoneNumber.current.state.propertyText
 			);
-            this.props.customerActions.setCustomers(PosStorage.getCustomers());
-            this.props.navigation.navigate('ListCustomers');
+			this.props.customerActions.setCustomers(PosStorage.getCustomers());
+			this.props.navigation.navigate('ListCustomers');
 			this.props.customerActions.CustomerSelected(newCustomer);
 		}
 
@@ -723,8 +792,8 @@ class CustomerEdit extends Component {
 
 function mapStateToProps(state, props) {
 	return {
-        selectedCustomer: state.customerReducer.selectedCustomer,
-        isEdit: state.customerReducer.isEdit,
+		selectedCustomer: state.customerReducer.selectedCustomer,
+		isEdit: state.customerReducer.isEdit,
 		settings: state.settingsReducer.settings
 	};
 }
@@ -777,7 +846,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white',
 		width: 195,
 		margin: 5,
-		paddingRight:5
+		paddingRight: 5
 	},
 	dropdownText: {
 		fontSize: 24

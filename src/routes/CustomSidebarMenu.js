@@ -1,9 +1,23 @@
 //This is an example code for Navigation Drawer with Custom Side bar//
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, Text } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 // import { Icon } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
-export default class CustomSidebarMenu extends Component {
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as CustomerActions from '../actions/CustomerActions';
+import * as NetworkActions from '../actions/NetworkActions';
+import * as SettingsActions from '../actions/SettingsActions';
+import * as ProductActions from '../actions/ProductActions';
+import * as ToolbarActions from '../actions/ToolBarActions';
+import * as receiptActions from '../actions/ReceiptActions';
+import * as AuthActions from '../actions/AuthActions';
+
+import PosStorage from '../database/PosStorage';
+import Synchronization from '../services/Synchronization';
+import Communications from '../services/Communications';
+
+class CustomSidebarMenu extends Component {
   constructor() {
     super();
     //Setting up the Main Top Large Image of the Custom Sidebar
@@ -42,10 +56,16 @@ export default class CustomSidebarMenu extends Component {
         navOptionThumb: 'md-home',
         navOptionName: 'Reminders',
         screenToNavigate: 'Reminders',
+      },
+      {
+        navOptionThumb: 'md-log-out',
+        navOptionName: 'LogOut',
+        screenToNavigate: 'LogOut',
       }
     ];
   }
-  render() {
+  render() {   
+
     return (
       <View style={styles.sideMenuContainer}>
         {/*Top Large Image */}
@@ -53,7 +73,7 @@ export default class CustomSidebarMenu extends Component {
           source={{ uri: this.proileImage }}
           style={styles.sideMenuProfileIcon}
         /> */}
-        <Icon name="ios-person"  size={100}  style={styles.sideMenuProfileIcon}/>
+        <Icon name="ios-person" size={100} style={styles.sideMenuProfileIcon} />
         {/*Divider between Top Image and Sidebar Option*/}
         <View
           style={{
@@ -85,7 +105,16 @@ export default class CustomSidebarMenu extends Component {
                 }}
                 onPress={() => {
                   global.currentScreenIndex = key;
-                  this.props.navigation.navigate(item.screenToNavigate);
+
+                  if (item.screenToNavigate === 'LogOut') {
+                    console.log(item.screenToNavigate);
+                   this.onLogout();
+                  }
+
+                  if (item.screenToNavigate != 'LogOut') {
+                    this.props.navigation.navigate(item.screenToNavigate);
+                  }
+
                 }}>
                 {item.navOptionName}
               </Text>
@@ -95,7 +124,67 @@ export default class CustomSidebarMenu extends Component {
       </View>
     );
   }
+
+  onLogout = () => {
+    this.props.toolbarActions.SetLoggedIn(false);
+    let settings = PosStorage.loadSettings();
+    console.log(settings);
+    this.props.authActions.isAuth(false);
+
+    // // Save with empty token - This will force username/password validation
+    PosStorage.saveSettings(
+      settings.semaUrl,
+      settings.site,
+      settings.user,
+      settings.password,
+      settings.uiLanguage,
+      '',
+      settings.siteId
+    );
+    this.props.settingsActions.setSettings(PosStorage.loadSettings());
+    //As we are not going to the Login, the reason no reason to disable the token
+    Communications.setToken('');
+   // this.props.toolbarActions.ShowScreen('settings');
+    this.props.navigation.navigate('Login');
+  };
+
 }
+
+
+function mapStateToProps(state, props) {
+  return {
+      selectedCustomer: state.customerReducer.selectedCustomer,
+      customers: state.customerReducer.customers,
+      network: state.networkReducer.network,
+      showView: state.customerBarReducer.showView,
+      showScreen: state.toolBarReducer.showScreen,
+      settings: state.settingsReducer.settings,
+      receipts: state.receiptReducer.receipts,
+      remoteReceipts: state.receiptReducer.remoteReceipts,
+      products: state.productReducer.products,
+      auth:state.authReducer
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+      customerActions: bindActionCreators(CustomerActions, dispatch),
+      productActions: bindActionCreators(ProductActions, dispatch),
+      networkActions: bindActionCreators(NetworkActions, dispatch),
+      toolbarActions: bindActionCreators(ToolbarActions, dispatch),
+      settingsActions: bindActionCreators(SettingsActions, dispatch),
+      receiptActions: bindActionCreators(receiptActions, dispatch),
+      authActions: bindActionCreators(AuthActions, dispatch)
+  };
+}
+
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CustomSidebarMenu);
+
+
 const styles = StyleSheet.create({
   sideMenuContainer: {
     width: '100%',

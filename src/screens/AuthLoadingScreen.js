@@ -39,20 +39,7 @@ import Events from 'react-native-simple-events';
 
 
 class AuthLoadingScreen extends React.Component {
-    // constructor() {
-    //   super();
-    //   this._bootstrapAsync();
-    // }
-
-    // // Fetch the token from storage then navigate to our appropriate place
-    // _bootstrapAsync = async () => {
-    //   const userToken = await AsyncStorage.getItem('userToken');
-
-    //   // This will switch to the App screen or Auth screen and this loading
-    //   // screen will be unmounted and thrown away.
-    //   this.props.navigation.navigate(userToken ? 'App' : 'Auth');
-    // };
-
+  
     constructor(props) {
         super(props);
 
@@ -87,7 +74,9 @@ class AuthLoadingScreen extends React.Component {
             );
             Communications.setToken(settings.token);
             Communications.setSiteId(settings.siteId);
-
+               console.log(this.posStorage.getCustomers()); 
+               console.log(this.posStorage.getProducts()); 
+               console.log(this.posStorage.getRemoteReceipts()); 
             this.props.customerActions.setCustomers(
                 this.posStorage.getCustomers() ? this.posStorage.getCustomers() : []
             );
@@ -98,12 +87,12 @@ class AuthLoadingScreen extends React.Component {
                 this.posStorage.getRemoteReceipts() ? this.posStorage.getRemoteReceipts() : []
             );
 
-            // Synchronization.initialize(
-            //     PosStorage.getLastCustomerSync(),
-            //     PosStorage.getLastProductSync(),
-            //     PosStorage.getLastSalesSync()
-            // );
-            // Synchronization.setConnected(this.props.network.isNWConnected);
+            Synchronization.initialize(
+                PosStorage.getLastCustomerSync(),
+                PosStorage.getLastProductSync(),
+                PosStorage.getLastSalesSync()
+            );
+            Synchronization.setConnected(this.props.network.isNWConnected);
 
             if (this.isLoginComplete()) {
                 console.log('PosApp - Auto login - All settings exist');
@@ -133,76 +122,76 @@ class AuthLoadingScreen extends React.Component {
 
 
 
-        this.posStorage.initialize(false).then(isInitialized => {
-            console.log('PosApp - componentDidMount - Storage initialized');
+        // this.posStorage.initialize(false).then(isInitialized => {
+        //     console.log('PosApp - componentDidMount - Storage initialized');
 
-            // let settings = this.posStorage.loadSettings();
-            // console.log('settings');
-            // console.log(settings);
-            // this.props.settingsActions.setSettings(settings);
-            // // this.props.settingsActions.setConfiguration(configuration);
+        //     // let settings = this.posStorage.loadSettings();
+        //     // console.log('settings');
+        //     // console.log(settings);
+        //     // this.props.settingsActions.setSettings(settings);
+        //     // // this.props.settingsActions.setConfiguration(configuration);
 
-            // Communications.initialize(
-            //     settings.semaUrl,
-            //     settings.site,
-            //     settings.user,
-            //     settings.password
-            // );
-            // Communications.setToken(settings.token);
-            // Communications.setSiteId(settings.siteId);
+        //     // Communications.initialize(
+        //     //     settings.semaUrl,
+        //     //     settings.site,
+        //     //     settings.user,
+        //     //     settings.password
+        //     // );
+        //     // Communications.setToken(settings.token);
+        //     // Communications.setSiteId(settings.siteId);
 
-            // let timeout = 200;
-            // if (isInitialized) {
-            //     // Data already configured
-            //     this.props.customerActions.setCustomers(
-            //         this.posStorage.getCustomers()
-            //     );
-            //     this.props.productActions.setProducts(
-            //         this.posStorage.getProducts()
-            //     );
-            //     this.props.receiptActions.setRemoteReceipts(
-            //         this.posStorage.getRemoteReceipts()
-            //     );
-            // }
-            // if (isInitialized && this.posStorage.getCustomers().length > 0) {
-            // 	// Data already configured
-            // 	timeout = 20000;	// First sync after a bit
-            // }
+        //     // let timeout = 200;
+        //     // if (isInitialized) {
+        //     //     // Data already configured
+        //     //     this.props.customerActions.setCustomers(
+        //     //         this.posStorage.getCustomers()
+        //     //     );
+        //     //     this.props.productActions.setProducts(
+        //     //         this.posStorage.getProducts()
+        //     //     );
+        //     //     this.props.receiptActions.setRemoteReceipts(
+        //     //         this.posStorage.getRemoteReceipts()
+        //     //     );
+        //     // }
+        //     // if (isInitialized && this.posStorage.getCustomers().length > 0) {
+        //     // 	// Data already configured
+        //     // 	timeout = 20000;	// First sync after a bit
+        //     // }
 
-            // Synchronization.initialize(
-            //     PosStorage.getLastCustomerSync(),
-            //     PosStorage.getLastProductSync(),
-            //     PosStorage.getLastSalesSync()
-            // );
-            // Synchronization.setConnected(this.props.network.isNWConnected);
+        //     // Synchronization.initialize(
+        //     //     PosStorage.getLastCustomerSync(),
+        //     //     PosStorage.getLastProductSync(),
+        //     //     PosStorage.getLastSalesSync()
+        //     // );
+        //     // Synchronization.setConnected(this.props.network.isNWConnected);
 
-            // Determine the startup screen as follows:
-            // If the settings contain url, site, username, password, token and customerTypes, proceed to main screen
-            // If the settings contain url, site, username, password, customerTypes but NOT token, proceed to login screen, (No token => user has logged out)
-            // Otherwise proceed to the settings screen.
-            // Note: Without customerTypes. Customers can't be created since Customer creation requires both salesChannelIds AND customerTypes
-            // if (this.isLoginComplete()) {
-            //     console.log('PosApp - Auto login - All settings exist');
-            //     this.props.toolbarActions.SetLoggedIn(true);
-            //     this.setState({ isLoading: false });
-            //     this.props.toolbarActions.ShowScreen('main');
-            //     console.log('PosApp - starting synchronization');
-            //     Synchronization.scheduleSync();
-            // }
-            // //Making setting page as Main Page
-            // else if (this.isSettingsComplete()) {
-            //     console.log("PosApp - login required - No Token");
-            //     // this.props.toolbarActions.SetLoggedIn(false);
-            //     this.setState({ isLoading: false });
-            //     this.props.toolbarActions.ShowScreen('settings');
-            // }
-            // else {
-            //     console.log('PosApp - Settings not complete');
-            //     this.setState({ isLoading: false });
-            //     // this.props.toolbarActions.SetLoggedIn(false); // So that the login screen doesn't show
-            //     this.props.toolbarActions.ShowScreen('settings');
-            // }
-        });
+        //     // Determine the startup screen as follows:
+        //     // If the settings contain url, site, username, password, token and customerTypes, proceed to main screen
+        //     // If the settings contain url, site, username, password, customerTypes but NOT token, proceed to login screen, (No token => user has logged out)
+        //     // Otherwise proceed to the settings screen.
+        //     // Note: Without customerTypes. Customers can't be created since Customer creation requires both salesChannelIds AND customerTypes
+        //     // if (this.isLoginComplete()) {
+        //     //     console.log('PosApp - Auto login - All settings exist');
+        //     //     this.props.toolbarActions.SetLoggedIn(true);
+        //     //     this.setState({ isLoading: false });
+        //     //     this.props.toolbarActions.ShowScreen('main');
+        //     //     console.log('PosApp - starting synchronization');
+        //     //     Synchronization.scheduleSync();
+        //     // }
+        //     // //Making setting page as Main Page
+        //     // else if (this.isSettingsComplete()) {
+        //     //     console.log("PosApp - login required - No Token");
+        //     //     // this.props.toolbarActions.SetLoggedIn(false);
+        //     //     this.setState({ isLoading: false });
+        //     //     this.props.toolbarActions.ShowScreen('settings');
+        //     // }
+        //     // else {
+        //     //     console.log('PosApp - Settings not complete');
+        //     //     this.setState({ isLoading: false });
+        //     //     // this.props.toolbarActions.SetLoggedIn(false); // So that the login screen doesn't show
+        //     //     this.props.toolbarActions.ShowScreen('settings');
+        //     // }
+        // });
 
         NetInfo.isConnected.fetch().then(isConnected => {
             console.log('Network is ' + (isConnected ? 'online' : 'offline'));
@@ -397,7 +386,7 @@ class AuthLoadingScreen extends React.Component {
 
     isLoginComplete() {
         console.log('isLoginComplete ');
-        let settings = this.posStorage.getSettings();
+        let settings = this.posStorage.loadSettings();
         console.log('isLoginComplete ' + JSON.stringify(settings));
         if (this.posStorage.getCustomerTypes()) {
             if (
@@ -416,7 +405,7 @@ class AuthLoadingScreen extends React.Component {
     }
 
     isSettingsComplete() {
-        let settings = this.posStorage.getSettings();
+        let settings = this.posStorage.loadSettings();
         if (this.posStorage.getCustomerTypes()) {
             if (
                 settings.semaUrl.length > 0 &&
