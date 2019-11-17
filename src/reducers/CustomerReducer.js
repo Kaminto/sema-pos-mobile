@@ -6,6 +6,7 @@ let initialState = { selectedCustomer: {}, customers: [], searchString: "", isEd
 
 const customerReducer = (state = initialState, action) => {
 	console.log("customerReducer: " + action.type);
+	console.log("customerReducer: " + action.data);
 	let newState;
 	switch (action.type) {
 		case CUSTOMER_SELECTED:

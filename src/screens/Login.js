@@ -24,6 +24,7 @@ import PosStorage from '../database/PosStorage';
 import * as SettingsActions from '../actions/SettingsActions';
 import * as ToolbarActions from '../actions/ToolBarActions';
 import * as CustomerActions from '../actions/CustomerActions';
+import * as NetworkActions from '../actions/NetworkActions';
 import * as AuthActions from '../actions/AuthActions';
 import ModalDropdown from 'react-native-modal-dropdown';
 
@@ -44,48 +45,7 @@ const supportedUILanguages = [
 	{ name: 'Français', iso_code: 'fr' },
 	{ name: 'Kreyòl Ayisyen', iso_code: 'ht' }
 ];
-
-class SettingsProperty extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			propertyText: this.props.valueFn()
-		};
-	}
-
-	render() {
-		return (
-			<View
-				style={{
-					flexDirection: 'row',
-					flex: 1,
-					alignItems: 'center',
-					marginTop: this.props.marginTop,
-					alignSelf: 'flex-end',
-					marginRight: marginInputItems
-				}}>
-				<View>
-					<Text style={styles.labelText}>{this.props.label}</Text>
-				</View>
-				<View style={[styles.inputContainer]}>
-					<TextInput
-						style={[styles.inputText]}
-						underlineColorAndroid="transparent"
-						placeholder={this.props.placeHolder}
-						value={this.state.propertyText}
-						secureTextEntry={this.props.isSecure}
-						onChangeText={this.onChangeText.bind(this)}
-					/>
-				</View>
-			</View>
-		);
-	}
-	onChangeText = text => {
-		this.setState({ propertyText: text });
-		this.props.parent.forceUpdate();
-	};
-}
-
+ 
 class SettingsButton extends Component {
 	render() {
 		return (
@@ -126,7 +86,7 @@ class SettingsButton extends Component {
 
 class Login extends Component {
 	constructor(props) {
-		let setting = PosStorage.getSettings();
+		let setting = PosStorage.loadSettings();
 		console.log(setting);
 		super(props);
 		// this.url = React.createRef();
@@ -140,8 +100,8 @@ class Login extends Component {
 		this.state = {
 			animating: false,
 			language: '',
-			user: '',
-			password: '',
+			user: "administrator",
+			password: "Let'sGrow",
 			selectedLanguage: {},
 			isLoggedIn: setting.token.length > 0 || false,
 			isLoading: false
@@ -166,12 +126,10 @@ class Login extends Component {
 	}
 
 	render() {
+		console.log(this.props.settings);
 		let serviceItems = supportedUILanguages.map((s, i) => {
-			console.log(s);
 			return <Picker.Item key={i} value={s.iso_code} label={s.name} />
 		});
-		console.log(this.props.settings);
-		console.log(this.state.isLoggedIn);
 		return (
 			<View style={styles.container}>
 				<ScrollView style={{ flex: 1 }}>
@@ -180,77 +138,6 @@ class Login extends Component {
 						resetScrollToCoords={{ x: 0, y: 0 }}
 						scrollEnabled={false}>
 						<View style={{ flex: 1, alignItems: 'center', backgroundColor: 'white' }}>
-
-							{/* {this.state.isLoggedIn && (
-							<SettingsProperty
-								parent={this}
-								marginTop={marginSpacing}
-								placeHolder={i18n.t('site-placeholder') + 'Flag'}
-								isSecure={false}
-								label={i18n.t('site-label')}
-								valueFn={this.getSite.bind(this)}
-								ref={this.site}
-							/>
-							)} */}
-
-
-
-
-							{/* 							
-							<SettingsProperty
-								parent={this}
-								marginTop={marginSpacing}
-								placeHolder={i18n.t(
-									'username-or-email-placeholder'
-								)}
-								label={i18n.t('username-or-email-placeholder')}
-								isSecure={false}
-								valueFn={this.getUser.bind(this)}
-								ref={this.user}
-							/>
-							<SettingsProperty
-								parent={this}
-								marginTop={marginSpacing}
-								placeHolder={i18n.t('password-placeholder')}
-								label={i18n.t('password-label')}
-								isSecure={true}
-								valueFn={this.getPassword.bind(this)}
-								ref={this.password}
-							/> */}
-
-							{/* <View
-								style={[
-									{
-										marginTop: '1%',
-										flexDirection: 'row',
-										alignItems: 'center'
-									}
-								]}>
-								<ModalDropdown
-									style={{ width: 250 }}
-									textStyle={styles.dropdownText}
-									dropdownTextStyle={[
-										styles.dropdownText,
-										{ width: 250 }
-									]}
-									dropdownStyle={{
-										borderColor: 'black',
-										borderWidth: 2
-									}}
-									ref={this.supportedLanguages}
-									defaultValue={this.getDefaultUILanguage()}
-									defaultIndex={this.getDefaultUILanguageIndex()}
-									options={supportedUILanguages.map(
-										lang => lang.name
-									)}
-									onSelect={this.onLanguageSelected}
-								/>
-								<TouchableHighlight
-									underlayColor="#c0c0c0"
-									onPress={this.onShowLanguages}>
-									<Text style={{ fontSize: 40 }}>{'\u2B07'}</Text>
-								</TouchableHighlight>
-							</View> */}
 
 							<Card
 								title={i18n.t('connect')}
@@ -317,32 +204,7 @@ class Login extends Component {
 									flex: 1,
 									alignItems: 'center'
 								}}>
-								{/* {this.state.isLoggedIn && (
-									<SettingsButton
-										pressFn={this.onSaveSettings}
-										enableFn={this.enableSaveSettings.bind(
-											this
-										)}
-										label={i18n.t('save-settings')}
-									/>
-								)} */}
-
-								{/* {!this.state.isLoggedIn && (
-									<SettingsButton
-										pressFn={this.onConnection.bind(this)}
-										enableFn={this.enableConnectionOrSync.bind(
-											this
-										)}
-										label={i18n.t('connect')}
-									/>
-								)} */}
-								{/* {this.state.isLoggedIn && (
-									<SettingsButton
-										pressFn={this.onClearAll.bind(this)}
-										enableFn={this.enableClearAll.bind(this)}
-										label={i18n.t('clear')}
-									/>
-								)} */}
+								
 								{this.state.isLoggedIn && (
 									<SettingsButton
 										pressFn={this.onSynchronize.bind(this)}
@@ -362,7 +224,7 @@ class Login extends Component {
 					)}
 					{
 						this.state.isLoading && (
-							<ActivityIndicator size="large" color="#002b80" />
+							<ActivityIndicator size={120} color="#0000ff" />
 						)
 					}
 				</ScrollView>
@@ -564,164 +426,244 @@ class Login extends Component {
 		//this.props.parent.forceUpdate();
 	};
 
-	onConnectionff() {
+
+	onConnection() {
 		this.setState({ animating: true });
-		console.log(this.props.settings);
-		console.log(this.props);
-		console.log(this.state.user);
-		console.log(this.state.password);
 		Communications.initialize(
 			"http://142.93.115.206:3006/",
 			"",
 			this.state.user,
 			this.state.password
 		);
-		console.log(this.props.settings.token.length);
-		if (this.props.settings.user.length > 0 &&
-			this.props.settings.password.length > 0 &&
-			this.props.settings.token.length === 0) {
-			// Remote Login
+ 
+		console.log(this.props.settings.loginSync);
+		if (this.props.settings.loginSync) {
+			this.loginWithSync();
+		}
+
+		if (!this.props.settings.loginSync) {
+
+			if (this.state.user === this.props.settings.user && this.state.password === this.props.settings.password) {
+
+				Communications.login()
+					.then(result => {
+						if (result.status === 200) {
+							let message = i18n.t('successful-connection');
+							Alert.alert(
+								i18n.t('network-connection'),
+								message,
+								[{ text: i18n.t('ok'), style: 'cancel' }],
+								{ cancelable: true }
+							);
+							Communications.setToken(
+								result.response.token
+							);
+						} else {
+							this.setState({ animating: false });
+							message =
+								result.response.msg +
+								'(Error code: ' +
+								result.status +
+								')';
+							Alert.alert(
+								i18n.t('network-connection'),
+								message,
+								[{ text: i18n.t('ok'), style: 'cancel' }],
+								{ cancelable: true }
+							);
+						}
+					})
+
+				this.props.navigation.navigate('App');
+			} else {
+				this.setState({ animating: true });
+				Alert.alert(
+					i18n.t('network-connection'),
+					'Wrong Credetials have been Provided',
+					[{ text: i18n.t('ok'), style: 'cancel' }],
+					{ cancelable: true }
+				);
+			}
 
 		}
-		this.props.navigation.navigate('App');
 
-		let message = i18n.t('successful-connection');
-		// Communications.login()
-		// 	.then(result => {
-		// 		console.log(
-		// 			'Passed - status' +
-		// 			result.status +
-		// 			' ' +
-		// 			JSON.stringify(result.response)
-		// 		);
-		// 		if (result.status === 200) {
-		// 			console.log(result);
-		// 			this.saveSettings(
-		// 				"http://142.93.115.206:3006/",
-		// 				result.response.token,
-		// 				result.response.data.kiosks[0].name
-		// 			);
-		// 			// console.log("Response site name: " + result.response.data.kiosks[0].name);
-		// 			Communications.getSiteId(
-		// 				result.response.token,
-		// 				result.response.data.kiosks[0].name
-		// 			)
-		// 				.then(async siteId => {
-		// 					if (siteId === -1) {
-		// 						message = i18n.t(
-		// 							'successful-connection-but',
-		// 							{
-		// 								what: this.site.current.state
-		// 									.propertyText,
-		// 								happened: i18n.t('does-not-exist')
-		// 							}
-		// 						);
-		// 					} else if (siteId === -2) {
-		// 						message = i18n.t(
-		// 							'successful-connection-but',
-		// 							{
-		// 								what: this.site.current.state
-		// 									.propertyText,
-		// 								happened: i18n.t('is-not-active')
-		// 							}
-		// 						);
-		// 					} else {
-		// 						this.props.authActions.isAuth(true);
-		// 						this.saveSettings(
-		// 							result.response.data.kiosks[0].name,
-		// 							result.response.token,
-		// 							siteId
-		// 						);
-		// 						Communications.setToken(
-		// 							result.response.token
-		// 						);
-		// 						Communications.setSiteId(siteId);
-		// 						PosStorage.setTokenExpiration();
-		// 						await Synchronization.synchronizeSalesChannels();
-		// 						Synchronization.scheduleSync();
-
-		// 						let date = new Date();
-		// 						//date.setDate(date.getDate() - 30);
-		// 						date.setDate(date.getDate() - 7);
-		// 						Communications.getReceiptsBySiteIdAndDate(
-		// 							siteId,
-		// 							date
-		// 						)
-		// 							.then(json => {
-		// 								console.log('ORIGINAL');
-		// 								console.log(JSON.stringify(json));
-		// 								console.log('END');
-
-		// 								PosStorage.addRemoteReceipts(
-		// 									json
-		// 								).then(saved => {
-		// 									console.log('SAVED');
-		// 									console.log(
-		// 										JSON.stringify(saved)
-		// 									);
-		// 									console.log('END');
-		// 									Events.trigger(
-		// 										'ReceiptsFetched',
-		// 										saved
-		// 									);
-		// 								});
-		// 							})
-		// 							.catch(error => { });
-		// 					}
-		// 					this.setState({ animating: false });
-		// 					Alert.alert(
-		// 						i18n.t('network-connection'),
-		// 						message,
-		// 						[{ text: i18n.t('ok'), style: 'cancel' }],
-		// 						{ cancelable: true }
-		// 					);
-		// 					this.props.navigation.navigate('App');
-		// 					if (siteId !== -1 && siteId !== -2) {
-		// 						this.closeHandler();
-		// 					}
-		// 				})
-		// 				.catch(error => { });
-		// 		} else {
-		// 			this.setState({ animating: false });
-		// 			message =
-		// 				result.response.msg +
-		// 				'(Error code: ' +
-		// 				result.status +
-		// 				')';
-		// 			Alert.alert(
-		// 				i18n.t('network-connection'),
-		// 				message,
-		// 				[{ text: i18n.t('ok'), style: 'cancel' }],
-		// 				{ cancelable: true }
-		// 			);
-		// 		}
-		// 	})
-		// 	.catch(result => {
-		// 		console.log(
-		// 			'Failed- status ' +
-		// 			result.status +
-		// 			' ' +
-		// 			result.response.message
-		// 		);
-		// 		this.setState({ animating: false });
-		// 		Alert.alert(
-		// 			i18n.t('network-connection'),
-		// 			result.response.message + '. (' + result.status + ')',
-		// 			[{ text: i18n.t('ok'), style: 'cancel' }],
-		// 			{ cancelable: true }
-		// 		);
-		// 	});
-		//this.props.navigation.navigate('App');
 	}
 
-	onConnection() {
+
+	loginWithSync() {
+
+		try {
+			let message = i18n.t('successful-connection');
+			Communications.login()
+				.then(result => {
+					console.log(
+						'Passed - status' +
+						result.status +
+						' ' +
+						JSON.stringify(result.response)
+					);
+					if (result.status === 200) {
+						Communications.getSiteId(
+							result.response.token,
+							result.response.data.kiosks[0].name
+						)
+							.then(async siteId => {
+								if (siteId === -1) {
+									message = i18n.t(
+										'successful-connection-but',
+										{
+											what: this.site.current.state
+												.propertyText,
+											happened: i18n.t('does-not-exist')
+										}
+									);
+								} else if (siteId === -2) {
+									message = i18n.t(
+										'successful-connection-but',
+										{
+											what: this.site.current.state
+												.propertyText,
+											happened: i18n.t('is-not-active')
+										}
+									);
+								} else {
+									this.props.authActions.isAuth(true);
+									this.saveSettings(
+										result.response.data.kiosks[0].name,
+										result.response.token,
+										siteId
+									);
+									Communications.setToken(
+										result.response.token
+									);
+									Communications.setSiteId(siteId);
+									PosStorage.setTokenExpiration();
+									await Synchronization.synchronizeSalesChannels();
+									Synchronization.scheduleSync();
+
+									let date = new Date();
+									//date.setDate(date.getDate() - 30);
+									date.setDate(date.getDate() - 7);
+									Communications.getReceiptsBySiteIdAndDate(
+										siteId,
+										date
+									)
+										.then(json => {
+											console.log('ORIGINAL');
+											console.log(JSON.stringify(json));
+											console.log('END');
+
+											PosStorage.addRemoteReceipts(
+												json
+											).then(saved => {
+												console.log('SAVED');
+												console.log(
+													JSON.stringify(saved)
+												);
+												console.log('END');
+												this.setState({ animating: false });
+												Alert.alert(
+													i18n.t('network-connection'),
+													message,
+													[{ text: i18n.t('ok'), style: 'cancel' }],
+													{ cancelable: true }
+												);
+												this.loadSyncedData();
+												this.props.navigation.navigate('App');
+												Events.trigger(
+													'ReceiptsFetched',
+													saved
+												);
+											});
+										})
+										.catch(error => { });
+								}
+								// this.setState({ animating: false });
+								// Alert.alert(
+								// 	i18n.t('network-connection'),
+								// 	message,
+								// 	[{ text: i18n.t('ok'), style: 'cancel' }],
+								// 	{ cancelable: true }
+								// );
+
+								// if (siteId !== -1 && siteId !== -2) {
+								// 	console.log(siteId);
+								// 	this.props.navigation.navigate('App');
+								// }
+							})
+							.catch(error => { });
+					} else {
+						this.setState({ animating: false });
+						message =
+							result.response.msg +
+							'(Error code: ' +
+							result.status +
+							')';
+						Alert.alert(
+							i18n.t('network-connection'),
+							message,
+							[{ text: i18n.t('ok'), style: 'cancel' }],
+							{ cancelable: true }
+						);
+					}
+				})
+				.catch(result => {
+					console.log(
+						'Failed- status ' +
+						result.status +
+						' ' +
+						result.response.message
+					);
+					this.setState({ animating: false });
+					Alert.alert(
+						i18n.t('network-connection'),
+						result.response.message + '. (' + result.status + ')',
+						[{ text: i18n.t('ok'), style: 'cancel' }],
+						{ cancelable: true }
+					);
+				});
+		} catch (error) {
+			this.setState({ animating: false });
+			console.log(JSON.stringify(error));
+		}
+	}
+
+
+	loadSyncedData() {
+		PosStorage.loadLocalData();
+
+		this.props.customerActions.setCustomers(
+			PosStorage.getCustomers()
+		);
+		this.props.productActions.setProducts(
+			PosStorage.getProducts()
+		);
+		this.props.receiptActions.setRemoteReceipts(
+			PosStorage.getRemoteReceipts()
+		);
+
+		Synchronization.initialize(
+			PosStorage.getLastCustomerSync(),
+			PosStorage.getLastProductSync(),
+			PosStorage.getLastSalesSync()
+		);
+		Synchronization.setConnected(this.props.network.isNWConnected);
+	}
+
+	onConnectionee() {
 		this.setState({ animating: true });
 		console.log(this.state.user, this.state.password);
+		// Communications.initialize(
+		// 	"http://142.93.115.206:3006/",
+		// 	"",
+		// 	this.state.user,
+		// 	this.state.password
+		// );
 		Communications.initialize(
 			"http://142.93.115.206:3006/",
 			"",
-			this.state.user,
-			this.state.password
+			"administrator",
+			"Let'sGrow"
 		);
 
 
@@ -737,11 +679,7 @@ class Login extends Component {
 					);
 					if (result.status === 200) {
 						console.log(result);
-						this.saveSettings(
-							"http://142.93.115.206:3006/",
-							result.response.token,
-							result.response.data.kiosks[0].name
-						);
+
 						// console.log("Response site name: " + result.response.data.kiosks[0].name);
 						Communications.getSiteId(
 							result.response.token,
@@ -1041,11 +979,12 @@ class Login extends Component {
 		PosStorage.saveSettings(
 			"http://142.93.115.206:3006/",
 			site,
-			this.user.current.state.propertyText,
-			this.password.current.state.propertyText,
+			this.state.user,
+			this.state.password,
 			this.state.selectedLanguage,
 			token,
-			siteId
+			siteId,
+			false
 		);
 		this.props.settingsActions.setSettings(PosStorage.loadSettings());
 		this.setState({ isLoading: false });
@@ -1111,10 +1050,11 @@ class Login extends Component {
 // };
 
 function mapStateToProps(state, props) {
-	return { settings: state.settingsReducer.settings, auth: state.authReducer };
+	return { settings: state.settingsReducer.settings, auth: state.authReducer, network: state.networkReducer.network, };
 }
 function mapDispatchToProps(dispatch) {
 	return {
+		networkActions: bindActionCreators(NetworkActions, dispatch),
 		toolbarActions: bindActionCreators(ToolbarActions, dispatch),
 		settingsActions: bindActionCreators(SettingsActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),

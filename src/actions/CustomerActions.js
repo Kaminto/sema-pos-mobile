@@ -26,5 +26,6 @@ export function SearchCustomers(searchString) {
 }
 
 export function setCustomerEditStatus(status) {
+	console.log(status);
 	return (dispatch) => { dispatch({ type: CUSTOMER_EDIT, data: status }) };
 }

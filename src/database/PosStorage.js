@@ -84,8 +84,9 @@ class PosStorage {
 			site: '',
 			user: '',
 			password: '',
-			uiLanguage: {},
+			uiLanguage: { name: 'English', iso_code: 'en' },
 			token: '',
+			loginSync: false,
 			siteId: ''
 		};
 		this.salesChannels = [];
@@ -112,87 +113,99 @@ class PosStorage {
 		realm = new Realm({ schema: [SEMA_SCHEMA] });
 	}
 
-	initialize(forceNew) {
-		
-		const version = realm.objectForPrimaryKey('SemaRealm', versionKey).data; 
+	checkLocalDb() {
+		const version = realm.objectForPrimaryKey('SemaRealm', versionKey);
+		if (!version) {
+			return 'SetUp Required';
+		}
 
-		if (
-			version == null ||
-			version === undefined ||
-			forceNew === true
-		) {
-			console.log('Pos Storage: Not initialized' + version);
-			this.version = '1';
-			let keyArray = [
-				[versionKey, this.version],
-				[customersKey, this.stringify(this.customersKeys)],
-				[salesKey, this.stringify(this.salesKeys)],
-				[productsKey, this.stringify(this.productsKeys)],
-				[
-					lastCustomerSyncKey,
-					this.lastCustomerSync.toISOString()
-				],
-				[
-					lastSalesSyncKey,
-					this.lastSalesSync.toISOString()
-				],
-				[
-					lastProductsSyncKey,
-					this.lastProductsSync.toISOString()
-				],
-				[
-					pendingCustomersKey,
-					this.stringify(this.pendingCustomers)
-				],
-				[
-					pendingSalesKey,
-					this.stringify(this.pendingSales)
-				],
-				[settingsKey, this.stringify(this.settings)],
-				[
-					tokenExpirationKey,
-					this.stringify(this.tokenExpiration)
-				],
-				[
-					salesChannelsKey,
-					this.stringify(this.salesChannels)
-				],
-				[
-					customerTypesKey,
-					this.stringify(this.customerTypes)
-				],
-				[
-					productMrpsKey,
-					this.stringify(this.productMrpDict)
-				],
-				[
-					syncIntervalKey,
-					this.stringify(this.syncInterval)
-				],
-				[
-					inventoriesKey,
-					this.stringify(this.inventoriesKeys)
-				],
-				[remoteReceiptsKey, this.stringify(this.receipts)],
-				[
-					reminderDataKey,
-					this.stringify(this.reminderData)
-				]
-			];
+		if (version) {
+			return 'SetUp Not Required';
+		}
+	}
 
 
+	initialLocalDb() {
 
-			this.multiSet(keyArray)
-				.then(rows => {
-					console.log('Affected : ' + rows);
-					return true;
-				})
-				.catch(error => {
-					console.log(error);
-					return false;
-				});
-		} else {
-			console.log('Pos Storage: Version = ' + version);
+		this.version = '1';
+		let keyArray = [
+			[versionKey, this.version],
+			[customersKey, this.stringify(this.customersKeys)],
+			[salesKey, this.stringify(this.salesKeys)],
+			[productsKey, this.stringify(this.productsKeys)],
+			[
+				lastCustomerSyncKey,
+				this.lastCustomerSync.toISOString()
+			],
+			[
+				lastSalesSyncKey,
+				this.lastSalesSync.toISOString()
+			],
+			[
+				lastProductsSyncKey,
+				this.lastProductsSync.toISOString()
+			],
+			[
+				pendingCustomersKey,
+				this.stringify(this.pendingCustomers)
+			],
+			[
+				pendingSalesKey,
+				this.stringify(this.pendingSales)
+			],
+			[settingsKey, this.stringify(this.settings)],
+			[
+				tokenExpirationKey,
+				this.stringify(this.tokenExpiration)
+			],
+			[
+				salesChannelsKey,
+				this.stringify(this.salesChannels)
+			],
+			[
+				customerTypesKey,
+				this.stringify(this.customerTypes)
+			],
+			[
+				productMrpsKey,
+				this.stringify(this.productMrpDict)
+			],
+			[
+				syncIntervalKey,
+				this.stringify(this.syncInterval)
+			],
+			[
+				inventoriesKey,
+				this.stringify(this.inventoriesKeys)
+			],
+			[remoteReceiptsKey, this.stringify(this.receipts)],
+			[
+				reminderDataKey,
+				this.stringify(this.reminderData)
+			]
+		];
+
+		console.log(keyArray);
+		this.multiSet(keyArray)
+			.then(rows => {
+				console.log('Affected : ' + rows);
+				return true;
+				
+			})
+			.catch(error => {
+				console.log(error);
+				return false;
+			});
+		// let insertedRows = this.multInsert(keyArray);
+		// console.log('Affected : ' + insertedRows);
+		return 'Local DB Initialised';
+
+	}
+
+	loadLocalData(){
+		const version = realm.objectForPrimaryKey('SemaRealm', versionKey);
+
+		console.log('Pos Storage: Version = ', version.data);
 			this.version = version;
 			let keyArray = [
 				customersKey,
@@ -215,7 +228,8 @@ class PosStorage {
 			];
 
 
-			let results = this.getMany(keyArray); 
+			let results = this.getMany(keyArray);
+
 
 			this.customersKeys = this.parseJson(
 				results[0][1]
@@ -256,9 +270,111 @@ class PosStorage {
 			); //reminderData
 
 			if (this.loadProductsFromKeys2() && this.loadCustomersFromKeys2()) {
-				return true;
+				return 'Data Exists';
 			}
-			return false;
+			return 'Data Exists';
+	}
+
+	initialize(forceNew) {
+
+		const version = realm.objectForPrimaryKey('SemaRealm', versionKey);
+
+		// if(!version){
+		// 	return 'Initial SetUp';
+		// }
+
+		// version = version.data;
+
+		// console.log('version', version);
+		if (
+			version == null ||
+			version === undefined ||
+			forceNew === true
+		) {
+			console.log('Pos Storage: Not initialized' + version);
+
+
+			// this.multiSet(keyArray)
+			// 	.then(rows => {
+			// 		console.log('Affected : ' + rows);
+			// 		//return true;
+			// 		return 'New SetUp';
+			// 	})
+			// 	.catch(error => {
+			// 		console.log(error);
+			// 		return false;
+			// 	});
+
+
+		} else {
+			console.log('Pos Storage: Version = ', version.data);
+			this.version = version;
+			let keyArray = [
+				customersKey,
+				salesKey,
+				productsKey,
+				lastCustomerSyncKey,
+				lastSalesSyncKey,
+				lastProductsSyncKey,
+				pendingCustomersKey,
+				pendingSalesKey,
+				settingsKey,
+				tokenExpirationKey,
+				salesChannelsKey,
+				customerTypesKey,
+				productMrpsKey,
+				syncIntervalKey,
+				inventoriesKey,
+				remoteReceiptsKey,
+				reminderDataKey
+			];
+
+
+			let results = this.getMany(keyArray);
+
+
+			this.customersKeys = this.parseJson(
+				results[0][1]
+			); // Array of customer keys
+			this.salesKeys = this.parseJson(results[1][1]); // Array of sales keys
+			this.productsKeys = this.parseJson(
+				results[2][1]
+			); // Array of products keys
+			this.lastCustomerSync = new Date(results[3][1]); // Last customer sync time
+			this.lastSalesSync = new Date(results[4][1]); // Last sales sync time
+			this.lastProductsSync = new Date(results[5][1]); // Last products sync time
+			this.pendingCustomers = this.parseJson(
+				results[6][1]
+			); // Array of pending customers
+			this.pendingSales = this.parseJson(
+				results[7][1]
+			); // Array of pending sales
+			this.settings = this.parseJson(results[8][1]); // Settings
+			this.tokenExpiration = new Date(results[9][1]); // Expiration date/time of the token
+			this.salesChannels = this.parseJson(
+				results[10][1]
+			); // array of sales channels
+			this.customerTypes = this.parseJson(
+				results[11][1]
+			); // array of customer types
+			this.productMrpDict = this.parseJson(
+				results[12][1]
+			); // products MRP dictionary
+			this.syncInterval = this.parseJson(
+				results[13][1]
+			); // SyncInterval
+			this.inventoriesKeys = this.parseJson(
+				results[14][1]
+			); // inventoriesKey
+			this.receipts = this.parseJson(results[15][1]); // remoteReceiptsKey
+			this.reminderDataKeys = this.parseJson(
+				results[16][1]
+			); //reminderData
+
+			if (this.loadProductsFromKeys2() && this.loadCustomersFromKeys2()) {
+				return 'Data Exists';
+			}
+			return 'Data Exists';
 		}
 
 
@@ -519,6 +635,23 @@ class PosStorage {
 
 	};
 
+	multInsert(keyArray) {
+		let count = 0;
+		for (i = 0; i < keyArray.length; i++) {
+			count++;
+			let key = keyArray[i][0];
+			let value = keyArray[i][1];
+			// realm.create('SemaRealm', {id: key, data: value})
+			let obj = realm.objectForPrimaryKey('SemaRealm', key);
+			if (obj != null)
+				realm.create('SemaRealm', { id: key, data: value }, true);
+			else
+				realm.create('SemaRealm', { id: key, data: value });
+		}
+		console.log(count);
+		return { rows: count };
+
+	}
 
 
 	multiSet(keyArray) {
@@ -1436,10 +1569,19 @@ class PosStorage {
 	loadSettings() {
 		console.log('PosStorage:loadSettings');
 		let settings = realm.objectForPrimaryKey('SemaRealm', settingsKey);
-		return this.parseJson(settings.data);
+		if (settings) {
+			console.log(this.parseJson(settings.data));
+			return this.parseJson(settings.data);
+		}
+
+		if (!settings) {
+			console.log(this.settings);
+			return this.settings;
+		}
+		
 	}
 
-	saveSettings(url, site, user, password, uiLanguage, token, siteId) {
+	saveSettings(url, site, user, password, uiLanguage, token, siteId, loginSync) {
 		let settings = {
 			semaUrl: url,
 			site,
@@ -1447,7 +1589,8 @@ class PosStorage {
 			password,
 			uiLanguage,
 			token,
-			siteId
+			siteId,
+			loginSync
 		};
 		this.settings = settings;
 		this.setKey(settingsKey, this.stringify(settings));

@@ -1,6 +1,6 @@
 //This is an example code for Navigation Drawer with Custom Side bar//
 import React, { Component } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, Alert } from 'react-native';
 // import { Icon } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
@@ -16,16 +16,21 @@ import * as AuthActions from '../actions/AuthActions';
 import PosStorage from '../database/PosStorage';
 import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
-
+import i18n from '../app/i18n';
 class CustomSidebarMenu extends Component {
   constructor() {
     super();
-    //Setting up the Main Top Large Image of the Custom Sidebar
-    this.proileImage =
-      'https://aboutreact.com/wp-content/uploads/2018/07/sample_img.png';
-    //Array of the sidebar navigation option with icon and screen to navigate
-    //This screens can be any screen defined in Drawer Navigator in App.js
-    //You can find the Icons from here https://material.io/tools/icons/
+    
+
+		this.state = {
+			animating: false,
+			language: '',
+			user: "administrator",
+			password: "Let'sGrow",
+			selectedLanguage: {},
+			isLoading: false
+		};
+
     this.items = [
       {
         navOptionThumb: 'md-contact',
@@ -56,6 +61,11 @@ class CustomSidebarMenu extends Component {
         navOptionThumb: 'md-home',
         navOptionName: 'Reminders',
         screenToNavigate: 'Reminders',
+      },
+      {
+        navOptionThumb: 'md-sync',
+        navOptionName: 'Sync',
+        screenToNavigate: 'Sync',
       },
       {
         navOptionThumb: 'md-log-out',
@@ -111,9 +121,17 @@ class CustomSidebarMenu extends Component {
                    this.onLogout();
                   }
 
-                  if (item.screenToNavigate != 'LogOut') {
+                  if (item.screenToNavigate != 'LogOut' || item.screenToNavigate != 'Sync') {
                     this.props.navigation.navigate(item.screenToNavigate);
                   }
+
+                  if (item.screenToNavigate === 'Sync') {
+                    console.log(item.screenToNavigate);
+                   this.onSynchronize();
+                  }
+
+
+                  
 
                 }}>
                 {item.navOptionName}
@@ -139,7 +157,8 @@ class CustomSidebarMenu extends Component {
       settings.password,
       settings.uiLanguage,
       '',
-      settings.siteId
+      settings.siteId,
+      false
     );
     this.props.settingsActions.setSettings(PosStorage.loadSettings());
     //As we are not going to the Login, the reason no reason to disable the token
@@ -147,6 +166,81 @@ class CustomSidebarMenu extends Component {
    // this.props.toolbarActions.ShowScreen('settings');
     this.props.navigation.navigate('Login');
   };
+
+  onSynchronize() {
+		try {
+			this.setState({ isLoading: true });
+			Synchronization.synchronize().then(syncResult => {
+				this.setState({ isLoading: false });
+				console.log(
+					'Synchronization-result: ' + JSON.stringify(syncResult)
+				);
+				// let foo = this._getSyncResults(syncResult);
+				Alert.alert(
+					i18n.t('sync-results'),
+					this._getSyncResults(syncResult),
+					[{ text: i18n.t('ok'), style: 'cancel' }],
+					{ cancelable: true }
+				);
+			});
+			//Added by Jean Pierre
+			Synchronization.getLatestSales();
+		} catch (error) { }
+  };
+  
+  _getSyncResults(syncResult) {
+		try {
+			if (syncResult.status != 'success')
+				return i18n.t('sync-error', { error: syncResult.error });
+			if (
+				syncResult.hasOwnProperty('customers') &&
+				syncResult.customers.error != null
+			)
+				return i18n.t('sync-error', {
+					error: syncResult.customers.error
+				});
+			if (
+				syncResult.hasOwnProperty('products') &&
+				syncResult.products.error != null
+			)
+				return i18n.t('sync-error', {
+					error: syncResult.products.error
+				});
+			if (
+				syncResult.hasOwnProperty('sales') &&
+				syncResult.sales.error != null
+			)
+				return i18n.t('sync-error', { error: syncResult.sales.error });
+			if (
+				syncResult.hasOwnProperty('productMrps') &&
+				syncResult.productMrps.error != null
+			)
+				return i18n.t('sync-error', {
+					error: syncResult.productMrps.error
+				});
+			else {
+				if (
+					syncResult.customers.localCustomers == 0 &&
+					syncResult.customers.remoteCustomers == 0 &&
+					syncResult.products.remoteProducts == 0 &&
+					syncResult.sales.localReceipts == 0 &&
+					syncResult.productMrps.remoteProductMrps == 0
+				) {
+					return i18n.t('data-is-up-to-date');
+				} else {
+					return `${syncResult.customers.localCustomers +
+						syncResult.customers.remoteCustomers} ${i18n.t(
+							'customers-updated'
+						)}
+				${syncResult.products.remoteProducts} ${i18n.t('products-updated')}
+				${syncResult.sales.localReceipts} ${i18n.t('sales-receipts-updated')}
+				${syncResult.productMrps.remoteProductMrps} ${i18n.t(
+							'product-sales-channel-prices-updated'
+						)}`;
+				}
+			}
+		} catch (error) { }
+	}
 
 }
 
