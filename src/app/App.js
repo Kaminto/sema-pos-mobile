@@ -16,7 +16,7 @@ import PosStorage from '../database/PosStorage';
 import { isEmptyObj } from '../services/Utilities';
 
 export default class App extends Component {
-	async componentWillMount() {
+	async componentDidMount() {
 		RNLanguages.addEventListener('change', this._onLanguagesChange);
 		const savedSettings = await PosStorage.loadSettings();
 		const uiLanguage =

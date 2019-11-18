@@ -11,6 +11,9 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from 'prop-types';
 
+import { FloatingAction } from "react-native-floating-action";
+
+
 import * as CustomerActions from '../actions/CustomerActions';
 import * as ToolbarActions from '../actions/ToolBarActions';
 
@@ -38,6 +41,10 @@ class CustomerList extends Component {
         };
     }
     componentDidMount() {
+        this.props.navigation.setParams({ increaseCount: this._increaseCount });
+        this.props.navigation.setParams({ checkSelectedCustomer: this.checkSelectedCustomer });
+        this.props.navigation.setParams({ editCustomer: this.editCustomer });
+        
         console.log(
             'CustomerList:componentDidMount - filter: ' + this.props.searchString
         );
@@ -47,6 +54,27 @@ class CustomerList extends Component {
             this.onScrollCustomerTo.bind(this)
         );
     }
+
+    _increaseCount = (text) => {
+        console.log(text)
+    };
+
+    checkSelectedCustomer = (text) => {
+        // console.log(this.props.selectedCustomer);
+        // if(this.props.selectedCustomer){
+        //     return true;
+        // }
+        return 'false';
+
+    };
+
+    editCustomer() {
+        console.log('onScrollCustomerTo');
+        console.log(this.props);
+        //this.props.navigation.navigate('AddCustomerStack');
+    }
+
+
     componentWillUnmount() {
         Events.rm('ScrollCustomerTo', 'customerId1');
     }
@@ -69,7 +97,8 @@ class CustomerList extends Component {
     }
 
     render() {
-        console.log(this.props);
+        //console.log(this.props);
+    
         return (
             <View style={{ backgroundColor: '#fff', width: '100%', height: '100%' }}>
                 <FlatList
@@ -95,6 +124,16 @@ class CustomerList extends Component {
                     keyExtractor={item => item.customerId}
                     initialNumToRender={50}
                 />
+                <FloatingAction
+                    onOpen={name => {
+                        console.log(this.props);
+                        this.props.navigation.navigate('EditCustomer', {
+                            itemId: 86,
+                            otherParam: 'anything you want here',
+                        });
+                        //alert(`selected button: ${name}`);
+                    }}
+                />
                 {/* <SearchWatcher parent={this}>
                     {this.props.searchString}
                 </SearchWatcher> */}
@@ -106,13 +145,13 @@ class CustomerList extends Component {
         this.salesChannels = PosStorage.getSalesChannelsForDisplay();
 
         let data = [];
-        console.log(this.salesChannels);
-        console.log(this.props.customers);
+        // console.log(this.salesChannels);
+        // console.log(this.props.customers);
 
         if (!this.salesChannels) {
             return data;
         }
- 
+
         // if (this.props.customers.length > 0) {
         //     data = this.filterItems(this.props.customers);
         //     data.sort((a, b) => {
@@ -340,6 +379,10 @@ class CustomerList extends Component {
         this.props.customerActions.CustomerSelected(item);
         // this.setState({ selectedCustomer:item });
         this.setState({ refresh: !this.state.refresh });
+       // this.checkSelectedCustomer();
+       this.props.customerActions.setCustomerEditStatus(true);
+        this.props.navigation.setParams({ isCustomerSelected: true });
+        this.props.navigation.setParams({ customerName: item.name });
         Events.trigger('onOrder', { customer: item });
     };
 

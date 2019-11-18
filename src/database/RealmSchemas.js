@@ -95,6 +95,7 @@ export const settingsSchema = {
 		user: 'string',
 		password: 'string',
 		language: 'string',
+		loginSync: 'bool',
 		token: 'int',
 		siteId: 'int'
 	}

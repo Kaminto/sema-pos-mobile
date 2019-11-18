@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
-import { View, Image, TouchableOpacity } from 'react-native';
+import { View, Image, TouchableOpacity, Text } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
 import CustomerList from '../screens/CustomerList';
 import CustomerEdit from '../screens/CustomerEdit';
+import CustomerDetails from '../screens/CustomerDetails';
 import Login from '../screens/Login';
 import AuthLoadingScreen from '../screens/AuthLoadingScreen';
 import Reminders from '../screens/ReminderReport';
 import Inventory from '../screens/InventoryReport';
 import Transactions from '../screens/SalesLog';
 import SalesReport from '../screens/SalesReport';
-import drawerContentComponents from "./drawerContentComponents";
 
-//import drawerContentComponents from "./CustomSidebarMenu";
+import OrderView from '../components/orders/OrderView';
 
-//Import Custom Sidebar
+import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/Ionicons';
 import CustomSidebarMenu from './CustomSidebarMenu';
 
 class NavigationDrawerStructure extends Component {
@@ -44,7 +45,21 @@ const AddCustomerStack = createStackNavigator({
             headerStyle: {
                 backgroundColor: '#FF9800',
             },
-            headerTintColor: '#fff',
+            headerTintColor: '#fff'
+        }),
+    },
+});
+
+const OrderStack = createStackNavigator({
+    CustomerEdit: {
+        screen: CustomerEdit,
+        navigationOptions: ({ navigation }) => ({
+            title: 'Add Customers',
+            headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+            headerStyle: {
+                backgroundColor: '#FF9800',
+            },
+            headerTintColor: '#fff'
         }),
     },
 });
@@ -59,9 +74,115 @@ const ListCustomerStack = createStackNavigator({
                 backgroundColor: '#FF9800',
             },
             headerTintColor: '#fff',
+            headerRight: (
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        flex: 1,
+                        justifyContent: 'space-between',
+                    }}>
+                    {navigation.getParam('isCustomerSelected') && (
+                        <Text>{navigation.getParam('customerName')}</Text>
+                    )}
+
+                    {navigation.getParam('isCustomerSelected') && (
+                        <Button
+                            icon={
+                                <Icon
+                                    name='md-trash'
+                                    size={15}
+                                    color="white"
+                                />
+                            }
+                            onPress={() => {
+                                console.log(navigation);
+                                navigation.navigate('EditCustomer');
+                            }}
+                        />
+                    )}
+                    {navigation.getParam('isCustomerSelected') && (
+                        <Button
+                            icon={
+                                <Icon
+                                    name='md-more'
+                                    size={15}
+                                    color="white"
+                                />
+                            }
+                            onPress={() => {
+
+                                navigation.navigate('CustomerDetails');
+                            }}
+                        />
+                    )}
+                    {navigation.getParam('isCustomerSelected') && (
+                        <Button
+                            icon={
+                                <Icon
+                                    name='md-create'
+                                    size={15}
+                                    color="white"
+                                />
+                            }
+                            onPress={() => {
+                                console.log(navigation);
+                                navigation.navigate('EditCustomer');
+                            }}
+                        />
+                    )}
+
+                    {navigation.getParam('isCustomerSelected') && (
+                        <Button
+                            icon={
+                                <Icon
+                                    name='md-business'
+                                    size={15}
+                                    color="white"
+                                />
+                            }
+                            onPress={() => {
+                                console.log(navigation);
+                                navigation.navigate('OrderView');
+                            }}
+                        />
+                    )}
+
+                    {navigation.getParam('isCustomerSelected') && (
+                        <Input
+                            onChangeText={navigation.getParam('increaseCount')}
+                            placeholder="Search"
+                        />
+                    )}
+                </View>
+
+            ),
         }),
     },
-});
+    EditCustomer: {
+        screen: CustomerEdit,
+        navigationOptions: ({ navigation }) => ({
+            title: 'Edit Customer',
+        })
+    },
+    CustomerDetails: {
+        screen: CustomerDetails,
+        navigationOptions: ({ navigation }) => ({
+            title: 'Customer Details',
+        })
+    },
+    OrderView: {
+        screen: OrderView,
+        navigationOptions: ({ navigation }) => ({
+            title: 'Order View',
+        })
+    },
+},
+
+    {
+        initialRouteName: 'CustomerList',
+        headerMode: 'screen',
+    }
+);
 
 const TransactionStack = createStackNavigator({
     Transactions: {
@@ -128,7 +249,7 @@ const LoginStack = createStackNavigator({
 },
     {
         initialRouteName: 'Login',
-        headerMode: 'screen',
+        headerMode: 'none',
     });
 
 
