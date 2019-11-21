@@ -11,7 +11,6 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import store from './store';
 import PosApp from '../components/PosApp';
-import SemaRouter from '../components/SemaRouter';
 import PosStorage from '../database/PosStorage';
 import { isEmptyObj } from '../services/Utilities';
 

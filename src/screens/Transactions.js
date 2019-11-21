@@ -123,7 +123,7 @@ class ReceiptLineItem extends Component {
 	};
 }
 
-class CustomerDetails extends Component {
+class Transactions extends Component {
 	constructor(props) {
 		super(props);
 
@@ -149,10 +149,8 @@ class CustomerDetails extends Component {
 
 	onScrollCustomerTo(data) {
 		console.log('onScrollCustomerTo');
-		// Commented onto scrollToItem requires getItemLayout and getItemLayout fails with
-		// searches. Expect since not all items are rendered on sea
-		// this.flatListRef.scrollToItem({animated: false, item: data.customer, viewPosition:0.5});
-	}
+    }
+    
 	getItemLayout = (data, index) => ({
 		length: 50,
 		offset: 50 * index,
@@ -166,28 +164,10 @@ class CustomerDetails extends Component {
 
 	render() {
         
-		console.log('props -', this.props);
-		console.log('getReceipts' , PosStorage.getReceipts())
+        console.log('props -', this.props);
 			return (
 				<View style={{ flex: 1 }}>
-
-					<View style={{
-						flexDirection: 'row',
-						height: 100,
-						backgroundColor: '#0e73c9',
-						alignItems: 'center'
-					}}>
-						<View style={[styles.leftToolbar]}>
-							<SelectedCustomerDetails
-								selectedCustomer={this.props.selectedCustomer}
-							/>
-						</View>
-
-
-					</View>
-
-					<View style={{ flex: 1, backgroundColor: '#fff' }}>
-						{/* <Text>{this.prepareData().length === ? 0 ? 'No sales' }</Text> */}
+                    <View style={{ flex: 1, backgroundColor: '#fff' }}>
 						<FlatList
 							data={this.prepareData()}
 							renderItem={this.renderReceipt.bind(this)}
@@ -198,16 +178,12 @@ class CustomerDetails extends Component {
 					</View>
 				</View>
 			);
-
 		return null;
-
-
 	}
 
 
 	prepareData() {
 		// Used for enumerating receipts
-		console.log("here selectedCustomer", this.props.selectedCustomer)
 		const totalCount = this.props.remoteReceipts.length;
 
 		let salesLogs = [...new Set(this.props.remoteReceipts)];
@@ -239,13 +215,7 @@ class CustomerDetails extends Component {
 		if (PosStorage.getSettings()) {
 			siteId = PosStorage.getSettings().siteId;
 		}
-
-		// return [
-		// 	...remoteReceipts.filter(r => r.customerAccount.kiosk_id === siteId)
-		// ];
-		console.log('remoteReceipts', remoteReceipts[0].customerAccount);
-		console.log('remoteReceiptsno', remoteReceipts.filter(r => r.customerAccount.id === this.props.selectedCustomer.customerId));
-		return remoteReceipts.filter(r => r.customerAccount.id === this.props.selectedCustomer.customerId);
+		return remoteReceipts;
 	}
 
  
@@ -330,8 +300,6 @@ class CustomerDetails extends Component {
 	}
 
 	renderReceipt({ item, index }) {
-
-		console.log("Item reciep", item);
 		const receiptLineItems = item.receiptLineItems.map((lineItem, idx) => {
 			return (
 				<ReceiptLineItem
@@ -351,14 +319,16 @@ class CustomerDetails extends Component {
 		return (
 			<View key={index} style={{ padding: 15 }}>
 				<View style={styles.deleteButtonContainer}>
-					<TouchableOpacity
+                {!item.active && (
+                <TouchableOpacity
 						onPress={this.onDeleteReceipt(item)}
 						style={[
 							styles.receiptDeleteButton,
 							{ backgroundColor: item.active ? 'red' : 'grey' }
 						]}>
 						<Text style={styles.receiptDeleteButtonText}>X</Text>
-					</TouchableOpacity>
+                    </TouchableOpacity>
+                    )}
 				</View>
 				<Text style={{ fontSize: 17 }}>#{item.totalCount - index}</Text>
 				<View style={styles.receiptStats}>
@@ -440,49 +410,8 @@ class CustomerDetails extends Component {
 
 }
 
-
-class SelectedCustomerDetails extends React.Component {
-	render() {
-		return (
-			<View style={styles.commandBarContainer}>
-				<View style={{ flexDirection: 'row', height: 40 }}>
-					<Text style={styles.selectedCustomerText}>
-						{i18n.t('account-name')}
-					</Text>
-					<Text style={styles.selectedCustomerText}>
-						{this.getName()}
-					</Text>
-				</View>
-				<View style={{ flexDirection: 'row', height: 40 }}>
-					<Text style={styles.selectedCustomerText}>
-						{i18n.t('telephone-number')}
-					</Text>
-					<Text style={styles.selectedCustomerText}>
-						{this.getPhone()}
-					</Text>
-				</View>
-			</View>
-		);
-	}
-	getName() {
-		if (this.props.selectedCustomer.hasOwnProperty('name')) {
-			return this.props.selectedCustomer.name;
-		} else {
-			return '';
-		}
-	}
-	getPhone() {
-		if (this.props.selectedCustomer.hasOwnProperty('phoneNumber')) {
-			return this.props.selectedCustomer.phoneNumber;
-		} else {
-			return '';
-		}
-	}
-}
-
 function mapStateToProps(state, props) {
 	return {
-		selectedCustomer: state.customerReducer.selectedCustomer,
 		settings: state.settingsReducer.settings,
 		localReceipts: state.receiptReducer.localReceipts,
 		remoteReceipts: state.receiptReducer.remoteReceipts,
@@ -502,7 +431,7 @@ function mapDispatchToProps(dispatch) {
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(CustomerDetails);
+)(Transactions);
 
 const styles = StyleSheet.create({
 	container: {
@@ -559,27 +488,6 @@ const styles = StyleSheet.create({
 		alignSelf: 'center',
 		marginLeft: 20,
 		marginRight: 20
-	},
-	selectedCustomerText: {
-		marginLeft: 10,
-		alignSelf: 'center',
-		flex: 0.5,
-		color: 'black'
-	},
-	inputText: {
-		fontSize: 24,
-		alignSelf: 'center',
-		backgroundColor: 'white',
-		width: 400,
-		margin: 5
-	},
-	phoneInputText: {
-		fontSize: 24,
-		alignSelf: 'center',
-		backgroundColor: 'white',
-		width: 195,
-		margin: 5,
-		paddingRight: 5
 	},
 	dropdownText: {
 		fontSize: 24

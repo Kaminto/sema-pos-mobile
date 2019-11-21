@@ -13,7 +13,8 @@ import i18n from "../../app/i18n";
 import Icon from 'react-native-vector-icons/Ionicons';
 import PosStorage from "../../database/PosStorage";
 import * as Utilities from "../../services/Utilities";
-
+const uuidv1 = require('uuid/v1');
+import Events from "react-native-simple-events";
 const { height, width } = Dimensions.get('window');
 const widthQuanityModal = 1000;
 const heightQuanityModal = 500;
@@ -124,7 +125,6 @@ class OrderCheckout extends Component {
 			isDateTimePickerVisible: false,
 			receiptDate: new Date(),
 			canProceed: true,
-
 			isCash: true,
 			isLoan: false,
 			isMobile: false,
@@ -132,17 +132,6 @@ class OrderCheckout extends Component {
 			isCheque: false,
 			isBank: false,
 			selectedPaymentType: "Cash",
-
-			tableHead: ['Quantity'],
-			tableData: [
-				['-', '10', '+'],
-				['Discounts (Show All Discounts applicable to this store)'],
-				['Kajibu', ''],
-				['20L Tap 10 Purchase', ''],
-				['Custom', 'An input field for custom discount value'],
-				['Notes'],
-				['Save', 'Remove Item']
-			]
 		};
 	}
 
@@ -198,7 +187,7 @@ class OrderCheckout extends Component {
 
 
 				<Modal style={[styles.modal, styles.modal3]} coverScreen={true} position={"center"} ref={"modal6"} isDisabled={this.state.isDisabled}>
-		
+
 
 
 					<View
@@ -349,12 +338,12 @@ class OrderCheckout extends Component {
 		if (!this.isPayoffOnly()) {
 			return (
 				<TouchableHighlight onPress={() => this.onCancelOrder()}>
-				 
+
 					<Icon
-					size={50}
-					name="md-close"
-					color="black"
-				/>
+						size={50}
+						name="md-close"
+						color="black"
+					/>
 				</TouchableHighlight>
 			);
 		} else {
@@ -452,7 +441,24 @@ class OrderCheckout extends Component {
 	}
 
 	onCompleteOrder = () => {
+		
+		console.log(this.isPayoffOnly());
+		console.log(this.props.payment);
+		console.log(this.props.selectedCustomer);
 		if (this.isPayoffOnly()) {
+
+		} else {
+			console.log("there")
+			//this.setState({ isCompleteOrderVisible: true });
+			this.formatAndSaveSale();
+		}
+
+	}
+
+
+	onCompleteOrderd = () => {
+		if (this.isPayoffOnly()) {
+			
 			let payoff = 0;
 			try {
 				if (this.props.payment.hasOwnProperty('cashToDisplay')) {
@@ -477,12 +483,14 @@ class OrderCheckout extends Component {
 						{ cancelable: false }
 					);
 				} else {
+					console.log("check")
 					this.setState({ isCompleteOrderVisible: true });
 				}
 			} catch (err) {
 				console.log('formatAndSaveSale ' + err.message);
 			}
 		} else {
+			console.log("there")
 			this.setState({ isCompleteOrderVisible: true });
 		}
 	};
@@ -526,6 +534,7 @@ class OrderCheckout extends Component {
 
 
 	valuePaymentChange = textValue => {
+		console.log('textValue', textValue);
 		if (!textValue.endsWith('.')) {
 			let cashValue = parseFloat(textValue);
 			if (isNaN(cashValue)) {
@@ -562,10 +571,21 @@ class OrderCheckout extends Component {
 
 	checkBoxChangeCash = () => {
 		this.setState({ isCash: !this.state.isCash });
+		console.log('calculateOrderDue', this.calculateOrderDue());
 		this.setState({ isMobile: false }, function () {
+			console.log('calculateOrderDue', this.calculateOrderDue());
 			this.updatePayment(0, this.calculateOrderDue().toFixed(2));
 		});
 		this.setState({ paymentOptions: "" });
+
+		// this.setState({ isMobile: !this.state.isMobile });
+
+		// this.setState({ isCash: !this.state.isCash }, function() {
+		// 	this.updatePayment(
+		// 		this.state.isCredit ? this.calculateOrderDue().toFixed(2) - this.props.payment.cash : 0,
+		// 		this.state.isCredit ? '0.00' : this.calculateOrderDue().toFixed(2));
+		// });
+
 	};
 
 	updatePayment = (credit, textToDisplay) => {
@@ -583,14 +603,19 @@ class OrderCheckout extends Component {
 				cash: 0
 			};
 		}
-		this.props.orderActions.SetPayment(payment);
+		console.log('payment', payment);
+	   this.props.orderActions.SetPayment(payment);
 	};
 
 	closeHandler = () => {
+		console.log('closeHandler');
 		this.setState({ isCompleteOrderVisible: false });
 		if (this.saleSuccess) {
+			console.log('closeHandler2');
 			this.props.customerBarActions.ShowHideCustomers(1);
+			console.log('closeHandler33');
 			this.props.customerActions.CustomerSelected({});
+			console.log('closeHandler3');
 		} else {
 			Alert.alert(
 				'Invalid payment amount. ',
@@ -604,7 +629,9 @@ class OrderCheckout extends Component {
 	ShowCompleteOrder = () => {
 		let that = this;
 		if (this.state.isCompleteOrderVisible) {
+			console.log('isCompleteOrderVisible');
 			if (this.formatAndSaveSale()) {
+				console.log('formatAndSaveSale');
 				this.saleSuccess = true;
 				setTimeout(() => {
 					that.closeHandler();
@@ -655,7 +682,7 @@ class OrderCheckout extends Component {
 				amountMobile: this.props.payment.mobile,
 				siteId: this.props.selectedCustomer.siteId
 					? this.props.selectedCustomer.siteId
-					: PosStorage.getSettings().siteId,
+					: PosStorage.loadSettings().siteId,
 				paymentType: '', // NOT sure what this is
 				salesChannelId: this.props.selectedCustomer.salesChannelId,
 				customerTypeId: this.props.selectedCustomer.customerTypeId,
@@ -665,10 +692,10 @@ class OrderCheckout extends Component {
 
 			if (!receipt.siteId) {
 				// This fixes issues with the pseudo direct customer
-				if (PosStorage.getSettings())
-					receipt.siteId = PosStorage.getSettings().siteId;
+				if (PosStorage.loadSettings())
+					receipt.siteId = PosStorage.loadSettings().siteId;
 			}
-
+			console.log(PosStorage.loadSettings());
 			let cogsTotal = 0;
 
 			receipt.products = await this.props.products.map(product => {
@@ -697,6 +724,8 @@ class OrderCheckout extends Component {
 			});
 			receipt.total = priceTotal;
 			receipt.cogs = cogsTotal;
+			console.log(receipt);
+			console.log('receipt.receiptreceiptreceipt()');
 		}
 		// Check loan payoff
 		let payoff = 0;
@@ -740,7 +769,7 @@ class OrderCheckout extends Component {
 					sale: receipt
 				});
 			});
-
+			console.log('check1');
 			// Update dueAmount if required
 			if (receipt.amountLoan > 0) {
 				this.props.selectedCustomer.dueAmount += receipt.amountLoan;
@@ -752,6 +781,7 @@ class OrderCheckout extends Component {
 					this.props.selectedCustomer.salesChannelId,
 					this.props.selectedCustomer.frequency
 				);
+				console.log('check2');
 			} else if (payoff > 0) {
 				this.props.selectedCustomer.dueAmount -= payoff;
 				await PosStorage.updateCustomer(
@@ -762,7 +792,9 @@ class OrderCheckout extends Component {
 					this.props.selectedCustomer.salesChannelId,
 					this.props.selectedCustomer.frequency
 				);
-			}
+				console.log('check3');
+			} 
+			console.log('check4');
 		} else {
 			if (payoff > 0) {
 				this.props.selectedCustomer.dueAmount -= payoff;
@@ -780,6 +812,7 @@ class OrderCheckout extends Component {
 	};
 
 	isPayoffOnly() {
+		console.log(this.props.products);
 		return this.props.products.length === 0;
 	}
 

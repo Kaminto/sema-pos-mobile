@@ -205,7 +205,7 @@ class PosStorage {
 	loadLocalData(){
 		const version = realm.objectForPrimaryKey('SemaRealm', versionKey);
 
-		console.log('Pos Storage: Version = ', version.data);
+		// Pos Storage: Version = ', version.data
 			this.version = version;
 			let keyArray = [
 				customersKey,
@@ -1889,10 +1889,7 @@ class PosStorage {
 	}
 
 	getRemoteReceipts() {
-		console.log(
-			'PosStorage: getRemoteReceipts. Count ' + this.receipts.length,
-			JSON.stringify(this.receipts)
-		);
+		// 'PosStorage: getRemoteReceipts. Count ' + this.receipts.length,
 		return this.receipts;
 	}
 

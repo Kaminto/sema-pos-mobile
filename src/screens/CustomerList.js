@@ -41,10 +41,13 @@ class CustomerList extends Component {
         };
     }
     componentDidMount() {
-        this.props.navigation.setParams({ increaseCount: this._increaseCount });
+        this.props.navigation.setParams({ isCustomerSelected: false });
+        this.props.navigation.setParams({ customerName: "" });
+        this.props.navigation.setParams({ searchCustomer: this.searchCustomer });
+        this.props.navigation.setParams({ onDelete: this.onDelete });
         this.props.navigation.setParams({ checkSelectedCustomer: this.checkSelectedCustomer });
         this.props.navigation.setParams({ editCustomer: this.editCustomer });
-        
+
         console.log(
             'CustomerList:componentDidMount - filter: ' + this.props.searchString
         );
@@ -55,8 +58,64 @@ class CustomerList extends Component {
         );
     }
 
-    _increaseCount = (text) => {
-        console.log(text)
+    searchCustomer = (searchText) => {
+        console.log(searchText)
+        this.props.customerActions.SearchCustomers(searchText);
+    };
+
+    onDelete = () => {
+        if (
+            this.props.selectedCustomer.hasOwnProperty('name')
+            // && !this._isAnonymousCustomer(this.props.selectedCustomer)
+        ) {
+            console.log('CustomerBar:onDelete');
+            let alertMessage =
+                'Delete  customer ' + this.props.selectedCustomer.name;
+            if (this.props.selectedCustomer.dueAmount === 0) {
+                Alert.alert(
+                    alertMessage,
+                    'Are you sure you want to delete this customer?',
+                    [
+                        {
+                            text: 'Cancel',
+                            onPress: () => console.log('Cancel Pressed'),
+                            style: 'cancel'
+                        },
+                        {
+                            text: 'OK',
+                            onPress: () => {
+                                PosStorage.deleteCustomer(
+                                    this.props.selectedCustomer
+                                ); // Delete from storage
+                                this.props.customerActions.CustomerSelected({}); // Clear selected customer
+                                this.props.navigation.setParams({ isCustomerSelected: false });
+                                this.props.navigation.setParams({ customerName: "" });
+                                this.props.customerActions.setCustomers(
+                                    PosStorage.getCustomers()
+                                );
+                            }
+                        }
+                    ],
+                    { cancelable: false }
+                );
+            } else {
+                Alert.alert(
+                    "Customer '" +
+                    this.props.selectedCustomer.name +
+                    "' has an outstanding credit and cannot be deleted",
+                    '',
+                    [{
+                        text: 'OK', onPress: () => {
+                            console.log('OK Pressed');
+                            this.props.customerActions.CustomerSelected({}); // Clear selected customer
+                            this.props.navigation.setParams({ isCustomerSelected: false });
+                            this.props.navigation.setParams({ customerName: "" });
+                        }
+                    }],
+                    { cancelable: true }
+                );
+            }
+        }
     };
 
     checkSelectedCustomer = (text) => {
@@ -98,24 +157,19 @@ class CustomerList extends Component {
 
     render() {
         //console.log(this.props);
-    
+
         return (
             <View style={{ backgroundColor: '#fff', width: '100%', height: '100%' }}>
                 <FlatList
                     ref={ref => {
                         this.flatListRef = ref;
                     }}
-                    // getItemLayout={this.getItemLayout}
                     data={this.prepareData()}
                     ListHeaderComponent={this.showHeader}
                     extraData={this.state.refresh}
-                    // extraData={this.state}
                     renderItem={({ item, index, separators }) => (
                         <TouchableHighlight
                             onPress={() => this.onPressItem(item)}
-                            onLongPress={event =>
-                                this.onLongPressItem(item, event)
-                            }
                             onShowUnderlay={separators.highlight}
                             onHideUnderlay={separators.unhighlight}>
                             {this.getRow(item, index, separators)}
@@ -134,86 +188,48 @@ class CustomerList extends Component {
                         //alert(`selected button: ${name}`);
                     }}
                 />
-                {/* <SearchWatcher parent={this}>
+                <SearchWatcher parent={this}>
                     {this.props.searchString}
-                </SearchWatcher> */}
+                </SearchWatcher>
             </View>
         );
     }
 
     prepareData = () => {
-        this.salesChannels = PosStorage.getSalesChannelsForDisplay();
+		this.salesChannels = PosStorage.getSalesChannelsForDisplay();
+		let data = [];
+		if (this.props.customers.length > 0) {
+            data = this.filterItems(this.props.customers);
+		}
+		return data;
+	};
 
-        let data = [];
-        // console.log(this.salesChannels);
-        // console.log(this.props.customers);
+	filterItems = data => {
+		let filteredItems = data.filter(item => {
 
-        if (!this.salesChannels) {
-            return data;
-        }
-
-        // if (this.props.customers.length > 0) {
-        //     data = this.filterItems(this.props.customers);
-        //     data.sort((a, b) => {
-        //         if (this._isAnonymousCustomer(a)) {
-        //             return -1; //anonymous walk-up client always is at the top
-        //         } else if (this._isAnonymousCustomer(b)) {
-        //             return 1;
-        //         }
-        //         return a.name < b.name ? -1 : 1;
-        //     });
-        // }
-        console.log(data);
-        return this.props.customers;
-    };
-
-    filterItems = data => {
-        console.log('tofilter', data);
-        console.log('salesChannels', this.salesChannels);
-        let filteredItems = data.filter(item => {
-            let salesChannel = this._getSalesChannelName(
-                item.salesChannelId,
-                this.salesChannels
-            );
-
-            console.log('_getSalesChannelName', salesChannel);
-
-            // if (this._isAnonymousCustomer(item)) {
-            // 	return true; // Anonymous client is always shown
-            // }
-
-            // If there is a search string
-            if (this.state.searchString.length > 0) {
-                const filterString = this.state.searchString.toLowerCase();
-                const name = item.name.toLowerCase();
+			// If there is a search string
+			if (this.state.searchString.length > 0) {
+				const filterString = this.state.searchString.toLowerCase();
+				const name = item.name.toLowerCase();
                 const names = name.split(' ');
-                if (
-                    name.startsWith(filterString) ||
-                    (names.length > 1 &&
-                        names[names.length - 1].startsWith(filterString)) ||
-                    item.phoneNumber.startsWith(filterString)
-                ) {
-                    return (
-                        this.props.searchString === i18n.t('all') ||
-                        (this.props.searchString === i18n.t('credit') &&
-                            item.dueAmount > 0) ||
-                        this.props.searchString === salesChannel
-                    );
-                } else {
-                    return false;
-                }
-            }
-            console.log("this.props.searchString", this.props.searchString)
-            return (
-                this.props.searchString === i18n.t('all') ||
-                (this.props.searchString === i18n.t('credit') &&
-                    item.dueAmount > 0) ||
-                this.props.searchString === salesChannel
-            );
-        });
-        return filteredItems;
-    };
 
+				if (
+					name.startsWith(filterString) ||
+					(names.length > 1 &&
+						names[names.length - 1].startsWith(filterString)) ||
+					item.phoneNumber.startsWith(filterString)
+				) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+
+			return true;
+		});
+		return filteredItems;
+	};
+  
     getRow = (item, index, separators) => {
         // console.log("getRow -index: " + index)
         let isSelected = false;
@@ -379,8 +395,8 @@ class CustomerList extends Component {
         this.props.customerActions.CustomerSelected(item);
         // this.setState({ selectedCustomer:item });
         this.setState({ refresh: !this.state.refresh });
-       // this.checkSelectedCustomer();
-       this.props.customerActions.setCustomerEditStatus(true);
+        // this.checkSelectedCustomer();
+        this.props.customerActions.setCustomerEditStatus(true);
         this.props.navigation.setParams({ isCustomerSelected: true });
         this.props.navigation.setParams({ customerName: item.name });
         Events.trigger('onOrder', { customer: item });

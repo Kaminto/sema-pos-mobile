@@ -39,9 +39,7 @@ class AuthLoadingScreen extends React.Component {
         console.log('PosApp - componentDidMount enter');
 
         let isInitialized = this.posStorage.checkLocalDb();
-        console.log(isInitialized);
         let settings = this.posStorage.loadSettings();
-        console.log(settings);
 
         if (isInitialized === 'SetUp Required') {
             this.posStorage.initialLocalDb();
