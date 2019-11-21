@@ -1,7 +1,6 @@
-//This is an example code for Navigation Drawer with Custom Side bar//
+
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, Alert } from 'react-native';
-// import { Icon } from 'react-native-elements';
+import { View, StyleSheet, Image, Text, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -38,27 +37,22 @@ class CustomSidebarMenu extends Component {
         screenToNavigate: 'ListCustomers',
       },
       {
-        navOptionThumb: 'ios-person',
-        navOptionName: 'New Customer',
-        screenToNavigate: 'NewCustomer',
-      },
-      {
-        navOptionThumb: 'md-home',
+        navOptionThumb: 'md-pricetag',
         navOptionName: 'Transactions',
         screenToNavigate: 'Transactions',
       },
       {
-        navOptionThumb: 'ios-person',
+        navOptionThumb: 'ios-stats',
         navOptionName: 'Sales Report',
         screenToNavigate: 'SalesReport',
       },
       {
-        navOptionThumb: 'md-home',
+        navOptionThumb: 'md-list-box',
         navOptionName: 'Inventory',
         screenToNavigate: 'Inventory',
       },
       {
-        navOptionThumb: 'md-home',
+        navOptionThumb: 'md-alarm',
         navOptionName: 'Reminders',
         screenToNavigate: 'Reminders',
       },
@@ -78,12 +72,11 @@ class CustomSidebarMenu extends Component {
 
     return (
       <View style={styles.sideMenuContainer}>
-        {/*Top Large Image */}
-        {/* <Image
-          source={{ uri: this.proileImage }}
-          style={styles.sideMenuProfileIcon}
-        /> */}
-        <Icon name="ios-person" size={100} style={styles.sideMenuProfileIcon} />
+        {/* <Icon name="ios-person" size={100} style={styles.sideMenuProfileIcon} /> */}
+        <Image source={require('../images/swe-logo.png')} resizeMode='stretch' style={{
+                        width: 200,
+                        height: 200,
+                    }} />
         {/*Divider between Top Image and Sidebar Option*/}
         <View
           style={{
@@ -124,14 +117,10 @@ class CustomSidebarMenu extends Component {
                   if (item.screenToNavigate != 'LogOut' || item.screenToNavigate != 'Sync') {
                     this.props.navigation.navigate(item.screenToNavigate);
                   }
-
                   if (item.screenToNavigate === 'Sync') {
                     console.log(item.screenToNavigate);
                    this.onSynchronize();
-                  }
-
-
-                  
+                  }                 
 
                 }}>
                 {item.navOptionName}
@@ -139,6 +128,11 @@ class CustomSidebarMenu extends Component {
             </View>
           ))}
         </View>
+        {/* {
+						this.state.isLoading && (
+							<ActivityIndicator size={120} color="#0000ff" />
+						)
+					} */}
       </View>
     );
   }

@@ -27,11 +27,7 @@ const MainApp = createAppContainer(JibuRouter);
 
 class App extends React.Component {
 
- 
-
-    render() {
-        console.log(this.props.settings);
-       
+    render() {       
         return (
             <MainApp />
         );

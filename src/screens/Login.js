@@ -439,6 +439,7 @@ class Login extends Component {
 		console.log(this.props.settings.loginSync);
 		if (this.props.settings.loginSync) {
 			this.loginWithSync();
+			this.props.navigation.navigate('App');
 		}
 
 		if (!this.props.settings.loginSync) {

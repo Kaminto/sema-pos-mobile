@@ -163,29 +163,126 @@ class CustomerEdit extends Component {
 	}
 
 	componentDidMount() {
-		console.log('CustomerEdit = Mounted' + this.state.salescid);
+		console.log('CustomerEdit = Mounted' + this.props.isEdit);
+		if (this.props.isEdit) {
+			this.props.navigation.setParams({ isEdit: true });
+		}else{
+			this.props.navigation.setParams({ isEdit: false });
+		}
 
+	}
+
+	componentWillUnmount() {
+		this.props.customerActions.CustomerSelected({});
+		this.props.customerActions.setCustomerEditStatus(false);
+	}
+
+	onEdit() {
+		let salesChannelId = this.state.customerChannel > 0 ? this.state.customerChannel : -1;
+		let customerTypeId = this.state.customerType > 0 ? this.state.customerType : -1;
+		console.log(this.state);
+		console.log(this.props.isEdit);
+		// if (
+		// 	this._textIsEmpty(this.phone.current.state.propertyText) ||
+		// 	!this.isValidPhoneNumber(this.phone.current.state.propertyText)
+		// ) {
+		// 	this.phone.current.refs.customerNumber.focus();
+		// 	return;
+		// }
+
+		// if (
+		// 	!this._textIsEmpty(
+		// 		this.secondPhoneNumber.current.state.propertyText
+		// 	) &&
+		// 	!this.isValidPhoneNumber(
+		// 		this.secondPhoneNumber.current.state.propertyText
+		// 	)
+		// ) {
+		// 	this.secondPhoneNumber.current.refs.secondPhoneNumber.focus();
+		// 	return;
+		// }
+
+		// if (this._textIsEmpty(this.name.current.state.propertyText)) {
+		// 	this.name.current.refs.customerName.focus();
+		// 	return;
+		// }
+
+		// if (this._textIsEmpty(this.address.current.state.propertyText)) {
+		// 	this.address.current.refs.customerAddress.focus();
+		// 	return;
+		// }
+
+		// if (this.customerChannel.current.state.selectedIndex === -1) {
+		// 	this.customerChannel.current.show();
+		// 	return;
+		// }
+
+		// if (this._textIsEmpty(this.frequency.current.state.propertyText)) {
+		// 	this.frequency.current.refs.customerFrequency.focus();
+		// 	return;
+		// } else {
+		// 	salesChannelId = this.salesChannels[
+		// 		this.customerChannel.current.state.selectedIndex
+		// 	].id;
+		// }
+
+		// if (this.customerType.current.state.selectedIndex === -1) {
+		// 	this.customerType.current.show();
+		// 	return;
+		// } else {
+		// 	customerTypeId = this.customerTypes[
+		// 		this.customerType.current.state.selectedIndex
+		// 	].id;
+		// }
+		if (this.props.isEdit) {
+			this.setReminderIfExists(this.props.selectedCustomer);
+			PosStorage.updateCustomer(
+				this.props.selectedCustomer,
+				this.state.phoneNumber,
+				this.state.name,
+				this.state.address,
+				salesChannelId,
+				customerTypeId,
+				this.state.frequency,
+				this.state.secondPhoneNumber
+			);			
+			this.props.customerActions.CustomerSelected({});
+			this.setState({ isEditInProgress: true });
+			this.props.navigation.goBack();
+		} else {
+			let newCustomer = PosStorage.createCustomer(
+				this.state.phoneNumber,
+				this.state.name,
+				this.state.address,
+				this.props.settings.siteId,
+				salesChannelId,
+				customerTypeId,
+				this.state.frequency,
+				this.state.secondPhoneNumber
+			);
+			this.props.customerActions.setCustomers(PosStorage.getCustomers());			
+			this.props.customerActions.CustomerSelected({});
+			this.props.navigation.goBack();
+		}
+
+		
 	}
 
 
 	render() {
 
 		console.log(this.props);
+		console.log(this.state);
 
-		// if (this.props.isEdit) {
+		
+
+		
+
 	
-		// }
-
-
-		// this.channelOptions = this.salesChannels;
-		console.log(this.salesChannels);
 		let salesChannelOption = this.salesChannels.map((s, i) => {
-			//console.log(s);
 			return <Picker.Item key={i} value={s.id} label={s.displayName} />
 		});
-		console.log(this.customerTypes);
 		let customerTypesOption = this.customerTypes.map((s, i) => {
-			//console.log(s);
 			return <Picker.Item key={i} value={s.id} label={s.displayName} />
 		});
 
@@ -222,17 +319,17 @@ class CustomerEdit extends Component {
 								)}
 								onChangeText={this.onChangeTeleOne.bind(this)}
 								value={this.state.phoneNumber}
+								keyboardType="phone-pad"
 								label={i18n.t('telephone-number')}
 								inputStyle={[styles.inputText]}
-							/>
-
-		
+							/>		
 		
 							<Input
 								placeholder={i18n.t(
 									'second-phone-number'
 								)}
 								value={this.state.secondPhoneNumber}
+								keyboardType="phone-pad"
 								onChangeText={this.onChangeTeleTwo.bind(this)}
 								label={i18n.t('second-phone-number')}
 								inputStyle={[styles.inputText]}
@@ -252,6 +349,7 @@ class CustomerEdit extends Component {
 								placeholder="Frequency"
 								label="Frequency"
 								value={this.state.reference}
+								keyboardType="number-pad"
 								onChangeText={this.onChangeReference.bind(this)}
 								inputStyle={[styles.inputText]}
 							/>
@@ -260,9 +358,6 @@ class CustomerEdit extends Component {
 							<Picker
 								selectedValue={this.state.customerChannel}
 								onValueChange={(itemValue, itemIndex) => {
-									console.log(itemValue);
-									console.log(itemIndex);
-
 									this.setState({ customerChannel: itemValue })
 								}
 								}>
@@ -272,8 +367,6 @@ class CustomerEdit extends Component {
 							<Picker
 								selectedValue={this.state.customerType}
 								onValueChange={(itemValue, itemIndex) => {
-									console.log(itemValue);
-									console.log(itemIndex);
 									this.setState({ customerType: itemValue });
 								}
 								}>
@@ -283,178 +376,9 @@ class CustomerEdit extends Component {
 							<Button
 								onPress={() => this.onEdit()}
 								buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10 }}
-								title='Save' />
+								title={this.getSubmitText()} />
 
 						</Card>
-
-
-						<CustomerProperty
-							reference="customerName"
-							marginTop="1%"
-							placeHolder={i18n.t('account-name')}
-							parent={this}
-							kbType="default"
-							valueFn={this.getName}
-							ref={this.name}
-						/>
-						<View
-							style={{
-								flex: 1,
-								flexDirection: 'row',
-								alignItems: 'center'
-							}}>
-							<PhoneProperty
-								reference="customerNumber"
-								marginTop="1%"
-								placeHolder={i18n.t('telephone-number')}
-								parent={this}
-								kbType="phone-pad"
-								valueFn={this.getTelephoneNumber}
-								ref={this.phone}
-							/>
-
-							<PhoneProperty
-								reference="secondPhoneNumber"
-								marginTop="1%"
-								placeHolder={i18n.t('second-phone-number')}
-								parent={this}
-								kbType="phone-pad"
-								valueFn={this.getSecondTelephoneNumber}
-								ref={this.secondPhoneNumber}
-							/>
-						</View>
-
-						<CustomerProperty
-							reference="customerAddress"
-							marginTop="1%"
-							placeHolder={i18n.t('address')}
-							parent={this}
-							kbType="default"
-							valueFn={this.getAddress}
-							ref={this.address}
-						/>
-						<CustomerProperty
-							reference="customerFrequency"
-							marginTop="1%"
-							placeHolder="frequency"
-							parent={this}
-							kbType="numeric"
-							valueFn={this.getFrequency}
-							ref={this.frequency}
-						/>
-
-						<View
-							style={[
-								{
-									marginTop: '1%',
-									flexDirection: 'row',
-									alignItems: 'center'
-								}
-							]}>
-							<ModalDropdown
-								style={{ width: 250 }}
-								textStyle={styles.dropdownText}
-								dropdownTextStyle={[
-									styles.dropdownText,
-									{ width: 250 }
-								]}
-								dropdownStyle={{
-									borderColor: 'black',
-									borderWidth: 2
-								}}
-								ref={this.customerChannel}
-								defaultValue={this.getDefaultChannelValue()}
-								defaultIndex={this.getDefaultChannelIndex()}
-								options={this.channelOptions}
-								onSelect={(index, value) => { this.changeCustomerTypeList(value) }}
-							/>
-							<TouchableHighlight
-								underlayColor="#c0c0c0"
-								onPress={() => this.onShowChannel()}>
-								<Text style={{ fontSize: 40 }}>{'\u2B07'}</Text>
-							</TouchableHighlight>
-							<View style={{ width: 50 }} />
-							<ModalDropdown
-								style={{ width: 250 }}
-								textStyle={styles.dropdownText}
-								dropdownTextStyle={[
-									styles.dropdownText,
-									{ width: 250 }
-								]}
-								dropdownStyle={{
-									borderColor: 'black',
-									borderWidth: 2
-								}}
-								ref={this.customerType}
-								defaultValue={this.getDefaultTypeValue()}
-								defaultIndex={this.getDefaultTypeIndex()}
-								options={this.customerTypeOptions}
-							/>
-							<TouchableHighlight
-								underlayColor="#c0c0c0"
-								onPress={() => this.onShowCustomerType()}>
-								<Text style={{ fontSize: 40 }}>{'\u2B07'}</Text>
-							</TouchableHighlight>
-						</View>
-						<View
-							style={{
-								flex: 1,
-								flexDirection: 'row',
-								alignItems: 'center'
-							}}>
-							<View style={styles.submit}>
-								<View
-									style={{
-										justifyContent: 'flex-start',
-										height: 90,
-										width: '30%'
-										// alignItems: 'center'
-									}}>
-									<TouchableHighlight
-										underlayColor="#c0c0c0"
-										onPress={() => this.onEdit()}>
-										<Text
-											style={[
-												{
-													paddingTop: 30,
-													paddingBottom: 30,
-													width: 300
-												},
-												styles.buttonText
-											]}>
-											{this.getSubmitText()}
-										</Text>
-									</TouchableHighlight>
-								</View>
-							</View>
-
-							<View style={styles.submit}>
-								<View
-									style={{
-										justifyContent: 'flex-end',
-										height: 90,
-										width: '30%'
-										// alignItems: 'center'
-									}}>
-									<TouchableHighlight
-										underlayColor="#c0c0c0"
-										onPress={() => this.onMakeSale()}>
-										<Text
-											style={[
-												{
-													paddingTop: 30,
-													paddingBottom: 30,
-													width: 300
-												},
-												styles.buttonText
-											]}>
-											Make a Sale
-									</Text>
-									</TouchableHighlight>
-								</View>
-							</View>
-						</View>
-
 						<Modal
 							visible={this.state.isEditInProgress}
 							backdropColor={'red'}
@@ -773,92 +697,7 @@ class CustomerEdit extends Component {
 		this.setState({ isEditInProgress: true });
 	}
 
-	onEdit() {
-		let salesChannelId = this.state.customerChannel > 0 ? this.state.customerChannel : -1;
-		let customerTypeId = this.state.customerType > 0 ? this.state.customerType : -1;
-		console.log(this.state);
-		// if (
-		// 	this._textIsEmpty(this.phone.current.state.propertyText) ||
-		// 	!this.isValidPhoneNumber(this.phone.current.state.propertyText)
-		// ) {
-		// 	this.phone.current.refs.customerNumber.focus();
-		// 	return;
-		// }
 
-		// if (
-		// 	!this._textIsEmpty(
-		// 		this.secondPhoneNumber.current.state.propertyText
-		// 	) &&
-		// 	!this.isValidPhoneNumber(
-		// 		this.secondPhoneNumber.current.state.propertyText
-		// 	)
-		// ) {
-		// 	this.secondPhoneNumber.current.refs.secondPhoneNumber.focus();
-		// 	return;
-		// }
-
-		// if (this._textIsEmpty(this.name.current.state.propertyText)) {
-		// 	this.name.current.refs.customerName.focus();
-		// 	return;
-		// }
-
-		// if (this._textIsEmpty(this.address.current.state.propertyText)) {
-		// 	this.address.current.refs.customerAddress.focus();
-		// 	return;
-		// }
-
-		// if (this.customerChannel.current.state.selectedIndex === -1) {
-		// 	this.customerChannel.current.show();
-		// 	return;
-		// }
-
-		// if (this._textIsEmpty(this.frequency.current.state.propertyText)) {
-		// 	this.frequency.current.refs.customerFrequency.focus();
-		// 	return;
-		// } else {
-		// 	salesChannelId = this.salesChannels[
-		// 		this.customerChannel.current.state.selectedIndex
-		// 	].id;
-		// }
-
-		// if (this.customerType.current.state.selectedIndex === -1) {
-		// 	this.customerType.current.show();
-		// 	return;
-		// } else {
-		// 	customerTypeId = this.customerTypes[
-		// 		this.customerType.current.state.selectedIndex
-		// 	].id;
-		// }
-		if (this.props.isEdit) {
-			this.setReminderIfExists(this.props.selectedCustomer);
-			PosStorage.updateCustomer(
-				this.props.selectedCustomer,
-				this.phone.current.state.propertyText,
-				this.name.current.state.propertyText,
-				this.address.current.state.propertyText,
-				salesChannelId,
-				customerTypeId,
-				this.frequency.current.state.propertyText,
-				this.secondPhoneNumber.current.state.propertyText
-			);
-		} else {
-			let newCustomer = PosStorage.createCustomer(
-				this.state.phoneNumber,
-				this.state.name,
-				this.state.address,
-				this.props.settings.siteId,
-				salesChannelId,
-				customerTypeId,
-				this.state.frequency,
-				this.state.secondPhoneNumber
-			);
-			this.props.customerActions.setCustomers(PosStorage.getCustomers());
-			this.props.navigation.navigate('ListCustomers');
-			this.props.customerActions.CustomerSelected(newCustomer);
-		}
-
-		this.setState({ isEditInProgress: true });
-	}
 
 	onEditd() {
 		let salesChannelId = -1;

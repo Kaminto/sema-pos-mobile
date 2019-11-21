@@ -9,7 +9,6 @@ const settingsReducer = (state = initialState, action) => {
 		case SET_SETTINGS:
 			newState = {...state};
 			newState.settings = action.data ;
-			console.log( JSON.stringify(newState));
 			return newState;
 
 		default:

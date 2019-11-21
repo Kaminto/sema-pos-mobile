@@ -9,7 +9,6 @@ import OrderView from './orders/OrderView';
 import CustomerEdit from './customers/CustomerEdit';
 import Settings from './Settings';
 import Login from './Login';
-import SemaRouter from './SemaRouter';
 
 import { bindActionCreators } from 'redux';
 
@@ -210,7 +209,7 @@ class PosApp extends Component {
 			this.props.selectedCustomer,
 			this.props.selectedCustomer.frequency
 		);
-
+console.log('newReceipt', newReceipt)
 		this.props.receiptActions.addRemoteReceipt(newReceipt);
 		PosStorage.logReceipt(newReceipt);
 	}
@@ -276,10 +275,8 @@ class PosApp extends Component {
 
 	render() {
 	 console.log(' --- Router Initialisation --- ');
-		return (
-            <SemaRouter />
-        );
-			// return this.getLoginOrHomeScreen();
+		
+		 return this.getLoginOrHomeScreen();
 	}
  
 	isLoginComplete() {

@@ -10,7 +10,7 @@ import Login from '../screens/Login';
 import AuthLoadingScreen from '../screens/AuthLoadingScreen';
 import Reminders from '../screens/ReminderReport';
 import Inventory from '../screens/InventoryReport';
-import Transactions from '../screens/SalesLog';
+import Transactions from '../screens/Transactions';
 import SalesReport from '../screens/SalesReport';
 
 import OrderView from '../components/orders/OrderView';
@@ -18,6 +18,8 @@ import OrderView from '../components/orders/OrderView';
 import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomSidebarMenu from './CustomSidebarMenu';
+
+import i18n from '../app/i18n';
 
 class NavigationDrawerStructure extends Component {
     toggleDrawer = () => {
@@ -27,8 +29,14 @@ class NavigationDrawerStructure extends Component {
         return (
             <View style={{ flexDirection: 'row' }}>
                 <TouchableOpacity onPress={this.toggleDrawer.bind(this)}>
-                    <Image source={require('../images/drawer.png')}
-                        style={{ width: 25, height: 25, marginLeft: 5 }}
+                    <Icon
+                        name='md-menu'
+                        size={25}
+                        color="white"
+                        style={{
+                            width: 25, height: 25, marginLeft: 5
+                        }}
+
                     />
                 </TouchableOpacity>
             </View>
@@ -36,19 +44,6 @@ class NavigationDrawerStructure extends Component {
     }
 }
 
-const AddCustomerStack = createStackNavigator({
-    CustomerEdit: {
-        screen: CustomerEdit,
-        navigationOptions: ({ navigation }) => ({
-            title: 'Add Customers',
-            headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
-            headerStyle: {
-                backgroundColor: '#FF9800',
-            },
-            headerTintColor: '#fff'
-        }),
-    },
-});
 
 const OrderStack = createStackNavigator({
     CustomerEdit: {
@@ -71,88 +66,124 @@ const ListCustomerStack = createStackNavigator({
             title: 'Customers',
             headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
             headerStyle: {
-                backgroundColor: '#FF9800',
+                backgroundColor: '#00549C',
             },
             headerTintColor: '#fff',
             headerRight: (
                 <View
                     style={{
                         flexDirection: 'row',
-                        flex: 1,
-                        justifyContent: 'space-between',
                     }}>
-                    {navigation.getParam('isCustomerSelected') && (
-                        <Text>{navigation.getParam('customerName')}</Text>
-                    )}
+                    <View
+                        style={{
+                            marginTop: 12,
+                            flex: 1
+                        }}>
+                        {navigation.getParam('isCustomerSelected') && (
+                            <Text style={{
+                                marginRight: 20,
+                                fontWeight: 'bold',
+                                fontSize: 18,
+                                color: 'white'
+                            }} >{navigation.getParam('customerName')}</Text>
+                        )}
+                    </View>
 
-                    {navigation.getParam('isCustomerSelected') && (
-                        <Button
-                            icon={
-                                <Icon
-                                    name='md-trash'
-                                    size={15}
-                                    color="white"
-                                />
-                            }
-                            onPress={() => {
-                                console.log(navigation);
-                                navigation.navigate('EditCustomer');
-                            }}
-                        />
-                    )}
-                    {navigation.getParam('isCustomerSelected') && (
-                        <Button
-                            icon={
-                                <Icon
-                                    name='md-more'
-                                    size={15}
-                                    color="white"
-                                />
-                            }
-                            onPress={() => {
+                    <View
+                        style={{
+                            marginTop: 12,
+                            flex: 1
+                        }}>
+                        {navigation.getParam('isCustomerSelected') && (
+                            <Icon
+                                name='md-trash'
+                                size={25}
+                                color="white"
+                                style={{
+                                    marginRight: 20,
+                                }}
+                                onPress={navigation.getParam('onDelete')}
+                            />
+                        )}
+                    </View>
 
-                                navigation.navigate('CustomerDetails');
-                            }}
-                        />
-                    )}
-                    {navigation.getParam('isCustomerSelected') && (
-                        <Button
-                            icon={
-                                <Icon
-                                    name='md-create'
-                                    size={15}
-                                    color="white"
-                                />
-                            }
-                            onPress={() => {
-                                console.log(navigation);
-                                navigation.navigate('EditCustomer');
-                            }}
-                        />
-                    )}
+                    <View
+                        style={{
+                            marginTop: 12,
+                            flex: 1
+                        }}>
+                        {navigation.getParam('isCustomerSelected') && (
 
-                    {navigation.getParam('isCustomerSelected') && (
-                        <Button
-                            icon={
-                                <Icon
-                                    name='md-business'
-                                    size={15}
-                                    color="white"
-                                />
-                            }
-                            onPress={() => {
-                                console.log(navigation);
-                                navigation.navigate('OrderView');
-                            }}
-                        />
-                    )}
+                            <Icon
+                                name='md-information-circle-outline'
+                                size={25}
+                                color="white"
+                                style={{
+                                    marginRight: 20,
+                                }}
+                                onPress={() => {
 
-                    {navigation.getParam('isCustomerSelected') && (
+                                    navigation.navigate('CustomerDetails');
+                                }}
+
+                            />
+                        )}
+                    </View>
+
+                    <View
+                        style={{
+                            marginTop: 12,
+                            flex: 1
+                        }}>
+                        {navigation.getParam('isCustomerSelected') && (
+
+                            <Icon
+                                name='md-create'
+                                size={25}
+                                color="white"
+                                style={{
+                                    marginRight: 20,
+                                }}
+                                onPress={() => {
+                                    console.log(navigation);
+                                    navigation.navigate('EditCustomer');
+                                }}
+                            />
+
+                        )}
+                    </View>
+
+                    <View
+                        style={{
+                            marginTop: 12,
+                            flex: 1
+                        }}>
+                        {navigation.getParam('isCustomerSelected') && (
+                            <Icon
+                                name='md-business'
+                                size={25}
+                                color="white"
+                                style={{
+                                    marginRight: 20,
+                                }}
+                                onPress={() => {
+                                    console.log(navigation);
+                                    navigation.navigate('OrderView');
+                                }}
+                            />
+
+                        )}
+                    </View>
+
+                    <View>
                         <Input
-                            onChangeText={navigation.getParam('increaseCount')}
-                            placeholder="Search"
+                            onChangeText={navigation.getParam('searchCustomer')}
+                            placeholder={i18n.t('search-placeholder')}
+                            placeholderTextColor='white'
+                            style={{ flex: 1 }}
+
                         />
-                    )}
+                    </View>
                 </View>
 
             ),
@@ -161,19 +192,66 @@ const ListCustomerStack = createStackNavigator({
     EditCustomer: {
         screen: CustomerEdit,
         navigationOptions: ({ navigation }) => ({
-            title: 'Edit Customer',
+            headerStyle: {
+                backgroundColor: '#00549C',
+            },
+            headerTintColor: '#fff',
+            headerLeft: (
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        flex: 1,
+                        justifyContent: 'space-between',
+                    }}>
+
+                    <View style={{
+                        flex: 1,
+                    }}>
+                        <Icon name='md-arrow-back' style={{
+                            marginRight: 25,
+                            marginLeft: 15,
+                            fontWeight: 'bold',
+                        }} size={20} onPress={() => { navigation.goBack() }} />
+                    </View>
+
+                    <View style={{
+                        flex: 1,
+                    }}>
+                        {!navigation.getParam('isEdit') && (
+                            <Text style={{
+                                fontWeight: 'bold',
+                                fontSize: 18
+                            }}>New Customer</Text>
+                        )}
+
+                        {navigation.getParam('isEdit') && (
+                            <Text style={{
+                                fontWeight: 'bold',
+                                fontSize: 18
+                            }}>Edit Customer</Text>
+                        )}
+                    </View>
+                </View >),
         })
     },
     CustomerDetails: {
         screen: CustomerDetails,
         navigationOptions: ({ navigation }) => ({
             title: 'Customer Details',
+            headerStyle: {
+                backgroundColor: '#00549C',
+            },
+            headerTintColor: '#fff',
         })
     },
     OrderView: {
         screen: OrderView,
         navigationOptions: ({ navigation }) => ({
             title: 'Order View',
+            headerStyle: {
+                backgroundColor: '#00549C',
+            },
+            headerTintColor: '#fff',
         })
     },
 },
@@ -191,7 +269,7 @@ const TransactionStack = createStackNavigator({
             title: 'Transactions',
             headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
             headerStyle: {
-                backgroundColor: '#FF9800',
+                backgroundColor: '#00549C',
             },
             headerTintColor: '#fff',
         }),
@@ -205,7 +283,7 @@ const SalesReportStack = createStackNavigator({
             title: 'Sales Report',
             headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
             headerStyle: {
-                backgroundColor: '#FF9800',
+                backgroundColor: '#00549C',
             },
             headerTintColor: '#fff',
         }),
@@ -219,7 +297,7 @@ const InventoryStack = createStackNavigator({
             title: 'Inventory',
             headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
             headerStyle: {
-                backgroundColor: '#FF9800',
+                backgroundColor: '#00549C',
             },
             headerTintColor: '#fff',
         }),
@@ -233,7 +311,7 @@ const ReminderStack = createStackNavigator({
             title: 'Reminders',
             headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
             headerStyle: {
-                backgroundColor: '#FF9800',
+                backgroundColor: '#00549C',
             },
             headerTintColor: '#fff',
         }),
@@ -258,12 +336,6 @@ const JibuDrawerNavigation = createDrawerNavigator({
         screen: ListCustomerStack,
         navigationOptions: {
             drawerLabel: 'Customers',
-        },
-    },
-    NewCustomer: {
-        screen: AddCustomerStack,
-        navigationOptions: {
-            drawerLabel: 'New Customer',
         },
     },
     Transactions: {
