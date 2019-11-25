@@ -1,12 +1,9 @@
 /*
 This class contains the persistence implementation of the tablet business objects such as customers, sales, products
-
- */
-const { React } = require('react-native');
+*/
 import { capitalizeWord } from '../services/Utilities';
 import Events from 'react-native-simple-events';
 import moment from 'moment-timezone';
-// import RealmPosStorage from './RealmPosStorage';
 var Realm = require('realm');
 let realm;
 
@@ -15,32 +12,29 @@ const uuidv1 = require('uuid/v1');
 const versionKey = '@Sema:VersionKey';
 const customersKey = '@Sema:CustomersKey';
 const customerItemKey = '@Sema:CustomerItemKey';
-const salesKey = '@Sema:SalesKey';
-const saleItemKey = '@Sema:SaleItemKey';
+const lastCustomerSyncKey = '@Sema:LastCustomerSyncKey';
+const pendingCustomersKey = '@Sema:PendingCustomersKey';
+const customerTypesKey = '@Sema:CustomerTypesKey';
+
 const productsKey = '@Sema:ProductsKey';
 const productItemKey = '@Sema:ProductItemKey';
-const lastCustomerSyncKey = '@Sema:LastCustomerSyncKey';
+const productMrpsKey = '@Sema:ProductMrpsKey';
+
+const salesKey = '@Sema:SalesKey';
+const saleItemKey = '@Sema:SaleItemKey';
 const lastSalesSyncKey = '@Sema:LastSalesSyncKey';
 const lastProductsSyncKey = '@Sema:LastProductsSyncKey';
-
-const pendingCustomersKey = '@Sema:PendingCustomersKey';
 const pendingSalesKey = '@Sema:PendingSalesKey';
+const salesChannelsKey = '@Sema:SalesChannelsKey';
+
+const remoteReceiptsKey = '@Sema:remoteReceiptsKey';
 
 const settingsKey = '@Sema:SettingsKey';
-
 const tokenExpirationKey = '@Sema:TokenExpirationKey';
-const salesChannelsKey = '@Sema:SalesChannelsKey';
-const customerTypesKey = '@Sema:CustomerTypesKey';
-const productMrpsKey = '@Sema:ProductMrpsKey';
-const remoteReceiptsKey = '@Sema:remoteReceiptsKey';
 const reminderDataKey = '@Sema:remindersDataKey';
-
 const syncIntervalKey = '@Sema:SyncIntervalKey';
-
 const inventoriesKey = '@Sema:inventoriesKey';
 const inventoryItemKey = '@Sema:InventoryItemKey';
-import Communications from '../services/Communications';
-import { NetInfo } from 'react-native';
 
 class PosStorage {
 	constructor() {
@@ -376,179 +370,7 @@ class PosStorage {
 			}
 			return 'Data Exists';
 		}
-
-
-
-
-		// return new Promise((resolve, reject) => {
-		// 	this.getKey(versionKey)
-		// 		.then(version => {
-		// 			console.log('version');
-		// 			console.log('version=' + version);
-		// 			if (
-		// 				version == null ||
-		// 				version === undefined ||
-		// 				forceNew === true
-		// 			) {
-		// 				console.log('Pos Storage: Not initialized' + version);
-		// 				this.version = '1';
-		// 				let keyArray = [
-		// 					[versionKey, this.version],
-		// 					[customersKey, this.stringify(this.customersKeys)],
-		// 					[salesKey, this.stringify(this.salesKeys)],
-		// 					[productsKey, this.stringify(this.productsKeys)],
-		// 					[
-		// 						lastCustomerSyncKey,
-		// 						this.lastCustomerSync.toISOString()
-		// 					],
-		// 					[
-		// 						lastSalesSyncKey,
-		// 						this.lastSalesSync.toISOString()
-		// 					],
-		// 					[
-		// 						lastProductsSyncKey,
-		// 						this.lastProductsSync.toISOString()
-		// 					],
-		// 					[
-		// 						pendingCustomersKey,
-		// 						this.stringify(this.pendingCustomers)
-		// 					],
-		// 					[
-		// 						pendingSalesKey,
-		// 						this.stringify(this.pendingSales)
-		// 					],
-		// 					[settingsKey, this.stringify(this.settings)],
-		// 					[
-		// 						tokenExpirationKey,
-		// 						this.stringify(this.tokenExpiration)
-		// 					],
-		// 					[
-		// 						salesChannelsKey,
-		// 						this.stringify(this.salesChannels)
-		// 					],
-		// 					[
-		// 						customerTypesKey,
-		// 						this.stringify(this.customerTypes)
-		// 					],
-		// 					[
-		// 						productMrpsKey,
-		// 						this.stringify(this.productMrpDict)
-		// 					],
-		// 					[
-		// 						syncIntervalKey,
-		// 						this.stringify(this.syncInterval)
-		// 					],
-		// 					[
-		// 						inventoriesKey,
-		// 						this.stringify(this.inventoriesKeys)
-		// 					],
-		// 					[remoteReceiptsKey, this.stringify(this.receipts)],
-		// 					[
-		// 						reminderDataKey,
-		// 						this.stringify(this.reminderData)
-		// 					]
-		// 				];
-
-		// 				this.multiSet(keyArray)
-		// 					.then(rows => {
-		// 						console.log('Affected : ' + rows);
-		// 						resolve(true);
-		// 					})
-		// 					.catch(error => {
-		// 						console.log(error);
-		// 						resolve(false);
-		// 					});
-		// 			} else {
-		// 				console.log('Pos Storage: Version = ' + version);
-		// 				this.version = version;
-		// 				let keyArray = [
-		// 					customersKey,
-		// 					salesKey,
-		// 					productsKey,
-		// 					lastCustomerSyncKey,
-		// 					lastSalesSyncKey,
-		// 					lastProductsSyncKey,
-		// 					pendingCustomersKey,
-		// 					pendingSalesKey,
-		// 					settingsKey,
-		// 					tokenExpirationKey,
-		// 					salesChannelsKey,
-		// 					customerTypesKey,
-		// 					productMrpsKey,
-		// 					syncIntervalKey,
-		// 					inventoriesKey,
-		// 					remoteReceiptsKey,
-		// 					reminderDataKey
-		// 				];
-
-		// 				let results = this.multiGet(keyArray).then(
-		// 					function (results) {
-		// 						console.log(
-		// 							'PosStorage Multi-Key' + results.length
-		// 						);
-		// 						for (let i = 0; i < results.length; i++) {
-		// 							console.log(
-		// 								' key : ' +
-		// 								results[i][0] +
-		// 								' Value : ' +
-		// 								results[i][1]
-		// 							);
-		// 						}
-
-		// 						this.customersKeys = this.parseJson(
-		// 							results[0][1]
-		// 						); // Array of customer keys
-		// 						this.salesKeys = this.parseJson(results[1][1]); // Array of sales keys
-		// 						this.productsKeys = this.parseJson(
-		// 							results[2][1]
-		// 						); // Array of products keys
-		// 						this.lastCustomerSync = new Date(results[3][1]); // Last customer sync time
-		// 						this.lastSalesSync = new Date(results[4][1]); // Last sales sync time
-		// 						this.lastProductsSync = new Date(results[5][1]); // Last products sync time
-		// 						this.pendingCustomers = this.parseJson(
-		// 							results[6][1]
-		// 						); // Array of pending customers
-		// 						this.pendingSales = this.parseJson(
-		// 							results[7][1]
-		// 						); // Array of pending sales
-		// 						this.settings = this.parseJson(results[8][1]); // Settings
-		// 						this.tokenExpiration = new Date(results[9][1]); // Expiration date/time of the token
-		// 						this.salesChannels = this.parseJson(
-		// 							results[10][1]
-		// 						); // array of sales channels
-		// 						this.customerTypes = this.parseJson(
-		// 							results[11][1]
-		// 						); // array of customer types
-		// 						this.productMrpDict = this.parseJson(
-		// 							results[12][1]
-		// 						); // products MRP dictionary
-		// 						this.syncInterval = this.parseJson(
-		// 							results[13][1]
-		// 						); // SyncInterval
-		// 						this.inventoriesKeys = this.parseJson(
-		// 							results[14][1]
-		// 						); // inventoriesKey
-		// 						this.receipts = this.parseJson(results[15][1]); // remoteReceiptsKey
-		// 						this.reminderDataKeys = this.parseJson(
-		// 							results[16][1]
-		// 						); //reminderData
-
-		// 						this.loadCustomersFromKeys()
-		// 							.then(() => {
-		// 								this.loadProductsFromKeys().then(() =>
-		// 									resolve(true)
-		// 								);
-		// 							})
-		// 							.catch(err => reject(err));
-		// 					}.bind(this)
-		// 				);
-		// 			}
-		// 		})
-		// 		.catch(err => {
-		// 			console.log('Pos Storage: Exception ' + err.message);
-		// 			reject(err);
-		// 		});
-		// });
+		
 	}
 
 	// Realm access methods start
@@ -1396,6 +1218,29 @@ class PosStorage {
 		});
 	}
 
+	localOrders() {
+		console.log('PosStorage:loadSalesReceipts');
+		return new Promise((resolve, reject) => {
+			let results = [];
+			let sales = this.pendingSales;
+			let resolvedCount = 0;
+			if (sales.length === 0) {
+				resolve(results);
+			} else {
+				for (let index = 0; index < sales.length; index++) {
+					this._loadPendingSale(sales[index]).then(sale => {
+						results.push(sale);
+						resolvedCount++;
+						if (resolvedCount === sales.length) {
+							resolve(results);
+						}
+					});
+				}
+			}
+		});
+	}
+	
+	
 	loadSalesReceipts(lastSalesSyncDate) {
 		console.log('PosStorage:loadSalesReceipts');
 		return new Promise((resolve, reject) => {

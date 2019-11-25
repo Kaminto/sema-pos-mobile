@@ -2,7 +2,6 @@
 import PosStorage from '../database/PosStorage';
 import Communications from '../services/Communications';
 import Events from 'react-native-simple-events';
-import moment from 'moment';
 import * as _ from 'lodash';
 
 class Synchronization {

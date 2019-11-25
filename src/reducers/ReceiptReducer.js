@@ -1,4 +1,3 @@
-
 import {
     SET_REMOTE_RECEIPTS,
     ADD_REMOTE_RECEIPT,

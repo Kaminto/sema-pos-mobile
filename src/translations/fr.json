@@ -70,6 +70,7 @@
   "order-summary": "Commande",
   "cart": "Chariot",
   "pay": "Payer",
+  "save-order": "Save Order",
 
   "order-total": "Total de la Commande",
   "item": "Article",
@@ -83,6 +84,7 @@
   "previous-amount-due": "Montant dû Antérieurement",
   "total-amount-due": "Montant Total dû",
   "complete-sale": "Conclure la Vente",
+  "make-payment": "Make Payment",
   "processing-order": "Traitement de la Commande...",
 
   "sales": "Ventes",

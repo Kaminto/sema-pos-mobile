@@ -71,6 +71,7 @@
   "order-summary": "Order Summary",
   "cart": "Cart",
   "pay": "Pay",
+  "save-order": "Save Order",
 
   "order-total": "Order Total",
   "item": "Item",
@@ -100,6 +101,8 @@
   "price-per-sku": "Price/SKU",
   "total-sales": "Total Sales",
   "payoff":"Loan Settlement",
+
+  "make-payment": "Make Payment",
 
   "previous": "Previous",
   "current": "Current",

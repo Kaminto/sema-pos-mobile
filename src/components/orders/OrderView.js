@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
 import Events from "react-native-simple-events";
+import PosStorage from "../../database/PosStorage";
 
 class OrderView extends Component {
 	constructor(props) {
@@ -14,6 +15,19 @@ class OrderView extends Component {
 	}
 
 	render() {
+		console.log('pendingSales', PosStorage.pendingSales);
+		console.log('getReceipts', PosStorage.getReceipts());
+		console.log('getSales', PosStorage.getSales());
+
+		PosStorage.localOrders(this.lastSalesSync)
+			.then(salesReceipts => {
+				console.log('loadSalesReceipts', salesReceipts);
+			})
+			.catch(error => {				
+				console.log('Synchronization.synchronizeSales - error ' + error);
+			});
+
+
 		return this.displayView();
 	}
 
@@ -25,6 +39,7 @@ class OrderView extends Component {
 	componentWillUnmount() {
 		Events.rm('ProductsUpdated', 'productsUpdate2');
 		Events.rm('ProductMrpsUpdated', 'productMrpsUpdate1');
+		this.props.orderActions.ClearOrder();
 	}
 
 	onProductsUpdated() {
@@ -33,20 +48,20 @@ class OrderView extends Component {
 
 	displayView() {
 		return (
-			<View style = { styles.orderView}>
+			<View style={styles.orderView}>
 				{this.getProductScreen()}
 				{this.getPaymentScreen()}
-				<OrderSummaryScreen/>
+				<OrderSummaryScreen />
 			</View>
 		);
 	}
 
 	getProductScreen() {
-		return this.props.flow.page === 'products' ? <OrderProductScreen/> : null;
+		return this.props.flow.page === 'products' ? <OrderProductScreen /> : null;
 	}
 
 	getPaymentScreen() {
-		return this.props.flow.page === 'payment' ? <OrderPaymentScreen/> : null;
+		return this.props.flow.page === 'payment' ? <OrderPaymentScreen /> : null;
 	}
 
 }
@@ -58,15 +73,15 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-	return {orderActions: bindActionCreators(OrderActions,dispatch)};
+	return { orderActions: bindActionCreators(OrderActions, dispatch) };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderView);
 
 const styles = StyleSheet.create({
 	orderView: {
-		flex:1,
-		backgroundColor:"#ABC1DE",
-		flexDirection:'row'
+		flex: 1,
+		backgroundColor: "#ABC1DE",
+		flexDirection: 'row'
 	}
 });

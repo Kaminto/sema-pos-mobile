@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { View, Text, TextInput, Button, CheckBox, Picker, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
+import { View, Alert, Text, TextInput, Button, CheckBox, Picker, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -119,18 +119,20 @@ class OrderCheckout extends Component {
 			sliderValue: 0.3,
 			paymentOptions: "",
 
-			isCredit: false,
-			isMobile: false,
+
 			isCompleteOrderVisible: false,
 			isDateTimePickerVisible: false,
 			receiptDate: new Date(),
 			canProceed: true,
+
 			isCash: true,
 			isLoan: false,
 			isMobile: false,
+			isCredit: false,
 			isJibuCredit: false,
 			isCheque: false,
 			isBank: false,
+
 			selectedPaymentType: "Cash",
 		};
 	}
@@ -168,28 +170,28 @@ class OrderCheckout extends Component {
 
 	render() {
 
-		var BContent = (
-			<View style={[styles.btn, styles.btnModal]}>
-				<Button title="X" color="black" onPress={() => this.setState({ isOpen: false })} />
-			</View>
-		);
-		const state = this.state;
 
+		const state = this.state;
 
 		return (
 			<View style={styles.container}>
-				<View style={[{ flex: 1, justifyContent: 'center' }, this.getOpacity()]}>
-					<TouchableHighlight underlayColor='#c0c0c0'
-						onPress={() => this.onPay()}>
-						<Text style={[{ paddingTop: 20, paddingBottom: 20 }, styles.buttonText]}>{i18n.t('pay')}</Text>
-					</TouchableHighlight>
+				<View style={[{ flexDirection: 'row' }, this.getOpacity()]}>
+					<View style={{ flex: 0.5, justifyContent: 'center' }}>
+						<TouchableHighlight underlayColor='#c0c0c0'
+							onPress={() => this.onPay()}>
+							<Text style={[{ paddingTop: 20, paddingBottom: 20, textAlign: 'center' }, styles.buttonText]}>{i18n.t('pay')}</Text>
+						</TouchableHighlight>
+					</View>
+					<View style={{ flex: 0.5, justifyContent: 'center' }}>
+						<TouchableHighlight underlayColor='#c0c0c0'
+							onPress={() => this.onSaveOrder()}>
+							<Text style={[{ paddingTop: 20, paddingBottom: 20, textAlign: 'center' }, styles.buttonText]}>{i18n.t('save-order')}</Text>
+						</TouchableHighlight>
+					</View>
 				</View>
 
 
 				<Modal style={[styles.modal, styles.modal3]} coverScreen={true} position={"center"} ref={"modal6"} isDisabled={this.state.isDisabled}>
-
-
-
 					<View
 						style={{
 							justifyContent: 'flex-end',
@@ -199,9 +201,7 @@ class OrderCheckout extends Component {
 						}}>
 						{this.getCancelButton()}
 					</View>
-
 					{this.getBackDateComponent()}
-
 					<View
 						style={{
 							flex: 1,
@@ -229,15 +229,11 @@ class OrderCheckout extends Component {
 							value={this.props.payment.mobileToDisplay}
 							valueChange={this.valuePaymentChange}
 						/>
-
-
 						<Picker
 							selectedValue={this.state.paymentOptions}
 							onValueChange={(itemValue, itemIndex) => {
 								this.setState({ paymentOptions: itemValue });
-
 								console.log(itemValue);
-
 								if (itemValue === 'isJibuCredit') {
 									this.setState({ isJibuCredit: true });
 									this.setState({ isCheque: false });
@@ -251,8 +247,6 @@ class OrderCheckout extends Component {
 									this.setState({ isCheque: false });
 									this.setState({ isBank: true });
 								}
-
-
 								this.setState({ isCash: false });
 								this.setState({ isMobile: false });
 							}
@@ -262,15 +256,7 @@ class OrderCheckout extends Component {
 							<Picker.Item label="Cheque" value="isCheque" />
 							<Picker.Item label="Bank Transfer" value="isBank" />
 						</Picker>
-
-
-
 						{this.getSaleAmount()}
-
-
-
-
-
 						<PaymentDescription
 							title={`${i18n.t('previous-amount-due')}:`}
 							total={Utilities.formatCurrency(
@@ -293,9 +279,7 @@ class OrderCheckout extends Component {
 											{ paddingTop: 20, paddingBottom: 20 },
 											styles.buttonText
 										]}>
-										{!this.isPayoffOnly()
-											? i18n.t('complete-sale')
-											: i18n.t('payoff')}
+										{i18n.t('make-payment')}
 									</Text>
 								</TouchableHighlight>
 							</View>
@@ -308,9 +292,6 @@ class OrderCheckout extends Component {
 						onRequestClose={this.closeHandler}>
 						{this.ShowCompleteOrder()}
 					</Modal>
-
-
-
 				</Modal>
 
 
@@ -318,8 +299,6 @@ class OrderCheckout extends Component {
 
 		);
 	}
-
-
 
 	getSaleAmount() {
 		if (!this.isPayoffOnly()) {
@@ -335,20 +314,15 @@ class OrderCheckout extends Component {
 	}
 
 	getCancelButton() {
-		if (!this.isPayoffOnly()) {
-			return (
-				<TouchableHighlight onPress={() => this.onCancelOrder()}>
-
-					<Icon
-						size={50}
-						name="md-close"
-						color="black"
-					/>
-				</TouchableHighlight>
-			);
-		} else {
-			return null;
-		}
+		return (
+			<TouchableHighlight onPress={() => this.closePaymentModal()}>
+				<Icon
+					size={50}
+					name="md-close"
+					color="black"
+				/>
+			</TouchableHighlight>
+		);
 	}
 
 	getBackDateComponent() {
@@ -441,24 +415,30 @@ class OrderCheckout extends Component {
 	}
 
 	onCompleteOrder = () => {
-		
+
 		console.log(this.isPayoffOnly());
 		console.log(this.props.payment);
 		console.log(this.props.selectedCustomer);
-		if (this.isPayoffOnly()) {
-
-		} else {
-			console.log("there")
-			//this.setState({ isCompleteOrderVisible: true });
-			this.formatAndSaveSale();
-		}
-
+		console.log("there")
+		this.formatAndSaveSale();
+		Alert.alert(
+			'Notice',
+			'Payment Made',
+			[{
+				text: 'OK',
+				onPress: () => {
+					this.closePaymentModal();
+					this.props.orderActions.ClearOrder();
+				}
+			}],
+			{ cancelable: false }
+		);
 	}
 
 
 	onCompleteOrderd = () => {
 		if (this.isPayoffOnly()) {
-			
+
 			let payoff = 0;
 			try {
 				if (this.props.payment.hasOwnProperty('cashToDisplay')) {
@@ -604,7 +584,7 @@ class OrderCheckout extends Component {
 			};
 		}
 		console.log('payment', payment);
-	   this.props.orderActions.SetPayment(payment);
+		this.props.orderActions.SetPayment(payment);
 	};
 
 	closeHandler = () => {
@@ -663,6 +643,8 @@ class OrderCheckout extends Component {
 	formatAndSaveSale = async () => {
 		let receipt = null;
 		let priceTotal = 0;
+		console.log('payment', this.props.payment);
+		
 		if (!this.isPayoffOnly()) {
 			// Assumes that there is at least one product
 			let receiptDate = this.state.receiptDate
@@ -793,7 +775,7 @@ class OrderCheckout extends Component {
 					this.props.selectedCustomer.frequency
 				);
 				console.log('check3');
-			} 
+			}
 			console.log('check4');
 		} else {
 			if (payoff > 0) {
@@ -812,7 +794,6 @@ class OrderCheckout extends Component {
 	};
 
 	isPayoffOnly() {
-		console.log(this.props.products);
 		return this.props.products.length === 0;
 	}
 
@@ -843,11 +824,16 @@ class OrderCheckout extends Component {
 	onPay = () => {
 		console.log("onPay");
 		if (this.props.products.length > 0) {
+			this.updatePayment(0, this.calculateOrderDue().toFixed(2));
 			this.refs.modal6.open();
 		}
 	};
 
-	onCancelOrder = () => {
+	onSaveOrder = () => {
+
+	}
+
+	closePaymentModal = () => {
 		this.refs.modal6.close();
 	};
 	getOpacity = () => {
