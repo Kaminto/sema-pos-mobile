@@ -72,7 +72,7 @@
 
   "charge": "Fakti",
   "pay": "Peye",
-
+  "save-order": "Save Order",
   "cash": "Kach",
   "loan": "Prè",
   "mobile": "Mobil",
@@ -80,6 +80,7 @@
   "previous-amount-due": "Kantite Lajan Dwe Avan",
   "total-amount-due": "Kantite Lajan Dwe an Tou",
   "complete-sale": "Konplete Vant",
+  "make-payment": "Make Payment",
   "processing-order": "Trètman Kòmand...",
 
   "sales": "Vant",

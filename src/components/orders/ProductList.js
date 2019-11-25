@@ -159,48 +159,7 @@ class ProductList extends Component {
 		}
 		return item.priceAmount; // Just use product price
 	};
-
-	// prepareData = () => {
-	// 	let productMrp = PosStorage.getProductMrps();
-
-	// 	console.log(this.props.filter);
-
-	// 	if (
-	// 		Object.keys(productMrp).length === 0 &&
-	// 		productMrp.constructor === Object
-	// 	)
-	// 	{
-	// 		return this.props.products; // No mapping tables
-	// 	}
-	// 	else {
-	// 		let salesChannel = PosStorage.getSalesChannelFromName(
-	// 			this.props.filter
-	// 		);
-	// 		if (salesChannel) {
-	// 			return this.props.products.filter(product => {
-	// 				// If product has no mapping tables at all for the selected kiosk, display it
-	// 				if (!this.hasMappingTable(product, productMrp)) return true;
-	// 				// If product has a mapping with the customer's sales channel and is of the same kiosk
-	// 				// as the selected customer, display it
-	// 				const mapping =
-	// 					productMrp[
-	// 						PosStorage.getProductMrpKeyFromIds(
-	// 							product.productId,
-	// 							salesChannel.id
-	// 						)
-	// 					];
-	// 				if (mapping)
-	// 					return (
-	// 						mapping.siteId ===
-	// 						this.props.selectedCustomer.siteId
-	// 					);
-	// 				return false;
-	// 			});
-	// 		} else {
-	// 			return this.props.products;
-	// 		}
-	// 	}
-	// };
+	
 }
 
 function mapStateToProps(state, props) {

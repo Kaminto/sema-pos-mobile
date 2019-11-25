@@ -54,7 +54,7 @@ export function SetPayment(payment) {
 		dispatch({ type: SET_PAYMENT, data: { payment: payment } });
 	};
 }
-export function ClearOrder(payment) {
+export function ClearOrder() {
 	// console.log("ClearOrder - action");
 	return dispatch => {
 		dispatch({ type: CLEAR_ORDER, data: {} });

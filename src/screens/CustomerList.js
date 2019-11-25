@@ -181,11 +181,9 @@ class CustomerList extends Component {
                 <FloatingAction
                     onOpen={name => {
                         console.log(this.props);
-                        this.props.navigation.navigate('EditCustomer', {
-                            itemId: 86,
-                            otherParam: 'anything you want here',
-                        });
-                        //alert(`selected button: ${name}`);
+                        this.props.customerActions.CustomerSelected({});
+                        this.props.customerActions.setCustomerEditStatus(true);
+                        this.props.navigation.navigate('EditCustomer');
                     }}
                 />
                 <SearchWatcher parent={this}>
@@ -196,40 +194,40 @@ class CustomerList extends Component {
     }
 
     prepareData = () => {
-		this.salesChannels = PosStorage.getSalesChannelsForDisplay();
-		let data = [];
-		if (this.props.customers.length > 0) {
+        this.salesChannels = PosStorage.getSalesChannelsForDisplay();
+        let data = [];
+        if (this.props.customers.length > 0) {
             data = this.filterItems(this.props.customers);
-		}
-		return data;
-	};
+        }
+        return data;
+    };
 
-	filterItems = data => {
-		let filteredItems = data.filter(item => {
+    filterItems = data => {
+        let filteredItems = data.filter(item => {
 
-			// If there is a search string
-			if (this.state.searchString.length > 0) {
-				const filterString = this.state.searchString.toLowerCase();
-				const name = item.name.toLowerCase();
+            // If there is a search string
+            if (this.state.searchString.length > 0) {
+                const filterString = this.state.searchString.toLowerCase();
+                const name = item.name.toLowerCase();
                 const names = name.split(' ');
 
-				if (
-					name.startsWith(filterString) ||
-					(names.length > 1 &&
-						names[names.length - 1].startsWith(filterString)) ||
-					item.phoneNumber.startsWith(filterString)
-				) {
-					return true;
-				} else {
-					return false;
-				}
-			}
+                if (
+                    name.startsWith(filterString) ||
+                    (names.length > 1 &&
+                        names[names.length - 1].startsWith(filterString)) ||
+                    item.phoneNumber.startsWith(filterString)
+                ) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
 
-			return true;
-		});
-		return filteredItems;
-	};
-  
+            return true;
+        });
+        return filteredItems;
+    };
+
     getRow = (item, index, separators) => {
         // console.log("getRow -index: " + index)
         let isSelected = false;
@@ -393,9 +391,7 @@ class CustomerList extends Component {
     onPressItem = item => {
         console.log('_onPressItem');
         this.props.customerActions.CustomerSelected(item);
-        // this.setState({ selectedCustomer:item });
         this.setState({ refresh: !this.state.refresh });
-        // this.checkSelectedCustomer();
         this.props.customerActions.setCustomerEditStatus(true);
         this.props.navigation.setParams({ isCustomerSelected: true });
         this.props.navigation.setParams({ customerName: item.name });
