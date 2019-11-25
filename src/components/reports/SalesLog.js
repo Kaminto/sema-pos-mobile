@@ -141,7 +141,6 @@ class SalesLog extends Component {
 	}
 
 	render() {
-		if (this.props.reportType === 'salesLog') {
 			return (
 				<View style={styles.container}>
 					<FlatList
@@ -153,9 +152,6 @@ class SalesLog extends Component {
 					/>
 				</View>
 			);
-		}
-
-		return null;
 	}
 
 	handleUpdate() {

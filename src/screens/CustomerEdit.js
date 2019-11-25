@@ -273,24 +273,14 @@ class CustomerEdit extends Component {
 
 		console.log(this.props);
 		console.log(this.state);
-
-		
-
-		
-
-	
 		let salesChannelOption = this.salesChannels.map((s, i) => {
 			return <Picker.Item key={i} value={s.id} label={s.displayName} />
 		});
 		let customerTypesOption = this.customerTypes.map((s, i) => {
 			return <Picker.Item key={i} value={s.id} label={s.displayName} />
 		});
-
-
 		return (
 			<View style={{ flex: 1, backgroundColor: '#fff' }}>
-
-
 				<KeyboardAwareScrollView
 					style={{ flex: 1 }}
 					resetScrollToCoords={{ x: 0, y: 0 }}
@@ -593,7 +583,6 @@ class CustomerEdit extends Component {
 	}
 
 	changeCustomerTypeList(value) {
-
 		let tindex = 0;
 		if (value === 'Direct') {
 			tindex = 2;

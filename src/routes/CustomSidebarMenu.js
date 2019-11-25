@@ -43,9 +43,14 @@ class CustomSidebarMenu extends Component {
       },
       {
         navOptionThumb: 'ios-stats',
+        navOptionName: 'Sales Log',
+        screenToNavigate: 'SalesLog',
+      },
+      {
+        navOptionThumb: 'ios-stats',
         navOptionName: 'Sales Report',
         screenToNavigate: 'SalesReport',
-      },
+      },      
       {
         navOptionThumb: 'md-list-box',
         navOptionName: 'Inventory',

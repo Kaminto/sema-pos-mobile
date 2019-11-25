@@ -110,7 +110,7 @@ class InventoryReport extends Component {
 	}
 
 	render() {
-		if (this.props.reportType === "inventory") {
+		console.log(this.props)
 			return (
 				<View style={{ flex: 1 }}>
 					<DateFilter/>
@@ -189,9 +189,6 @@ class InventoryReport extends Component {
 
 				</View>
 			);
-		} else {
-			return null;
-		}
 	}
 
 	getInventoryCurrentMeterForEdit(){

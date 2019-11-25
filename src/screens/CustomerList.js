@@ -183,6 +183,8 @@ class CustomerList extends Component {
                         console.log(this.props);
                         this.props.customerActions.CustomerSelected({});
                         this.props.customerActions.setCustomerEditStatus(true);
+                        this.props.navigation.setParams({ isCustomerSelected: true });
+                        this.props.navigation.setParams({ customerName: '' });
                         this.props.navigation.navigate('EditCustomer');
                     }}
                 />
