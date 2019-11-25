@@ -8,12 +8,16 @@ import CustomerEdit from '../screens/CustomerEdit';
 import CustomerDetails from '../screens/CustomerDetails';
 import Login from '../screens/Login';
 import AuthLoadingScreen from '../screens/AuthLoadingScreen';
-import Reminders from '../screens/ReminderReport';
-import Inventory from '../screens/InventoryReport';
 import Transactions from '../screens/Transactions';
-import SalesReport from '../screens/SalesReport';
+//import SalesReport from '../screens/SalesReport';
 
 import OrderView from '../components/orders/OrderView';
+
+import InventoryReport from '../components/reports/InventoryReport';
+import RemindersReport from '../components/reports/ReminderReport';
+
+import SalesLog from '../components/reports/SalesLog';
+import SalesReport from '../components/reports/SalesReport';
 
 import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -290,9 +294,24 @@ const SalesReportStack = createStackNavigator({
     },
 });
 
+const SalesLogStack = createStackNavigator({
+    SalesLog: {
+        screen: SalesLog,
+        navigationOptions: ({ navigation }) => ({
+            title: 'Sales Log',
+            headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+            headerStyle: {
+                backgroundColor: '#00549C',
+            },
+            headerTintColor: '#fff',
+        }),
+    },
+});
+
+
 const InventoryStack = createStackNavigator({
     Inventory: {
-        screen: Inventory,
+        screen: InventoryReport,
         navigationOptions: ({ navigation }) => ({
             title: 'Inventory',
             headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
@@ -306,7 +325,7 @@ const InventoryStack = createStackNavigator({
 
 const ReminderStack = createStackNavigator({
     Reminders: {
-        screen: Reminders,
+        screen: RemindersReport,
         navigationOptions: ({ navigation }) => ({
             title: 'Reminders',
             headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
@@ -348,6 +367,12 @@ const JibuDrawerNavigation = createDrawerNavigator({
         screen: SalesReportStack,
         navigationOptions: {
             drawerLabel: 'Sales Reports',
+        },
+    },
+    SalesLog: {
+        screen: SalesLogStack,
+        navigationOptions: {
+            drawerLabel: 'Sales Log',
         },
     },
     Inventory: {

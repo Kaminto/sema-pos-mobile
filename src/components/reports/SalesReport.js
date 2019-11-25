@@ -25,7 +25,6 @@ class SalesReport extends Component {
 	}
 
 	render() {
-		if( this.props.reportType === "sales") {
 			return (
 				<View style={{ flex: 1 }}>
 					<DateFilter/>
@@ -66,9 +65,6 @@ class SalesReport extends Component {
 
 				</View>
 			);
-		}else{
-			return null;
-		}
 	}
 	getSalesData(){
 		let sales=[];
