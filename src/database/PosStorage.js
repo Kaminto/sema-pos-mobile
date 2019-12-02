@@ -4,37 +4,46 @@ This class contains the persistence implementation of the tablet business object
 import { capitalizeWord } from '../services/Utilities';
 import Events from 'react-native-simple-events';
 import moment from 'moment-timezone';
+import TopUps from './topup/index';
 var Realm = require('realm');
 let realm;
 
 const uuidv1 = require('uuid/v1');
 
 const versionKey = '@Sema:VersionKey';
+const settingsKey = '@Sema:SettingsKey';
+
 const customersKey = '@Sema:CustomersKey';
 const customerItemKey = '@Sema:CustomerItemKey';
 const lastCustomerSyncKey = '@Sema:LastCustomerSyncKey';
 const pendingCustomersKey = '@Sema:PendingCustomersKey';
 const customerTypesKey = '@Sema:CustomerTypesKey';
 
+const topUpKey = '@Sema:TopUpKey';
+const topUpItemKey = '@Sema:TopUpItemKey';
+const lastTopUpSyncKey = '@Sema:LastTopUpSyncKey';
+const pendingTopUpKey = '@Sema:PendingTopUpKey';
+
 const productsKey = '@Sema:ProductsKey';
 const productItemKey = '@Sema:ProductItemKey';
+const lastProductsSyncKey = '@Sema:LastProductsSyncKey';
 const productMrpsKey = '@Sema:ProductMrpsKey';
 
 const salesKey = '@Sema:SalesKey';
 const saleItemKey = '@Sema:SaleItemKey';
 const lastSalesSyncKey = '@Sema:LastSalesSyncKey';
-const lastProductsSyncKey = '@Sema:LastProductsSyncKey';
 const pendingSalesKey = '@Sema:PendingSalesKey';
+const remoteReceiptsKey = '@Sema:remoteReceiptsKey';
 const salesChannelsKey = '@Sema:SalesChannelsKey';
 
-const remoteReceiptsKey = '@Sema:remoteReceiptsKey';
 
-const settingsKey = '@Sema:SettingsKey';
-const tokenExpirationKey = '@Sema:TokenExpirationKey';
-const reminderDataKey = '@Sema:remindersDataKey';
-const syncIntervalKey = '@Sema:SyncIntervalKey';
 const inventoriesKey = '@Sema:inventoriesKey';
 const inventoryItemKey = '@Sema:InventoryItemKey';
+const reminderDataKey = '@Sema:remindersDataKey';
+
+const tokenExpirationKey = '@Sema:TokenExpirationKey';
+const syncIntervalKey = '@Sema:SyncIntervalKey';
+
 
 class PosStorage {
 	constructor() {
@@ -178,7 +187,7 @@ class PosStorage {
 				this.stringify(this.reminderData)
 			]
 		];
-
+		TopUps.initialiseTable();
 		console.log(keyArray);
 		this.multiSet(keyArray)
 			.then(rows => {
@@ -262,7 +271,7 @@ class PosStorage {
 			this.reminderDataKeys = this.parseJson(
 				results[16][1]
 			); //reminderData
-
+			TopUps.loadTableData();
 			if (this.loadProductsFromKeys2() && this.loadCustomersFromKeys2()) {
 				return 'Data Exists';
 			}

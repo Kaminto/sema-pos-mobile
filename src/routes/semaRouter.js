@@ -40,7 +40,6 @@ class NavigationDrawerStructure extends Component {
                         style={{
                             width: 25, height: 25, marginLeft: 5
                         }}
-
                     />
                 </TouchableOpacity>
             </View>
@@ -387,7 +386,8 @@ const JibuDrawerNavigation = createDrawerNavigator({
             drawerLabel: 'Reminders',
         },
     },
-}, {
+}, 
+{
     contentOptions: {
         activeTintColor: '#e91e63',
     },
@@ -412,4 +412,3 @@ const JibuRouter = createSwitchNavigator(
 );
 
 export default JibuRouter;
-//export default createAppContainer(JibuRouter);

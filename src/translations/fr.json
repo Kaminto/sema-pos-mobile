@@ -85,8 +85,9 @@
   "total-amount-due": "Montant Total dû",
   "complete-sale": "Conclure la Vente",
   "make-payment": "Make Payment",
+  "topup": "Top Up",
   "processing-order": "Traitement de la Commande...",
-
+  "topup-placeholder": "Top Up",
   "sales": "Ventes",
   "inventory": "Inventaire",
   "meter-reading": "Meter Reading",

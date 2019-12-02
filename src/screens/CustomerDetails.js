@@ -21,13 +21,27 @@ import * as ToolbarActions from '../actions/ToolBarActions';
 import ModalDropdown from 'react-native-modal-dropdown';
 import PosStorage from '../database/PosStorage';
 import * as CustomerActions from '../actions/CustomerActions';
-
+import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
 import * as reportActions from '../actions/ReportActions';
 import * as receiptActions from '../actions/ReceiptActions';
 
 import i18n from '../app/i18n';
 import moment from 'moment-timezone';
-
+import { FloatingAction } from "react-native-floating-action";
+import Icon from 'react-native-vector-icons/Ionicons';
+import Modal from 'react-native-modalbox';
+const actions = [
+	{
+		text: "Top Up",
+		name: "topup",
+		icon: <Icon
+			name='md-wallet'
+			size={24}
+			color='black'
+		/>,
+		position: 1
+	},
+];
 class ReceiptLineItem extends Component {
 	constructor(props) {
 		super(props);
@@ -129,9 +143,12 @@ class CustomerDetails extends Component {
 
 		this.state = {
 			refresh: false,
+			topup: "",
 			searchString: '',
 			hasScrolled: false
 		};
+
+
 	}
 	componentDidMount() {
 		console.log(
@@ -165,43 +182,139 @@ class CustomerDetails extends Component {
 	}
 
 	render() {
-        
-		console.log('props -', this.props);
-		console.log('getReceipts' , PosStorage.getReceipts())
-			return (
-				<View style={{ flex: 1 }}>
 
-					<View style={{
-						flexDirection: 'row',
-						height: 100,
-						backgroundColor: '#0e73c9',
-						alignItems: 'center'
-					}}>
-						<View style={[styles.leftToolbar]}>
-							<SelectedCustomerDetails
-								selectedCustomer={this.props.selectedCustomer}
+		console.log('props -', this.props);
+		console.log('getReceipts', PosStorage.getReceipts())
+		return (
+			<View style={{ flex: 1 }}>
+
+				<View style={{
+					flexDirection: 'row',
+					height: 100,
+					backgroundColor: '#0e73c9',
+					alignItems: 'center'
+				}}>
+					<View style={[styles.leftToolbar]}>
+						<SelectedCustomerDetails
+							selectedCustomer={this.props.selectedCustomer}
+						/>
+					</View>
+				</View>
+
+				<View style={{ flex: 1, backgroundColor: '#fff' }}>
+					{/* <Text>{this.prepareData().length === ? 0 ? 'No sales' }</Text> */}
+					<FlatList
+						data={this.prepareData()}
+						renderItem={this.renderReceipt.bind(this)}
+						keyExtractor={(item, index) => item.id}
+						ItemSeparatorComponent={this.renderSeparator}
+						extraData={this.state.refresh}
+					/>
+				</View>
+				<FloatingAction
+					actions={actions}
+					onPressItem={name => {
+						console.log(`selected button: ${name}`);
+						this.refs.modal6.open();
+					}}
+				/>
+
+				<Modal style={[styles.modal, styles.modal3]} coverScreen={true} position={"center"} ref={"modal6"} isDisabled={this.state.isDisabled}>
+					<View
+						style={{
+							justifyContent: 'flex-end',
+							flexDirection: 'row',
+							right: 100,
+							top: 10
+						}}>
+						{this.getCancelButton()}
+					</View>
+					<View
+						style={{
+							flex: 1,
+							marginTop: 0,
+							marginBottom: 50,
+							marginLeft: 100,
+							marginRight: 100
+						}}>
+
+
+						<View style={[{ flex: 1, flexDirection: 'row', marginTop: '1%' }]}>
+							<Input
+								placeholder={i18n.t(
+									'topup-placeholder'
+								)}
+								label={i18n.t('topup-placeholder')}
+								onChangeText={this.onChangeTopup.bind(this)}
 							/>
 						</View>
 
 
+						<View style={styles.completeOrder}>
+							<View style={{ justifyContent: 'center', height: 50 }}>
+								<TouchableHighlight
+									underlayColor="#c0c0c0"
+									onPress={() => this.addCredit()}>
+									<Text
+										style={[
+											{ paddingTop: 20, paddingBottom: 20 },
+											styles.buttonText
+										]}>
+										{i18n.t('topup')}
+									</Text>
+								</TouchableHighlight>
+							</View>
+						</View>
 					</View>
+				</Modal>
 
-					<View style={{ flex: 1, backgroundColor: '#fff' }}>
-						{/* <Text>{this.prepareData().length === ? 0 ? 'No sales' }</Text> */}
-						<FlatList
-							data={this.prepareData()}
-							renderItem={this.renderReceipt.bind(this)}
-							keyExtractor={(item, index) => item.id}
-							ItemSeparatorComponent={this.renderSeparator}
-							extraData={this.state.refresh}
-						/>
-					</View>
-				</View>
-			);
-
+			</View>
+		);
 		return null;
+	}
 
+	closePaymentModal = () => {
+		this.refs.modal6.close();
+	};
 
+	onChangeTopup = topup => {
+		console.log(topup);
+		this.setState({ topup });
+		//this.props.parent.forceUpdate();
+	};
+
+	getCancelButton() {
+		return (
+			<TouchableHighlight onPress={() => this.closePaymentModal()}>
+				<Icon
+					size={50}
+					name="md-close"
+					color="black"
+				/>
+			</TouchableHighlight>
+		);
+	}
+
+	addCredit = () => {
+
+		console.log(this.state.topup);
+		console.log(this.props.selectedCustomer);
+		// console.log(this.props.payment);
+		// console.log(this.props.selectedCustomer);
+		// console.log("there")
+		// this.formatAndSaveSale();
+		// Alert.alert(
+		// 	'Notice',
+		// 	'Payment Made',
+		// 	[{
+		// 		text: 'OK',
+		// 		onPress: () => {
+		// 			this.closePaymentModal();
+		// 			this.props.orderActions.ClearOrder();
+		// 		}
+		// 	}],
+		// 	{ cancelable: false }
+		// );
 	}
 
 
@@ -248,7 +361,7 @@ class CustomerDetails extends Component {
 		return remoteReceipts.filter(r => r.customerAccount.id === this.props.selectedCustomer.customerId);
 	}
 
- 
+
 
 
 	renderSeparator() {
@@ -552,6 +665,11 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		width: 300
 	},
+	completeOrder: {
+		backgroundColor: '#2858a7',
+		borderRadius: 30,
+		marginTop: '1%'
+	},
 	commandBarContainer: {
 		flex: 1,
 		backgroundColor: '#ABC1DE',
@@ -559,6 +677,13 @@ const styles = StyleSheet.create({
 		alignSelf: 'center',
 		marginLeft: 20,
 		marginRight: 20
+	},
+	modal3: {
+		width: 1000,
+		height: 500,
+	},
+	modal: {
+		justifyContent: 'center',
 	},
 	selectedCustomerText: {
 		marginLeft: 10,

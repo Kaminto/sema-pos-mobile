@@ -81,8 +81,9 @@
   "total-amount-due": "Kantite Lajan Dwe an Tou",
   "complete-sale": "Konplete Vant",
   "make-payment": "Make Payment",
+  "topup": "Top Up",
   "processing-order": "Trètman Kòmand...",
-
+  "topup-placeholder": "Top Up",
   "sales": "Vant",
   "inventory": "Envantè",
 
