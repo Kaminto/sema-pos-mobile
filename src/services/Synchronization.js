@@ -1,11 +1,13 @@
 // import mock_customers from "../mock_data/customers";
 import PosStorage from '../database/PosStorage';
+import TopUps from '../database/topup/index';
 import Communications from '../services/Communications';
+import TopUpService from '../services/topup';
 import Events from 'react-native-simple-events';
 import * as _ from 'lodash';
 
 class Synchronization {
-	initialize(lastCustomerSync, lastProductSync, lastSalesSync) {
+	initialize(lastCustomerSync, lastProductSync, lastSalesSync, lastTopUpSync) {
 		console.log('Synchronization:initialize');
 		this.lastCustomerSync = lastCustomerSync;
 		this.lastProductSync = lastProductSync;
@@ -13,6 +15,7 @@ class Synchronization {
 		this.intervalId = null;
 		this.firstSyncId = null;
 		this.isConnected = false;
+		this.lastTopUpSync = lastTopUpSync;
 	}
 
 	setConnected(isConnected) {
@@ -33,7 +36,8 @@ class Synchronization {
 
 		if (
 			PosStorage.getCustomers().length == 0 ||
-			PosStorage.getProducts().length == 0
+			PosStorage.getProducts().length == 0 ||
+			TopUps.getTopUps().length == 0
 		) {
 			// No local customers or products, sync now
 			timeoutX = 1000;
@@ -72,6 +76,11 @@ class Synchronization {
 		PosStorage.setLastSalesSync(this.lastSalesSync);
 	}
 
+	updateLastTopUpSync() {
+		this.lastTopUpSync = new Date();
+		TopUps.setLastTopUpSync(this.lastTopUpSync);
+	}
+
 	doSynchronize() {
 		if (this.isConnected) {
 			//this.synchronize();
@@ -107,7 +116,7 @@ class Synchronization {
 						]).then(values => {
 							console.log(
 								'synchronize - SalesChannels and Customer Types: ' +
-									values
+								values
 							);
 							const promiseCustomers = this.synchronizeCustomers().then(
 								customerSync => {
@@ -182,16 +191,144 @@ class Synchronization {
 		});
 	}
 
+	synchronizeCredits() {
+		return new Promise(resolve => {
+			console.log('Synchronization:synchronizeCredits - Begin');
+			TopUpService.getTopUps(this.lastTopUpSync)
+				.then(web_topup => {
+					if (web_topup.hasOwnProperty('topup')) {
+						this.updateLastTopUpSync();
+						console.log(
+							'Synchronization:synchronizeCredits No of new remote Credits: ' +
+							web_topup.topup.length
+						);
+						// Get the list of Credits that need to be sent to the server
+						let {
+							pendingTopUps,
+							updated
+						} = TopUps.mergeTopUps(web_topup.topup);
+						console.log(
+							'Synchronization:synchronizeTopUps No of local pending customers: ' +
+							pendingTopUps.length
+						);
+						resolve({
+							error: null,
+							localTopup: pendingTopUps.length,
+							remoteTopup: web_topup.topup.length
+						});
+						pendingTopUps.forEach(topUpKey => {
+							TopUps.getTopUpFromKey(topUpKey).then(
+								topup => {
+									if (topup != null) {
+										if (topup.syncAction === 'create') {
+											console.log(
+												'Synchronization:synchronizetopUp - creating TopUp - ' +
+												topup.topup
+											);
+											TopUpService.createTopUp(
+												topup
+											)
+												.then(() => {
+													console.log(
+														'Synchronization:synchronizetopUp - Removing topup from pending list - ' +
+														topup.topup
+													);
+													TopUps.removePendingTopUp(
+														topUpKey
+													);
+												})
+												.catch(error => {
+													console.log(
+														'Synchronization:synchronizeTopUp Create TopUp failed'
+													);
+												});
+										} else if (
+											topup.syncAction === 'delete'
+										) {
+											console.log(
+												'Synchronization:synchronizeTopUp -deleting TopUp - ' +
+												topup.topup
+											);
+											TopUpService.deleteTopUp(
+												topup
+											)
+												.then(() => {
+													console.log(
+														'Synchronization:synchronizetopup - Removing topup from pending list - ' +
+														topup.topup
+													);
+													TopUps.removePendingTopUp(
+														topUpKey
+													);
+												})
+												.catch(error => {
+													console.log(
+														'Synchronization:synchronizetopup Delete topup failed ' +
+														error
+													);
+												});
+										} else if (
+											topup.syncAction === 'update'
+										) {
+											console.log(
+												'Synchronization:synchronizeCustomers -updating customer - ' +
+												topup.topup
+											);
+											TopUpService.updateCustomerCredit(
+												topup
+											)
+												.then(() => {
+													console.log(
+														'Synchronization:synchronizeTopup - Removing topup from pending list - ' +
+														topup.topup
+													);
+													TopUps.removePendingTopUp(
+														topUpKey
+													);
+												})
+												.catch(error => {
+													console.log(
+														'Synchronization:synchronizeTopup Update topup failed ' +
+														error
+													);
+												});
+										}
+									} else {
+										TopUps.removePendingTopUp(
+											topUpKey
+										);
+									}
+								}
+							);
+						});
+						if (updated) {
+							Events.trigger('synchronizeTopup', {});
+						}
+					}
+				})
+				.catch(error => {
+					console.log(
+						'Synchronization.getTopup - error ' + error
+					);
+					resolve({
+						error: error.message,
+						localTopup: null,
+						remoteTopup: null
+					});
+				});
+		});
+	}
+
 	synchronizeCustomers() {
 		return new Promise(resolve => {
 			console.log('Synchronization:synchronizeCustomers - Begin');
 			Communications.getCustomers(this.lastCustomerSync)
 				.then(web_customers => {
 					if (web_customers.hasOwnProperty('customers')) {
-						this.updateLastCustomerSync();
+						this.updateLastTopUpSync();
 						console.log(
 							'Synchronization:synchronizeCustomers No of new remote customers: ' +
-								web_customers.customers.length
+							web_customers.customers.length
 						);
 						// Get the list of customers that need to be sent to the server
 						let {
@@ -200,7 +337,7 @@ class Synchronization {
 						} = PosStorage.mergeCustomers(web_customers.customers);
 						console.log(
 							'Synchronization:synchronizeCustomers No of local pending customers: ' +
-								pendingCustomers.length
+							pendingCustomers.length
 						);
 						resolve({
 							error: null,
@@ -214,7 +351,7 @@ class Synchronization {
 										if (customer.syncAction === 'create') {
 											console.log(
 												'Synchronization:synchronizeCustomers -creating customer - ' +
-													customer.name
+												customer.name
 											);
 											Communications.createCustomer(
 												customer
@@ -222,7 +359,7 @@ class Synchronization {
 												.then(() => {
 													console.log(
 														'Synchronization:synchronizeCustomers - Removing customer from pending list - ' +
-															customer.name
+														customer.name
 													);
 													PosStorage.removePendingCustomer(
 														customerKey
@@ -238,7 +375,7 @@ class Synchronization {
 										) {
 											console.log(
 												'Synchronization:synchronizeCustomers -deleting customer - ' +
-													customer.name
+												customer.name
 											);
 											Communications.deleteCustomer(
 												customer
@@ -246,7 +383,7 @@ class Synchronization {
 												.then(() => {
 													console.log(
 														'Synchronization:synchronizeCustomers - Removing customer from pending list - ' +
-															customer.name
+														customer.name
 													);
 													PosStorage.removePendingCustomer(
 														customerKey
@@ -255,7 +392,7 @@ class Synchronization {
 												.catch(error => {
 													console.log(
 														'Synchronization:synchronizeCustomers Delete Customer failed ' +
-															error
+														error
 													);
 												});
 										} else if (
@@ -263,7 +400,7 @@ class Synchronization {
 										) {
 											console.log(
 												'Synchronization:synchronizeCustomers -updating customer - ' +
-													customer.name
+												customer.name
 											);
 											Communications.updateCustomer(
 												customer
@@ -271,7 +408,7 @@ class Synchronization {
 												.then(() => {
 													console.log(
 														'Synchronization:synchronizeCustomers - Removing customer from pending list - ' +
-															customer.name
+														customer.name
 													);
 													PosStorage.removePendingCustomer(
 														customerKey
@@ -280,7 +417,7 @@ class Synchronization {
 												.catch(error => {
 													console.log(
 														'Synchronization:synchronizeCustomers Update Customer failed ' +
-															error
+														error
 													);
 												});
 										}
@@ -326,7 +463,7 @@ class Synchronization {
 						this.updateLastProductSync();
 						console.log(
 							'Synchronization:synchronizeProducts. No of new remote products: ' +
-								products.products.length
+							products.products.length
 						);
 						const updated = PosStorage.mergeProducts(
 							products.products
@@ -352,7 +489,7 @@ class Synchronization {
 					if (salesChannels.hasOwnProperty('salesChannels')) {
 						console.log(
 							'Synchronization:synchronizeSalesChannels. No of sales channels: ' +
-								salesChannels.salesChannels.length
+							salesChannels.salesChannels.length
 						);
 						if (
 							!_.isEqual(
@@ -385,7 +522,7 @@ class Synchronization {
 					if (customerTypes.hasOwnProperty('customerTypes')) {
 						console.log(
 							'Synchronization:synchronizeCustomerTypes. No of customer types: ' +
-								customerTypes.customerTypes.length
+							customerTypes.customerTypes.length
 						);
 						PosStorage.saveCustomerTypes(
 							customerTypes.customerTypes
@@ -409,7 +546,7 @@ class Synchronization {
 				.then(salesReceipts => {
 					console.log(
 						'Synchronization:synchronizeSales - Number of sales receipts: ' +
-							salesReceipts.length
+						salesReceipts.length
 					);
 					resolve({
 						error: null,
@@ -433,7 +570,7 @@ class Synchronization {
 							.catch(error => {
 								console.log(
 									'Synchronization:synchronizeCustomers Create receipt failed: error-' +
-										error
+									error
 								);
 								if (error === 400) {
 									// This is unre-coverable... remove the pending sale
@@ -545,7 +682,7 @@ class Synchronization {
 					if (productMrps.hasOwnProperty('productMRPs')) {
 						console.log(
 							'Synchronization:synchronizeProductMrps. No of remote product MRPs: ' +
-								productMrps.productMRPs.length
+							productMrps.productMRPs.length
 						);
 						if (
 							!_.isEqual(
@@ -580,7 +717,7 @@ class Synchronization {
 					if (productMrps.hasOwnProperty('productMRPs')) {
 						console.log(
 							'Synchronization:synchronizeProductMrps. No of remote product MRPs: ' +
-								productMrps.productMRPs.length
+							productMrps.productMRPs.length
 						);
 						if (
 							!_.isEqual(
@@ -642,9 +779,9 @@ class Synchronization {
 					.catch(result => {
 						console.log(
 							'Failed- status ' +
-								result.status +
-								' ' +
-								result.response
+							result.status +
+							' ' +
+							result.response
 						);
 						reject(result.response);
 					});
