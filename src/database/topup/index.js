@@ -1,7 +1,8 @@
 import { capitalizeWord } from '../services/Utilities';
 import moment from 'moment-timezone';
 
-import realm from '../database/PosStorage';
+import PosStorage from '../database/PosStorage';
+let realm = PosStorage.realm;
 
 const uuidv1 = require('uuid/v1');
 
@@ -16,6 +17,7 @@ class TopUps {
         // For example "@Sema:TopUpItemKey_ea6c365a-7338-11e8-a3c9-ac87a31a5361"
         // Array of topUp keys
         this.topUpKeys = [];
+        this.topUp = []; // De-referenced topUp
         // Last sync DateTime is the last date time that items were synchronized with the server
         let firstSyncDate = new Date('November 7, 1973');
         this.lastTopUpSync = firstSyncDate;
@@ -68,6 +70,7 @@ class TopUps {
     }
 
     clearDataOnly() {
+        this.topUp = [];
         this.topUpKeys = [];
         this.pendingTopUps = [];
         let firstSyncDate = new Date('November 7, 1973');
@@ -88,6 +91,7 @@ class TopUps {
     }
 
     clearDataBeforeSynch() {
+        this.topUp = [];
         this.topUpKeys = [];
         let firstSyncDate = new Date('November 7, 1973');
         this.lastTopUpSync = firstSyncDate;
@@ -391,6 +395,36 @@ class TopUps {
         }
     }
 
+
+
+	getLocalTopUp(topUpId) {
+		for (let index = 0; index < this.topUp.length; index++) {
+			if (this.topUp[index].topUpId === topUpId) {
+				return this.topUp[index];
+			}
+		}
+		return null;
+	}
+	getLocalTopUpIndex(topUpId) {
+		for (let index = 0; index < this.topUp.length; index++) {
+			if (this.topUp[index].topUpId === topUpId) {
+				return index;
+			}
+		}
+		return -1;
+	}
+
+	setLocalTopUp(topUp) {
+		for (let index = 0; index < this.topUp.length; index++) {
+			if (this.topUp[index].topUpId === topUp.topUpId) {
+				this.topUp[index] = topUp;
+				return;
+			}
+		}
+	}
+
+
+
     loadTopUpsFromKeys() {
         console.log(
             'loadTopUpsFromKeys. No of topUp: ' +
@@ -444,6 +478,24 @@ class TopUps {
                 });
         }
     }
+
+    getTopUpFromKey(topUpKey) {
+		return new Promise(resolve => {
+			this.getKey(topUpKey)
+				.then(topup => {
+					resolve(this.parseJson(topup));
+				})
+				.catch(() => {
+					resolve(null);
+				});
+		});
+	}
+
+	getTopUps() {
+		console.log('PosStorage: TopUps. Count ' + this.topUp.length);
+		return this.topUp;
+	}
+
 
     setLastTopUpSync(lastSyncTime) {
         this.lastTopUpSync = lastSyncTime;
