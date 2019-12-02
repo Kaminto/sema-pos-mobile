@@ -103,7 +103,8 @@
   "payoff":"Loan Settlement",
 
   "make-payment": "Make Payment",
-
+  "topup": "Top Up",
+  "topup-placeholder": "Top Up",
   "previous": "Previous",
   "current": "Current",
   "delta-liters": "Delta Liters",
