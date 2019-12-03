@@ -1,9 +1,6 @@
-import { capitalizeWord } from '../services/Utilities';
-import moment from 'moment-timezone';
-
-import PosStorage from '../database/PosStorage';
-let realm = PosStorage.realm;
-
+import PosStorage from '../PosStorage';
+//let realm = PosStorage.realmExpo
+import realm from '../init';
 const uuidv1 = require('uuid/v1');
 
 const topUpKey = '@Sema:TopUpsKey';
@@ -66,6 +63,8 @@ class TopUps {
         this.pendingTopUps = this.parseJson(
             results[2][1]
         ); // Array of pending topUp
+        console.log(results);
+        this.loadTopUpsFromKeys();
         return 'Data Exists';
     }
 

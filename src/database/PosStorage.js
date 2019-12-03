@@ -5,8 +5,10 @@ import { capitalizeWord } from '../services/Utilities';
 import Events from 'react-native-simple-events';
 import moment from 'moment-timezone';
 import TopUps from './topup/index';
-var Realm = require('realm');
-let realm;
+import realm from './init';
+
+// var Realm = require('realm');
+// let realm;
 
 const uuidv1 = require('uuid/v1');
 
@@ -105,15 +107,15 @@ class PosStorage {
 		this.inventoriesKeys = []; // 30 days of inventories
 
 		// Realm schema creation
-		const SEMA_SCHEMA = {
-			name: 'SemaRealm',
-			primaryKey: 'id',
-			properties: {
-				id: 'string',
-				data: 'string'
-			}
-		};
-		realm = new Realm({ schema: [SEMA_SCHEMA] });
+		// const SEMA_SCHEMA = {
+		// 	name: 'SemaRealm',
+		// 	primaryKey: 'id',
+		// 	properties: {
+		// 		id: 'string',
+		// 		data: 'string'
+		// 	}
+		// };
+		// realm = new Realm({ schema: [SEMA_SCHEMA] });
 	}
 
 	checkLocalDb() {
