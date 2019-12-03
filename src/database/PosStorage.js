@@ -21,10 +21,6 @@ const lastCustomerSyncKey = '@Sema:LastCustomerSyncKey';
 const pendingCustomersKey = '@Sema:PendingCustomersKey';
 const customerTypesKey = '@Sema:CustomerTypesKey';
 
-const topUpKey = '@Sema:TopUpKey';
-const topUpItemKey = '@Sema:TopUpItemKey';
-const lastTopUpSyncKey = '@Sema:LastTopUpSyncKey';
-const pendingTopUpKey = '@Sema:PendingTopUpKey';
 
 const productsKey = '@Sema:ProductsKey';
 const productItemKey = '@Sema:ProductItemKey';

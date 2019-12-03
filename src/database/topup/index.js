@@ -60,11 +60,12 @@ class TopUps {
             results[0][1]
         );
         this.lastTopUpSync = new Date(results[1][1]); // Last topUp sync time
-        this.pendingTopUps = this.parseJson(
+        this.pendingTopUpsKey = this.parseJson(
             results[2][1]
         ); // Array of pending topUp
         console.log(results);
         this.loadTopUpsFromKeys();
+        this.loadTopUpsFromKeys2();
         return 'Data Exists';
     }
 
@@ -446,13 +447,13 @@ class TopUps {
 
     loadTopUpsFromKeys2() {
         console.log(
-            'loadTopUpsFromKeys. No of topUp: ' +
-            this.topUpKeys.length
+            'pendingTopUpsFromKeys. No of pendingtopUp: ' +
+            this.pendingTopUpsKey.length
         );
 
         let that = this;
-        let results = this.getMany(this.topUpKeys);
-        return that.topUp = results.map(result => {
+        let results = this.getMany(this.pendingTopUpsKey);
+        return that.pendingTopUps = results.map(result => {
             return that.parseJson(result[1]);
         });
     }
@@ -493,7 +494,13 @@ class TopUps {
 	getTopUps() {
 		console.log('PosStorage: TopUps. Count ' + this.topUp.length);
 		return this.topUp;
+    }
+    
+    getPendingTopUps() {
+		console.log('PosStorage: PendingTopUps. Count ' + this.pendingTopUps.length);
+		return this.pendingTopUps;
 	}
+
 
 
     setLastTopUpSync(lastSyncTime) {

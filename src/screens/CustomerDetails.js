@@ -186,6 +186,7 @@ class CustomerDetails extends Component {
 
 		console.log('props -', this.props);
 		console.log('TopUps', TopUps.getTopUps());
+		console.log('pendingTopUps', TopUps.getPendingTopUps());
 		console.log('getReceipts', PosStorage.getReceipts())
 		return (
 			<View style={{ flex: 1 }}>
