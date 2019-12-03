@@ -184,7 +184,7 @@ class CustomerDetails extends Component {
 
 	render() {
 
-		console.log('props -', this.props);
+		console.log('props -', this.props.topups);
 		console.log('TopUps', TopUps.getTopUps());
 		console.log('pendingTopUps', TopUps.getPendingTopUps());
 		console.log('getReceipts', PosStorage.getReceipts())
@@ -205,7 +205,6 @@ class CustomerDetails extends Component {
 				</View>
 
 				<View style={{ flex: 1, backgroundColor: '#fff' }}>
-					{/* <Text>{this.prepareData().length === ? 0 ? 'No sales' }</Text> */}
 					<FlatList
 						data={this.prepareData()}
 						renderItem={this.renderReceipt.bind(this)}
@@ -268,6 +267,19 @@ class CustomerDetails extends Component {
 								</TouchableHighlight>
 							</View>
 						</View>
+
+
+						<View style={{ flex: 1, backgroundColor: '#fff' }}>
+					<FlatList
+						data={this.prepareTopUpData()}
+						renderItem={this.renderTopUps.bind(this)}
+						keyExtractor={(item, index) => item.id}
+						ItemSeparatorComponent={this.renderSeparator}
+						extraData={this.state.refresh}
+					/>
+				</View>
+
+
 					</View>
 				</Modal>
 
@@ -377,6 +389,77 @@ class CustomerDetails extends Component {
 			return [];
 		}
 
+	}
+
+
+	prepareTopUpData() {
+		// Used for enumerating receipts
+		console.log("here selectedCustomer", this.props.selectedCustomer);
+
+		if (this.props.topups.length > 0) {
+			const totalCount = this.props.topups.length;
+
+			let topupLogs = [...new Set(this.props.topups)];
+			let topups = topupLogs.map((topup, index) => {
+				return {
+					active: topup.active,
+					//id: topup.id,
+					createdAt: topup.createdDate,
+					topUpId: topup.topUpId,
+					customer_account_id: topup.customer_account_id,
+					total: topup.total,
+					topup: topup.topup,
+					balance: topup.balance,
+					totalCount
+				};
+			});
+	
+			topups.sort((a, b) => {
+				return moment
+					.tz(a.createdAt, moment.tz.guess())
+					.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+					? 1
+					: -1;
+			});	
+		
+	console.log('topups',topups);
+			return topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
+		}else{
+			return [];
+		}
+
+	}
+
+
+	renderTopUps({ item, index }) {
+
+		console.log("Item reciep", item);
+		//const receiptLineItems = item.receiptLineItems.map((lineItem, idx) => {
+			return (
+				<View
+				style={{
+					flex: 1,
+					flexDirection: 'row',
+					marginBottom: 10,
+					marginTop: 10
+				}}>
+				
+				<View style={{ justifyContent: 'space-around' }}>
+					<View style={styles.itemData}>
+						<Text style={styles.label}>Total: </Text>
+						<Text>{item.topup}</Text>
+					</View>
+					<View style={styles.itemData}>
+						<Text style={styles.label}>Balance: </Text>
+						<Text>{item.balance}</Text>
+					</View>
+				</View>
+			</View>
+			);
+	//	});
+
+
+		
 	}
 
 
@@ -618,7 +701,8 @@ function mapStateToProps(state, props) {
 		localReceipts: state.receiptReducer.localReceipts,
 		remoteReceipts: state.receiptReducer.remoteReceipts,
 		customers: state.customerReducer.customers,
-		products: state.productReducer.products
+		products: state.productReducer.products,
+		topups: state.topupReducer.topups
 	};
 }
 function mapDispatchToProps(dispatch) {

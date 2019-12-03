@@ -69,6 +69,10 @@ class TopUps {
         return 'Data Exists';
     }
 
+    getLastTopUpSync() {
+		return this.lastTopUpSync;
+	}
+
     clearDataOnly() {
         this.topUp = [];
         this.topUpKeys = [];
@@ -430,19 +434,27 @@ class TopUps {
             'loadTopUpsFromKeys. No of topUp: ' +
             this.topUpKeys.length
         );
-        return new Promise((resolve, reject) => {
-            try {
-                let that = this;
-                this.multiGet(this.topUpKeys).then(results => {
-                    that.topUp = results.map(result => {
-                        return that.parseJson(result[1]);
-                    });
-                    resolve(true);
-                });
-            } catch (error) {
-                reject(error);
-            }
+
+        let that = this;
+        let results = this.getMany(this.topUpKeys);
+        return that.topUp = results.map(result => {
+            return that.parseJson(result[1]);
         });
+
+        // return new Promise((resolve, reject) => {
+        //     try {
+        //         let that = this;
+        //         this.multiGet(this.topUpKeys).then(results => {
+        //             that.topUp = results.map(result => {
+        //                 return that.parseJson(result[1]);
+        //             });
+        //             console.log('that.topUp', that.topUp)
+        //             resolve(true);
+        //         });
+        //     } catch (error) {
+        //         reject(error);
+        //     }
+        // });
     }
 
     loadTopUpsFromKeys2() {
