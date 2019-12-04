@@ -35,6 +35,7 @@
   "sync-error": "Synchronization error: {{error}}",
   "data-is-up-to-date": "Data is up to date",
   "customers-updated": "customers updated",
+  "topups-updated": "Top Ups Updated",
   "products-updated": "products updated",
   "sales-receipts-updated": "sales receipts updated",
   "product-sales-channel-prices-updated": "product/sales channel prices updated",

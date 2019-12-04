@@ -22,6 +22,7 @@ import PosStorage from '../database/PosStorage';
 import TopUps from '../database/topup/index';
 import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
+import TopUpService from '../services/topup';
 import NetInfo from "@react-native-community/netinfo";
 
 class AuthLoadingScreen extends React.Component {
@@ -70,6 +71,16 @@ class AuthLoadingScreen extends React.Component {
                 );
                 Communications.setToken(settings.token);
                 Communications.setSiteId(settings.siteId);
+
+                TopUpService.initialize(
+                    settings.semaUrl,
+                    settings.site,
+                    settings.user,
+                    settings.password
+                );
+                TopUpService.setToken(settings.token);
+                TopUpService.setSiteId(settings.siteId);
+                
 
                 this.posStorage.loadLocalData();
                 TopUps.loadTableData();

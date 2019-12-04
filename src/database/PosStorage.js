@@ -283,7 +283,7 @@ class PosStorage {
 		realm.write(() => {
 			value = realm.objectForPrimaryKey('SemaRealm', key);
 		});
-		console.log(value.data);
+		//console.log(value.data);
 		return value.data;
 	}
 
@@ -1732,9 +1732,9 @@ class PosStorage {
 	}
 
 	async setKey(key, stringValue) {
-		console.log(
-			'Pos Storage:setKey() Key: ' + key + ' Value: ' + stringValue
-		);
+		// console.log(
+		// 	'Pos Storage:setKey() Key: ' + key + ' Value: ' + stringValue
+		// );
 		return await this.setItem(key, stringValue);
 	}
 

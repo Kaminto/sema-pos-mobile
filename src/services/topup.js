@@ -2,13 +2,31 @@ import moment from 'moment-timezone';
 import PosStorage from '../database/PosStorage';
 class TopUpService {
 	constructor() {
-		this._url = 'h';
+		this._url = 'http://142.93.115.206:3006/';
 		this._site = '';
 		this._user = '';
 		this._password = '';
 		this._token = '';
 		this._siteId = '';
 		this.customer_account_id = '';
+	}
+
+	initialize(url, site, user, password) {
+		if (!url.endsWith('/')) {
+			url = url + '/';
+		}
+		this._url = url;
+		this._site = site;
+		this._user = user;
+		this._password = password;
+		this._token = 'not set';
+	}
+
+	setToken(token) {
+		this._token = token;
+	}
+	setSiteId(siteId) {
+		this._siteId = siteId;
 	}
 
 	getTopUps(updatedSince) {
@@ -18,13 +36,17 @@ class TopUpService {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-		let url = 'sema/site/customer_credit?customer_account_id=' + this.customer_account_id;
-
+		//let url = 'sema/customer_credit?customer_account_id=' + this.customer_account_id;
+		let url = 'sema/customer_credit?customer_account_id="0529f4f0-3030-11e9-8cd3-d92736264baf"';
+		console.log('url', url);
+		console.log('this._url',this._url);
 		if (updatedSince) {
 			url = url + '&updated-date=' + updatedSince.toISOString();
 		}
-		return fetch(this._url + url, options)
-			.then(response => response.json())
+		
+		//return fetch('http://142.93.115.206:3006/sema/customer_credit?customer_account_id=0529f4f0-3030-11e9-8cd3-d92736264baf', options)
+		return fetch(this._url + url, options)		
+		.then(response => response.json())
 			.then(responseJson => {
 				return responseJson;
 			})
@@ -46,19 +68,24 @@ class TopUpService {
 			},
 			body: JSON.stringify(topup)
 		};
+		console.log('this._url',this._url);
 		return new Promise((resolve, reject) => {
-			fetch(this._url + 'sema/site/customer_credit', options)
+			fetch(this._url + 'sema/customer_credit', options)
 				.then(response => {
 					if (response.status === 200) {
 						response
 							.json()
 							.then(responseJson => {
+								console.log(
+									'responseJson - Parse JSON: ' +
+									responseJson
+								);
 								resolve(responseJson);
 							})
 							.catch(error => {
 								console.log(
 									'createTopUp - Parse JSON: ' +
-									error.message
+									error
 								);
 								reject();
 							});
@@ -90,7 +117,7 @@ class TopUpService {
 		};
 		return new Promise((resolve, reject) => {
 			fetch(
-				this._url + 'sema/site/customer_credit/' + topup.topUpId,
+				this._url + 'sema/customer_credit/' + topup.topUpId,
 				options
 			)
 				.then(response => {
@@ -122,7 +149,7 @@ class TopUpService {
 		};
 		return new Promise((resolve, reject) => {
 			fetch(
-				this._url + 'sema/site/customer_credit/' + topup.topUpId,
+				this._url + 'sema/customer_credit/' + topup.topUpId,
 				options
 			)
 				.then(response => {

@@ -70,8 +70,8 @@ class TopUps {
     }
 
     getLastTopUpSync() {
-		return this.lastTopUpSync;
-	}
+        return this.lastTopUpSync;
+    }
 
     clearDataOnly() {
         this.topUp = [];
@@ -219,7 +219,7 @@ class TopUps {
         topUp.updatedDate = new Date();
         topUp.syncAction = 'update';
 
-        
+
         this.pendingTopUps.push(key);
 
         let keyArray = [
@@ -271,6 +271,12 @@ class TopUps {
             'PosStorage:mergeTopUps Number of remote topUp: ' +
             remoteTopUps.length
         );
+        
+        console.log(
+            'PosStorage:mergeTopUps Number of local topUp: ' ,
+            this.topUp
+        );
+        this.pendingTopUps = this.topUp;
         let newTopUpsAdded = remoteTopUps.length > 0 ? true : false;
         if (this.topUp.length == 0) {
             this.addRemoteTopUps(remoteTopUps);
@@ -329,12 +335,23 @@ class TopUps {
                     webTopUpsToUpdate.push(remoteTopUp);
                 }
             });
+
             if (isPendingModified) {
                 this.setKey(
                     pendingTopUpsKey,
                     this.stringify(this.pendingTopUps)
                 );
             }
+
+            // console.log('pendingTopUpsKey', pendingTopUpsKey);
+            
+            // console.log('loadTopUpsFromKeys2',this.loadTopUpsFromKeys2());
+            // console.log('loadTopUpsFromKeys',this.loadTopUpsFromKeys());
+            // console.log('getPendingTopUps',this.getPendingTopUps());
+            // console.log('getTopUps',this.getTopUps());
+            
+            // console.log('this.pendingTopUps', this.pendingTopUps);
+            // console.log('webTopUpsToUpdate', this.webTopUpsToUpdate);
             this.mergeRemoteTopUps(webTopUpsToUpdate);
             return {
                 pendingTopUps: this.pendingTopUps.slice(),
@@ -401,31 +418,31 @@ class TopUps {
 
 
 
-	getLocalTopUp(topUpId) {
-		for (let index = 0; index < this.topUp.length; index++) {
-			if (this.topUp[index].topUpId === topUpId) {
-				return this.topUp[index];
-			}
-		}
-		return null;
-	}
-	getLocalTopUpIndex(topUpId) {
-		for (let index = 0; index < this.topUp.length; index++) {
-			if (this.topUp[index].topUpId === topUpId) {
-				return index;
-			}
-		}
-		return -1;
-	}
+    getLocalTopUp(topUpId) {
+        for (let index = 0; index < this.topUp.length; index++) {
+            if (this.topUp[index].topUpId === topUpId) {
+                return this.topUp[index];
+            }
+        }
+        return null;
+    }
+    getLocalTopUpIndex(topUpId) {
+        for (let index = 0; index < this.topUp.length; index++) {
+            if (this.topUp[index].topUpId === topUpId) {
+                return index;
+            }
+        }
+        return -1;
+    }
 
-	setLocalTopUp(topUp) {
-		for (let index = 0; index < this.topUp.length; index++) {
-			if (this.topUp[index].topUpId === topUp.topUpId) {
-				this.topUp[index] = topUp;
-				return;
-			}
-		}
-	}
+    setLocalTopUp(topUp) {
+        for (let index = 0; index < this.topUp.length; index++) {
+            if (this.topUp[index].topUpId === topUp.topUpId) {
+                this.topUp[index] = topUp;
+                return;
+            }
+        }
+    }
 
 
 
@@ -471,7 +488,7 @@ class TopUps {
     }
 
     removePendingTopUp(topUpKey) {
-        console.log('PostStorage:removePendingTopUp');
+        //console.log('PostStorage:removePendingTopUp');
         const index = this.pendingTopUps.indexOf(topUpKey);
         if (index > -1) {
             this.pendingTopUps.splice(index, 1);
@@ -481,7 +498,7 @@ class TopUps {
 
             this.multiSet(keyArray)
                 .then(rows => {
-                    console.log('Affected rows: ' + rows);
+                    // console.log('Affected rows: ' + rows);
                 })
                 .catch(error => {
                     console.log(
@@ -492,26 +509,26 @@ class TopUps {
     }
 
     getTopUpFromKey(topUpKey) {
-		return new Promise(resolve => {
-			this.getKey(topUpKey)
-				.then(topup => {
-					resolve(this.parseJson(topup));
-				})
-				.catch(() => {
-					resolve(null);
-				});
-		});
-	}
-
-	getTopUps() {
-		console.log('PosStorage: TopUps. Count ' + this.topUp.length);
-		return this.topUp;
+        return new Promise(resolve => {
+            this.getKey(topUpKey)
+                .then(topup => {
+                    resolve(this.parseJson(topup));
+                })
+                .catch(() => {
+                    resolve(null);
+                });
+        });
     }
-    
+
+    getTopUps() {
+        console.log('PosStorage: TopUps. Count ' + this.topUp.length);
+        return this.topUp;
+    }
+
     getPendingTopUps() {
-		console.log('PosStorage: PendingTopUps. Count ' + this.pendingTopUps.length);
-		return this.pendingTopUps;
-	}
+        console.log('PosStorage: PendingTopUps. Count ' + this.pendingTopUps.length);
+        return this.pendingTopUps;
+    }
 
 
 
@@ -536,7 +553,7 @@ class TopUps {
             const value = await this.getItem(key);
             return value;
         } catch (error) {
-            console.log('Pos Storage Error retrieving data');
+            // console.log('Pos Storage Error retrieving data');
         }
     }
 
@@ -675,7 +692,7 @@ class TopUps {
                         else
                             realm.create('SemaRealm', { id: key, data: value });
                     }
-                    console.log(count);
+                    //console.log(count);
                     resolve({ rows: count });
                 } catch (error) {
                     reject(error);
