@@ -36,17 +36,14 @@ class TopUpService {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-		//let url = 'sema/customer_credit?customer_account_id=' + this.customer_account_id;
-		let url = 'sema/customer_credit?customer_account_id="0529f4f0-3030-11e9-8cd3-d92736264baf"';
-		console.log('url', url);
-		console.log('this._url',this._url);
+		let url = 'sema/customer_credit/allTopUps';
+		console.log('this._url', this._url);
 		if (updatedSince) {
-			url = url + '&updated-date=' + updatedSince.toISOString();
+			url = url + '?updated-date=' + updatedSince.toISOString();
 		}
-		
-		//return fetch('http://142.93.115.206:3006/sema/customer_credit?customer_account_id=0529f4f0-3030-11e9-8cd3-d92736264baf', options)
-		return fetch(this._url + url, options)		
-		.then(response => response.json())
+
+		return fetch(this._url + url, options)
+			.then(response => response.json())
 			.then(responseJson => {
 				return responseJson;
 			})
@@ -68,7 +65,7 @@ class TopUpService {
 			},
 			body: JSON.stringify(topup)
 		};
-		console.log('this._url',this._url);
+		console.log('this._url', this._url);
 		return new Promise((resolve, reject) => {
 			fetch(this._url + 'sema/customer_credit', options)
 				.then(response => {
