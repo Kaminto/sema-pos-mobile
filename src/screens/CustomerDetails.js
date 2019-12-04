@@ -20,6 +20,7 @@ import Events from 'react-native-simple-events';
 import * as ToolbarActions from '../actions/ToolBarActions';
 import ModalDropdown from 'react-native-modal-dropdown';
 import PosStorage from '../database/PosStorage';
+import TopUps from '../database/topup/index';
 import * as CustomerActions from '../actions/CustomerActions';
 import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
 import * as reportActions from '../actions/ReportActions';
@@ -183,7 +184,9 @@ class CustomerDetails extends Component {
 
 	render() {
 
-		console.log('props -', this.props);
+		console.log('props -', this.props.topups);
+		console.log('TopUps', TopUps.getTopUps());
+		console.log('pendingTopUps', TopUps.getPendingTopUps());
 		console.log('getReceipts', PosStorage.getReceipts())
 		return (
 			<View style={{ flex: 1 }}>
@@ -202,7 +205,6 @@ class CustomerDetails extends Component {
 				</View>
 
 				<View style={{ flex: 1, backgroundColor: '#fff' }}>
-					{/* <Text>{this.prepareData().length === ? 0 ? 'No sales' }</Text> */}
 					<FlatList
 						data={this.prepareData()}
 						renderItem={this.renderReceipt.bind(this)}
@@ -265,6 +267,19 @@ class CustomerDetails extends Component {
 								</TouchableHighlight>
 							</View>
 						</View>
+
+
+						<View style={{ flex: 1, backgroundColor: '#fff' }}>
+					<FlatList
+						data={this.prepareTopUpData()}
+						renderItem={this.renderTopUps.bind(this)}
+						keyExtractor={(item, index) => item.id}
+						ItemSeparatorComponent={this.renderSeparator}
+						extraData={this.state.refresh}
+					/>
+				</View>
+
+
 					</View>
 				</Modal>
 
@@ -299,6 +314,14 @@ class CustomerDetails extends Component {
 
 		console.log(this.state.topup);
 		console.log(this.props.selectedCustomer);
+
+
+		let newTopUp = TopUps.createTopUp(
+			this.props.selectedCustomer.customerId,
+			this.state.topup,
+			this.state.topup
+		);
+
 		// console.log(this.props.payment);
 		// console.log(this.props.selectedCustomer);
 		// console.log("there")
@@ -320,45 +343,123 @@ class CustomerDetails extends Component {
 
 	prepareData() {
 		// Used for enumerating receipts
-		console.log("here selectedCustomer", this.props.selectedCustomer)
-		const totalCount = this.props.remoteReceipts.length;
+		console.log("here selectedCustomer", this.props.selectedCustomer);
 
-		let salesLogs = [...new Set(this.props.remoteReceipts)];
-		let remoteReceipts = salesLogs.map((receipt, index) => {
-			return {
-				active: receipt.active,
-				id: receipt.id,
-				createdAt: receipt.created_at,
-				customerAccount: receipt.customer_account,
-				receiptLineItems: receipt.receipt_line_items,
-				isLocal: receipt.isLocal || false,
-				key: receipt.isLocal ? receipt.key : null,
-				index,
-				updated: receipt.updated,
-				amountLoan: receipt.amount_loan,
-				totalCount
-			};
-		});
+		if (this.props.remoteReceipts.length > 0) {
+			const totalCount = this.props.remoteReceipts.length;
 
-		remoteReceipts.sort((a, b) => {
-			return moment
-				.tz(a.createdAt, moment.tz.guess())
-				.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
-				? 1
-				: -1;
-		});
-
-		let siteId = 0;
-		if (PosStorage.getSettings()) {
-			siteId = PosStorage.getSettings().siteId;
+			let salesLogs = [...new Set(this.props.remoteReceipts)];
+			let remoteReceipts = salesLogs.map((receipt, index) => {
+				console.log("customerAccount", receipt.customer_account);
+				return {
+					active: receipt.active,
+					id: receipt.id,
+					createdAt: receipt.created_at,
+					customerAccount: receipt.customer_account,
+					receiptLineItems: receipt.receipt_line_items,
+					isLocal: receipt.isLocal || false,
+					key: receipt.isLocal ? receipt.key : null,
+					index,
+					updated: receipt.updated,
+					amountLoan: receipt.amount_loan,
+					totalCount
+				};
+			});
+	
+			remoteReceipts.sort((a, b) => {
+				return moment
+					.tz(a.createdAt, moment.tz.guess())
+					.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+					? 1
+					: -1;
+			});
+	
+			let siteId = 0;
+			if (PosStorage.getSettings()) {
+				siteId = PosStorage.getSettings().siteId;
+			}
+	
+			// return [
+			// 	...remoteReceipts.filter(r => r.customerAccount.kiosk_id === siteId)
+			// ];
+			console.log('remoteReceipts', remoteReceipts[0].customerAccount);
+			console.log('remoteReceiptsno', remoteReceipts.filter(r => r.customerAccount.id === this.props.selectedCustomer.customerId));
+			return remoteReceipts.filter(r => r.customerAccount.id === this.props.selectedCustomer.customerId);
+		}else{
+			return [];
 		}
 
-		// return [
-		// 	...remoteReceipts.filter(r => r.customerAccount.kiosk_id === siteId)
-		// ];
-		console.log('remoteReceipts', remoteReceipts[0].customerAccount);
-		console.log('remoteReceiptsno', remoteReceipts.filter(r => r.customerAccount.id === this.props.selectedCustomer.customerId));
-		return remoteReceipts.filter(r => r.customerAccount.id === this.props.selectedCustomer.customerId);
+	}
+
+
+	prepareTopUpData() {
+		// Used for enumerating receipts
+		console.log("here selectedCustomer", this.props.selectedCustomer);
+
+		if (this.props.topups.length > 0) {
+			const totalCount = this.props.topups.length;
+
+			let topupLogs = [...new Set(this.props.topups)];
+			let topups = topupLogs.map((topup, index) => {
+				return {
+					active: topup.active,
+					//id: topup.id,
+					createdAt: topup.createdDate,
+					topUpId: topup.topUpId,
+					customer_account_id: topup.customer_account_id,
+					total: topup.total,
+					topup: topup.topup,
+					balance: topup.balance,
+					totalCount
+				};
+			});
+	
+			topups.sort((a, b) => {
+				return moment
+					.tz(a.createdAt, moment.tz.guess())
+					.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+					? 1
+					: -1;
+			});	
+		
+	console.log('topups',topups);
+			return topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
+		}else{
+			return [];
+		}
+
+	}
+
+
+	renderTopUps({ item, index }) {
+
+		console.log("Item reciep", item);
+		//const receiptLineItems = item.receiptLineItems.map((lineItem, idx) => {
+			return (
+				<View
+				style={{
+					flex: 1,
+					flexDirection: 'row',
+					marginBottom: 10,
+					marginTop: 10
+				}}>
+				
+				<View style={{ justifyContent: 'space-around' }}>
+					<View style={styles.itemData}>
+						<Text style={styles.label}>Total: </Text>
+						<Text>{item.topup}</Text>
+					</View>
+					<View style={styles.itemData}>
+						<Text style={styles.label}>Balance: </Text>
+						<Text>{item.balance}</Text>
+					</View>
+				</View>
+			</View>
+			);
+	//	});
+
+
+		
 	}
 
 
@@ -600,7 +701,8 @@ function mapStateToProps(state, props) {
 		localReceipts: state.receiptReducer.localReceipts,
 		remoteReceipts: state.receiptReducer.remoteReceipts,
 		customers: state.customerReducer.customers,
-		products: state.productReducer.products
+		products: state.productReducer.products,
+		topups: state.topupReducer.topups
 	};
 }
 function mapDispatchToProps(dispatch) {

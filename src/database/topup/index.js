@@ -1,9 +1,6 @@
-import { capitalizeWord } from '../services/Utilities';
-import moment from 'moment-timezone';
-
-import PosStorage from '../database/PosStorage';
-let realm = PosStorage.realm;
-
+import PosStorage from '../PosStorage';
+//let realm = PosStorage.realmExpo
+import realm from '../init';
 const uuidv1 = require('uuid/v1');
 
 const topUpKey = '@Sema:TopUpsKey';
@@ -63,10 +60,17 @@ class TopUps {
             results[0][1]
         );
         this.lastTopUpSync = new Date(results[1][1]); // Last topUp sync time
-        this.pendingTopUps = this.parseJson(
+        this.pendingTopUpsKey = this.parseJson(
             results[2][1]
         ); // Array of pending topUp
+        console.log(results);
+        this.loadTopUpsFromKeys();
+        this.loadTopUpsFromKeys2();
         return 'Data Exists';
+    }
+
+    getLastTopUpSync() {
+        return this.lastTopUpSync;
     }
 
     clearDataOnly() {
@@ -215,7 +219,7 @@ class TopUps {
         topUp.updatedDate = new Date();
         topUp.syncAction = 'update';
 
-        
+
         this.pendingTopUps.push(key);
 
         let keyArray = [
@@ -267,6 +271,12 @@ class TopUps {
             'PosStorage:mergeTopUps Number of remote topUp: ' +
             remoteTopUps.length
         );
+        
+        console.log(
+            'PosStorage:mergeTopUps Number of local topUp: ' ,
+            this.topUp
+        );
+        this.pendingTopUps = this.topUp;
         let newTopUpsAdded = remoteTopUps.length > 0 ? true : false;
         if (this.topUp.length == 0) {
             this.addRemoteTopUps(remoteTopUps);
@@ -325,12 +335,23 @@ class TopUps {
                     webTopUpsToUpdate.push(remoteTopUp);
                 }
             });
+
             if (isPendingModified) {
                 this.setKey(
                     pendingTopUpsKey,
                     this.stringify(this.pendingTopUps)
                 );
             }
+
+            // console.log('pendingTopUpsKey', pendingTopUpsKey);
+            
+            // console.log('loadTopUpsFromKeys2',this.loadTopUpsFromKeys2());
+            // console.log('loadTopUpsFromKeys',this.loadTopUpsFromKeys());
+            // console.log('getPendingTopUps',this.getPendingTopUps());
+            // console.log('getTopUps',this.getTopUps());
+            
+            // console.log('this.pendingTopUps', this.pendingTopUps);
+            // console.log('webTopUpsToUpdate', this.webTopUpsToUpdate);
             this.mergeRemoteTopUps(webTopUpsToUpdate);
             return {
                 pendingTopUps: this.pendingTopUps.slice(),
@@ -397,55 +418,35 @@ class TopUps {
 
 
 
-	getLocalTopUp(topUpId) {
-		for (let index = 0; index < this.topUp.length; index++) {
-			if (this.topUp[index].topUpId === topUpId) {
-				return this.topUp[index];
-			}
-		}
-		return null;
-	}
-	getLocalTopUpIndex(topUpId) {
-		for (let index = 0; index < this.topUp.length; index++) {
-			if (this.topUp[index].topUpId === topUpId) {
-				return index;
-			}
-		}
-		return -1;
-	}
+    getLocalTopUp(topUpId) {
+        for (let index = 0; index < this.topUp.length; index++) {
+            if (this.topUp[index].topUpId === topUpId) {
+                return this.topUp[index];
+            }
+        }
+        return null;
+    }
+    getLocalTopUpIndex(topUpId) {
+        for (let index = 0; index < this.topUp.length; index++) {
+            if (this.topUp[index].topUpId === topUpId) {
+                return index;
+            }
+        }
+        return -1;
+    }
 
-	setLocalTopUp(topUp) {
-		for (let index = 0; index < this.topUp.length; index++) {
-			if (this.topUp[index].topUpId === topUp.topUpId) {
-				this.topUp[index] = topUp;
-				return;
-			}
-		}
-	}
+    setLocalTopUp(topUp) {
+        for (let index = 0; index < this.topUp.length; index++) {
+            if (this.topUp[index].topUpId === topUp.topUpId) {
+                this.topUp[index] = topUp;
+                return;
+            }
+        }
+    }
 
 
 
     loadTopUpsFromKeys() {
-        console.log(
-            'loadTopUpsFromKeys. No of topUp: ' +
-            this.topUpKeys.length
-        );
-        return new Promise((resolve, reject) => {
-            try {
-                let that = this;
-                this.multiGet(this.topUpKeys).then(results => {
-                    that.topUp = results.map(result => {
-                        return that.parseJson(result[1]);
-                    });
-                    resolve(true);
-                });
-            } catch (error) {
-                reject(error);
-            }
-        });
-    }
-
-    loadTopUpsFromKeys2() {
         console.log(
             'loadTopUpsFromKeys. No of topUp: ' +
             this.topUpKeys.length
@@ -456,10 +457,38 @@ class TopUps {
         return that.topUp = results.map(result => {
             return that.parseJson(result[1]);
         });
+
+        // return new Promise((resolve, reject) => {
+        //     try {
+        //         let that = this;
+        //         this.multiGet(this.topUpKeys).then(results => {
+        //             that.topUp = results.map(result => {
+        //                 return that.parseJson(result[1]);
+        //             });
+        //             console.log('that.topUp', that.topUp)
+        //             resolve(true);
+        //         });
+        //     } catch (error) {
+        //         reject(error);
+        //     }
+        // });
+    }
+
+    loadTopUpsFromKeys2() {
+        console.log(
+            'pendingTopUpsFromKeys. No of pendingtopUp: ' +
+            this.pendingTopUpsKey.length
+        );
+
+        let that = this;
+        let results = this.getMany(this.pendingTopUpsKey);
+        return that.pendingTopUps = results.map(result => {
+            return that.parseJson(result[1]);
+        });
     }
 
     removePendingTopUp(topUpKey) {
-        console.log('PostStorage:removePendingTopUp');
+        //console.log('PostStorage:removePendingTopUp');
         const index = this.pendingTopUps.indexOf(topUpKey);
         if (index > -1) {
             this.pendingTopUps.splice(index, 1);
@@ -469,7 +498,7 @@ class TopUps {
 
             this.multiSet(keyArray)
                 .then(rows => {
-                    console.log('Affected rows: ' + rows);
+                    // console.log('Affected rows: ' + rows);
                 })
                 .catch(error => {
                     console.log(
@@ -480,21 +509,27 @@ class TopUps {
     }
 
     getTopUpFromKey(topUpKey) {
-		return new Promise(resolve => {
-			this.getKey(topUpKey)
-				.then(topup => {
-					resolve(this.parseJson(topup));
-				})
-				.catch(() => {
-					resolve(null);
-				});
-		});
-	}
+        return new Promise(resolve => {
+            this.getKey(topUpKey)
+                .then(topup => {
+                    resolve(this.parseJson(topup));
+                })
+                .catch(() => {
+                    resolve(null);
+                });
+        });
+    }
 
-	getTopUps() {
-		console.log('PosStorage: TopUps. Count ' + this.topUp.length);
-		return this.topUp;
-	}
+    getTopUps() {
+        console.log('PosStorage: TopUps. Count ' + this.topUp.length);
+        return this.topUp;
+    }
+
+    getPendingTopUps() {
+        console.log('PosStorage: PendingTopUps. Count ' + this.pendingTopUps.length);
+        return this.pendingTopUps;
+    }
+
 
 
     setLastTopUpSync(lastSyncTime) {
@@ -518,7 +553,7 @@ class TopUps {
             const value = await this.getItem(key);
             return value;
         } catch (error) {
-            console.log('Pos Storage Error retrieving data');
+            // console.log('Pos Storage Error retrieving data');
         }
     }
 
@@ -657,7 +692,7 @@ class TopUps {
                         else
                             realm.create('SemaRealm', { id: key, data: value });
                     }
-                    console.log(count);
+                    //console.log(count);
                     resolve({ rows: count });
                 } catch (error) {
                     reject(error);

@@ -12,14 +12,17 @@ import i18n from '../app/i18n';
 
 
 import * as CustomerActions from '../actions/CustomerActions';
+import * as TopUpActions from '../actions/TopUpActions';
 import * as NetworkActions from '../actions/NetworkActions';
 import * as SettingsActions from '../actions/SettingsActions';
 import * as ProductActions from '../actions/ProductActions';
 import * as receiptActions from '../actions/ReceiptActions';
 
 import PosStorage from '../database/PosStorage';
+import TopUps from '../database/topup/index';
 import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
+import TopUpService from '../services/topup';
 import NetInfo from "@react-native-community/netinfo";
 
 class AuthLoadingScreen extends React.Component {
@@ -69,10 +72,26 @@ class AuthLoadingScreen extends React.Component {
                 Communications.setToken(settings.token);
                 Communications.setSiteId(settings.siteId);
 
+                TopUpService.initialize(
+                    settings.semaUrl,
+                    settings.site,
+                    settings.user,
+                    settings.password
+                );
+                TopUpService.setToken(settings.token);
+                TopUpService.setSiteId(settings.siteId);
+                
+
                 this.posStorage.loadLocalData();
+                TopUps.loadTableData();
+
+                console.log('TopUps', TopUps.getTopUps());
 
                 this.props.customerActions.setCustomers(
                     this.posStorage.getCustomers()
+                );
+                this.props.topUpActions.setTopups(
+                    TopUps.getTopUps()
                 );
                 this.props.productActions.setProducts(
                     this.posStorage.getProducts()
@@ -84,7 +103,8 @@ class AuthLoadingScreen extends React.Component {
                 Synchronization.initialize(
                     PosStorage.getLastCustomerSync(),
                     PosStorage.getLastProductSync(),
-                    PosStorage.getLastSalesSync()
+                    PosStorage.getLastSalesSync(),
+                    TopUps.getLastTopUpSync()
                 );
                 Synchronization.setConnected(this.props.network.isNWConnected);
 
@@ -142,6 +162,7 @@ function mapDispatchToProps(dispatch) {
         networkActions: bindActionCreators(NetworkActions, dispatch),
         settingsActions: bindActionCreators(SettingsActions, dispatch),
         customerActions: bindActionCreators(CustomerActions, dispatch),
+        topUpActions: bindActionCreators(TopUpActions, dispatch),
         productActions: bindActionCreators(ProductActions, dispatch),
         receiptActions: bindActionCreators(receiptActions, dispatch)
     };

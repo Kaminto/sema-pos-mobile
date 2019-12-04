@@ -5,8 +5,10 @@ import { capitalizeWord } from '../services/Utilities';
 import Events from 'react-native-simple-events';
 import moment from 'moment-timezone';
 import TopUps from './topup/index';
-var Realm = require('realm');
-let realm;
+import realm from './init';
+
+// var Realm = require('realm');
+// let realm;
 
 const uuidv1 = require('uuid/v1');
 
@@ -19,10 +21,6 @@ const lastCustomerSyncKey = '@Sema:LastCustomerSyncKey';
 const pendingCustomersKey = '@Sema:PendingCustomersKey';
 const customerTypesKey = '@Sema:CustomerTypesKey';
 
-const topUpKey = '@Sema:TopUpKey';
-const topUpItemKey = '@Sema:TopUpItemKey';
-const lastTopUpSyncKey = '@Sema:LastTopUpSyncKey';
-const pendingTopUpKey = '@Sema:PendingTopUpKey';
 
 const productsKey = '@Sema:ProductsKey';
 const productItemKey = '@Sema:ProductItemKey';
@@ -105,15 +103,15 @@ class PosStorage {
 		this.inventoriesKeys = []; // 30 days of inventories
 
 		// Realm schema creation
-		const SEMA_SCHEMA = {
-			name: 'SemaRealm',
-			primaryKey: 'id',
-			properties: {
-				id: 'string',
-				data: 'string'
-			}
-		};
-		realm = new Realm({ schema: [SEMA_SCHEMA] });
+		// const SEMA_SCHEMA = {
+		// 	name: 'SemaRealm',
+		// 	primaryKey: 'id',
+		// 	properties: {
+		// 		id: 'string',
+		// 		data: 'string'
+		// 	}
+		// };
+		// realm = new Realm({ schema: [SEMA_SCHEMA] });
 	}
 
 	checkLocalDb() {
@@ -278,109 +276,6 @@ class PosStorage {
 			return 'Data Exists';
 	}
 
-	initialize(forceNew) {
-
-		const version = realm.objectForPrimaryKey('SemaRealm', versionKey);
-
-		// if(!version){
-		// 	return 'Initial SetUp';
-		// }
-
-		// version = version.data;
-
-		// console.log('version', version);
-		if (
-			version == null ||
-			version === undefined ||
-			forceNew === true
-		) {
-			console.log('Pos Storage: Not initialized' + version);
-
-
-			// this.multiSet(keyArray)
-			// 	.then(rows => {
-			// 		console.log('Affected : ' + rows);
-			// 		//return true;
-			// 		return 'New SetUp';
-			// 	})
-			// 	.catch(error => {
-			// 		console.log(error);
-			// 		return false;
-			// 	});
-
-
-		} else {
-			console.log('Pos Storage: Version = ', version.data);
-			this.version = version;
-			let keyArray = [
-				customersKey,
-				salesKey,
-				productsKey,
-				lastCustomerSyncKey,
-				lastSalesSyncKey,
-				lastProductsSyncKey,
-				pendingCustomersKey,
-				pendingSalesKey,
-				settingsKey,
-				tokenExpirationKey,
-				salesChannelsKey,
-				customerTypesKey,
-				productMrpsKey,
-				syncIntervalKey,
-				inventoriesKey,
-				remoteReceiptsKey,
-				reminderDataKey
-			];
-
-
-			let results = this.getMany(keyArray);
-
-
-			this.customersKeys = this.parseJson(
-				results[0][1]
-			); // Array of customer keys
-			this.salesKeys = this.parseJson(results[1][1]); // Array of sales keys
-			this.productsKeys = this.parseJson(
-				results[2][1]
-			); // Array of products keys
-			this.lastCustomerSync = new Date(results[3][1]); // Last customer sync time
-			this.lastSalesSync = new Date(results[4][1]); // Last sales sync time
-			this.lastProductsSync = new Date(results[5][1]); // Last products sync time
-			this.pendingCustomers = this.parseJson(
-				results[6][1]
-			); // Array of pending customers
-			this.pendingSales = this.parseJson(
-				results[7][1]
-			); // Array of pending sales
-			this.settings = this.parseJson(results[8][1]); // Settings
-			this.tokenExpiration = new Date(results[9][1]); // Expiration date/time of the token
-			this.salesChannels = this.parseJson(
-				results[10][1]
-			); // array of sales channels
-			this.customerTypes = this.parseJson(
-				results[11][1]
-			); // array of customer types
-			this.productMrpDict = this.parseJson(
-				results[12][1]
-			); // products MRP dictionary
-			this.syncInterval = this.parseJson(
-				results[13][1]
-			); // SyncInterval
-			this.inventoriesKeys = this.parseJson(
-				results[14][1]
-			); // inventoriesKey
-			this.receipts = this.parseJson(results[15][1]); // remoteReceiptsKey
-			this.reminderDataKeys = this.parseJson(
-				results[16][1]
-			); //reminderData
-
-			if (this.loadProductsFromKeys2() && this.loadCustomersFromKeys2()) {
-				return 'Data Exists';
-			}
-			return 'Data Exists';
-		}
-		
-	}
 
 	// Realm access methods start
 	getItem(key) {
@@ -388,7 +283,7 @@ class PosStorage {
 		realm.write(() => {
 			value = realm.objectForPrimaryKey('SemaRealm', key);
 		});
-		console.log(value.data);
+		//console.log(value.data);
 		return value.data;
 	}
 
@@ -1837,9 +1732,9 @@ class PosStorage {
 	}
 
 	async setKey(key, stringValue) {
-		console.log(
-			'Pos Storage:setKey() Key: ' + key + ' Value: ' + stringValue
-		);
+		// console.log(
+		// 	'Pos Storage:setKey() Key: ' + key + ' Value: ' + stringValue
+		// );
 		return await this.setItem(key, stringValue);
 	}
 

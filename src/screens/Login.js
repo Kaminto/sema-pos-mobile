@@ -21,6 +21,8 @@ import { bindActionCreators } from 'redux';
 import Synchronization from '../services/Synchronization';
 
 import PosStorage from '../database/PosStorage';
+
+import * as TopUpActions from '../actions/TopUpActions';
 import * as SettingsActions from '../actions/SettingsActions';
 import * as ToolbarActions from '../actions/ToolBarActions';
 import * as CustomerActions from '../actions/CustomerActions';
@@ -643,10 +645,15 @@ class Login extends Component {
 			PosStorage.getRemoteReceipts()
 		);
 
+		this.props.topUpActions.setTopups(
+			TopUps.getTopUps()
+		);
+
 		Synchronization.initialize(
 			PosStorage.getLastCustomerSync(),
 			PosStorage.getLastProductSync(),
-			PosStorage.getLastSalesSync()
+			PosStorage.getLastSalesSync(),
+			TopUps.getLastTopUpSync()
 		);
 		Synchronization.setConnected(this.props.network.isNWConnected);
 	}
@@ -1056,7 +1063,8 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
 	return {
 		networkActions: bindActionCreators(NetworkActions, dispatch),
-		toolbarActions: bindActionCreators(ToolbarActions, dispatch),
+		toolbarActions: bindActionCreators(ToolbarActions, dispatch),		
+        topUpActions: bindActionCreators(TopUpActions, dispatch),
 		settingsActions: bindActionCreators(SettingsActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
 		authActions: bindActionCreators(AuthActions, dispatch)

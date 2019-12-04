@@ -171,9 +171,9 @@ class CustomSidebarMenu extends Component {
 			this.setState({ isLoading: true });
 			Synchronization.synchronize().then(syncResult => {
 				this.setState({ isLoading: false });
-				console.log(
-					'Synchronization-result: ' + JSON.stringify(syncResult)
-				);
+				// console.log(
+				// 	'Synchronization-result: ' + JSON.stringify(syncResult)
+				// );
 				// let foo = this._getSyncResults(syncResult);
 				Alert.alert(
 					i18n.t('sync-results'),
@@ -227,11 +227,16 @@ class CustomSidebarMenu extends Component {
 				) {
 					return i18n.t('data-is-up-to-date');
 				} else {
+          // console.log('syncResult', syncResult);
 					return `${syncResult.customers.localCustomers +
 						syncResult.customers.remoteCustomers} ${i18n.t(
 							'customers-updated'
 						)}
-				${syncResult.products.remoteProducts} ${i18n.t('products-updated')}
+        ${syncResult.products.remoteProducts} ${i18n.t('products-updated')}
+        ${syncResult.topups.localTopup +
+          syncResult.topups.remoteTopup} ${i18n.t(
+            'topups-updated'
+          )}
 				${syncResult.sales.localReceipts} ${i18n.t('sales-receipts-updated')}
 				${syncResult.productMrps.remoteProductMrps} ${i18n.t(
 							'product-sales-channel-prices-updated'

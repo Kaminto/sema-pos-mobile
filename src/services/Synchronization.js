@@ -124,6 +124,16 @@ class Synchronization {
 									return customerSync;
 								}
 							);
+
+							const promiseTopUps = this.synchronizeCredits().then(
+								topUpSync => {
+									// console.log('topUpSync', topUpSync);
+									syncResult.topups = topUpSync;
+									return topUpSync;
+								}
+							);
+
+
 							const promiseProducts = this.synchronizeProducts().then(
 								productSync => {
 									syncResult.products = productSync;
@@ -150,9 +160,12 @@ class Synchronization {
 								}
 							);
 
+
+
 							// This will make sure they run synchronously
 							[
 								promiseCustomers,
+								promiseTopUps,
 								promiseProducts,
 								promiseSales,
 								promiseProductMrps,
@@ -196,6 +209,7 @@ class Synchronization {
 			console.log('Synchronization:synchronizeCredits - Begin');
 			TopUpService.getTopUps(this.lastTopUpSync)
 				.then(web_topup => {
+					console.log('web_topup',web_topup);
 					if (web_topup.hasOwnProperty('topup')) {
 						this.updateLastTopUpSync();
 						console.log(
@@ -208,17 +222,15 @@ class Synchronization {
 							updated
 						} = TopUps.mergeTopUps(web_topup.topup);
 						console.log(
-							'Synchronization:synchronizeTopUps No of local pending customers: ' +
+							'Synchronization:synchronizeTopUps No of local pending Credits: ' +
 							pendingTopUps.length
 						);
-						resolve({
-							error: null,
-							localTopup: pendingTopUps.length,
-							remoteTopup: web_topup.topup.length
-						});
-						pendingTopUps.forEach(topUpKey => {
-							TopUps.getTopUpFromKey(topUpKey).then(
-								topup => {
+						
+						pendingTopUps.forEach(topup => {
+							console.log('topup',topup);
+							// TopUps.getTopUpFromKey(topUpKey).then(
+							// 	topup => {
+									console.log('topup',topup)
 									if (topup != null) {
 										if (topup.syncAction === 'create') {
 											console.log(
@@ -298,9 +310,15 @@ class Synchronization {
 											topUpKey
 										);
 									}
-								}
-							);
+								// });
 						});
+
+						resolve({
+							error: null,
+							localTopup: pendingTopUps.length,
+							remoteTopup: web_topup.topup.length
+						});
+
 						if (updated) {
 							Events.trigger('synchronizeTopup', {});
 						}
@@ -325,7 +343,7 @@ class Synchronization {
 			Communications.getCustomers(this.lastCustomerSync)
 				.then(web_customers => {
 					if (web_customers.hasOwnProperty('customers')) {
-						this.updateLastTopUpSync();
+						this.updateLastCustomerSync();
 						console.log(
 							'Synchronization:synchronizeCustomers No of new remote customers: ' +
 							web_customers.customers.length
