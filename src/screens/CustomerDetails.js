@@ -22,6 +22,7 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import PosStorage from '../database/PosStorage';
 import TopUps from '../database/topup/index';
 import * as CustomerActions from '../actions/CustomerActions';
+import * as TopUpActions from '../actions/TopUpActions';
 import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
 import * as reportActions from '../actions/ReportActions';
 import * as receiptActions from '../actions/ReceiptActions';
@@ -200,6 +201,8 @@ class CustomerDetails extends Component {
 					<View style={[styles.leftToolbar]}>
 						<SelectedCustomerDetails
 							selectedCustomer={this.props.selectedCustomer}
+							totalCredit={this.totalCredit()}
+							balanceCredit={this.balanceCredit()}
 						/>
 					</View>
 				</View>
@@ -231,17 +234,16 @@ class CustomerDetails extends Component {
 						}}>
 						{this.getCancelButton()}
 					</View>
+
 					<View
 						style={{
 							flex: 1,
 							marginTop: 0,
-							marginBottom: 50,
 							marginLeft: 100,
 							marginRight: 100
 						}}>
 
-
-						<View style={[{ flex: 1, flexDirection: 'row', marginTop: '1%' }]}>
+						<View style={{ marginBottom: 10 }}>
 							<Input
 								placeholder={i18n.t(
 									'topup-placeholder'
@@ -249,35 +251,22 @@ class CustomerDetails extends Component {
 								label={i18n.t('topup-placeholder')}
 								onChangeText={this.onChangeTopup.bind(this)}
 							/>
-						</View>
-
-
-						<View style={styles.completeOrder}>
-							<View style={{ justifyContent: 'center', height: 50 }}>
-								<TouchableHighlight
-									underlayColor="#c0c0c0"
-									onPress={() => this.addCredit()}>
-									<Text
-										style={[
-											{ paddingTop: 20, paddingBottom: 20 },
-											styles.buttonText
-										]}>
-										{i18n.t('topup')}
-									</Text>
-								</TouchableHighlight>
-							</View>
+							<Button
+								onPress={() => this.addCredit()}
+								buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10 }}
+								title={i18n.t('topup')} />
 						</View>
 
 
 						<View style={{ flex: 1, backgroundColor: '#fff' }}>
-					<FlatList
-						data={this.prepareTopUpData()}
-						renderItem={this.renderTopUps.bind(this)}
-						keyExtractor={(item, index) => item.id}
-						ItemSeparatorComponent={this.renderSeparator}
-						extraData={this.state.refresh}
-					/>
-				</View>
+							<FlatList
+								data={this.prepareTopUpData()}
+								renderItem={this.renderTopUps.bind(this)}
+								keyExtractor={(item, index) => item.id}
+								ItemSeparatorComponent={this.renderSeparator}
+								extraData={this.state.refresh}
+							/>
+						</View>
 
 
 					</View>
@@ -291,6 +280,19 @@ class CustomerDetails extends Component {
 	closePaymentModal = () => {
 		this.refs.modal6.close();
 	};
+
+	totalCredit = () => {
+		return this.props.topups.reduce((accumulator, currentValue) => {
+			return ({ topup: Number(accumulator.topup) + Number(currentValue.topup) });
+		}).topup;
+	}
+
+	balanceCredit = () => {
+
+		return this.props.topups.reduce((accumulator, currentValue) => {
+			return ({ balance: Number(accumulator.balance) + Number(currentValue.balance) });
+		}).balance;
+	}
 
 	onChangeTopup = topup => {
 		console.log(topup);
@@ -316,34 +318,21 @@ class CustomerDetails extends Component {
 		console.log(this.props.selectedCustomer);
 
 
-		let newTopUp = TopUps.createTopUp(
+		TopUps.createTopUp(
 			this.props.selectedCustomer.customerId,
 			this.state.topup,
 			this.state.topup
 		);
-
-		// console.log(this.props.payment);
-		// console.log(this.props.selectedCustomer);
-		// console.log("there")
-		// this.formatAndSaveSale();
-		// Alert.alert(
-		// 	'Notice',
-		// 	'Payment Made',
-		// 	[{
-		// 		text: 'OK',
-		// 		onPress: () => {
-		// 			this.closePaymentModal();
-		// 			this.props.orderActions.ClearOrder();
-		// 		}
-		// 	}],
-		// 	{ cancelable: false }
-		// );
+		this.setState({ topup: "" });
+		console.log(this.state.topup);
+		this.props.topUpActions.setTopups(TopUps.getTopUps());
+	
 	}
 
 
 	prepareData() {
 		// Used for enumerating receipts
-		console.log("here selectedCustomer", this.props.selectedCustomer);
+		//console.log("here selectedCustomer", this.props.selectedCustomer);
 
 		if (this.props.remoteReceipts.length > 0) {
 			const totalCount = this.props.remoteReceipts.length;
@@ -365,7 +354,7 @@ class CustomerDetails extends Component {
 					totalCount
 				};
 			});
-	
+
 			remoteReceipts.sort((a, b) => {
 				return moment
 					.tz(a.createdAt, moment.tz.guess())
@@ -373,19 +362,19 @@ class CustomerDetails extends Component {
 					? 1
 					: -1;
 			});
-	
+
 			let siteId = 0;
 			if (PosStorage.getSettings()) {
 				siteId = PosStorage.getSettings().siteId;
 			}
-	
+
 			// return [
 			// 	...remoteReceipts.filter(r => r.customerAccount.kiosk_id === siteId)
 			// ];
-			console.log('remoteReceipts', remoteReceipts[0].customerAccount);
-			console.log('remoteReceiptsno', remoteReceipts.filter(r => r.customerAccount.id === this.props.selectedCustomer.customerId));
+			//console.log('remoteReceipts', remoteReceipts[0].customerAccount);
+			//console.log('remoteReceiptsno', remoteReceipts.filter(r => r.customerAccount.id === this.props.selectedCustomer.customerId));
 			return remoteReceipts.filter(r => r.customerAccount.id === this.props.selectedCustomer.customerId);
-		}else{
+		} else {
 			return [];
 		}
 
@@ -394,7 +383,7 @@ class CustomerDetails extends Component {
 
 	prepareTopUpData() {
 		// Used for enumerating receipts
-		console.log("here selectedCustomer", this.props.selectedCustomer);
+		//console.log("here selectedCustomer", this.props.selectedCustomer);
 
 		if (this.props.topups.length > 0) {
 			const totalCount = this.props.topups.length;
@@ -413,18 +402,18 @@ class CustomerDetails extends Component {
 					totalCount
 				};
 			});
-	
+
 			topups.sort((a, b) => {
 				return moment
 					.tz(a.createdAt, moment.tz.guess())
 					.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
 					? 1
 					: -1;
-			});	
-		
-	console.log('topups',topups);
+			});
+
+			console.log('topups', topups);
 			return topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
-		}else{
+		} else {
 			return [];
 		}
 
@@ -433,17 +422,16 @@ class CustomerDetails extends Component {
 
 	renderTopUps({ item, index }) {
 
-		console.log("Item reciep", item);
+		//	console.log("Item reciep", item);
 		//const receiptLineItems = item.receiptLineItems.map((lineItem, idx) => {
-			return (
-				<View
+		return (
+			<View
 				style={{
 					flex: 1,
 					flexDirection: 'row',
 					marginBottom: 10,
-					marginTop: 10
 				}}>
-				
+
 				<View style={{ justifyContent: 'space-around' }}>
 					<View style={styles.itemData}>
 						<Text style={styles.label}>Total: </Text>
@@ -455,11 +443,11 @@ class CustomerDetails extends Component {
 					</View>
 				</View>
 			</View>
-			);
-	//	});
+		);
+		//	});
 
 
-		
+
 	}
 
 
@@ -597,10 +585,6 @@ class CustomerDetails extends Component {
 							</View>
 						)}
 				</View>
-				{/* <View style={styles.itemData}>
-					<Text style={styles.label}>Receipt Id: </Text>
-					<Text>{item.id}</Text>
-				</View> */}
 				<View style={styles.itemData}>
 					<Text style={styles.label}>Date Created: </Text>
 					<Text>
@@ -661,29 +645,33 @@ class SelectedCustomerDetails extends React.Component {
 			<View style={styles.commandBarContainer}>
 				<View style={{ flexDirection: 'row', height: 40 }}>
 					<Text style={styles.selectedCustomerText}>
-						{i18n.t('account-name')}
+					    {i18n.t('account-name')} :
+						{this.getName()}
 					</Text>
 					<Text style={styles.selectedCustomerText}>
-						{this.getName()}
+						Credit Purchases:  {this.props.totalCredit}
 					</Text>
 				</View>
 				<View style={{ flexDirection: 'row', height: 40 }}>
 					<Text style={styles.selectedCustomerText}>
-						{i18n.t('telephone-number')}
+					{i18n.t('telephone-number')} :
+					 {this.getPhone()}
 					</Text>
 					<Text style={styles.selectedCustomerText}>
-						{this.getPhone()}
+						Credit Balance: {this.props.balanceCredit}
 					</Text>
 				</View>
 			</View>
 		);
 	}
 	getName() {
+		console.log('balanceCredit', this.props.balanceCredit);
 		if (this.props.selectedCustomer.hasOwnProperty('name')) {
 			return this.props.selectedCustomer.name;
 		} else {
 			return '';
 		}
+		
 	}
 	getPhone() {
 		if (this.props.selectedCustomer.hasOwnProperty('phoneNumber')) {
@@ -708,6 +696,7 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
 	return {
 		toolbarActions: bindActionCreators(ToolbarActions, dispatch),
+		topUpActions: bindActionCreators(TopUpActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
 		reportActions: bindActionCreators(reportActions, dispatch),
 		receiptActions: bindActionCreators(receiptActions, dispatch)
@@ -770,7 +759,6 @@ const styles = StyleSheet.create({
 	completeOrder: {
 		backgroundColor: '#2858a7',
 		borderRadius: 30,
-		marginTop: '1%'
 	},
 	commandBarContainer: {
 		flex: 1,

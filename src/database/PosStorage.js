@@ -269,7 +269,7 @@ class PosStorage {
 			this.reminderDataKeys = this.parseJson(
 				results[16][1]
 			); //reminderData
-			TopUps.loadTableData();
+			//TopUps.loadTableData();
 			if (this.loadProductsFromKeys2() && this.loadCustomersFromKeys2()) {
 				return 'Data Exists';
 			}
