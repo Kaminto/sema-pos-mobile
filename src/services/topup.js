@@ -42,7 +42,8 @@ class TopUpService {
 			url = url + '?updated-date=' + updatedSince.toISOString();
 		}
 
-		return fetch(this._url + url, options)
+		//return fetch(this._url + url, options)
+		return fetch('http://142.93.115.206:3006/sema/customer_credit?customer_account_id=0529f4f0-3030-11e9-8cd3-d92736264baf', options)
 			.then(response => response.json())
 			.then(responseJson => {
 				return responseJson;

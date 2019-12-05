@@ -271,9 +271,9 @@ class TopUps {
             'PosStorage:mergeTopUps Number of remote topUp: ' +
             remoteTopUps.length
         );
-        
+
         console.log(
-            'PosStorage:mergeTopUps Number of local topUp: ' ,
+            'PosStorage:mergeTopUps Number of local topUp: ',
             this.topUp
         );
         this.pendingTopUps = this.topUp;
@@ -344,12 +344,12 @@ class TopUps {
             }
 
             // console.log('pendingTopUpsKey', pendingTopUpsKey);
-            
+
             // console.log('loadTopUpsFromKeys2',this.loadTopUpsFromKeys2());
             // console.log('loadTopUpsFromKeys',this.loadTopUpsFromKeys());
             // console.log('getPendingTopUps',this.getPendingTopUps());
             // console.log('getTopUps',this.getTopUps());
-            
+
             // console.log('this.pendingTopUps', this.pendingTopUps);
             // console.log('webTopUpsToUpdate', this.webTopUpsToUpdate);
             this.mergeRemoteTopUps(webTopUpsToUpdate);
@@ -480,11 +480,43 @@ class TopUps {
             this.pendingTopUpsKey.length
         );
 
-        let that = this;
-        let results = this.getMany(this.pendingTopUpsKey);
-        return that.pendingTopUps = results.map(result => {
-            return that.parseJson(result[1]);
-        });
+        console.log(
+            'pendingTopUpsFromKeys ' +
+            this.pendingTopUpsKey
+        );
+
+        try {
+            let that = this;
+            let results = this.getMany(this.pendingTopUpsKey);
+            console.log('results', results);
+            return that.pendingTopUps = results.map(result => {
+                return that.parseJson(result[1]);
+            });
+        } catch (error) {
+            console.log('that.error', error)
+            //reject(error);
+        }
+
+
+        // return new Promise((resolve, reject) => {
+        //     try {
+        //         let that = this;
+        //         this.multiGet(this.pendingTopUpsKey).then(results => {
+        //             that.pendingTopUps = results.map(result => {
+        //                 return that.parseJson(result[1]);
+        //             });
+        //             console.log('that.pendingTopUps', that.pendingTopUps)
+        //             resolve(true);
+        //         });
+        //     } catch (error) {
+        //         console.log('that.error', error)
+        //         reject(error);
+        //     }
+        // });
+
+
+
+
     }
 
     removePendingTopUp(topUpKey) {
@@ -649,8 +681,6 @@ class TopUps {
                 keyArray[i]
             );
             let semaobject = [keyArray[i], value.data];
-            //console.log(value.data);
-            // semaobjects[i] = semaobject;
             result.push(semaobject);
         }
         return result;
