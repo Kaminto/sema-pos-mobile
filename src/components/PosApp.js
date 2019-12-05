@@ -6,7 +6,10 @@ import Toolbar from './Toolbar';
 import CustomerViews from './customers/CustomerViews';
 import CustomerBar from './customers/CustomerBar';
 import OrderView from './orders/OrderView';
+import QuantityChanger from './orders/QuantityChanger';
+import PaymentTypes from './orders/PaymentTypes';
 import CustomerEdit from './customers/CustomerEdit';
+import CustomerDetails from './customers/CustomerDetails';
 import Settings from './Settings';
 import Login from './Login';
 
@@ -275,14 +278,15 @@ class PosApp extends Component {
 
 	render() {
 		if (this.state.isLoading) {
-			console.log("Temp Splash Screen - Load Splash Screen");
+			// return <LoadSplashScreen />;
 		}
-			return this.getLoginOrHomeScreen();
+
+		return this.getLoginOrHomeScreen();
 	}
 
 	getLoginOrHomeScreen() {
 		console.log('getLoginOrHomeScreen - isLoggedIn: ' +
-				this.props.showScreen.isLoggedIn
+			this.props.showScreen.isLoggedIn
 		);
 
 		if (!this.props.showScreen.isLoggedIn) {
@@ -371,6 +375,12 @@ class ScreenSwitcher extends Component {
 				);
 			case 'newCustomer':
 				return <CustomerEdit isEdit={false} />;
+			case 'customerDetails':
+				return <CustomerDetails />;
+			case 'quanityChanger':
+				return <QuantityChanger />;
+			case 'paymentTypes':
+				return <PaymentTypes />;
 			case 'editCustomer':
 				return <CustomerEdit isEdit={true} />;
 			case 'main':
