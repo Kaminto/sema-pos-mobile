@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, Button, ScrollView, FlatList, TextInput, Dimensions, TouchableHighlight, StyleSheet } from "react-native";
+import { View, Text, Button, ScrollView, FlatList, Image, TextInput, Dimensions, TouchableHighlight, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
@@ -7,7 +7,7 @@ import PosStorage from "../../database/PosStorage";
 import * as ToolbarActions from '../../actions/ToolBarActions';
 import i18n from "../../app/i18n";
 import Modal from 'react-native-modalbox';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import ToggleSwitch from 'toggle-switch-react-native';
 
@@ -44,23 +44,12 @@ class OrderItems extends Component {
 			selectedItem: {},
 			accumulator: 0,
 			firstKey: true,
-			isKajibu: false,			
-			is20LTap: false,	
+			isKajibu: false,
+			is20LTap: false,
 			isOpen: false,
 			isDisabled: false,
 			swipeToClose: true,
 			sliderValue: 0.3,
-
-			tableHead: ['Quantity'],
-			tableData: [
-				['-', '10', '+'],
-				['Discounts (Show All Discounts applicable to this store)'],
-				['Kajibu', ''],
-				['20L Tap 10 Purchase', ''],
-				['Custom', 'An input field for custom discount value'],
-				['Notes'],
-				['Save', 'Remove Item']
-			]
 		};
 	}
 
@@ -88,11 +77,7 @@ class OrderItems extends Component {
 
 
 	render() {
-		var BContent = (
-			<View style={[styles.btn, styles.btnModal]}>
-				<Button title="X" color="black" onPress={() => this.setState({ isOpen: false })} />
-			</View>
-		);
+
 		const state = this.state;
 		return (
 			<View style={styles.container}>
@@ -112,60 +97,107 @@ class OrderItems extends Component {
 				/>
 
 
-				{/* <Button title="Position bottom + ScrollView" onPress={() => this.refs.modal6.open()} style={styles.btn} /> */}
 
-				<Modal style={[styles.modal4]} swipeToClose={true} position={"bottom"} ref={"modal6"} swipeArea={10}>
+
+				<Modal style={[styles.modal, styles.modal3]} coverScreen={true} position={"center"} ref={"modal6"} isDisabled={this.state.isDisabled}>
+
+					<View
+						style={{
+							justifyContent: 'flex-end',
+							flexDirection: 'row',
+							right: 100,
+						}}>
+						{this.getCancelButton()}
+					</View>
+
+
+
 					<ScrollView>
+
+						<View
+							style={{
+								height: 1,								
+							marginTop: 10,
+							marginBottom: 10,
+								backgroundColor: '#ddd',
+								width: '100%'
+							}}
+						/>
 
 						<View style={{
 							flex: 1,
 							width: "100%",
 							flexDirection: 'row',
-							justifyContent: 'center',
 							alignItems: 'stretch',
 						}}>
-							<View style={{ flex: 1, height: 50, backgroundColor: 'powderblue' }}>
+							<View style={{ flex: 1, height: 50 }}>
 
 								<TouchableHighlight style={{ flex: 1 }}
 									onPress={() => this.counterChangedHandler('inc')}>
-									<Text style={[styles.baseItem, styles.leftMargin]}>-</Text>
+									{/* <Text style={[{ textAlign: 'center' }, styles.baseItem, styles.leftMargin]}>-</Text> */}
+									
+									<Icon
+										size={50} 
+										style={[{ textAlign: 'center' },styles.leftMargin]}
+										name="md-remove-circle-outline"
+										color="black"
+									/>
 								</TouchableHighlight>
 
 							</View>
-							<View style={{ flex: 1, height: 50, backgroundColor: 'skyblue' }} >
+							<View style={{ flex: 1, height: 50 }} >
 								<Text style={[styles.baseItem]}>{this.state.selectedItem.quantity}@{this.getItemPrice(this.state.selectedItem.product)}</Text>
 							</View>
-							<View style={{ flex: 1, height: 50, backgroundColor: 'steelblue' }}>
+							<View style={{ flex: 1, height: 50 }}>
 								<TouchableHighlight style={{ flex: 1 }}
 									onPress={() => this.counterChangedHandler('dec')}>
-									<Text style={[styles.baseItem, styles.leftMargin]}>+</Text>
+									<Icon
+										size={50} 
+										name="md-add-circle-outline"
+										color="black"
+									/>
+									{/* <Text style={[styles.baseItem, styles.leftMargin]}>+</Text> */}
 								</TouchableHighlight>
-
-
 							</View>
 						</View>
 
+						<View
+							style={{
+								height: 1,
+								backgroundColor: '#ddd',
+								width: '100%'
+							}}
+						/>
+
 						<View style={{ flex: 1, flexDirection: 'row' }}>
-							<View style={{ flex: 1, height: 50, backgroundColor: 'steelblue' }}>
-								<Text style={[styles.baseItem]}>Price</Text>
+							<View style={{ flex: 1, height: 50 }}>
+								<Text style={[{ textAlign: 'center' }, styles.baseItem]}>Price</Text>
 							</View>
-							<View style={{ flex: 1, height: 50, backgroundColor: 'steelblue' }}>
+							<View style={{ flex: 1, height: 50 }}>
 								<Text style={[styles.baseItem]}>{(this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)).toFixed(2)}</Text>
 							</View>
 						</View>
 
+						<View
+							style={{
+								height: 1,
+								backgroundColor: '#ddd',
+								width: '100%'
+							}}
+						/>
+
 						<View style={{ flex: 1, flexDirection: 'row' }}>
 							<View style={{ flex: 1, height: 50 }}>
-								<Text style={[styles.baseItem]}>Discounts (Show all discount applicable to this store)</Text>
+								<Text style={[{ textAlign: 'center' }, styles.baseItem]}>Discounts (Show all discount applicable to this store)</Text>
 							</View>
 						</View>
 
 
 						<View style={{ flex: 1, flexDirection: 'row' }}>
-							<View style={{ flex: 1, height: 50, backgroundColor: 'steelblue' }}>
-								<Text style={[styles.baseItem]}>Kajibu</Text>
+							<View style={{ flex: 1, height: 50 }}>
+								<Text style={[{ marginLeft: 12 }, styles.baseItem]}>Kajibu</Text>
 							</View>
-							<View style={{ flex: 1, height: 50, backgroundColor: 'steelblue' }}>
+							<View style={{ flex: 1, height: 50 }}>
 								<ToggleSwitch
 									isOn={this.state.isKajibu}
 									onColor="green"
@@ -174,17 +206,17 @@ class OrderItems extends Component {
 									size="large"
 									onToggle={isOn => {
 										console.log("changed to : ", isOn);
-										this.setState({ isKajibu: isOn===true ? true : false });
+										this.setState({ isKajibu: isOn === true ? true : false });
 									}}
 								/>
 							</View>
 						</View>
 
 						<View style={{ flex: 1, flexDirection: 'row' }}>
-							<View style={{ flex: 1, height: 50, backgroundColor: 'steelblue' }}>
-								<Text style={[styles.baseItem]}>20L Tap 10th Purchase</Text>
+							<View style={{ flex: 1, height: 50 }}>
+								<Text style={[{ marginLeft: 12 }, styles.baseItem]}>20L Tap 10th Purchase</Text>
 							</View>
-							<View style={{ flex: 1, height: 50, backgroundColor: 'steelblue' }}>
+							<View style={{ flex: 1, height: 50 }}>
 								<ToggleSwitch
 									isOn={this.state.is20LTap}
 									onColor="green"
@@ -193,55 +225,72 @@ class OrderItems extends Component {
 									size="large"
 									onToggle={isOn => {
 										console.log("changed to : ", isOn);
-										
-										this.setState({ is20LTap: isOn===true ? true : false });
+
+										this.setState({ is20LTap: isOn === true ? true : false });
 									}}
 								/>
 							</View>
 						</View>
 
 						<View style={{ flex: 1, flexDirection: 'row' }}>
-							<View style={{ flex: 1, height: 50, backgroundColor: 'steelblue' }}>
-								<Text style={[styles.baseItem]}>Custom</Text>
+							<View style={{ flex: 1, height: 50 }}>
+								<Text style={[{
+									marginLeft: 12,
+								}, styles.baseItem]}>Custom</Text>
 							</View>
-							<View style={{ flex: 1, height: 50, backgroundColor: 'steelblue' }}>
+							<View style={{ flex: 1, height: 50 }}>
 								<TextInput
-									style={[styles.inputText]}
+									style={{
+										backgroundColor: "#eee",
+										borderColor: "#bbb"
+									}}
 									underlineColorAndroid="transparent"
 									placeholder="Custom Discount"
 								/>
 							</View>
 						</View>
 
+						<View
+							style={{
+								height: 1,
+								backgroundColor: '#ddd',
+								width: '100%'
+							}}
+						/>
+
 						<View style={{ flex: 1, flexDirection: 'row' }}>
 							<View style={{ flex: 1, height: 50 }}>
-								<Text style={[styles.baseItem]}>Notes</Text>
+								<Text style={[{ textAlign: 'center' }, styles.baseItem]}>Notes</Text>
 							</View>
 						</View>
 
 						<View style={{ flex: 1, flexDirection: 'row' }}>
 							<View style={{ flex: 1, height: 50 }}>
 								<TextInput
-									style={[styles.inputText]}
+									style={{
+										backgroundColor: "#eee",
+										borderColor: "#bbb"
+									}}
 									underlineColorAndroid="transparent"
 									placeholder="Notes"
 								/>
 							</View>
 						</View>
 
+						<View
+							style={{
+								height: 1,
+								backgroundColor: '#ddd',
+								width: '100%'
+							}}
+						/>
+
 
 
 					</ScrollView>
+
 				</Modal>
 
-
-
-				{/* <Modal animationType="slide" visible={this.state.isQuantityVisible}
-					backdropColor={'red'}
-					transparent={true}
-					onRequestClose={this.closeHandler}>
-					{this.ShowQuantityContent()}
-				</Modal> */}
 			</View>
 
 		);
@@ -249,6 +298,23 @@ class OrderItems extends Component {
 
 	closeHandler = () => {
 		this.setState({ isQuantityVisible: false });
+	};
+
+	getCancelButton() {
+		return (
+			<TouchableHighlight onPress={() => this.onCancelOrder()}>
+				<Icon
+					size={50}
+					name="md-close"
+					color="black"
+				/>
+			</TouchableHighlight>
+		);
+
+	}
+
+	onCancelOrder = () => {
+		this.refs.modal6.close();
 	};
 
 
@@ -296,50 +362,6 @@ class OrderItems extends Component {
 				</View>
 			</View>
 		);
-	};
-
-	ShowQuantityContent = () => (
-		<View style={styles.quantityModal}>
-			<View style={styles.modalTotal}>
-				<Text style={styles.accumulator}>{this.state.accumulator}</Text>
-			</View>
-			<View style={styles.modalCalculator}>
-				<View style={{ flex: 1 }}>
-					<FlatList
-						data={calculatorDigits}
-						renderItem={({ item, index, separators }) => (
-							<TouchableHighlight
-								onPress={() => this.onDigit(item)}
-								onShowUnderlay={separators.highlight}
-								onHideUnderlay={separators.unhighlight}>
-								{this.getDigit(item)}
-							</TouchableHighlight>
-						)}
-						keyExtractor={item => item.id}
-						numColumns={3}
-					/>
-
-				</View>
-			</View>
-
-			<View style={styles.modalDone}>
-				<TouchableHighlight style={{ flex: 1 }}
-					onPress={() => this.onDone()}>
-					<Text style={styles.doneButton}>Done</Text>
-				</TouchableHighlight>
-			</View>
-		</View>
-	);
-
-	onDigit = (digit) => {
-		if (digit.id === 99) {
-			this.setState({ accumulator: 0 });
-		} else if (this.state.firstKey) {
-			this.setState({ firstKey: false });
-			this.setState({ accumulator: digit.id });
-		} else {
-			this.setState({ accumulator: (this.state.accumulator * 10) + digit.id });
-		}
 	};
 
 	onAdd = () => {
@@ -404,17 +426,7 @@ class OrderItems extends Component {
 		}
 	};
 
-	getDigit = (digit) => {
-		return (
-			<View style={this.getDigitStyle(digit)}>
-				<Text style={styles.digit} >{digit.display}</Text>
-			</View>
-		)
-	};
 
-	getDigitStyle = (digit) => {
-		return (digit.id === 99) ? styles.clearContainer : styles.digitContainer;
-	};
 
 	onDone = () => {
 		this.setState({ isQuantityVisible: false });
@@ -581,7 +593,7 @@ const styles = StyleSheet.create({
 
 	modal: {
 		justifyContent: 'center',
-		alignItems: 'center'
+		// alignItems: 'center'
 	},
 
 	modal2: {
@@ -590,8 +602,10 @@ const styles = StyleSheet.create({
 	},
 
 	modal3: {
-		height: 300,
-		width: 300
+		// height: 300,
+		// width: 500
+		width: widthQuanityModal,
+		height: heightQuanityModal,
 	},
 
 	modal4: {
