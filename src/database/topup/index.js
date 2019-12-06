@@ -294,7 +294,9 @@ class TopUps {
             let webTopUpsToUpdate = [];
             let isPendingModified = false;
             remoteTopUps.forEach(remoteTopUp => {
+                console.log('remoteTopUp', remoteTopUp);
                 const webTopUpKey = this.makeTopUpKey(remoteTopUp);
+                console.log('webTopUpKey', webTopUpKey);
                 const pendingIndex = this.pendingTopUps.indexOf(
                     webTopUpKey
                 );
@@ -351,7 +353,7 @@ class TopUps {
             // console.log('getTopUps',this.getTopUps());
 
             // console.log('this.pendingTopUps', this.pendingTopUps);
-            // console.log('webTopUpsToUpdate', this.webTopUpsToUpdate);
+             console.log('webTopUpsToUpdate', webTopUpsToUpdate);
             this.mergeRemoteTopUps(webTopUpsToUpdate);
             return {
                 pendingTopUps: this.pendingTopUps.slice(),

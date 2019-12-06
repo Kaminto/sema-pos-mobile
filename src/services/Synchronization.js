@@ -204,6 +204,59 @@ class Synchronization {
 		});
 	}
 
+
+	synchronizeSales() {
+		return new Promise(resolve => {
+			console.log('Synchronization:synchronizeSales - Begin');
+			PosStorage.loadSalesReceipts(this.lastSalesSync)
+				.then(salesReceipts => {
+					console.log(
+						'Synchronization:synchronizeSales - Number of sales receipts: ' +
+						salesReceipts.length
+					);
+					resolve({
+						error: null,
+						localReceipts: salesReceipts.length
+					});
+					salesReceipts.forEach(receipt => {
+						console.log("***********************")
+						console.log(receipt.sale)
+						console.log("***********************")
+
+						Communications.createReceipt(receipt.sale)
+							.then(result => {
+								console.log(
+									'Synchronization:synchronizeSales - success: '
+								);
+								PosStorage.removePendingSale(
+									receipt.key,
+									receipt.sale.id
+								);
+							})
+							.catch(error => {
+								console.log(
+									'Synchronization:synchronizeCustomers Create receipt failed: error-' +
+									error
+								);
+								if (error === 400) {
+									// This is unre-coverable... remove the pending sale
+									PosStorage.removePendingSale(
+										receipt.key,
+										receipt.sale.id
+									);
+								}
+							});
+					});
+				})
+				.catch(error => {
+					resolve({ error: error.message, localReceipts: null });
+					console.log(
+						'Synchronization.synchronizeSales - error ' + error
+					);
+				});
+		});
+	}
+
 	synchronizeCredits() {
 		return new Promise(resolve => {
 			console.log('Synchronization:synchronizeCredits - Begin');
@@ -557,57 +610,7 @@ class Synchronization {
 		});
 	}
 
-	synchronizeSales() {
-		return new Promise(resolve => {
-			console.log('Synchronization:synchronizeSales - Begin');
-			PosStorage.loadSalesReceipts(this.lastSalesSync)
-				.then(salesReceipts => {
-					console.log(
-						'Synchronization:synchronizeSales - Number of sales receipts: ' +
-						salesReceipts.length
-					);
-					resolve({
-						error: null,
-						localReceipts: salesReceipts.length
-					});
-					salesReceipts.forEach(receipt => {
-						console.log("***********************")
-						console.log(receipt.sale)
-						console.log("***********************")
 
-						Communications.createReceipt(receipt.sale)
-							.then(result => {
-								console.log(
-									'Synchronization:synchronizeSales - success: '
-								);
-								PosStorage.removePendingSale(
-									receipt.key,
-									receipt.sale.id
-								);
-							})
-							.catch(error => {
-								console.log(
-									'Synchronization:synchronizeCustomers Create receipt failed: error-' +
-									error
-								);
-								if (error === 400) {
-									// This is unre-coverable... remove the pending sale
-									PosStorage.removePendingSale(
-										receipt.key,
-										receipt.sale.id
-									);
-								}
-							});
-					});
-				})
-				.catch(error => {
-					resolve({ error: error.message, localReceipts: null });
-					console.log(
-						'Synchronization.synchronizeSales - error ' + error
-					);
-				});
-		});
-	}
 
 	async synchronizeReceipts() {
 		let settings = PosStorage.getSettings();
