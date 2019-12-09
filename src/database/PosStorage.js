@@ -19,6 +19,7 @@ const customersKey = '@Sema:CustomersKey';
 const customerItemKey = '@Sema:CustomerItemKey';
 const lastCustomerSyncKey = '@Sema:LastCustomerSyncKey';
 const pendingCustomersKey = '@Sema:PendingCustomersKey';
+
 const customerTypesKey = '@Sema:CustomerTypesKey';
 
 
@@ -32,11 +33,13 @@ const saleItemKey = '@Sema:SaleItemKey';
 const lastSalesSyncKey = '@Sema:LastSalesSyncKey';
 const pendingSalesKey = '@Sema:PendingSalesKey';
 const remoteReceiptsKey = '@Sema:remoteReceiptsKey';
+
 const salesChannelsKey = '@Sema:SalesChannelsKey';
 
 
 const inventoriesKey = '@Sema:inventoriesKey';
 const inventoryItemKey = '@Sema:InventoryItemKey';
+
 const reminderDataKey = '@Sema:remindersDataKey';
 
 const tokenExpirationKey = '@Sema:TokenExpirationKey';
@@ -1529,6 +1532,7 @@ class PosStorage {
 	}
 
 	addOrUpdateInventoryItem(inventory, inventoryDate) {
+		console.log('inventory', inventory);
 		console.log('PosStorage: getInventoryItem');
 		if (typeof inventoryDate == 'string') {
 			inventoryDate = new Date(inventoryDate);

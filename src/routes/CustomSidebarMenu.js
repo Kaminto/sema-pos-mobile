@@ -233,8 +233,7 @@ class CustomSidebarMenu extends Component {
 							'customers-updated'
 						)}
         ${syncResult.products.remoteProducts} ${i18n.t('products-updated')}
-        ${syncResult.topups.localTopup +
-          syncResult.topups.remoteTopup} ${i18n.t(
+        ${syncResult.topups.localTopup} ${i18n.t(
             'topups-updated'
           )}
 				${syncResult.sales.localReceipts} ${i18n.t('sales-receipts-updated')}
