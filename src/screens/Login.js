@@ -200,7 +200,7 @@ class Login extends Component {
 
 
 
-							<View
+							{/* <View
 								style={{
 									flexDirection: 'row',
 									flex: 1,
@@ -216,7 +216,7 @@ class Login extends Component {
 										label={i18n.t('sync-now')}
 									/>
 								)}
-							</View>
+							</View> */}
 						</View>
 					</KeyboardAwareScrollView>
 					{this.state.animating && (
@@ -440,7 +440,14 @@ class Login extends Component {
 
 		console.log(this.props.settings.loginSync);
 		if (this.props.settings.loginSync) {
-			this.loginWithSync();
+			this.loginWithSync()
+				.then(data => {
+					console.log('data', data);
+					this.props.navigation.navigate('App');
+				})
+				.catch(error => {
+					console.log('error', error);
+				});
 
 		}
 
@@ -457,52 +464,24 @@ class Login extends Component {
 							JSON.stringify(result.response)
 						);
 						if (result.status === 200) {
-							console.log('reponse',result.response);
-							console.log('kiosks',result.response.data.kioskUser);
+							console.log('reponse', result.response);
+							console.log('kiosks', result.response.data.kioskUser);
 							//'UGTraining',
-							Communications.getSiteId(
+
+							console.log('siteId', result.response.data.kiosk.id)
+							this.props.authActions.isAuth(true);
+							this.saveSettings(
+								result.response.data.kiosk.name,
 								result.response.token,
-								result.response.data.kiosk.name
-							)
-								.then(async siteId => {
-									if (siteId === -1) {
-										message = i18n.t(
-											'successful-connection-but',
-											{
-												what: this.site.current.state
-													.propertyText,
-												happened: i18n.t('does-not-exist')
-											}
-										);
-									} else if (siteId === -2) {
-										message = i18n.t(
-											'successful-connection-but',
-											{
-												what: this.site.current.state
-													.propertyText,
-												happened: i18n.t('is-not-active')
-											}
-										);
-									} else {
+								result.response.data.kiosk.id
+							);
+							Communications.setToken(
+								result.response.token
+							);
+							Communications.setSiteId(result.response.data.kiosk.id);
+							PosStorage.setTokenExpiration();
+							this.props.navigation.navigate('App');
 
-										console.log('siteId', siteId)
-										this.props.authActions.isAuth(true);
-										this.saveSettings(
-											result.response.data.kiosk.name,
-											result.response.token,
-											siteId
-										);
-										Communications.setToken(
-											result.response.token
-										);
-										Communications.setSiteId(siteId);
-										PosStorage.setTokenExpiration();
-										this.props.navigation.navigate('App');
-
-									}
-
-								})
-								.catch(error => { });
 						} else {
 							this.setState({ animating: false });
 							message =
@@ -534,36 +513,7 @@ class Login extends Component {
 						);
 					});
 
-				// Communications.login()
-				// 	.then(result => {
-				// 		if (result.status === 200) {
-				// 			let message = i18n.t('successful-connection');
-				// 			Alert.alert(
-				// 				i18n.t('network-connection'),
-				// 				message,
-				// 				[{ text: i18n.t('ok'), style: 'cancel' }],
-				// 				{ cancelable: true }
-				// 			);
-				// 			Communications.setToken(
-				// 				result.response.token
-				// 			);
-				// 		} else {
-				// 			this.setState({ animating: false });
-				// 			message =
-				// 				result.response.msg +
-				// 				'(Error code: ' +
-				// 				result.status +
-				// 				')';
-				// 			Alert.alert(
-				// 				i18n.t('network-connection'),
-				// 				message,
-				// 				[{ text: i18n.t('ok'), style: 'cancel' }],
-				// 				{ cancelable: true }
-				// 			);
-				// 		}
-				// 	})
-
-				//this.props.navigation.navigate('App');
+			
 			} else {
 				this.setState({ animating: true });
 				Alert.alert(
@@ -580,151 +530,130 @@ class Login extends Component {
 
 
 	loginWithSync() {
-
-		try {
-			let message = i18n.t('successful-connection');
-			Communications.login()
-				.then(result => {
-					console.log(
-						'Passed - status' +
-						result.status +
-						' ' +
-						JSON.stringify(result.response)
-					);
-					if (result.status === 200) {
-
-						console.log(result.response.token);
-						console.log('kiosks',result.response.data.kiosk);
-						console.log('kiosks',result.response.data.kioskUser);
-						
-						// Communications.getSiteId(
-						// 	result.response.token,
-						// 	result.response.data.kiosk.name
-						// )
-						// 	.then(siteId => {
-						// 		console.log(siteId);
-						// 	}).catch(error => {
-						// 		console.log(error);
-						// 	});
-
-
-						Communications.getSiteId(
-							result.response.token,
-							result.response.data.kiosk.name
-						)
-							.then(async siteId => {
-								console.log(
-									'siteId - siteId' +
-									siteId 
-								);
-								if (siteId === -1) {
-									message = i18n.t(
-										'successful-connection-but',
-										{
-											what: this.site.current.state
-												.propertyText,
-											happened: i18n.t('does-not-exist')
-										}
-									);
-								} else if (siteId === -2) {
-									message = i18n.t(
-										'successful-connection-but',
-										{
-											what: this.site.current.state
-												.propertyText,
-											happened: i18n.t('is-not-active')
-										}
-									);
-								} else {
-									this.props.authActions.isAuth(true);
-									this.saveSettings(
-										result.response.data.kiosk.name,
-										result.response.token,
-										siteId
-									);
-									Communications.setToken(
-										result.response.token
-									);
-									Communications.setSiteId(siteId);
-									PosStorage.setTokenExpiration();
-									await Synchronization.synchronizeSalesChannels();
-									Synchronization.scheduleSync();
-
-									let date = new Date();
-									//date.setDate(date.getDate() - 30);
-									date.setDate(date.getDate() - 7);
-								//	this.props.navigation.navigate('App');
-									Communications.getReceiptsBySiteIdAndDate(
-										siteId,
-										date
-									)
-										.then(json => {
-											console.log('ORIGINAL');
-											console.log(JSON.stringify(json));
-											console.log('END');
-
-											PosStorage.addRemoteReceipts(
-												json
-											).then(saved => {
-												console.log('SAVED');
-												console.log(
-													JSON.stringify(saved)
-												);
-												console.log('END');
-												this.setState({ animating: false });
-												Alert.alert(
-													i18n.t('network-connection'),
-													message,
-													[{ text: i18n.t('ok'), style: 'cancel' }],
-													{ cancelable: true }
-												);
-												this.loadSyncedData();
-												this.props.navigation.navigate('App');
-												Events.trigger(
-													'ReceiptsFetched',
-													saved
-												);
-											});
-										})
-										.catch(error => { });
-								}
-
-							})
-							.catch(error => { });
-					} else {
-						this.setState({ animating: false });
-						message =
-							result.response.msg +
-							'(Error code: ' +
+		return new Promise((resolve, reject) => {
+			try {
+				let message = i18n.t('successful-connection');
+				Communications.login()
+					.then(async result => {
+						console.log(
+							'Passed - status' +
 							result.status +
-							')';
+							' ' +
+							JSON.stringify(result.response)
+						);
+						if (result.status === 200) {
+
+							console.log(result.response.token);
+							console.log('kiosks', result.response.data.kiosk);
+							console.log('kiosks', result.response.data.kioskUser);
+
+							this.props.authActions.isAuth(true);
+							this.saveSettings(
+								result.response.data.kiosk.name,
+								result.response.token,
+								result.response.data.kiosk.id
+							);
+							Communications.setToken(
+								result.response.token
+							);
+							Communications.setSiteId(result.response.data.kiosk.id);
+							PosStorage.setTokenExpiration();
+							await Synchronization.synchronizeSalesChannels();
+							Synchronization.scheduleSync();
+
+							let date = new Date();
+							//date.setDate(date.getDate() - 30);
+							date.setDate(date.getDate() - 7);
+							//	this.props.navigation.navigate('App');
+							Communications.getReceiptsBySiteIdAndDate(
+								result.response.data.kiosk.id,
+								date
+							)
+								.then(json => {
+									console.log('ORIGINAL');
+									console.log(JSON.stringify(json));
+									console.log('END');
+
+									resolve({
+										status: 200,
+										response: 'Success'
+									});
+									PosStorage.addRemoteReceipts(
+										json
+									).then(saved => {
+										console.log('SAVED');
+										console.log(
+											JSON.stringify(saved)
+										);
+										console.log('END');
+										this.setState({ animating: false });
+										Alert.alert(
+											i18n.t('network-connection'),
+											message,
+											[{ text: i18n.t('ok'), style: 'cancel' }],
+											{ cancelable: true }
+										);
+										this.loadSyncedData();
+
+										Events.trigger(
+											'ReceiptsFetched',
+											saved
+										);
+									});
+								})
+								.catch(error => {
+									reject({
+										status: 418,
+										response: error
+									});
+								});
+
+
+						} else {
+							this.setState({ animating: false });
+							message =
+								result.response.msg +
+								'(Error code: ' +
+								result.status +
+								')';
+							Alert.alert(
+								i18n.t('network-connection'),
+								message,
+								[{ text: i18n.t('ok'), style: 'cancel' }],
+								{ cancelable: true }
+							);
+						}
+					})
+					.catch(result => {
+						console.log(
+							'Failed- status ' +
+							result.status +
+							' ' +
+							result.response.message
+						);
+						this.setState({ animating: false });
+						reject({
+							status: 418,
+							response: 'error'
+						});
 						Alert.alert(
 							i18n.t('network-connection'),
-							message,
+							result.response.message + '. (' + result.status + ')',
 							[{ text: i18n.t('ok'), style: 'cancel' }],
 							{ cancelable: true }
 						);
-					}
-				})
-				.catch(result => {
-					console.log(
-						'Failed- status ' +
-						result.status +
-						' ' +
-						result.response.message
-					);
-					this.setState({ animating: false });
-					Alert.alert(
-						i18n.t('network-connection'),
-						result.response.message + '. (' + result.status + ')',
-						[{ text: i18n.t('ok'), style: 'cancel' }],
-						{ cancelable: true }
-					);
+					});
+			} catch (error) {
+				this.setState({ animating: false });
+				console.log(JSON.stringify(error));
+				reject({
+					status: 418,
+					response: error
 				});
-		} catch (error) {
-			this.setState({ animating: false });
-			console.log(JSON.stringify(error));
-		}
+			}
+
+		});
+
 	}
 
 
