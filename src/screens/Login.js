@@ -457,27 +457,6 @@ class Login extends Component {
 							JSON.stringify(result.response)
 						);
 						if (result.status === 200) {
-<<<<<<< HEAD
-							let message = i18n.t('successful-connection');
-							Alert.alert(
-								i18n.t('network-connection'),
-								message,
-								[{ text: i18n.t('ok'), style: 'cancel' }],
-								{ cancelable: true }
-							);
-							this.saveSettings(
-								result.response.data.kiosks[0].name,
-								result.response.token,
-								siteId
-							);
-							Communications.setToken(
-								result.response.token
-							);
-							Communications.setSiteId(siteId);
-							// Communications.setToken(
-							// 	result.response.token
-							// );
-=======
 							console.log('reponse',result.response);
 							console.log('kiosks',result.response.data.kioskUser);
 							//'UGTraining',
@@ -524,7 +503,6 @@ class Login extends Component {
 
 								})
 								.catch(error => { });
->>>>>>> c69e48c6201823847be54d8f9b4ccf2bf5263836
 						} else {
 							this.setState({ animating: false });
 							message =
@@ -618,7 +596,7 @@ class Login extends Component {
 						console.log(result.response.token);
 						console.log('kiosks',result.response.data.kiosk);
 						console.log('kiosks',result.response.data.kioskUser);
-						
+
 						// Communications.getSiteId(
 						// 	result.response.token,
 						// 	result.response.data.kiosk.name
@@ -637,7 +615,7 @@ class Login extends Component {
 							.then(async siteId => {
 								console.log(
 									'siteId - siteId' +
-									siteId 
+									siteId
 								);
 								if (siteId === -1) {
 									message = i18n.t(
@@ -1182,11 +1160,7 @@ function mapDispatchToProps(dispatch) {
 	return {
 		networkActions: bindActionCreators(NetworkActions, dispatch),
 		toolbarActions: bindActionCreators(ToolbarActions, dispatch),
-<<<<<<< HEAD
-        topUpActions: bindActionCreators(TopUpActions, dispatch),
-=======
 		topUpActions: bindActionCreators(TopUpActions, dispatch),
->>>>>>> c69e48c6201823847be54d8f9b4ccf2bf5263836
 		settingsActions: bindActionCreators(SettingsActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
 		authActions: bindActionCreators(AuthActions, dispatch)

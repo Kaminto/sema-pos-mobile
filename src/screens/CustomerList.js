@@ -262,11 +262,11 @@ class CustomerList extends Component {
                             {item.phoneNumber}
                         </Text>
                     </View>
-                    <View style={{ flex: 1.5 }}>
+                    {/* <View style={{ flex: 1.5 }}>
                         <Text style={[styles.baseItem]}>
                             {item.secondPhoneNumber || ''}
                         </Text>
-                    </View>
+                    </View> */}
                     <View style={{ flex: 2 }}>
                         <Text style={[styles.baseItem]}>{item.address}</Text>
                     </View>
@@ -423,11 +423,11 @@ class CustomerList extends Component {
                         {i18n.t('telephone-number')}
                     </Text>
                 </View>
-                <View style={[{ flex: 1.5 }]}>
+                {/* <View style={[{ flex: 1.5 }]}>
                     <Text style={[styles.headerItem]}>
                         {i18n.t('second-phone-number')}
                     </Text>
-                </View>
+                </View> */}
                 <View style={[{ flex: 2 }]}>
                     <Text style={[styles.headerItem]}>{i18n.t('address')}</Text>
                 </View>
