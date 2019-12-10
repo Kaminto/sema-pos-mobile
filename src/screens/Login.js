@@ -47,7 +47,7 @@ const supportedUILanguages = [
 	{ name: 'Français', iso_code: 'fr' },
 	{ name: 'Kreyòl Ayisyen', iso_code: 'ht' }
 ];
- 
+
 class SettingsButton extends Component {
 	render() {
 		return (
@@ -206,7 +206,7 @@ class Login extends Component {
 									flex: 1,
 									alignItems: 'center'
 								}}>
-								
+
 								{this.state.isLoggedIn && (
 									<SettingsButton
 										pressFn={this.onSynchronize.bind(this)}
@@ -437,7 +437,7 @@ class Login extends Component {
 			this.state.user,
 			this.state.password
 		);
- 
+
 		console.log(this.props.settings.loginSync);
 		if (this.props.settings.loginSync) {
 			this.loginWithSync();
@@ -458,9 +458,18 @@ class Login extends Component {
 								[{ text: i18n.t('ok'), style: 'cancel' }],
 								{ cancelable: true }
 							);
+							this.saveSettings(
+								result.response.data.kiosks[0].name,
+								result.response.token,
+								siteId
+							);
 							Communications.setToken(
 								result.response.token
 							);
+							Communications.setSiteId(siteId);
+							// Communications.setToken(
+							// 	result.response.token
+							// );
 						} else {
 							this.setState({ animating: false });
 							message =
@@ -482,7 +491,7 @@ class Login extends Component {
 				this.setState({ animating: true });
 				Alert.alert(
 					i18n.t('network-connection'),
-					'Wrong Credetials have been Provided',
+					'Wrong Credentials have been Provided',
 					[{ text: i18n.t('ok'), style: 'cancel' }],
 					{ cancelable: true }
 				);
@@ -1063,7 +1072,7 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
 	return {
 		networkActions: bindActionCreators(NetworkActions, dispatch),
-		toolbarActions: bindActionCreators(ToolbarActions, dispatch),		
+		toolbarActions: bindActionCreators(ToolbarActions, dispatch),
         topUpActions: bindActionCreators(TopUpActions, dispatch),
 		settingsActions: bindActionCreators(SettingsActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),

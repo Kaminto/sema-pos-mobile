@@ -223,22 +223,7 @@ const createInventory = (salesData, inventorySettings, products) => {
 	salesAndProducts.salesItems = salesData.salesItems.slice();
 
 	let emptyProducts = [];
-	// products = products.filter(p => p.categoryId === 3);
-		// .filter(p => p.description.includes('refill'));
-
-	var productskus_excluded = [
-		'0224',
-		'0220',
-		'0212',
-		'0210',
-		'0200',
-		'0180',
-		'0170',
-		'0150',
-		'0142',
-		'0141',
-		'0140'
-	];
+	products = products.filter(p => p.categoryId === 3);
 
 	for (const prod of products) {
 		if (isNotIncluded(prod, salesAndProducts.salesItems)) {
