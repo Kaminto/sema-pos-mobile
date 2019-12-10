@@ -441,7 +441,7 @@ class Login extends Component {
 		console.log(this.props.settings.loginSync);
 		if (this.props.settings.loginSync) {
 			this.loginWithSync();
-			this.props.navigation.navigate('App');
+
 		}
 
 		if (!this.props.settings.loginSync) {
@@ -450,7 +450,14 @@ class Login extends Component {
 
 				Communications.login()
 					.then(result => {
+						console.log(
+							'Passed - status' +
+							result.status +
+							' ' +
+							JSON.stringify(result.response)
+						);
 						if (result.status === 200) {
+<<<<<<< HEAD
 							let message = i18n.t('successful-connection');
 							Alert.alert(
 								i18n.t('network-connection'),
@@ -470,6 +477,54 @@ class Login extends Component {
 							// Communications.setToken(
 							// 	result.response.token
 							// );
+=======
+							console.log('reponse',result.response);
+							console.log('kiosks',result.response.data.kioskUser);
+							//'UGTraining',
+							Communications.getSiteId(
+								result.response.token,
+								result.response.data.kiosk.name
+							)
+								.then(async siteId => {
+									if (siteId === -1) {
+										message = i18n.t(
+											'successful-connection-but',
+											{
+												what: this.site.current.state
+													.propertyText,
+												happened: i18n.t('does-not-exist')
+											}
+										);
+									} else if (siteId === -2) {
+										message = i18n.t(
+											'successful-connection-but',
+											{
+												what: this.site.current.state
+													.propertyText,
+												happened: i18n.t('is-not-active')
+											}
+										);
+									} else {
+
+										console.log('siteId', siteId)
+										this.props.authActions.isAuth(true);
+										this.saveSettings(
+											result.response.data.kiosk.name,
+											result.response.token,
+											siteId
+										);
+										Communications.setToken(
+											result.response.token
+										);
+										Communications.setSiteId(siteId);
+										PosStorage.setTokenExpiration();
+										this.props.navigation.navigate('App');
+
+									}
+
+								})
+								.catch(error => { });
+>>>>>>> c69e48c6201823847be54d8f9b4ccf2bf5263836
 						} else {
 							this.setState({ animating: false });
 							message =
@@ -485,8 +540,52 @@ class Login extends Component {
 							);
 						}
 					})
+					.catch(result => {
+						console.log(
+							'Failed- status ' +
+							result.status +
+							' ' +
+							result.response.message
+						);
+						this.setState({ animating: false });
+						Alert.alert(
+							i18n.t('network-connection'),
+							result.response.message + '. (' + result.status + ')',
+							[{ text: i18n.t('ok'), style: 'cancel' }],
+							{ cancelable: true }
+						);
+					});
 
-				this.props.navigation.navigate('App');
+				// Communications.login()
+				// 	.then(result => {
+				// 		if (result.status === 200) {
+				// 			let message = i18n.t('successful-connection');
+				// 			Alert.alert(
+				// 				i18n.t('network-connection'),
+				// 				message,
+				// 				[{ text: i18n.t('ok'), style: 'cancel' }],
+				// 				{ cancelable: true }
+				// 			);
+				// 			Communications.setToken(
+				// 				result.response.token
+				// 			);
+				// 		} else {
+				// 			this.setState({ animating: false });
+				// 			message =
+				// 				result.response.msg +
+				// 				'(Error code: ' +
+				// 				result.status +
+				// 				')';
+				// 			Alert.alert(
+				// 				i18n.t('network-connection'),
+				// 				message,
+				// 				[{ text: i18n.t('ok'), style: 'cancel' }],
+				// 				{ cancelable: true }
+				// 			);
+				// 		}
+				// 	})
+
+				//this.props.navigation.navigate('App');
 			} else {
 				this.setState({ animating: true });
 				Alert.alert(
@@ -515,11 +614,31 @@ class Login extends Component {
 						JSON.stringify(result.response)
 					);
 					if (result.status === 200) {
+
+						console.log(result.response.token);
+						console.log('kiosks',result.response.data.kiosk);
+						console.log('kiosks',result.response.data.kioskUser);
+						
+						// Communications.getSiteId(
+						// 	result.response.token,
+						// 	result.response.data.kiosk.name
+						// )
+						// 	.then(siteId => {
+						// 		console.log(siteId);
+						// 	}).catch(error => {
+						// 		console.log(error);
+						// 	});
+
+
 						Communications.getSiteId(
 							result.response.token,
-							result.response.data.kiosks[0].name
+							result.response.data.kiosk.name
 						)
 							.then(async siteId => {
+								console.log(
+									'siteId - siteId' +
+									siteId 
+								);
 								if (siteId === -1) {
 									message = i18n.t(
 										'successful-connection-but',
@@ -541,7 +660,7 @@ class Login extends Component {
 								} else {
 									this.props.authActions.isAuth(true);
 									this.saveSettings(
-										result.response.data.kiosks[0].name,
+										result.response.data.kiosk.name,
 										result.response.token,
 										siteId
 									);
@@ -556,6 +675,7 @@ class Login extends Component {
 									let date = new Date();
 									//date.setDate(date.getDate() - 30);
 									date.setDate(date.getDate() - 7);
+								//	this.props.navigation.navigate('App');
 									Communications.getReceiptsBySiteIdAndDate(
 										siteId,
 										date
@@ -590,18 +710,7 @@ class Login extends Component {
 										})
 										.catch(error => { });
 								}
-								// this.setState({ animating: false });
-								// Alert.alert(
-								// 	i18n.t('network-connection'),
-								// 	message,
-								// 	[{ text: i18n.t('ok'), style: 'cancel' }],
-								// 	{ cancelable: true }
-								// );
 
-								// if (siteId !== -1 && siteId !== -2) {
-								// 	console.log(siteId);
-								// 	this.props.navigation.navigate('App');
-								// }
 							})
 							.catch(error => { });
 					} else {
@@ -697,10 +806,10 @@ class Login extends Component {
 					if (result.status === 200) {
 						console.log(result);
 
-						// console.log("Response site name: " + result.response.data.kiosks[0].name);
+						// console.log("Response site name: " + result.response.data.kiosk.name);
 						Communications.getSiteId(
 							result.response.token,
-							result.response.data.kiosks[0].name
+							result.response.data.kiosk.name
 						)
 							.then(async siteId => {
 								if (siteId === -1) {
@@ -724,7 +833,7 @@ class Login extends Component {
 								} else {
 									this.props.authActions.isAuth(true);
 									this.saveSettings(
-										result.response.data.kiosks[0].name,
+										result.response.data.kiosk.name,
 										result.response.token,
 										siteId
 									);
@@ -837,12 +946,12 @@ class Login extends Component {
 						this.saveSettings(
 							"http://142.93.115.206:3006/",
 							result.response.token,
-							result.response.data.kiosks[0].name
+							result.response.data.kiosk.name
 						);
-						// console.log("Response site name: " + result.response.data.kiosks[0].name);
+						// console.log("Response site name: " + result.response.data.kiosk.name);
 						Communications.getSiteId(
 							result.response.token,
-							result.response.data.kiosks[0].name
+							result.response.data.kiosk.name
 						)
 							.then(async siteId => {
 								if (siteId === -1) {
@@ -866,7 +975,7 @@ class Login extends Component {
 								} else {
 									this.props.authActions.isAuth(true);
 									this.saveSettings(
-										result.response.data.kiosks[0].name,
+										result.response.data.kiosk.name,
 										result.response.token,
 										siteId
 									);
@@ -1073,7 +1182,11 @@ function mapDispatchToProps(dispatch) {
 	return {
 		networkActions: bindActionCreators(NetworkActions, dispatch),
 		toolbarActions: bindActionCreators(ToolbarActions, dispatch),
+<<<<<<< HEAD
         topUpActions: bindActionCreators(TopUpActions, dispatch),
+=======
+		topUpActions: bindActionCreators(TopUpActions, dispatch),
+>>>>>>> c69e48c6201823847be54d8f9b4ccf2bf5263836
 		settingsActions: bindActionCreators(SettingsActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
 		authActions: bindActionCreators(AuthActions, dispatch)

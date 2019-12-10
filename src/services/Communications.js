@@ -52,6 +52,7 @@ class Communications {
 				fetch(this._url + 'sema/login', options)
 					.then(response => {
 						console.log("Status " + response.status);
+						console.log("responseresponse " + response);
 						if (response.status == 200) {
 							response
 								.json()
@@ -118,7 +119,7 @@ class Communications {
 		return new Promise((resolve, reject) => {
 			fetch(this._url + 'sema/kiosks', options)
 				.then(response => {
-					console.log(response.status);
+					console.log(response);
 					response
 						.json()
 						.then(responseJson => {
@@ -312,6 +313,7 @@ class Communications {
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.then(responseJson => {
+				console.log('Communications:getProducts: ' , responseJson.products);
 				return responseJson;
 			})
 			.catch(error => {
@@ -517,7 +519,7 @@ class Communications {
 		let url = `sema/site/receipts/${siteId}?date=${moment
 			.tz(new Date(Date.now()), moment.tz.guess())
 			.format('YYYY-MM-DD')}`;
-
+console.log(this._url + url);
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.catch(error => {
