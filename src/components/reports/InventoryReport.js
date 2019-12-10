@@ -345,6 +345,10 @@ class InventoryReport extends Component {
 
 
 	updateReport() {
+		console.log('startDate', this.startDate);
+		console.log('endDate', this.endDate);
+		console.log('this.props.products', this.props.products);
+
 		this.props.reportActions.GetInventoryReportData(this.startDate, this.endDate, this.props.products);
 	}
 

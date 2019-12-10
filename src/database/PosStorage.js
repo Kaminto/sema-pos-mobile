@@ -1540,7 +1540,9 @@ class PosStorage {
 
 		return new Promise((resolve, reject) => {
 			let inventoryKey = this._makeInventoryKey(inventoryDate);
+			console.log('inventoryKey', inventoryKey);
 			let existing = this._getInventoryItemKey(inventoryDate);
+			console.log('existing', existing);
 			if (existing != null) {
 				this.setKey(inventoryKey, this.stringify(inventory)).then(
 					error => {
@@ -1552,6 +1554,9 @@ class PosStorage {
 					}
 				);
 			} else {
+				console.log('existing', existing);
+				console.log('inventoryDate', inventoryDate);
+				console.log('inventoryKey', inventoryKey);
 				this.inventoriesKeys.push({
 					inventoryDate: inventoryDate,
 					inventoryKey: inventoryKey

@@ -111,22 +111,22 @@ const getSalesData = (beginDate, endDate) => {
 					typeof productIndex !== 'undefined'
 						? final.salesItems[productIndex]
 						: {
-								sku: lineItem.product.sku,
-								description: lineItem.product.description,
-								quantity: Number(lineItem.quantity),
-								category: Number(lineItem.product.categoryId),
-								pricePerSku:
-									parseFloat(lineItem.price_total) /
-									Number(lineItem.quantity),
-								totalSales: parseFloat(lineItem.price_total),
-								litersPerSku: Number(
-									lineItem.product.unitPerProduct
-								),
-								totalLiters:
-									Number(lineItem.product.unitPerProduct) *
-									Number(lineItem.quantity),
-								isNew: true
-						  };
+							sku: lineItem.product.sku,
+							description: lineItem.product.description,
+							quantity: Number(lineItem.quantity),
+							category: Number(lineItem.product.categoryId),
+							pricePerSku:
+								parseFloat(lineItem.price_total) /
+								Number(lineItem.quantity),
+							totalSales: parseFloat(lineItem.price_total),
+							litersPerSku: Number(
+								lineItem.product.unitPerProduct
+							),
+							totalLiters:
+								Number(lineItem.product.unitPerProduct) *
+								Number(lineItem.quantity),
+							isNew: true
+						};
 
 				if (product.isNew) {
 					delete product.isNew;
@@ -170,16 +170,25 @@ const getSalesData = (beginDate, endDate) => {
 
 const getMrps = products => {
 	let productMrp = PosStorage.getProductMrps();
+	console.log('productMrp', productMrp);
+	console.log('Object.keys', Object.keys(productMrp));
 	let ids = Object.keys(productMrp).map(key => productMrp[key].productId);
-	return (result = products.filter(prod => ids.includes(prod.productId)));
+	console.log('idsids', ids);
+	
+	let matchProducts = products.filter(prod => ids.includes(prod.productId));
+	console.log('matchProducts', matchProducts);
+	let waterProducts = matchProducts.filter(prod => 3 === prod.categoryId);
+	console.log('waterProducts', waterProducts);
+	return waterProducts;
 };
 
 export function GetInventoryReportData(beginDate, endDate, products) {
 	console.log('GetInventoryReportData - action');
-
+	console.log('GetInventoryReportData - products',products);
 	return dispatch => {
 		getInventoryData(beginDate, endDate, getMrps(products))
 			.then(inventoryData => {
+				console.log('GetInventoryReportData - products',INVENTORY_REPORT);
 				dispatch({
 					type: INVENTORY_REPORT,
 					data: { inventoryData: inventoryData }
@@ -199,8 +208,11 @@ const getInventoryData = (beginDate, endDate, products) => {
 	return new Promise((resolve, reject) => {
 		getSalesData(beginDate, endDate)
 			.then(salesData => {
+				console.log('salesData', salesData);
+				console.log('products', products);
 				getInventoryItem(beginDate, products)
 					.then(inventorySettings => {
+						console.log('inventorySettings', inventorySettings);
 						let inventoryData = createInventory(
 							salesData,
 							inventorySettings,
@@ -224,7 +236,7 @@ const createInventory = (salesData, inventorySettings, products) => {
 
 	let emptyProducts = [];
 	// products = products.filter(p => p.categoryId === 3);
-		// .filter(p => p.description.includes('refill'));
+	// .filter(p => p.description.includes('refill'));
 
 	var productskus_excluded = [
 		'0224',
@@ -245,14 +257,14 @@ const createInventory = (salesData, inventorySettings, products) => {
 			// if (
 			// 	!productskus_excluded.includes(prod.sku)
 			// ) {
-				emptyProducts.push({
-					sku: prod.sku,
-					description: prod.description,
-					quantity: 0,
-					totalSales: 0,
-					totalLiters: 0,
-					litersPerSku: prod.unitPerProduct
-				});
+			emptyProducts.push({
+				sku: prod.sku,
+				description: prod.description,
+				quantity: 0,
+				totalSales: 0,
+				totalLiters: 0,
+				litersPerSku: prod.unitPerProduct
+			});
 			// }
 		}
 	}
@@ -291,28 +303,30 @@ const getInventoryItem = (beginDate, products) => {
 		const yesterday = new Date(beginDate.getTime() - 24 * 60 * 60 * 1000);
 		const promiseYesterday = PosStorage.getInventoryItem(yesterday);
 		Promise.all([promiseToday, promiseYesterday]).then(inventoryResults => {
+			console.log('inventoryResults', inventoryResults);
 			if (inventoryResults[0] != null) {
 				if (inventoryResults[1]) {
-					inventoryResults[0].previousProductSkus =
-						inventoryResults[1].currentProductSkus;
-					inventoryResults[0].previousMeter =
-						inventoryResults[1].currentMeter;
+					inventoryResults[0].previousProductSkus = inventoryResults[1].currentProductSkus;
+					inventoryResults[0].previousMeter = inventoryResults[1].currentMeter;
 				}
 				resolve(inventoryResults[0]);
 			} else {
 				let newInventory = initializeInventory();
 				newInventory.date = beginDate;
+
+
 				newInventory.currentProductSkus = products.map(product => {
 					return { sku: product.sku, quantity: null };
 				});
+
+
 				newInventory.previousProductSkus = products.map(product => {
 					return { sku: product.sku, quantity: null };
 				});
+
 				if (inventoryResults[1]) {
-					newInventory.previousProductSkus =
-						inventoryResults[1].currentProductSkus;
-					newInventory.previousMeter =
-						inventoryResults[1].currentMeter;
+					newInventory.previousProductSkus = inventoryResults[1].currentProductSkus;
+					newInventory.previousMeter = inventoryResults[1].currentMeter;
 				}
 				resolve(newInventory);
 			}
@@ -341,43 +355,43 @@ export const initializeInventoryData = () => {
 	};
 };
 
-export function getRemindersReport(date){
-    console.log("Getting Reminder Reports ");
+export function getRemindersReport(date) {
+	console.log("Getting Reminder Reports ");
 
-        return (dispatch) => {
-    	    getRemindersAction().then((remindersdata) => {
-		console.log("COMEON WORK"+  remindersdata.length);
-		console.table(remindersdata);
-	    	let rem = filterReminders(remindersdata,date);
-	    	console.log("PREPARED REMINDERS=>"+ rem);
-	    		dispatch({type:REMINDER_REPORT, data:{reminderdata:rem}});
-	    }).catch((error)=>{
-	    	console.log(error);
-	    	    	dispatch({type:REMINDER_REPORT, data:{reminderdata:[]}});
-	    });
-   	    //let reminderz  = getRemindersAction(date);
-	    //dispatch({type:REMINDER_REPORT, data:{reminderdata:reminderz}});
+	return (dispatch) => {
+		getRemindersAction().then((remindersdata) => {
+			console.log("COMEON WORK" + remindersdata.length);
+			console.table(remindersdata);
+			let rem = filterReminders(remindersdata, date);
+			console.log("PREPARED REMINDERS=>" + rem);
+			dispatch({ type: REMINDER_REPORT, data: { reminderdata: rem } });
+		}).catch((error) => {
+			console.log(error);
+			dispatch({ type: REMINDER_REPORT, data: { reminderdata: [] } });
+		});
+		//let reminderz  = getRemindersAction(date);
+		//dispatch({type:REMINDER_REPORT, data:{reminderdata:reminderz}});
 	};
 }
 
 
 const getRemindersAction = () => {
-    //console.log("GETTING REMINDERS FOR =>"+date);
-    return new Promise(async (resolve,reject)=>{
-    	let reminders = PosStorage.getRemindersPos();
-    	resolve(reminders);
-    });
-    //let reminders = PosStorage.getRemindersPos();
-    // let filterReminders = reminders.filter(reminder =>{ reminder.reminder_date == moment(date).add('days',1).format("YYYY-MM-DD");});
-    // return reminders;
+	//console.log("GETTING REMINDERS FOR =>"+date);
+	return new Promise(async (resolve, reject) => {
+		let reminders = PosStorage.getRemindersPos();
+		resolve(reminders);
+	});
+	//let reminders = PosStorage.getRemindersPos();
+	// let filterReminders = reminders.filter(reminder =>{ reminder.reminder_date == moment(date).add('days',1).format("YYYY-MM-DD");});
+	// return reminders;
 };
 
-const filterReminders = (reminders, date)=>{
-    console.log("This is in FILTERS "+Object.keys(reminders));
-    let filteredReminders = reminders.filter(reminder =>{
-	return reminder.reminder_date == moment(date).add(1,'days').format("YYYY-MM-DD");
-    });
+const filterReminders = (reminders, date) => {
+	console.log("This is in FILTERS " + Object.keys(reminders));
+	let filteredReminders = reminders.filter(reminder => {
+		return reminder.reminder_date == moment(date).add(1, 'days').format("YYYY-MM-DD");
+	});
 
-    console.table(filteredReminders);
-    return filteredReminders;
+	console.table(filteredReminders);
+	return filteredReminders;
 };

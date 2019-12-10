@@ -280,10 +280,10 @@ class Synchronization {
 						);
 						
 						pendingTopUps.forEach(topup => {
-							console.log('topup',topup);
+							//console.log('topup',topup);
 							// TopUps.getTopUpFromKey(topUpKey).then(
 							// 	topup => {
-									console.log('topup',topup)
+								//	console.log('topup',topup)
 									if (topup != null) {
 										if (topup.syncAction === 'create') {
 											console.log(
@@ -536,6 +536,10 @@ class Synchronization {
 							'Synchronization:synchronizeProducts. No of new remote products: ' +
 							products.products.length
 						);
+						console.log(
+							'Synchronization:synchronizeProducts. No of new remote products: ' ,
+							products.products
+						);
 						const updated = PosStorage.mergeProducts(
 							products.products
 						);
@@ -700,6 +704,7 @@ class Synchronization {
 			// TODO: Figure out a more scalable approach to this. As the product_mrp table may grow fast.
 			Communications.getProductMrps(null, false)
 				.then(productMrps => {
+					console.log('productMrps',productMrps);
 					if (productMrps.hasOwnProperty('productMRPs')) {
 						console.log(
 							'Synchronization:synchronizeProductMrps. No of remote product MRPs: ' +
