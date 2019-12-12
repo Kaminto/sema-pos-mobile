@@ -657,7 +657,9 @@ class OrderPaymentScreen extends Component {
 					this.props.selectedCustomer.name,
 					this.props.selectedCustomer.address,
 					this.props.selectedCustomer.salesChannelId,
-					this.props.selectedCustomer.frequency
+					this.props.selectedCustomer.customerTypeId,
+					this.props.selectedCustomer.frequency,
+					this.props.selectedCustomer.secondPhoneNumber
 				);
 			} else if (payoff > 0) {
 				this.props.selectedCustomer.dueAmount -= payoff;
@@ -667,7 +669,9 @@ class OrderPaymentScreen extends Component {
 					this.props.selectedCustomer.name,
 					this.props.selectedCustomer.address,
 					this.props.selectedCustomer.salesChannelId,
-					this.props.selectedCustomer.frequency
+					this.props.selectedCustomer.customerTypeId,
+					this.props.selectedCustomer.frequency,
+					this.props.selectedCustomer.secondPhoneNumber
 				);
 			}
 		} else {
@@ -679,7 +683,9 @@ class OrderPaymentScreen extends Component {
 					this.props.selectedCustomer.name,
 					this.props.selectedCustomer.address,
 					this.props.selectedCustomer.salesChannelId,
-					this.props.selectedCustomer.frequency
+					this.props.selectedCustomer.customerTypeId,
+					this.props.selectedCustomer.frequency,
+					this.props.selectedCustomer.secondPhoneNumber
 				);
 			}
 		}
