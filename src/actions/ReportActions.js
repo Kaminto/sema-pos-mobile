@@ -49,8 +49,8 @@ export function setReportFilter(startDate, endDate) {
 
 const getSalesData = (beginDate, endDate) => {
 	return new Promise(async (resolve, reject) => {
-		const loggedReceipts = await PosStorage.loadRemoteReceipts();
-
+		const loggedReceipts = PosStorage.getRemoteReceipts();
+		console.log('loggedReceipts', loggedReceipts)
 		const filteredReceipts = loggedReceipts.filter(receipt =>
 			moment
 				.tz(new Date(receipt.created_at), moment.tz.guess())
@@ -65,10 +65,12 @@ const getSalesData = (beginDate, endDate) => {
 				if (!receipt.isLocal) {
 					receipt.receipt_line_items = receipt.receipt_line_items.map(
 						item => {
+							console.log('item', item)
 							item.product = {
 								active: item.product.active,
 								categoryId: item.product.category_id,
-								cogsAmount: item.product.cogsAmount,
+								cogsAmount: item.product.cogs_amount,
+								wastageName: item.product.wastage_name,
 								description: item.product.description,
 								maximumQuantity: item.product.maximum_quantity,
 								minimumQuantity: item.product.minimum_quantity,
@@ -105,13 +107,14 @@ const getSalesData = (beginDate, endDate) => {
 		const finalData = allReceiptLineItems.reduce(
 			(final, lineItem) => {
 				const productIndex = final.mapping.get(lineItem.product.sku);
-
+				console.log('lineItem', lineItem)
 				// Note how we explicitly check it's undefined. The index could be 0
 				const product =
 					typeof productIndex !== 'undefined'
 						? final.salesItems[productIndex]
 						: {
 							sku: lineItem.product.sku,
+							wastageName: lineItem.product.wastageName,
 							description: lineItem.product.description,
 							quantity: Number(lineItem.quantity),
 							category: Number(lineItem.product.categoryId),
@@ -184,11 +187,11 @@ const getMrps = products => {
 
 export function GetInventoryReportData(beginDate, endDate, products) {
 	console.log('GetInventoryReportData - action');
-	console.log('GetInventoryReportData - products',products);
+	console.log('GetInventoryReportData - products', products);
 	return dispatch => {
 		getInventoryData(beginDate, endDate, getMrps(products))
 			.then(inventoryData => {
-				console.log('GetInventoryReportData - products',INVENTORY_REPORT);
+				console.log('GetInventoryReportData - products', INVENTORY_REPORT);
 				dispatch({
 					type: INVENTORY_REPORT,
 					data: { inventoryData: inventoryData }
@@ -233,54 +236,84 @@ const getInventoryData = (beginDate, endDate, products) => {
 const createInventory = (salesData, inventorySettings, products) => {
 	let salesAndProducts = { ...salesData };
 	salesAndProducts.salesItems = salesData.salesItems.slice();
-
 	let emptyProducts = [];
-	products = products.filter(p => p.categoryId === 3);
-
 	for (const prod of products) {
 		if (isNotIncluded(prod, salesAndProducts.salesItems)) {
-			// if (
-			// 	!productskus_excluded.includes(prod.sku)
-			// ) {
 			emptyProducts.push({
 				sku: prod.sku,
 				description: prod.description,
 				quantity: 0,
 				totalSales: 0,
 				totalLiters: 0,
-				litersPerSku: prod.unitPerProduct
+				litersPerSku: prod.unitPerProduct,
+				wastageName: prod.wastageName
 			});
-			// }
 		}
 	}
-
 	salesAndProducts.salesItems = salesAndProducts.salesItems.concat(
 		emptyProducts
 	);
 
-	// for (let index = 0; index < salesAndProducts.salesItems.length; index++) {
-	// 	if (productskus_excluded.includes(salesAndProducts.salesItems[index].sku)) {
-	// 		console.log(salesAndProducts.salesItems[index].description + " excluded. Sales & Products" + salesAndProducts.salesItems[index].sku);
-	// 		salesAndProducts.salesItems.splice(index, 1);
-	// 	}
-	// }
+	console.log('salesAndProducts', salesAndProducts.salesItems);
 
+	const groupWastageName = groupBy('wastageName');
+
+	console.log('groupSales', groupWastageName(salesAndProducts.salesItems));
+
+	console.log('SalesObject', Object.values(groupWastageName(salesAndProducts.salesItems)));
+	let salesArray = Object.values(groupWastageName(salesAndProducts.salesItems));
+
+	let newSalesArray = [];
+	for (var i in salesArray) {
+		salesTotal = 0;
+		litersTotal = 0;
+		litersPerSkuTotal = 0;
+		quantityTotal = 0;
+		for (var a in salesArray[i]) {
+			if (salesArray[i][a].wastageName != null) {
+				salesTotal = salesTotal + salesArray[i][a].totalSales;
+				litersTotal = litersTotal + salesArray[i][a].totalLiters;
+				litersPerSkuTotal = litersPerSkuTotal + salesArray[i][a].litersPerSku;
+				quantityTotal = quantityTotal + salesArray[i][a].quantity;
+			}
+		}
+
+		if (salesArray[i][0].wastageName != null) {
+			newSalesArray.push({
+				wastageName: salesArray[i][0].wastageName,
+				totalSales: salesTotal,
+				totalLiters: litersTotal,
+				litersPerSku: litersPerSkuTotal,
+				quantity: quantityTotal
+			});
+		}
+	}
+	console.log('newSalesArray', newSalesArray);
+
+
+	salesAndProducts.salesItems = newSalesArray;
 	let inventoryData = {
 		salesAndProducts: salesAndProducts,
 		inventory: inventorySettings
 	};
-
 	return inventoryData;
 };
 
 const isNotIncluded = (product, salesAndProducts) => {
 	for (let index = 0; index < salesAndProducts.length; index++) {
-		if (salesAndProducts[index].sku == product.sku) {
+		if (salesAndProducts[index].wastageName == product.wastageName) {
 			return false;
 		}
 	}
 	return true;
 };
+
+const groupBy = key => array =>
+	array.reduce((objectsByKeyValue, obj) => {
+		const value = obj[key];
+		objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
+		return objectsByKeyValue;
+	}, {});
 
 const getInventoryItem = (beginDate, products) => {
 	return new Promise(resolve => {
@@ -301,13 +334,77 @@ const getInventoryItem = (beginDate, products) => {
 
 
 				newInventory.currentProductSkus = products.map(product => {
-					return { sku: product.sku, quantity: null };
+					return { sku: product.sku, wastageName: product.wastageName, quantity: 0, inventory: 0 };
 				});
 
 
 				newInventory.previousProductSkus = products.map(product => {
-					return { sku: product.sku, quantity: null };
+					return { sku: product.sku, wastageName: product.wastageName, quantity: 0, inventory: 0 };
 				});
+
+				const groupWastageName = groupBy('wastageName');
+
+				console.log('groupPreviousProductSkus', groupWastageName(newInventory.previousProductSkus));
+				console.log('groupCurrentProductSkus', groupWastageName(newInventory.currentProductSkus));
+
+				console.log('Object', Object.values(groupWastageName(newInventory.previousProductSkus)))
+				console.log('Object2', Object.values(groupWastageName(newInventory.currentProductSkus)))
+				let previousArray = Object.values(groupWastageName(newInventory.previousProductSkus));
+				let currentArray = Object.values(groupWastageName(newInventory.currentProductSkus));
+				let newpreviousArray = [];
+				for (var i in previousArray) {
+					inventoryTotal = 0;
+					quantityTotal = 0;
+					for (var a in previousArray[i]) {
+						if (previousArray[i][a].wastageName != null) {
+							inventoryTotal = inventoryTotal + previousArray[i][a].inventory;
+							quantityTotal = quantityTotal + previousArray[i][a].quantity;
+						}
+					}
+
+					if (previousArray[i][0].wastageName != null) {
+						newpreviousArray.push({
+							wastageName: previousArray[i][0].wastageName,
+							product_id: previousArray[i][0].wastageName,
+							inventory: inventoryTotal,
+							kiosk_id: "",
+							closingStockId: "",
+							createdDate: "",
+							quantity: quantityTotal
+						});
+					}
+				}
+				console.log(newpreviousArray);
+				newInventory.previousProductSkus = newpreviousArray;
+
+				///
+
+				let newcurrentArray = [];
+				for (var i in currentArray) {
+					inventoryTotal = 0;
+					quantityTotal = 0;
+					for (var a in currentArray[i]) {
+						if (currentArray[i][a].wastageName != null) {
+							inventoryTotal = inventoryTotal + currentArray[i][a].inventory;
+							quantityTotal = quantityTotal + currentArray[i][a].quantity;
+						}
+					}
+
+					if (currentArray[i][0].wastageName != null) {
+						newcurrentArray.push({
+							wastageName: currentArray[i][0].wastageName,
+							product_id: previousArray[i][0].wastageName,
+							inventory: inventoryTotal,
+							kiosk_id: "",
+							closingStockId: "",
+							createdDate: "",
+							quantity: quantityTotal
+						});
+					}
+				}
+				console.log(newcurrentArray);
+				newInventory.currentProductSkus = newcurrentArray;
+
 
 				if (inventoryResults[1]) {
 					newInventory.previousProductSkus = inventoryResults[1].currentProductSkus;

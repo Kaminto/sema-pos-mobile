@@ -457,20 +457,6 @@ class InventroyRealm {
             return that.parseJson(result[1]);
         });
 
-        // return new Promise((resolve, reject) => {
-        //     try {
-        //         let that = this;
-        //         this.multiGet(this.inventoryKeys).then(results => {
-        //             that.inventory = results.map(result => {
-        //                 return that.parseJson(result[1]);
-        //             });
-        //             console.log('that.inventory', that.inventory)
-        //             resolve(true);
-        //         });
-        //     } catch (error) {
-        //         reject(error);
-        //     }
-        // });
     }
 
     loadInventoryFromKeys2() {

@@ -104,7 +104,7 @@ class PosStorage {
 			interval: 10 * 60 * 1000
 		};
 		this.inventoriesKeys = []; // 30 days of inventories
-
+		this.inventory = [];
 		// Realm schema creation
 		// const SEMA_SCHEMA = {
 		// 	name: 'SemaRealm',
@@ -206,77 +206,79 @@ class PosStorage {
 
 	}
 
-	loadLocalData(){
+	loadLocalData() {
 		const version = realm.objectForPrimaryKey('SemaRealm', versionKey);
 
 		// Pos Storage: Version = ', version.data
-			this.version = version;
-			let keyArray = [
-				customersKey,
-				salesKey,
-				productsKey,
-				lastCustomerSyncKey,
-				lastSalesSyncKey,
-				lastProductsSyncKey,
-				pendingCustomersKey,
-				pendingSalesKey,
-				settingsKey,
-				tokenExpirationKey,
-				salesChannelsKey,
-				customerTypesKey,
-				productMrpsKey,
-				syncIntervalKey,
-				inventoriesKey,
-				remoteReceiptsKey,
-				reminderDataKey
-			];
+		this.version = version;
+		let keyArray = [
+			customersKey,
+			salesKey,
+			productsKey,
+			lastCustomerSyncKey,
+			lastSalesSyncKey,
+			lastProductsSyncKey,
+			pendingCustomersKey,
+			pendingSalesKey,
+			settingsKey,
+			tokenExpirationKey,
+			salesChannelsKey,
+			customerTypesKey,
+			productMrpsKey,
+			syncIntervalKey,
+			inventoriesKey,
+			remoteReceiptsKey,
+			reminderDataKey
+		];
 
 
-			let results = this.getMany(keyArray);
+		let results = this.getMany(keyArray);
 
 
-			this.customersKeys = this.parseJson(
-				results[0][1]
-			); // Array of customer keys
-			this.salesKeys = this.parseJson(results[1][1]); // Array of sales keys
-			this.productsKeys = this.parseJson(
-				results[2][1]
-			); // Array of products keys
-			this.lastCustomerSync = new Date(results[3][1]); // Last customer sync time
-			this.lastSalesSync = new Date(results[4][1]); // Last sales sync time
-			this.lastProductsSync = new Date(results[5][1]); // Last products sync time
-			this.pendingCustomers = this.parseJson(
-				results[6][1]
-			); // Array of pending customers
-			this.pendingSales = this.parseJson(
-				results[7][1]
-			); // Array of pending sales
-			this.settings = this.parseJson(results[8][1]); // Settings
-			this.tokenExpiration = new Date(results[9][1]); // Expiration date/time of the token
-			this.salesChannels = this.parseJson(
-				results[10][1]
-			); // array of sales channels
-			this.customerTypes = this.parseJson(
-				results[11][1]
-			); // array of customer types
-			this.productMrpDict = this.parseJson(
-				results[12][1]
-			); // products MRP dictionary
-			this.syncInterval = this.parseJson(
-				results[13][1]
-			); // SyncInterval
-			this.inventoriesKeys = this.parseJson(
-				results[14][1]
-			); // inventoriesKey
-			this.receipts = this.parseJson(results[15][1]); // remoteReceiptsKey
-			this.reminderDataKeys = this.parseJson(
-				results[16][1]
-			); //reminderData
-			//TopUps.loadTableData();
-			if (this.loadProductsFromKeys2() && this.loadCustomersFromKeys2()) {
-				return 'Data Exists';
-			}
+		this.customersKeys = this.parseJson(
+			results[0][1]
+		); // Array of customer keys
+		this.salesKeys = this.parseJson(results[1][1]); // Array of sales keys
+		this.productsKeys = this.parseJson(
+			results[2][1]
+		); // Array of products keys
+		this.lastCustomerSync = new Date(results[3][1]); // Last customer sync time
+		this.lastSalesSync = new Date(results[4][1]); // Last sales sync time
+		this.lastProductsSync = new Date(results[5][1]); // Last products sync time
+		this.pendingCustomers = this.parseJson(
+			results[6][1]
+		); // Array of pending customers
+		this.pendingSales = this.parseJson(
+			results[7][1]
+		); // Array of pending sales
+		this.settings = this.parseJson(results[8][1]); // Settings
+		this.tokenExpiration = new Date(results[9][1]); // Expiration date/time of the token
+		this.salesChannels = this.parseJson(
+			results[10][1]
+		); // array of sales channels
+		this.customerTypes = this.parseJson(
+			results[11][1]
+		); // array of customer types
+		this.productMrpDict = this.parseJson(
+			results[12][1]
+		); // products MRP dictionary
+		this.syncInterval = this.parseJson(
+			results[13][1]
+		); // SyncInterval
+		this.inventoriesKeys = this.parseJson(
+			results[14][1]
+		); // inventoriesKey
+		this.receipts = this.parseJson(results[15][1]); // remoteReceiptsKey
+		this.reminderDataKeys = this.parseJson(
+			results[16][1]
+		); //reminderData
+		//TopUps.loadTableData();
+		
+		if (this.loadProductsFromKeys2() && this.loadCustomersFromKeys2()) {
+			this.loadInventoryFromKeys();
 			return 'Data Exists';
+		}
+		return 'Data Exists';
 	}
 
 
@@ -965,7 +967,7 @@ class PosStorage {
 
 	loadCustomersFromKeys2() {
 		console.log(
-			'loadCustomersFromKeys. No of customers: ' +
+			'loadCustomersFromKeys. No of customers: ' ,
 			this.customersKeys.length
 		);
 
@@ -978,7 +980,7 @@ class PosStorage {
 
 	loadProductsFromKeys2() {
 		console.log(
-			'loadProductsFromKeys. No of products: ' + this.productsKeys.length
+			'loadProductsFromKeys. No of products: ' , this.productsKeys.lenght
 		);
 
 		let that = this;
@@ -1626,9 +1628,9 @@ class PosStorage {
 
 	addRemoteReceipts(receipts) {
 		this.receipts = this.getReceipts();
+		console.log(this.receipts);
 		let temp = [...this.receipts, ...receipts];
 		let toBeSaved = this.removeDuplicates(temp, 'id');
-
 		return this.setKey(remoteReceiptsKey, this.stringify(toBeSaved)).then(
 			() => {
 				return toBeSaved;
@@ -1654,6 +1656,7 @@ class PosStorage {
 	loadRemoteReceipts() {
 		return this.getKey(remoteReceiptsKey).then(receipts => {
 			this.receipts = JSON.parse(receipts);
+			console.log('receipts', this.receipts);
 			return this.receipts;
 		});
 	}
@@ -1709,6 +1712,28 @@ class PosStorage {
 		}
 		return null;
 	}
+
+	    loadInventoryFromKeys() {
+        console.log('loadInventoryFromKeys. No of inventory: ' ,this.inventoriesKeys);
+		
+		console.log(this.inventoriesKeys.map(key => key.inventoryKey))
+        let that = this;
+		let results = this.getMany([this.inventoriesKeys[0].inventoryKey]);
+		console.log('loadInventoryFromKeys. No of inventory results: ' ,results);
+		
+        return that.inventory = results.map(result => {
+            return that.parseJson(result[1]);
+        });
+
+	}
+	
+	getInventory() {
+        console.log('InventroyRealm: Inventory. Count ' + this.inventory.length);
+        return this.inventory;
+    }
+
+
+
 	_makeInventoryKey(date) {
 		console.log('PosStorage._makeInventoryKey' + date);
 		return (
