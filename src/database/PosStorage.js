@@ -1718,7 +1718,7 @@ class PosStorage {
 		
 		console.log(this.inventoriesKeys.map(key => key.inventoryKey))
         let that = this;
-		let results = this.getMany([this.inventoriesKeys[0].inventoryKey]);
+		let results = this.getMany(this.inventoriesKeys.map(key => key.inventoryKey));
 		console.log('loadInventoryFromKeys. No of inventory results: ' ,results);
 		
         return that.inventory = results.map(result => {
