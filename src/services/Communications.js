@@ -470,7 +470,10 @@ class Communications {
 		let url = `sema/site/receipts/${siteId}?date=${moment
 			.tz(new Date(Date.now()), moment.tz.guess())
 			.format('YYYY-MM-DD')}`;
-
+			console.log('Communications:getReceipts: ');
+console.log(
+	moment.tz(new Date(Date.now()), moment.tz.guess()).format('YYYY-MM-DD')
+);
 		return fetch(this._url + url, options)
 			.then(async response => await response.json())
 			.catch(error => {

@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import DateFilter from "./DateFilter";
 import PosStorage from "../../database/PosStorage";
 import i18n from '../../app/i18n';
-
+const uuidv1 = require('uuid/v1');
 class InventoryEdit extends Component {
 	constructor(props) {
 		super(props);
@@ -37,7 +37,7 @@ class InventoryEdit extends Component {
 								reference = 'quantityInput'
 								style={ [styles.inventoryInput, {flex:.5, paddingRight:40, marginRight:20 }]}
 								underlineColorAndroid='transparent'
-								onSubmitEditing = {() => this.props.okMethod(this.props.sku, this.state.inventoryQuantity)}
+								onSubmitEditing = {() => this.props.okMethod(this.props.wastageName, this.state.inventoryQuantity)}
 								keyboardType = 'numeric'
 								onChangeText = {this.onChangeText.bind(this)}
 								value = {this.state.inventoryQuantity}
@@ -49,7 +49,7 @@ class InventoryEdit extends Component {
 						</View>
 						<View style={{flexDirection:'row',  justifyContent:'center', marginTop:20}}>
 							<View style={{backgroundColor:"#2858a7", borderRadius:10, flex:.3}}>
-								<TouchableHighlight underlayColor = '#c0c0c0' onPress={() => this.props.okMethod( this.props.sku, this.state.inventoryQuantity)}>
+								<TouchableHighlight underlayColor = '#c0c0c0' onPress={() => this.props.okMethod( this.props.wastageName, this.state.inventoryQuantity)}>
 									<Text style={styles.buttonText}>{i18n.t('ok')}</Text>
 								</TouchableHighlight>
 							</View>
@@ -71,8 +71,8 @@ class InventoryEdit extends Component {
 		this.props.cancelMethod();
 	};
 	isVisible(){
-		if(this.props.type === "sku"){
-			return this.props.skuToShow === this.props.sku;
+		if(this.props.type === "wastageName"){
+			return this.props.skuToShow === this.props.wastageName;
 		}else if(this.props.type === "currentMeter" ){
 			return this.props.visible;
 		}else{
@@ -111,6 +111,7 @@ class InventoryReport extends Component {
 
 	render() {
 		console.log(this.props)
+		console.log(PosStorage.getInventory());
 			return (
 				<View style={{ flex: 1 }}>
 					<DateFilter/>
@@ -132,7 +133,7 @@ class InventoryReport extends Component {
 									{this.getRow(item, index, separators)}
 								</View>
 							)}
-							keyExtractor={item => item.sku}
+							keyExtractor={item => item.wastageName}
 							initialNumToRender={50}
 						/>
 
@@ -179,7 +180,7 @@ class InventoryReport extends Component {
 						<InventoryEdit
 							type = "currentMeter"
 							visible = {this.state.currentMeterVisible}
-							sku={""}
+							wastageName={""}
 							title = "Current Meter"
 							quantity = {this.getInventoryCurrentMeterForEdit()}
 							cancelMethod = {this.onCancelCurrentMeter.bind(this)}
@@ -246,10 +247,11 @@ class InventoryReport extends Component {
 
 	getRow = (item) => {
 		console.log("InventoryReport - getRow");
+		//console.log("InventoryReport - getRow", item);
 		return (
 			<View style={[{ flex: 1, flexDirection: 'row', alignItems: 'center' }, styles.rowBackground]}>
 				<View style={[{ flex: 1 }]}>
-					<Text numberOfLines={1}  style={[styles.rowItem, styles.leftMargin]}>{item.description}</Text>
+					<Text numberOfLines={1}  style={[styles.rowItem, styles.leftMargin]}>{item.wastageName}</Text>
 				</View>
 				<View style={[{ flex: .5 }]}>
 					<Text style={[styles.rowItemCenter]}>{item.quantity}</Text>
@@ -270,10 +272,10 @@ class InventoryReport extends Component {
 					<Text style={[styles.rowItemCenter]}>{this.getTotalForSkuDisplay(item)}</Text>
 				</View>
 				<InventoryEdit
-					type = "sku"
+					type = "wastageName"
 					skuToShow = {this.state.currentSkuEdit}
-					sku = {item.sku}
-					title = {item.description}
+					wastageName = {item.wastageName}
+					title = {item.wastageName}
 					quantity = {this.getInventorySkuForEdit(true, item)}
 					cancelMethod = {this.onCancelEditCurrentSku.bind(this)}
 					okMethod = {this.onOkEditCurrentSku.bind(this)}>
@@ -293,7 +295,7 @@ class InventoryReport extends Component {
 		this.setState({refresh: !this.state.refresh});
 	}
 
-	onOkEditCurrentSku( sku, newQuantity ){
+	onOkEditCurrentSku( wastageName, newQuantity ){
 		this.setState({currentSkuEdit:""});
 		let update = null;
 		if( newQuantity.trim().length > 0 ){
@@ -301,8 +303,13 @@ class InventoryReport extends Component {
 		}
 		if( !isNaN(update)) {
 			for (let index = 0; index < this.props.inventoryData.inventory.currentProductSkus.length; index++) {
-				if (this.props.inventoryData.inventory.currentProductSkus[index].sku === sku) {
+				if (this.props.inventoryData.inventory.currentProductSkus[index].wastageName === wastageName) {
 					this.props.inventoryData.inventory.currentProductSkus[index].inventory = update;
+					this.props.inventoryData.inventory.currentProductSkus[index].product_id = wastageName;
+					this.props.inventoryData.inventory.currentProductSkus[index].quantity = update;
+					this.props.inventoryData.inventory.currentProductSkus[index].kiosk_id = this.props.settings.siteId;
+					this.props.inventoryData.inventory.currentProductSkus[index].createdDate = new Date(this.props.inventoryData.inventory.date);
+					this.props.inventoryData.inventory.currentProductSkus[index].closingStockId = uuidv1();
 					PosStorage.addOrUpdateInventoryItem(this.props.inventoryData.inventory, this.props.inventoryData.inventory.date);
 					break;
 				}
@@ -357,7 +364,7 @@ class InventoryReport extends Component {
 			<View style={[{ flex: .7}]}>
 				<TouchableHighlight
 					style={styles.currentInventory}
-					onPress= {() => this.displayEditCurrentSku( item.sku )}
+					onPress= {() => this.displayEditCurrentSku( item.wastageName )}
 					underlayColor='#18376A'>
 					<Text style={[styles.currentInventoryText]}>{ this.getInventorySkuForDisplay(true, item)}</Text>
 				</TouchableHighlight>
@@ -368,7 +375,7 @@ class InventoryReport extends Component {
 	getInventorySkuForDisplay(currentPrev, item ){
 		let inventoryArray = (currentPrev) ? this.props.inventoryData.inventory.currentProductSkus : this.props.inventoryData.inventory.previousProductSkus;
 		for( let index = 0; index < inventoryArray.length; index ++ ){
-			if( inventoryArray[index].sku === item.sku ){
+			if( inventoryArray[index].wastageName === item.wastageName ){
 				if( inventoryArray[index].inventory != null && !isNaN(inventoryArray[index].inventory)){
 					return inventoryArray[index].inventory;
 				}
@@ -427,8 +434,8 @@ class InventoryReport extends Component {
 		return (sales + inventory).toFixed(2) + ' L';
 	}
 
-	displayEditCurrentSku(sku ){
-		this.setState({currentSkuEdit:sku});
+	displayEditCurrentSku(wastageName ){
+		this.setState({currentSkuEdit:wastageName});
 		this.setState({refresh: !this.state.refresh});
 	}
 
@@ -493,7 +500,7 @@ class InventoryReport extends Component {
 
 	}
 
-	onOkCurrentMeter( sku, newQuantity){
+	onOkCurrentMeter( wastageName, newQuantity){
 		this.setState({currentMeterVisible:false});
 		let update = null;
 		if( newQuantity.trim().length > 0 ){
@@ -515,8 +522,10 @@ function mapStateToProps(state, props) {
 	return {
 		inventoryData: state.reportReducer.inventoryData,
 		products: state.productReducer.products,
+		products: state.productReducer.products,
 		dateFilter: state.reportReducer.dateFilter,
-		reportType: state.reportReducer.reportType
+		reportType: state.reportReducer.reportType,
+		settings: state.settingsReducer.settings
 	};
 }
 

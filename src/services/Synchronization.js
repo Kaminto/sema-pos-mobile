@@ -682,7 +682,7 @@ class Synchronization {
 		Communications.getReceiptsBySiteIdAndDate(settings.siteId, date).then(
 			json => {
 				console.log(JSON.stringify(json));
-
+				console.log('receipt json',json);
 				if (json) {
 					PosStorage.addRemoteReceipts(json).then(saved => {
 						Events.trigger('ReceiptsFetched', saved);
@@ -825,6 +825,7 @@ class Synchronization {
 		let settings = PosStorage.getSettings();
 		Communications.getReceiptsBySiteIdAndDate(settings.siteId, date).then(
 			json => {
+				console.log('receipt json',json);
 				PosStorage.addRemoteReceipts(json).then(saved => {
 					Events.trigger('ReceiptsFetched', saved);
 				});
