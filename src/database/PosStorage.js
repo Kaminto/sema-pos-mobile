@@ -194,7 +194,7 @@ class PosStorage {
 			.then(rows => {
 				console.log('Affected : ' + rows);
 				return true;
-				
+
 			})
 			.catch(error => {
 				console.log(error);
@@ -657,8 +657,8 @@ class PosStorage {
 
 
 	}
-	setReminderDate(customer, customerFrequency) {
-		let reminder_date = moment().add(customerFrequency, 'day').format("YYYY-MM-DD");
+	setReminderDate(customer, customerFrequency, receiptDate) {
+		let reminder_date = moment(receiptDate).add(customerFrequency, 'day').format("YYYY-MM-DD");
 		console.log('Setting reminderDate ===>' + reminder_date);
 		customer.reminder_date = reminder_date;
 		let key = this.makeCustomerKey(customer);
@@ -1146,8 +1146,8 @@ class PosStorage {
 			}
 		});
 	}
-	
-	
+
+
 	loadSalesReceipts(lastSalesSyncDate) {
 		console.log('PosStorage:loadSalesReceipts');
 		return new Promise((resolve, reject) => {
@@ -1330,7 +1330,7 @@ class PosStorage {
 			console.log(this.settings);
 			return this.settings;
 		}
-		
+
 	}
 
 	saveSettings(url, site, user, password, uiLanguage, token, siteId, loginSync) {

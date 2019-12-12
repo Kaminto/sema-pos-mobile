@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-
+import moment from 'moment-timezone';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as OrderActions from '../../actions/OrderActions';
@@ -600,6 +600,10 @@ class OrderPaymentScreen extends Component {
 			});
 			receipt.total = priceTotal;
 			receipt.cogs = cogsTotal;
+
+			if(this.props.selectedCustomer.frequency != null){
+				PosStorage.setReminderDate(this.props.selectedCustomer, this.props.selectedCustomer.frequency,receipt.createdDate);
+			}
 		}
 		// Check loan payoff
 		let payoff = 0;
