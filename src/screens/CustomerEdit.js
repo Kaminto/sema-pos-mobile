@@ -136,7 +136,7 @@ class CustomerEdit extends Component {
 			customerChannel: this.props.selectedCustomer.name ? this.props.selectedCustomer.salesChannelId : 0
 		};
 
-		
+
 		this.saleschannelid = 0;
 		this.phone = React.createRef();
 		this.secondPhoneNumber = React.createRef();
@@ -245,7 +245,7 @@ class CustomerEdit extends Component {
 				customerTypeId,
 				this.state.frequency,
 				this.state.secondPhoneNumber
-			);			
+			);
 			this.props.customerActions.CustomerSelected({});
 			this.setState({ isEditInProgress: true });
 			this.props.navigation.goBack();
@@ -260,12 +260,12 @@ class CustomerEdit extends Component {
 				this.state.frequency,
 				this.state.secondPhoneNumber
 			);
-			this.props.customerActions.setCustomers(PosStorage.getCustomers());			
+			this.props.customerActions.setCustomers(PosStorage.getCustomers());
 			this.props.customerActions.CustomerSelected({});
 			this.props.navigation.goBack();
 		}
 
-		
+
 	}
 
 
@@ -312,8 +312,8 @@ class CustomerEdit extends Component {
 								keyboardType="phone-pad"
 								label={i18n.t('telephone-number')}
 								inputStyle={[styles.inputText]}
-							/>		
-		
+							/>
+
 							<Input
 								placeholder={i18n.t(
 									'second-phone-number'
@@ -343,7 +343,7 @@ class CustomerEdit extends Component {
 								onChangeText={this.onChangeReference.bind(this)}
 								inputStyle={[styles.inputText]}
 							/>
-		
+
 
 							<Picker
 								selectedValue={this.state.customerChannel}
@@ -447,7 +447,7 @@ class CustomerEdit extends Component {
 				reference: ''
 			});
 		}
-		//} 
+		//}
 	};
 
 
@@ -478,6 +478,7 @@ class CustomerEdit extends Component {
 			return '';
 		}
 	}
+
 	getFrequency(me) {
 		if (me.props.isEdit) {
 			return me.props.selectedCustomer.frequency;

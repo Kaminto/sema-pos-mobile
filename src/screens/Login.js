@@ -513,12 +513,12 @@ class Login extends Component {
 						);
 					});
 
-			
+
 			} else {
 				this.setState({ animating: true });
 				Alert.alert(
 					i18n.t('network-connection'),
-					'Wrong Credetials have been Provided',
+					'Wrong Credentials have been Provided',
 					[{ text: i18n.t('ok'), style: 'cancel' }],
 					{ cancelable: true }
 				);

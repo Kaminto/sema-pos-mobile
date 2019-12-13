@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-
+import moment from 'moment-timezone';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as OrderActions from '../../actions/OrderActions';
@@ -600,6 +600,10 @@ class OrderPaymentScreen extends Component {
 			});
 			receipt.total = priceTotal;
 			receipt.cogs = cogsTotal;
+
+			if(this.props.selectedCustomer.frequency != null){
+				PosStorage.setReminderDate(this.props.selectedCustomer, this.props.selectedCustomer.frequency,receipt.createdDate);
+			}
 		}
 		// Check loan payoff
 		let payoff = 0;
@@ -653,7 +657,9 @@ class OrderPaymentScreen extends Component {
 					this.props.selectedCustomer.name,
 					this.props.selectedCustomer.address,
 					this.props.selectedCustomer.salesChannelId,
-					this.props.selectedCustomer.frequency
+					this.props.selectedCustomer.customerTypeId,
+					this.props.selectedCustomer.frequency,
+					this.props.selectedCustomer.secondPhoneNumber
 				);
 			} else if (payoff > 0) {
 				this.props.selectedCustomer.dueAmount -= payoff;
@@ -663,7 +669,9 @@ class OrderPaymentScreen extends Component {
 					this.props.selectedCustomer.name,
 					this.props.selectedCustomer.address,
 					this.props.selectedCustomer.salesChannelId,
-					this.props.selectedCustomer.frequency
+					this.props.selectedCustomer.customerTypeId,
+					this.props.selectedCustomer.frequency,
+					this.props.selectedCustomer.secondPhoneNumber
 				);
 			}
 		} else {
@@ -675,7 +683,9 @@ class OrderPaymentScreen extends Component {
 					this.props.selectedCustomer.name,
 					this.props.selectedCustomer.address,
 					this.props.selectedCustomer.salesChannelId,
-					this.props.selectedCustomer.frequency
+					this.props.selectedCustomer.customerTypeId,
+					this.props.selectedCustomer.frequency,
+					this.props.selectedCustomer.secondPhoneNumber
 				);
 			}
 		}

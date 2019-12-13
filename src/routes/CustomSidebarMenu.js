@@ -19,7 +19,7 @@ import i18n from '../app/i18n';
 class CustomSidebarMenu extends Component {
   constructor() {
     super();
-    
+
 
 		this.state = {
 			animating: false,
@@ -50,7 +50,7 @@ class CustomSidebarMenu extends Component {
         navOptionThumb: 'ios-stats',
         navOptionName: 'Sales Report',
         screenToNavigate: 'SalesReport',
-      },      
+      },
       {
         navOptionThumb: 'md-list-box',
         navOptionName: 'Inventory',
@@ -73,14 +73,14 @@ class CustomSidebarMenu extends Component {
       }
     ];
   }
-  render() {   
+  render() {
 
     return (
       <View style={styles.sideMenuContainer}>
         {/* <Icon name="ios-person" size={100} style={styles.sideMenuProfileIcon} /> */}
         <Image source={require('../images/swe-logo.png')} resizeMode='stretch' style={{
-                        width: 200,
-                        height: 200,
+                        width: 100,
+                        height: 100,
                     }} />
         {/*Divider between Top Image and Sidebar Option*/}
         <View
@@ -125,7 +125,7 @@ class CustomSidebarMenu extends Component {
                   if (item.screenToNavigate === 'Sync') {
                     console.log(item.screenToNavigate);
                    this.onSynchronize();
-                  }                 
+                  }
 
                 }}>
                 {item.navOptionName}
@@ -186,7 +186,7 @@ class CustomSidebarMenu extends Component {
 			Synchronization.getLatestSales();
 		} catch (error) { }
   };
-  
+
   _getSyncResults(syncResult) {
 		try {
 			if (syncResult.status != 'success')

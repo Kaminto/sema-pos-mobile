@@ -7,8 +7,10 @@ import {
 	Image,
 	TouchableOpacity,
 	TouchableHighlight,
+	TouchableNativeFeedback,
 	Alert,
-	ToastAndroid
+	ToastAndroid,
+	ScrollView
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from 'prop-types';
@@ -28,6 +30,152 @@ import * as receiptActions from '../actions/ReceiptActions';
 import i18n from '../app/i18n';
 import moment from 'moment-timezone';
 
+class TransactionDetail extends Component {
+	handleUpdate() {
+		this.setState({
+			refresh: !this.state.refresh
+		});
+	}
+
+	onDeleteReceipt(item) {
+		return () => {
+			if (!item.active) {
+				return ToastAndroid.show(
+					'Receipt already deleted',
+					ToastAndroid.SHORT
+				);
+			}
+
+			Alert.alert(
+				'Confirm Receipt Deletion',
+				'Are you sure you want to delete this receipt? (this cannot be undone)',
+				[
+					{
+						text: i18n.t('no'),
+						onPress: () => console.log('Cancel Pressed'),
+						style: 'cancel'
+					},
+					{
+						text: i18n.t('yes'),
+						onPress: () => {
+							this.deleteReceipt(item, {
+								active: 0,
+								updated: true
+							});
+						}
+					}
+				],
+				{ cancelable: true }
+			);
+		};
+	}
+
+	deleteReceipt(item, updatedFields) {
+		this.props.receiptActions.updateRemoteReceipt(
+			item.index,
+			updatedFields
+		);
+
+		PosStorage.updateLoggedReceipt(item.id, updatedFields);
+
+		PosStorage.updatePendingSale(item.id);
+
+		// Take care of customer due amount
+		if (item.amountLoan) {
+			item.customerAccount.dueAmount -= item.amountLoan;
+
+			PosStorage.updateCustomer(
+				item.customerAccount,
+				item.customerAccount.phoneNumber,
+				item.customerAccount.name,
+				item.customerAccount.address,
+				item.customerAccount.salesChannelId,
+				item.customerAccount.customerTypeId,
+				item.customerAccount.frequency,
+				item.customerAccount.secondPhoneNumber
+			);
+		}
+
+		this.setState({ refresh: !this.state.refresh });
+	}
+
+	render() {
+
+		const receiptLineItems = this.props.item.receiptLineItems.map((lineItem, idx) => {
+			return (
+				// <View style={{ flex: 1, padding: 20, overflow: 'visible'  }}>
+					<ReceiptLineItem
+						receiptActions={this.props.receiptActions}
+						remoteReceipts={this.props.remoteReceipts}
+						item={lineItem}
+						key={lineItem.id}
+						lineItemIndex={idx}
+						products={this.props.products}
+						handleUpdate={this.handleUpdate.bind(this)}
+						receiptIndex={this.props.item.index}
+					/>
+				// </View>
+			);
+		});
+
+		return (
+			<View style={{ padding: 15 }}>
+			<View style={styles.deleteButtonContainer}>
+			{!this.props.item.active && (
+			<TouchableOpacity
+			        onPress={this.onDeleteReceipt(this.props.item)}
+					style={[
+						styles.receiptDeleteButton,
+						{ backgroundColor: this.props.item.active ? 'red' : 'grey' }
+					]}>
+					<Text style={styles.receiptDeleteButtonText}>X</Text>
+				</TouchableOpacity>
+				)}
+			</View>
+			<Text style={{ fontSize: 17 }}>#{this.props.item.totalCount}</Text>
+			<View style={styles.receiptStats}>
+				{!this.props.item.active && (
+					<Text style={styles.receiptStatusText}>
+						{'Deleted'.toUpperCase()}
+					</Text>
+				)}
+				{this.props.item.isLocal || this.props.item.updated ? (
+					<View style={{ flexDirection: 'row' }}>
+						{!this.props.item.active && <Text> - </Text>}
+						<Text style={styles.receiptPendingText}>
+							{'Pending'.toLowerCase()}
+						</Text>
+					</View>
+				) : (
+						<View style={{ flexDirection: 'row' }}>
+							{!this.props.item.active && <Text> - </Text>}
+							<Text style={styles.receiptSyncedText}>
+								{'Synced'.toLowerCase()}
+							</Text>
+						</View>
+					)}
+			</View>
+			<View style={styles.itemData}>
+				<Text style={styles.label}># </Text>
+				<Text>{this.props.item.id}</Text>
+			</View>
+			<View style={styles.itemData}>
+				<Text>
+					{moment
+						.tz(this.props.item.createdAt, moment.tz.guess())
+						.format('dddd Do MMMM YYYY')}
+				</Text>
+			</View>
+			<View style={styles.itemData}>
+				<Text style={styles.label}>Customer Name: </Text>
+				<Text>{this.props.item.customerAccount.name}</Text>
+			</View>
+			{receiptLineItems}
+		</View>
+		)
+	}
+
+}
 class ReceiptLineItem extends Component {
 	constructor(props) {
 		super(props);
@@ -35,6 +183,7 @@ class ReceiptLineItem extends Component {
 
 	render() {
 		return (
+
 			<View
 				style={{
 					flex: 1,
@@ -130,7 +279,8 @@ class Transactions extends Component {
 		this.state = {
 			refresh: false,
 			searchString: '',
-			hasScrolled: false
+			hasScrolled: false,
+			selected: this.prepareData()[0],
 		};
 	}
 	componentDidMount() {
@@ -149,8 +299,12 @@ class Transactions extends Component {
 
 	onScrollCustomerTo(data) {
 		console.log('onScrollCustomerTo');
-    }
-    
+	}
+
+	setSelected(item) {
+		this.setState({ selected: item });
+	}
+
 	getItemLayout = (data, index) => ({
 		length: 50,
 		offset: 50 * index,
@@ -163,11 +317,11 @@ class Transactions extends Component {
 	}
 
 	render() {
-        
+
         console.log('props -', this.props);
 			return (
-				<View style={{ flex: 1 }}>
-                    <View style={{ flex: 1, backgroundColor: '#fff' }}>
+				<View style={{ flex: 1, flexDirection: 'row' }}>
+                    <View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 4, borderRightColor: '#CCC' }}>
 						<FlatList
 							data={this.prepareData()}
 							renderItem={this.renderReceipt.bind(this)}
@@ -175,6 +329,16 @@ class Transactions extends Component {
 							ItemSeparatorComponent={this.renderSeparator}
 							extraData={this.state.refresh}
 						/>
+					</View>
+
+					<View style={{ flex: 2, backgroundColor: '#fff' }}>
+						<ScrollView>
+							<TransactionDetail
+							    item={this.state.selected}
+								products={this.props.products}
+								receiptActions={this.props.receiptActions}
+								remoteReceipts={this.props.remoteReceipts} />
+						</ScrollView>
 					</View>
 				</View>
 			);
@@ -187,7 +351,7 @@ class Transactions extends Component {
 		const totalCount = this.props.remoteReceipts.length;
 
 		let salesLogs = [...new Set(this.props.remoteReceipts)];
-		let remoteReceipts = salesLogs.map((receipt, index) => {
+		let remoteReceipts = this.props.remoteReceipts.map((receipt, index) => {
 			return {
 				active: receipt.active,
 				id: receipt.id,
@@ -215,11 +379,9 @@ class Transactions extends Component {
 		if (PosStorage.getSettings()) {
 			siteId = PosStorage.getSettings().siteId;
 		}
-		return remoteReceipts;
+		// return remoteReceipts;
+		return [...remoteReceipts];
 	}
-
- 
-
 
 	renderSeparator() {
 		return (
@@ -300,36 +462,26 @@ class Transactions extends Component {
 	}
 
 	renderReceipt({ item, index }) {
-		const receiptLineItems = item.receiptLineItems.map((lineItem, idx) => {
-			return (
-				<ReceiptLineItem
-					receiptActions={this.props.receiptActions}
-					remoteReceipts={this.props.remoteReceipts}
-					item={lineItem}
-					key={lineItem.id}
-					lineItemIndex={idx}
-					products={this.props.products}
-					handleUpdate={this.handleUpdate.bind(this)}
-					receiptIndex={item.index}
-				/>
-			);
-		});
+		// const receiptLineItems = item.receiptLineItems.map((lineItem, idx) => {
+		// 	return (
+		// 		<ReceiptLineItem
+		// 			receiptActions={this.props.receiptActions}
+		// 			remoteReceipts={this.props.remoteReceipts}
+		// 			item={lineItem}
+		// 			key={lineItem.id}
+		// 			lineItemIndex={idx}
+		// 			products={this.props.products}
+		// 			handleUpdate={this.handleUpdate.bind(this)}
+		// 			receiptIndex={item.index}
+		// 		/>
+		// 	);
+		// });
 
 
 		return (
+		<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
 			<View key={index} style={{ padding: 15 }}>
-				<View style={styles.deleteButtonContainer}>
-                {!item.active && (
-                <TouchableOpacity
-						onPress={this.onDeleteReceipt(item)}
-						style={[
-							styles.receiptDeleteButton,
-							{ backgroundColor: item.active ? 'red' : 'grey' }
-						]}>
-						<Text style={styles.receiptDeleteButtonText}>X</Text>
-                    </TouchableOpacity>
-                    )}
-				</View>
+
 				<Text style={{ fontSize: 17 }}>#{item.totalCount - index}</Text>
 				<View style={styles.receiptStats}>
 					{!item.active && (
@@ -353,28 +505,26 @@ class Transactions extends Component {
 							</View>
 						)}
 				</View>
-				{/* <View style={styles.itemData}>
-					<Text style={styles.label}>Receipt Id: </Text>
-					<Text>{item.id}</Text>
-				</View> */}
 				<View style={styles.itemData}>
-					<Text style={styles.label}>Date Created: </Text>
+					<Text style={styles.label}># </Text>
+					<Text>{item.id}</Text>
+				</View>
+				<View style={styles.itemData}>
 					<Text>
 						{moment
 							.tz(item.createdAt, moment.tz.guess())
-							.format('YYYY-MM-DD HH:mm')}
+							.format('dddd Do MMMM YYYY')}
 					</Text>
 				</View>
 				<View style={styles.itemData}>
 					<Text style={styles.label}>Customer Name: </Text>
 					<Text>{item.customerAccount.name}</Text>
 				</View>
-				{receiptLineItems}
+				{/* {receiptLineItems} */}
 			</View>
+			</TouchableNativeFeedback>
 		);
 	}
-
-
 
 	showHeader = () => {
 		console.log('Displaying header');
@@ -554,7 +704,8 @@ const styles = StyleSheet.create({
 	},
 
 	itemData: {
-		flexDirection: 'row'
+		flexDirection: 'row',
+		padding: 1
 	},
 	updating: {
 		height: 100,
