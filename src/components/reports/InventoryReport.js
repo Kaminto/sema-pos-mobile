@@ -5,6 +5,7 @@ import * as reportActions from "../../actions/ReportActions";
 import { connect } from "react-redux";
 import DateFilter from "./DateFilter";
 import PosStorage from "../../database/PosStorage";
+import InventroyRealm from "../../database/inventory/index";
 import i18n from '../../app/i18n';
 const uuidv1 = require('uuid/v1');
 class InventoryEdit extends Component {
@@ -112,6 +113,9 @@ class InventoryReport extends Component {
 	render() {
 		console.log(this.props)
 		console.log(PosStorage.getInventory());
+		console.log(InventroyRealm.getInventory());
+		console.log(InventroyRealm.getPendingInventory());
+		
 			return (
 				<View style={{ flex: 1 }}>
 					<DateFilter/>
@@ -311,6 +315,7 @@ class InventoryReport extends Component {
 					this.props.inventoryData.inventory.currentProductSkus[index].createdDate = new Date(this.props.inventoryData.inventory.date);
 					this.props.inventoryData.inventory.currentProductSkus[index].closingStockId = uuidv1();
 					PosStorage.addOrUpdateInventoryItem(this.props.inventoryData.inventory, this.props.inventoryData.inventory.date);
+					InventroyRealm.createInventory(this.props.settings.siteId,wastageName,update);
 					break;
 				}
 			}

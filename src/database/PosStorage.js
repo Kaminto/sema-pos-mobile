@@ -5,6 +5,7 @@ import { capitalizeWord } from '../services/Utilities';
 import Events from 'react-native-simple-events';
 import moment from 'moment-timezone';
 import TopUps from './topup/index';
+import InventroyRealm from './inventory/index';
 import realm from './init';
 
 // var Realm = require('realm');
@@ -189,6 +190,7 @@ class PosStorage {
 			]
 		];
 		TopUps.initialiseTable();
+		InventroyRealm.initialiseTable();
 		console.log(keyArray);
 		this.multiSet(keyArray)
 			.then(rows => {
@@ -272,7 +274,8 @@ class PosStorage {
 		this.reminderDataKeys = this.parseJson(
 			results[16][1]
 		); //reminderData
-		//TopUps.loadTableData();
+		TopUps.loadTableData();
+		InventroyRealm.loadTableData();
 		
 		if (this.loadProductsFromKeys2() && this.loadCustomersFromKeys2()) {
 			this.loadInventoryFromKeys();
@@ -1716,10 +1719,10 @@ class PosStorage {
 	    loadInventoryFromKeys() {
         console.log('loadInventoryFromKeys. No of inventory: ' ,this.inventoriesKeys);
 		
-		console.log(this.inventoriesKeys.map(key => key.inventoryKey))
+		console.log(this.inventoriesKeys.map(key => key.inventoryKey));
         let that = this;
 		let results = this.getMany(this.inventoriesKeys.map(key => key.inventoryKey));
-		console.log('loadInventoryFromKeys. No of inventory results: ' ,results);
+		console.log('loadInventoryFromKeys. No of inventory results: ' , results.map(key => JSON.parse(key[1])));
 		
         return that.inventory = results.map(result => {
             return that.parseJson(result[1]);

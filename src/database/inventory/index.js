@@ -23,7 +23,9 @@ class InventroyRealm {
 
     initialiseTable() {
         let keyArray = [
-            [inventoryKey, this.stringify(this.inventoryKeys)],
+            [
+                inventoryKey,
+                this.stringify(this.inventoryKeys)],
             [
                 lastInventorySyncKey,
                 this.lastInventorySync.toISOString()
@@ -48,18 +50,18 @@ class InventroyRealm {
     loadTableData() {
         let keyArray = [
             inventoryKey,
-            lastInventorySyncKey,
             pendingInventoryKey,
+            lastInventorySyncKey,
         ];
-
+        
         let results = this.getMany(keyArray);
         this.inventoryKeys = this.parseJson(
             results[0][1]
         );
-        this.lastInventorySync = new Date(results[1][1]); // Last inventory sync time
         this.pendingInventoryKey = this.parseJson(
-            results[2][1]
+            results[1][1]
         ); // Array of pending inventory
+        this.lastInventorySync = results[2] ? new Date(results[2][1]) : this.lastInventorySync.toISOString() // Last inventory sync time
         console.log(results);
         this.loadInventoryFromKeys();
         this.loadInventoryFromKeys2();
@@ -206,7 +208,7 @@ class InventroyRealm {
     updateInventory(
         inventory,
         customer_account_id,
-        inventory,
+        product_id,
         balance,
     ) {
         let key = this.makeInventoryKey(inventory);
@@ -658,13 +660,18 @@ class InventroyRealm {
 
     getMany = keyArray => {
         let result = [];
+        console.log('keyArray', keyArray);
         for (i = 0; i < keyArray.length; i++) {
             let value = realm.objectForPrimaryKey(
                 'SemaRealm',
                 keyArray[i]
             );
-            let semaobject = [keyArray[i], value.data];
-            result.push(semaobject);
+
+            if (value) {
+                let semaobject = [keyArray[i], value.data];
+                result.push(semaobject);
+            }
+
         }
         return result;
 
