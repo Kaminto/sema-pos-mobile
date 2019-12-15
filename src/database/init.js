@@ -12,7 +12,6 @@ const SEMA_SCHEMA = {
 
 const InventorySchema = {
     name: 'Inventory',
-    //primaryKey: 'closingStockId',
     properties: {
         id: { type: 'int', optional: true },
         closingStockId: 'string',

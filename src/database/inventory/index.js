@@ -23,6 +23,11 @@ class InventroyRealm {
         realm.delete(inventories);
     }
 
+    setLastInventorySync(lastSyncTime) {
+        let syncDate = realm.objects('InventoryInventorySynDate');
+        syncDate[0].quantity = lastSyncTime.toISOString()
+    }
+
     getAllInventory() {
         return this.inventory = Object.values(JSON.parse(JSON.stringify(realm.objects('Inventory'))));
     }
@@ -85,6 +90,19 @@ class InventroyRealm {
                 inventoryObj[0].quantity = inventory.quantity;
                 inventoryObj[0].updated_at = inventory.updated_at;
                 inventoryObj[0].syncAction = inventory.syncAction;
+            })
+
+        } catch (e) {
+            console.log("Error on creation", e);
+        }
+
+    }
+
+    synched(inventory) {
+        try {
+            realm.write(() => {
+                let inventoryObj = realm.objects('Inventory').filtered(`closingStockId = "${inventory.closingStockId}"`);
+                inventoryObj[0].active = true;
             })
 
         } catch (e) {
