@@ -190,7 +190,8 @@ class PosStorage {
 			]
 		];
 		TopUps.initialiseTable();
-		InventroyRealm.initialiseTable();
+		//InventroyRealm.initialiseTable();
+		InventroyRealm.initialise();
 		console.log(keyArray);
 		this.multiSet(keyArray)
 			.then(rows => {
@@ -275,7 +276,8 @@ class PosStorage {
 			results[16][1]
 		); //reminderData
 		TopUps.loadTableData();
-		InventroyRealm.loadTableData();
+		//InventroyRealm.loadTableData();
+		InventroyRealm.initialise();
 		
 		if (this.loadProductsFromKeys2() && this.loadCustomersFromKeys2()) {
 			this.loadInventoryFromKeys();

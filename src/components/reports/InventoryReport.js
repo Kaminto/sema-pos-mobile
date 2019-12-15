@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, TouchableHighlight, FlatList, Modal, TextInput} from 'react-native';
 import { bindActionCreators } from "redux";
 import * as reportActions from "../../actions/ReportActions";
+import * as InventoryActions from '../../actions/InventoryActions';
 import { connect } from "react-redux";
 import DateFilter from "./DateFilter";
 import PosStorage from "../../database/PosStorage";
+
 import InventroyRealm from "../../database/inventory/index";
 import i18n from '../../app/i18n';
 const uuidv1 = require('uuid/v1');
@@ -113,8 +115,7 @@ class InventoryReport extends Component {
 	render() {
 		console.log(this.props)
 		console.log(PosStorage.getInventory());
-		console.log(InventroyRealm.getInventory());
-		console.log(InventroyRealm.getPendingInventory());
+		console.log(InventroyRealm.getAllInventory());
 		
 			return (
 				<View style={{ flex: 1 }}>
@@ -315,7 +316,10 @@ class InventoryReport extends Component {
 					this.props.inventoryData.inventory.currentProductSkus[index].createdDate = new Date(this.props.inventoryData.inventory.date);
 					this.props.inventoryData.inventory.currentProductSkus[index].closingStockId = uuidv1();
 					PosStorage.addOrUpdateInventoryItem(this.props.inventoryData.inventory, this.props.inventoryData.inventory.date);
-					InventroyRealm.createInventory(this.props.settings.siteId,wastageName,update);
+					InventroyRealm.createInventory(this.props.settings.siteId,wastageName,update,this.props.dateFilter.startDate);
+					this.props.inventoryActions.setInventory(
+						InventroyRealm.getAllInventory()
+					);
 					break;
 				}
 			}
@@ -535,7 +539,10 @@ function mapStateToProps(state, props) {
 }
 
 function mapDispatchToProps(dispatch) {
-	return {reportActions:bindActionCreators(reportActions, dispatch) };
+	return {
+		reportActions:bindActionCreators(reportActions, dispatch),
+		inventoryActions: bindActionCreators(InventoryActions, dispatch),    
+	 };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(InventoryReport);

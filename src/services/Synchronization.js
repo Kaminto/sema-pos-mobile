@@ -1,13 +1,14 @@
-// import mock_customers from "../mock_data/customers";
 import PosStorage from '../database/PosStorage';
 import TopUps from '../database/topup/index';
+import InventroyRealm from '../database/inventory/index';
 import Communications from '../services/Communications';
 import TopUpService from '../services/topup';
+import InventoryService from '../services/inventory';
 import Events from 'react-native-simple-events';
 import * as _ from 'lodash';
 
 class Synchronization {
-	initialize(lastCustomerSync, lastProductSync, lastSalesSync, lastTopUpSync) {
+	initialize(lastCustomerSync, lastProductSync, lastSalesSync, lastTopUpSync, lastInventorySync) {
 		console.log('Synchronization:initialize');
 		this.lastCustomerSync = lastCustomerSync;
 		this.lastProductSync = lastProductSync;
@@ -16,6 +17,7 @@ class Synchronization {
 		this.firstSyncId = null;
 		this.isConnected = false;
 		this.lastTopUpSync = lastTopUpSync;
+		this.lastInventorySync = lastInventorySync;
 	}
 
 	setConnected(isConnected) {
@@ -81,6 +83,12 @@ class Synchronization {
 		TopUps.setLastTopUpSync(this.lastTopUpSync);
 	}
 
+
+	updateInventorySync() {
+		this.lastInventorySync = new Date();
+		InventroyRealm.setLastInventorySync(this.lastInventorySync);
+	}
+
 	doSynchronize() {
 		if (this.isConnected) {
 			//this.synchronize();
@@ -133,6 +141,14 @@ class Synchronization {
 								}
 							);
 
+							const promiseInventory = this.synchronizeInventory().then(
+								inventorySync => {
+									// console.log('topUpSync', topUpSync);
+									syncResult.inventory = inventorySync;
+									return inventorySync;
+								}
+							);
+
 
 							const promiseProducts = this.synchronizeProducts().then(
 								productSync => {
@@ -166,6 +182,7 @@ class Synchronization {
 							[
 								promiseCustomers,
 								promiseTopUps,
+								promiseInventory,
 								promiseProducts,
 								promiseSales,
 								promiseProductMrps,
@@ -262,7 +279,7 @@ class Synchronization {
 			console.log('Synchronization:synchronizeCredits - Begin');
 			TopUpService.getTopUps(this.lastTopUpSync)
 				.then(web_topup => {
-					console.log('web_topup',web_topup);
+					console.log('web_topup', web_topup);
 					if (web_topup.hasOwnProperty('topup')) {
 						this.updateLastTopUpSync();
 						console.log(
@@ -278,92 +295,92 @@ class Synchronization {
 							'Synchronization:synchronizeTopUps No of local pending Credits: ' +
 							pendingTopUps.length
 						);
-						
+
 						pendingTopUps.forEach(topup => {
 							//console.log('topup',topup);
 							// TopUps.getTopUpFromKey(topUpKey).then(
 							// 	topup => {
-								//	console.log('topup',topup)
-									if (topup != null) {
-										if (topup.syncAction === 'create') {
+							//	console.log('topup',topup)
+							if (topup != null) {
+								if (topup.syncAction === 'create') {
+									console.log(
+										'Synchronization:synchronizetopUp - creating TopUp - ' +
+										topup.topup
+									);
+									TopUpService.createTopUp(
+										topup
+									)
+										.then(() => {
 											console.log(
-												'Synchronization:synchronizetopUp - creating TopUp - ' +
+												'Synchronization:synchronizetopUp - Removing topup from pending list - ' +
 												topup.topup
 											);
-											TopUpService.createTopUp(
-												topup
-											)
-												.then(() => {
-													console.log(
-														'Synchronization:synchronizetopUp - Removing topup from pending list - ' +
-														topup.topup
-													);
-													TopUps.removePendingTopUp(
-														topUpKey
-													);
-												})
-												.catch(error => {
-													console.log(
-														'Synchronization:synchronizeTopUp Create TopUp failed'
-													);
-												});
-										} else if (
-											topup.syncAction === 'delete'
-										) {
+											TopUps.removePendingTopUp(
+												topUpKey
+											);
+										})
+										.catch(error => {
 											console.log(
-												'Synchronization:synchronizeTopUp -deleting TopUp - ' +
+												'Synchronization:synchronizeTopUp Create TopUp failed'
+											);
+										});
+								} else if (
+									topup.syncAction === 'delete'
+								) {
+									console.log(
+										'Synchronization:synchronizeTopUp -deleting TopUp - ' +
+										topup.topup
+									);
+									TopUpService.deleteTopUp(
+										topup
+									)
+										.then(() => {
+											console.log(
+												'Synchronization:synchronizetopup - Removing topup from pending list - ' +
 												topup.topup
 											);
-											TopUpService.deleteTopUp(
-												topup
-											)
-												.then(() => {
-													console.log(
-														'Synchronization:synchronizetopup - Removing topup from pending list - ' +
-														topup.topup
-													);
-													TopUps.removePendingTopUp(
-														topUpKey
-													);
-												})
-												.catch(error => {
-													console.log(
-														'Synchronization:synchronizetopup Delete topup failed ' +
-														error
-													);
-												});
-										} else if (
-											topup.syncAction === 'update'
-										) {
+											TopUps.removePendingTopUp(
+												topUpKey
+											);
+										})
+										.catch(error => {
 											console.log(
-												'Synchronization:synchronizeCustomers -updating customer - ' +
+												'Synchronization:synchronizetopup Delete topup failed ' +
+												error
+											);
+										});
+								} else if (
+									topup.syncAction === 'update'
+								) {
+									console.log(
+										'Synchronization:synchronizeCustomers -updating customer - ' +
+										topup.topup
+									);
+									TopUpService.updateCustomerCredit(
+										topup
+									)
+										.then(() => {
+											console.log(
+												'Synchronization:synchronizeTopup - Removing topup from pending list - ' +
 												topup.topup
 											);
-											TopUpService.updateCustomerCredit(
-												topup
-											)
-												.then(() => {
-													console.log(
-														'Synchronization:synchronizeTopup - Removing topup from pending list - ' +
-														topup.topup
-													);
-													TopUps.removePendingTopUp(
-														topUpKey
-													);
-												})
-												.catch(error => {
-													console.log(
-														'Synchronization:synchronizeTopup Update topup failed ' +
-														error
-													);
-												});
-										}
-									} else {
-										TopUps.removePendingTopUp(
-											topUpKey
-										);
-									}
-								// });
+											TopUps.removePendingTopUp(
+												topUpKey
+											);
+										})
+										.catch(error => {
+											console.log(
+												'Synchronization:synchronizeTopup Update topup failed ' +
+												error
+											);
+										});
+								}
+							} else {
+								TopUps.removePendingTopUp(
+									topUpKey
+								);
+							}
+							// });
 						});
 
 						resolve({
@@ -385,6 +402,307 @@ class Synchronization {
 						error: error.message,
 						localTopup: null,
 						remoteTopup: null
+					});
+				});
+		});
+	}
+
+	synchronizeInventory() {
+		return new Promise(resolve => {
+			console.log('Synchronization:synchronizeInventory - Begin');
+			console.log('Synchronization:synchronizeInventory - this.lastInventorySync', new Date(this.lastInventorySync));
+			InventoryService.getInventories(new Date(this.lastInventorySync))
+				.then(remoteInventory => {
+					//console.log('remoteInventory', remoteInventory.closingStock);
+
+					//console.log('localInventory', InventroyRealm.getAllInventory());
+					let initlocalInventories = InventroyRealm.getAllInventory();
+					let localInventories = [...initlocalInventories];
+					let remoteInventories = [...remoteInventory.closingStock];
+
+					if (initlocalInventories.length === 0) {
+						InventroyRealm.createManyInventories(remoteInventory.closingStock);
+					}
+
+					let onlyLocally = [];
+					let onlyRemote = [];
+					let inLocal = [];
+					let inRemote = [];
+					let bothLocalRemote = {};
+
+					if (initlocalInventories.length > 0) {
+
+						console.log('initlocalInventories', initlocalInventories);
+						console.log('localInventories', localInventories);
+						console.log('remoteInventories', remoteInventories);
+						initlocalInventories.forEach(localInventory => {
+							let filteredObj = remoteInventories.filter(obj => obj.closingStockId === localInventory.closingStockId)
+							console.log('filteredObj', filteredObj);
+							if (filteredObj.length > 0) {
+								const remoteIndex = remoteInventories.map(function (e) { return e.closingStockId }).indexOf(filteredObj[0].closingStockId);
+								const localIndex = localInventories.map(function (e) { return e.closingStockId }).indexOf(filteredObj[0].closingStockId);
+								console.log('remoteIndex', remoteIndex);
+								console.log('localIndex', localIndex);
+								remoteInventories.splice(remoteIndex, 1);
+								localInventories.splice(localIndex, 1);
+
+								inLocal.push(localInventory);
+								inRemote.push(filteredObj[0]);
+							}
+
+							if (filteredObj.length === 0) {
+								onlyLocally.push(localInventory);
+								const localIndex = localInventories.map(function (e) { return e.closingStockId }).indexOf(localInventory.closingStockId);
+								console.log('localIndex', localIndex);
+								localInventories.splice(localIndex, 1);
+							}
+						});
+
+						onlyRemote.push(...remoteInventories);
+						bothLocalRemote.inLocal = inLocal;
+						bothLocalRemote.inRemote = inRemote;
+
+
+						if (onlyRemote.length > 0) {
+							InventroyRealm.createManyInventories(onlyRemote)
+						}
+
+						if (onlyLocally.length > 0) {
+							onlyLocally.forEach(localInventory => {
+								InventoryService.createInventory(
+									localInventory
+								)
+									.then((response) => {
+										console.log(
+											'Synchronization:synced to remote - ' +
+											response
+										);
+									})
+									.catch(error => {
+										console.log(
+											'Synchronization:synchronizeInventory Create Inventory failed'
+										);
+									});
+							})
+						}
+
+						if (inLocal.length > 0 && inRemote.length > 0) {
+							inLocal.forEach(localInventory => {
+
+								if (localInventory.active === true && localInventory.syncAction === 'delete') {
+									InventoryService.deleteInventory(
+										inventory
+									)
+										.then((response) => {
+											console.log(
+												'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+												response
+											);
+											InventroyRealm.hardDeleteInventory(
+												inventory
+											);
+										})
+										.catch(error => {
+											console.log(
+												'Synchronization:synchronizeInventory Delete Inventory failed ' +
+												error
+											);
+										});
+								}
+
+								if (localInventory.active === false && localInventory.syncAction === 'update') {
+									InventoryService.updateInventory(
+										localInventory
+									)
+										.then((response) => {
+											console.log(
+												'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+												response
+											);
+											// InventroyRealm.removePendingInventory(
+											// 	InventoryKey
+											// );
+										})
+										.catch(error => {
+											console.log(
+												'Synchronization:synchronizeInventory Update Inventory failed ' +
+												error
+											);
+										});
+								} else if (localInventory.active === true && localInventory.syncAction === 'update') {
+									InventoryService.createInventory(
+										localInventory
+									)
+										.then((response) => {
+											console.log(
+												'Synchronization:synced to remote - ' +
+												response
+											);
+										})
+										.catch(error => {
+											console.log(
+												'Synchronization:synchronizeInventory Create Inventory failed'
+											);
+										});
+								}
+
+
+
+
+							})
+
+
+						}
+
+						console.log('onlyRemote', onlyRemote);
+						console.log('onlyLocally', onlyLocally);
+						console.log('bothLocalRemote', bothLocalRemote);
+
+						console.log('localInventories2', localInventories);
+						console.log('remoteInventories2', remoteInventories);
+
+					}
+
+
+				})
+				.catch(error => {
+					console.log(
+						'Synchronization.getInventory - error ' + error
+					);
+					resolve({
+						error: error.message,
+						localInventory: 0,
+						remoteInventory: 0
+					});
+				});
+		});
+	}
+
+	synchronizeInventory2() {
+		return new Promise(resolve => {
+			console.log('Synchronization:synchronizeInventory - Begin');
+			InventoryService.getInventories(this.lastInventorySync)
+				.then(remoteInventory => {
+					console.log('remoteInventory', remoteInventory);
+					if (remoteInventory.hasOwnProperty('closingStock')) {
+						this.updateLastTopUpSync();
+						console.log(
+							'Synchronization:synchronizeInventory No of new remote Inventory: ' +
+							remoteInventory.closingStock.length
+						);
+						// Get the list of Inventory that need to be sent to the server
+						let {
+							pendingInventory,
+							updated
+						} = InventroyRealm.mergeInventory(remoteInventory.closingStock);
+						console.log(
+							'Synchronization:synchronizeInventory No of local pending Inventory: ' +
+							pendingInventory.length
+						);
+
+						pendingInventory.forEach(inventory => {
+
+							if (inventory != null) {
+								if (inventory.syncAction === 'create') {
+									console.log(
+										'Synchronization:synchronizeInventory - creating Inventory - ' +
+										inventory.closingStockId
+									);
+									InventoryService.createInventory(
+										inventory
+									)
+										.then(() => {
+											console.log(
+												'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+												inventory.closingStockId
+											);
+											// InventroyRealm.removePendingInventory(
+											// 	InventoryKey
+											// );
+										})
+										.catch(error => {
+											console.log(
+												'Synchronization:synchronizeInventory Create Inventory failed'
+											);
+										});
+								} else if (
+									inventory.syncAction === 'delete'
+								) {
+									console.log(
+										'Synchronization:synchronizeInventory -deleting Inventory - ' +
+										topup.topup
+									);
+									InventoryService.deleteInventory(
+										inventory
+									)
+										.then(() => {
+											console.log(
+												'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+												inventory.closingStockId
+											);
+											// InventroyRealm.removePendingInventory(
+											// 	InventoryKey
+											// );
+										})
+										.catch(error => {
+											console.log(
+												'Synchronization:synchronizeInventory Delete Inventory failed ' +
+												error
+											);
+										});
+								} else if (
+									inventory.syncAction === 'update'
+								) {
+									console.log(
+										'Synchronization:synchronizeInventory -updating Inventory - ' +
+										inventory.closingStockId
+									);
+									InventoryService.updateInventory(
+										inventory
+									)
+										.then(() => {
+											console.log(
+												'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+												inventory.closingStockId
+											);
+											// InventroyRealm.removePendingInventory(
+											// 	InventoryKey
+											// );
+										})
+										.catch(error => {
+											console.log(
+												'Synchronization:synchronizeInventory Update Inventory failed ' +
+												error
+											);
+										});
+								}
+							} else {
+								// InventroyRealm.removePendingInventory(
+								// 	InventoryKey
+								// );
+							}
+							// });
+						});
+
+						resolve({
+							error: null,
+							localInventory: pendingInventory,
+							remoteInventory: remoteInventory.closingStock.length
+						});
+
+						if (updated) {
+							Events.trigger('synchronizeInventory', {});
+						}
+					}
+				})
+				.catch(error => {
+					console.log(
+						'Synchronization.getInventory - error ' + error
+					);
+					resolve({
+						error: error.message,
+						localInventory: 0,
+						remoteInventory: 0
 					});
 				});
 		});
@@ -537,7 +855,7 @@ class Synchronization {
 							products.products.length
 						);
 						console.log(
-							'Synchronization:synchronizeProducts. No of new remote products: ' ,
+							'Synchronization:synchronizeProducts. No of new remote products: ',
 							products.products
 						);
 						const updated = PosStorage.mergeProducts(
@@ -682,7 +1000,7 @@ class Synchronization {
 		Communications.getReceiptsBySiteIdAndDate(settings.siteId, date).then(
 			json => {
 				console.log(JSON.stringify(json));
-				console.log('receipt json',json);
+				console.log('receipt json', json);
 				if (json) {
 					PosStorage.addRemoteReceipts(json).then(saved => {
 						Events.trigger('ReceiptsFetched', saved);
@@ -704,7 +1022,7 @@ class Synchronization {
 			// TODO: Figure out a more scalable approach to this. As the product_mrp table may grow fast.
 			Communications.getProductMrps(null, false)
 				.then(productMrps => {
-					console.log('productMrps',productMrps);
+					console.log('productMrps', productMrps);
 					if (productMrps.hasOwnProperty('productMRPs')) {
 						console.log(
 							'Synchronization:synchronizeProductMrps. No of remote product MRPs: ' +
@@ -825,7 +1143,7 @@ class Synchronization {
 		let settings = PosStorage.getSettings();
 		Communications.getReceiptsBySiteIdAndDate(settings.siteId, date).then(
 			json => {
-				console.log('receipt json',json);
+				console.log('receipt json', json);
 				PosStorage.addRemoteReceipts(json).then(saved => {
 					Events.trigger('ReceiptsFetched', saved);
 				});
