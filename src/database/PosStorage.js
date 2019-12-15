@@ -4,8 +4,9 @@ This class contains the persistence implementation of the tablet business object
 import { capitalizeWord } from '../services/Utilities';
 import Events from 'react-native-simple-events';
 import moment from 'moment-timezone';
-import TopUps from './topup/index';
+import TopUps from './credit/index';
 import InventroyRealm from './inventory/index';
+import CreditRealm from './credit/index';
 import realm from './init';
 
 // var Realm = require('realm');
@@ -192,6 +193,7 @@ class PosStorage {
 		TopUps.initialiseTable();
 		//InventroyRealm.initialiseTable();
 		InventroyRealm.initialise();
+		CreditRealm.initialise();
 		console.log(keyArray);
 		this.multiSet(keyArray)
 			.then(rows => {
@@ -278,6 +280,7 @@ class PosStorage {
 		TopUps.loadTableData();
 		//InventroyRealm.loadTableData();
 		InventroyRealm.initialise();
+		CreditRealm.initialise();
 		
 		if (this.loadProductsFromKeys2() && this.loadCustomersFromKeys2()) {
 			this.loadInventoryFromKeys();

@@ -1,19 +1,19 @@
-import InventroyRealm from '../../database/inventory/index';
-import InventoryService from '../../services/inventory';
+import CreditRealm from '../../database/credit/index';
+import TopUpService from '../../services/topup';
 import * as _ from 'lodash';
 
-class InventorySync {
+class CreditSync {
 
-    synchronizeInventory(lastInventorySync) {
+    synchronizeCredits(lastCreditSync) {
         return new Promise(resolve => {
-            InventoryService.getInventories(new Date(lastInventorySync))
-                .then(remoteInventory => {
-                    let initlocalInventories = InventroyRealm.getAllInventory();
-                    let localInventories = [...initlocalInventories];
-                    let remoteInventories = [...remoteInventory.closingStock];
+            TopUpService.getTopUps(new Date(lastCreditSync))
+                .then(remoteCredit => {
+                    let initlocalCredits = CreditRealm.getAllCredit();
+                    let localCredits = [...initlocalCredits];
+                    let remoteInventories = [...remoteCredit.topup];
 
-                    if (initlocalInventories.length === 0) {
-                        InventroyRealm.createManyInventories(remoteInventory.closingStock);
+                    if (initlocalCredits.length === 0) {
+                        CreditRealm.createManycredits(remoteCredit.topup);
                     }
 
                     let onlyLocally = [];
@@ -22,31 +22,31 @@ class InventorySync {
                     let inRemote = [];
                     let bothLocalRemote = {};
 
-                    if (initlocalInventories.length > 0) {
+                    if (initlocalCredits.length > 0) {
 
-                        console.log('initlocalInventories', initlocalInventories);
-                        console.log('localInventories', localInventories);
+                        console.log('initlocalCredits', initlocalCredits);
+                        console.log('localCredits', localCredits);
                         console.log('remoteInventories', remoteInventories);
-                        initlocalInventories.forEach(localInventory => {
-                            let filteredObj = remoteInventories.filter(obj => obj.closingStockId === localInventory.closingStockId)
+                        initlocalCredits.forEach(localCredit => {
+                            let filteredObj = remoteInventories.filter(obj => obj.topUpId === localCredit.topUpId)
                             console.log('filteredObj', filteredObj);
                             if (filteredObj.length > 0) {
-                                const remoteIndex = remoteInventories.map(function (e) { return e.closingStockId }).indexOf(filteredObj[0].closingStockId);
-                                const localIndex = localInventories.map(function (e) { return e.closingStockId }).indexOf(filteredObj[0].closingStockId);
+                                const remoteIndex = remoteInventories.map(function (e) { return e.topUpId }).indexOf(filteredObj[0].topUpId);
+                                const localIndex = localCredits.map(function (e) { return e.topUpId }).indexOf(filteredObj[0].topUpId);
                                 console.log('remoteIndex', remoteIndex);
                                 console.log('localIndex', localIndex);
                                 remoteInventories.splice(remoteIndex, 1);
-                                localInventories.splice(localIndex, 1);
+                                localCredits.splice(localIndex, 1);
 
-                                inLocal.push(localInventory);
+                                inLocal.push(localCredit);
                                 inRemote.push(filteredObj[0]);
                             }
 
                             if (filteredObj.length === 0) {
-                                onlyLocally.push(localInventory);
-                                const localIndex = localInventories.map(function (e) { return e.closingStockId }).indexOf(localInventory.closingStockId);
+                                onlyLocally.push(localCredit);
+                                const localIndex = localCredits.map(function (e) { return e.topUpId }).indexOf(localCredit.topUpId);
                                 console.log('localIndex', localIndex);
-                                localInventories.splice(localIndex, 1);
+                                localCredits.splice(localIndex, 1);
                             }
                         });
 
@@ -56,16 +56,16 @@ class InventorySync {
 
 
                         if (onlyRemote.length > 0) {
-                            InventroyRealm.createManyInventories(onlyRemote)
+                            CreditRealm.createManyInventories(onlyRemote)
                         }
 
                         if (onlyLocally.length > 0) {
-                            onlyLocally.forEach(localInventory => {
-                                InventoryService.createInventory(
-                                    localInventory
+                            onlyLocally.forEach(localCredit => {
+                                TopUpService.createTopUp(
+                                    localCredit
                                 )
                                     .then((response) => {
-                                        InventroyRealm.synched(localInventory);
+                                        CreditRealm.synched(localCredit);
                                         console.log(
                                             'Synchronization:synced to remote - ' +
                                             response
@@ -80,19 +80,19 @@ class InventorySync {
                         }
 
                         if (inLocal.length > 0 && inRemote.length > 0) {
-                            inLocal.forEach(localInventory => {
+                            inLocal.forEach(localCredit => {
 
-                                if (localInventory.active === true && localInventory.syncAction === 'delete') {
-                                    InventoryService.deleteInventory(
-                                        localInventory
+                                if (localCredit.active === true && localCredit.syncAction === 'delete') {
+                                    TopUpService.deleteTopUp(
+                                        localCredit
                                     )
                                         .then((response) => {
                                             console.log(
                                                 'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
                                                 response
                                             );
-                                            InventroyRealm.hardDeleteInventory(
-                                                localInventory
+                                            CreditRealm.hardDeleteCredit(
+                                                localCredit
                                             );
                                         })
                                         .catch(error => {
@@ -103,9 +103,9 @@ class InventorySync {
                                         });
                                 }
 
-                                if (localInventory.active === true && localInventory.syncAction === 'update') {
-                                    InventoryService.updateInventory(
-                                        localInventory
+                                if (localCredit.active === true && localCredit.syncAction === 'update') {
+                                    TopUpService.updateCustomerCredit(
+                                        localCredit
                                     )
                                         .then((response) => {
                                             console.log(
@@ -120,12 +120,12 @@ class InventorySync {
                                             );
                                         });
 
-                                } else if (localInventory.active === false && localInventory.syncAction === 'update') {
-                                    InventoryService.createInventory(
-                                        localInventory
+                                } else if (localCredit.active === false && localCredit.syncAction === 'update') {
+                                    TopUpService.createTopUp(
+                                        localCredit
                                     )
                                         .then((response) => {
-                                            InventroyRealm.synched(localInventory);
+                                            CreditRealm.synched(localCredit);
                                             console.log(
                                                 'Synchronization:synced to remote - ' +
                                                 response
@@ -144,14 +144,14 @@ class InventorySync {
                         console.log('onlyLocally', onlyLocally);
                         console.log('bothLocalRemote', bothLocalRemote);
 
-                        console.log('localInventories2', localInventories);
+                        console.log('localCredits2', localCredits);
                         console.log('remoteInventories2', remoteInventories);
 
                     }
                     resolve({
                         error: null,
-                        localInventory: onlyLocally.length,
-                        remoteInventory: onlyRemote.length
+                        localCredit: onlyLocally.length,
+                        remoteCredit: onlyRemote.length
                     });
 
                 })
@@ -161,12 +161,12 @@ class InventorySync {
                     );
                     resolve({
                         error: error.message,
-                        localInventory: 0,
-                        remoteInventory: 0
+                        localCredit: 0,
+                        remoteCredit: 0
                     });
                 });
         });
     }
 
 }
-export default new InventorySync();
+export default new CreditSync();

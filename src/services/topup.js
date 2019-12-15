@@ -176,10 +176,6 @@ class TopUpService {
 				});
 		});
 	}
-
-
-
-
 }
 
 export default new TopUpService();

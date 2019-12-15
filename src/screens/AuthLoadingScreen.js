@@ -20,7 +20,7 @@ import * as ProductActions from '../actions/ProductActions';
 import * as receiptActions from '../actions/ReceiptActions';
 
 import PosStorage from '../database/PosStorage';
-import TopUps from '../database/topup/index';
+import CreditRealm from '../database/credit/index';
 import InventroyRealm from '../database/inventory/index';
 import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
@@ -96,15 +96,12 @@ class AuthLoadingScreen extends React.Component {
                 
 
                 this.posStorage.loadLocalData();
-                TopUps.loadTableData();
-
-                console.log('TopUps', TopUps.getTopUps());
 
                 this.props.customerActions.setCustomers(
                     this.posStorage.getCustomers()
                 );
                 this.props.topUpActions.setTopups(
-                    TopUps.getTopUps()
+                    CreditRealm.getAllCredit()
                 );
                 
                 this.props.inventoryActions.setInventory(
@@ -122,7 +119,7 @@ class AuthLoadingScreen extends React.Component {
                     PosStorage.getLastCustomerSync(),
                     PosStorage.getLastProductSync(),
                     PosStorage.getLastSalesSync(),
-                    TopUps.getLastTopUpSync(),
+                    CreditRealm.getLastCreditSync(),
                     InventroyRealm.getLastInventorySync(),
                 );
                 Synchronization.setConnected(this.props.network.isNWConnected);

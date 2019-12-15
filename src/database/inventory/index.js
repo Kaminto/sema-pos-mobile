@@ -2,8 +2,7 @@ import realm from '../init';
 const uuidv1 = require('uuid/v1');
 
 class InventroyRealm {
-    constructor() {
-        this.inventoryKeys = [];
+    constructor() { 
         this.inventory = [];
         let firstSyncDate = new Date('November 7, 1973');
         realm.write(() => {

@@ -26,15 +26,36 @@ const InventorySchema = {
 };
 
 const InventorySynDateSchema = {
-    name: 'InventoryInventorySynDate',
+    name: 'InventorySynDate',
     properties: {
         lastInventorySync: 'date',
     }
 };
 
+const CreditSchema = {
+    name: 'Credit',
+    properties: {
+        id: { type: 'int', optional: true },
+        topUpId: 'string',
+        customer_account_id: { type: 'int' },
+        topup: 'int',
+        balance: 'int',
+        active: { type: 'bool', optional: true },
+        syncAction: { type: 'string', optional: true },
+        created_at: 'date',
+        updated_at: 'date'
+    }
+};
+
+const CreditSyncDateSchema = {
+    name: 'CreditSyncDate',
+    properties: {
+        lastCreditSync: 'date',
+    }
+};
 
 export default realm = new Realm({
-    schema: [SEMA_SCHEMA, InventorySchema, InventorySynDateSchema],
+    schema: [SEMA_SCHEMA, InventorySchema, InventorySynDateSchema, CreditSchema, CreditSyncDateSchema],
     schemaVersion: 41,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
