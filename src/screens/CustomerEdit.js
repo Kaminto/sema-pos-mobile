@@ -404,7 +404,7 @@ class CustomerEdit extends Component {
 									/>
 								}
 							/>
-						<View style={{ flex: 1, flexDirection: 'row' }}>
+						{/* <View style={{ flex: 1, flexDirection: 'row' }}> */}
 
 							<RNPickerSelect
 										onValueChange={(value) => {
@@ -435,7 +435,7 @@ class CustomerEdit extends Component {
 										style={pickerSelectStyles}
 
 									/>
-							</View>
+							{/* </View> */}
 
 							<Button
 								onPress={() => this.onEdit()}
@@ -932,7 +932,7 @@ const pickerSelectStyles = StyleSheet.create({
 	  borderRadius: 4,
 	  color: 'black',
 	  margin: 5,
-	  flex:.5,
+	  flex:1,
 	  paddingRight: 30, // to ensure the text is never behind the icon
 	},
 	inputAndroid: {
@@ -945,7 +945,7 @@ const pickerSelectStyles = StyleSheet.create({
 	  borderRadius: 10,
 	  color: 'black',
 	  margin: 5,
-	  flex:.5,
+	  flex:1,
 
 	  paddingRight: 30, // to ensure the text is never behind the icon
 	},

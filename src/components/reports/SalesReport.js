@@ -68,7 +68,6 @@ class SalesReport extends Component {
 
 				</View>
 
-			</View>
 		);
 	}
 	getSalesData() {
