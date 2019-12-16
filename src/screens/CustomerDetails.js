@@ -20,7 +20,7 @@ import Events from 'react-native-simple-events';
 import * as ToolbarActions from '../actions/ToolBarActions';
 import ModalDropdown from 'react-native-modal-dropdown';
 import PosStorage from '../database/PosStorage';
-import TopUps from '../database/topup/index';
+import CreditRealm from '../database/credit/index';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as TopUpActions from '../actions/TopUpActions';
 import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
@@ -186,8 +186,7 @@ class CustomerDetails extends Component {
 	render() {
 
 		console.log('props -', this.props.topups);
-		console.log('TopUps', TopUps.getTopUps());
-		console.log('pendingTopUps', TopUps.getPendingTopUps());
+		console.log('TopUps', CreditRealm.getAllCredit());
 		console.log('getReceipts', PosStorage.getReceipts())
 		return (
 			<View style={{ flex: 1 }}>
@@ -318,14 +317,14 @@ class CustomerDetails extends Component {
 		console.log(this.props.selectedCustomer);
 
 
-		TopUps.createTopUp(
+		CreditRealm.createCredit(
 			this.props.selectedCustomer.customerId,
 			this.state.topup,
 			this.state.topup
 		);
 		this.setState({ topup: "" });
 		console.log(this.state.topup);
-		this.props.topUpActions.setTopups(TopUps.getTopUps());
+		this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
 	
 	}
 
