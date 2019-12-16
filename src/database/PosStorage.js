@@ -278,7 +278,7 @@ class PosStorage {
 		); //reminderData;
 		InventroyRealm.initialise();
 		CreditRealm.initialise();
-		
+
 		if (this.loadProductsFromKeys2() && this.loadCustomersFromKeys2()) {
 			this.loadInventoryFromKeys();
 			return 'Data Exists';
@@ -609,70 +609,148 @@ class PosStorage {
 
 	//Reminder Module
 
-	addReminder(reminder) {
-		let reminderKey = reminderDataKey + '_' + reminder.id;
-		console.log("This is the reminderKey=>" + reminderKey);
-		this.reminderDataKeys.push(reminderKey);
-		this.reminders.push(reminder);
-		console.log(this.reminders);
-		console.table(this.reminders);
-		let keyArray = [
-			[reminderKey, this.stringify(reminder)],
-			[reminderDataKey, this.stringify(this.reminderDataKeys)]
-		];
-		console.log("ADDING A REMINDER TO POSSTORAGE" + reminder);
-		this.multiSet(keyArray).then(error => {
-			console.log("BIGANYE,ADDING REMINDER" + console.log(error));
-		});
+	// addReminder(reminder) {
+	// 	let reminderKey = reminderDataKey + '_' + reminder.id;
+	// 	console.log("This is the reminderKey=>" + reminderKey);
+	// 	this.reminderDataKeys.push(reminderKey);
+	// 	this.reminders.push(reminder);
+	// 	console.log(this.reminders);
+	// 	console.table(this.reminders);
+	// 	let keyArray = [
+	// 		[reminderKey, this.stringify(reminder)],
+	// 		[reminderDataKey, this.stringify(this.reminderDataKeys)]
+	// 	];
+	// 	console.log("ADDING A REMINDER TO POSSTORAGE" + reminder);
+	// 	this.multiSet(keyArray).then(error => {
+	// 		console.log("BIGANYE,ADDING REMINDER" + console.log(error));
+	// 	});
 
-		//   this.setKey(reminderDataKey,this.stringify(this.reminders));
-	}
+	// 	//   this.setKey(reminderDataKey,this.stringify(this.reminders));
+	// }
 
-	getRemindersPos() {
-		//	    let filtered_receipts = this.getRemindersByDate()
-		//console.log("Communications getReminders->"+reminderArray);
-		let rem = [];
-		this.reminders = this.loadReminders();//.then(reminda =>{ return reminda;});
-		//console.log("BLOODY HELL"+this.reminders);
-		//.then(reminders =>{return rem = reminders;});
-		rem.push(this.reminders);
-		//console.log("CURRENT REMINDERS=>"+ this.reminders);
-		//let rem = this.reminders.filter(reminder => reminder.reminder_date == moment(date).add('days',1).format("YYYY-MM-DD"));
-		//console.log("ZI REMINDER ==>"+ this.reminders);
-		return this.reminders;
-	}
+	// getRemindersPos() {
+	// 	//	    let filtered_receipts = this.getRemindersByDate()
+	// 	//console.log("Communications getReminders->"+reminderArray);
+	// 	let rem = [];
+	// 	this.reminders = this.loadReminders();//.then(reminda =>{ return reminda;});
+	// 	//console.log("BLOODY HELL"+this.reminders);
+	// 	//.then(reminders =>{return rem = reminders;});
+	// 	rem.push(this.reminders);
+	// 	//console.log("CURRENT REMINDERS=>"+ this.reminders);
+	// 	//let rem = this.reminders.filter(reminder => reminder.reminder_date == moment(date).add('days',1).format("YYYY-MM-DD"));
+	// 	//console.log("ZI REMINDER ==>"+ this.reminders);
+	// 	return this.reminders;
+	// }
 
-	loadReminders() {
-		console.log("loadRemindersFromKeys. No of reminders: " + this.reminders.length);
-		return new Promise((resolve, reject) => {
-			try {
-				let that = this;
-				this.multiGet(this.reminderDataKeys)
-					.then(results => {
-						that.reminders = results.map(resarray => {
-							return that.parseJson(resarray[1]);
-						});
-						resolve(that.reminders);
+	// loadReminders() {
+	// 	console.log("loadRemindersFromKeys. No of reminders: " + this.reminders.length);
+	// 	return new Promise((resolve, reject) => {
+	// 		try {
+	// 			let that = this;
+	// 			this.multiGet(this.reminderDataKeys)
+	// 				.then(results => {
+	// 					that.reminders = results.map(resarray => {
+	// 						return that.parseJson(resarray[1]);
+	// 					});
+	// 					resolve(that.reminders);
 
-					});
-			} catch (error) {
-				reject(error);
-			}
-		});
-
-
+	// 				});
+	// 		} catch (error) {
+	// 			reject(error);
+	// 		}
+	// 	});
 
 
-	}
-	setReminderDate(customer, customerFrequency, receiptDate) {
-		let reminder_date = moment(receiptDate).add(customerFrequency, 'day').format("YYYY-MM-DD");
-		console.log('Setting reminderDate ===>' + reminder_date);
-		customer.reminder_date = reminder_date;
-		let key = this.makeCustomerKey(customer);
-		customer.syncAction = "update";
-		//customer.reminder_date = reminder_date;
-		console.log(customer);
-		this.pendingCustomers.push(key);
+
+
+	// }
+
+	// setReminderDate(customer, customerFrequency, receiptDate) {
+	// 	let reminder_date = moment(receiptDate).add(customerFrequency, 'day').format("YYYY-MM-DD");
+	// 	console.log('Setting reminderDate ===>' + reminder_date);
+	// 	customer.reminder_date = reminder_date;
+	// 	let key = this.makeCustomerKey(customer);
+	// 	customer.syncAction = "update";
+	// 	//customer.reminder_date = reminder_date;
+	// 	console.log(customer);
+	// 	this.pendingCustomers.push(key);
+
+	// 	let keyArray = [
+	// 		[key, this.stringify(customer)], // Customer keys
+	// 		[pendingCustomersKey, this.stringify(this.pendingCustomers)] // Array pending customer
+	// 	];
+	// 	this.multiSet(keyArray).then(error => {
+	// 		if (error) {
+	// 			console.log("PosStorage:updateCustomer: Error: " + error);
+	// 		}
+	// 	});
+
+	// }
+
+	// New reminder module.
+
+	addReminder(reminder){
+	    let reminderKey = reminderDataKey +'_' + reminder.id;
+	    console.log("This is the reminderKey=>"+reminderKey);
+	    this.reminderDataKeys.push(reminderKey);
+	    this.reminders.push(reminder);
+	    console.log(this.reminders);
+	    console.table(this.reminders);
+	    let keyArray = [
+		[reminderKey, this.stringify(reminder)],
+		[reminderDataKey, this.stringify(this.reminderDataKeys)]
+	    ];
+	    console.log("ADDING A REMINDER TO POSSTORAGE"+ reminder);
+	    this.multiSet(keyArray).then(error =>{
+		console.log("BIGANYE,ADDING REMINDER"+ console.log(error));
+	    });
+
+  	//   this.setKey(reminderDataKey,this.stringify(this.reminders));
+    	  }
+
+    	getRemindersPos(){
+//	    let filtered_receipts = this.getRemindersByDate()
+	    //console.log("Communications getReminders->"+reminderArray);
+	    let rem = [];
+	    this.reminders = this.loadReminders();//.then(reminda =>{ return reminda;});
+	    //console.log("BLOODY HELL"+this.reminders);
+	    //.then(reminders =>{return rem = reminders;});
+	    rem.push(this.reminders);
+	    //console.log("CURRENT REMINDERS=>"+ this.reminders);
+	    //let rem = this.reminders.filter(reminder => reminder.reminder_date == moment(date).add('days',1).format("YYYY-MM-DD"));
+	    //console.log("ZI REMINDER ==>"+ this.reminders);
+	    return this.reminders;
+    	}
+
+    	loadReminders(){
+	    console.log("loadRemindersFromKeys. No of reminders: " + this.reminders.length);
+	    return new Promise((resolve, reject)=>{
+		try{
+		let that = this;
+		this.multiGet(this.reminderDataKeys)
+		    .then(results =>{
+			that.reminders = results.map(resarray =>{
+			    return that.parseJson(resarray[1]);
+			});
+			resolve(that.reminders);
+
+		    });
+		}catch(error){
+		    reject(error);
+		}
+	    });
+
+		}
+
+        setReminderDate(customer, customerFrequency, receiptDate){
+       	   let  reminder_date = moment(receiptDate).add(customerFrequency,'day').format("YYYY-MM-DD");
+	   console.log('Setting reminderDate ===>'+ reminder_date);
+	   customer.reminder_date = reminder_date;
+	   let key = this.makeCustomerKey(customer);
+	   customer.syncAction = "update";
+	   //customer.reminder_date = reminder_date;
+	   console.log(customer);
+	   this.pendingCustomers.push(key);
 
 		let keyArray = [
 			[key, this.stringify(customer)], // Customer keys
@@ -684,8 +762,17 @@ class PosStorage {
 			}
 		});
 
-	}
 
+
+		}
+
+
+    	mergeReminders(remoteReminders){
+
+
+		}
+
+//// Tests
 
 	deleteCustomer(customer) {
 		let key = this.makeCustomerKey(customer);
@@ -1720,18 +1807,18 @@ class PosStorage {
 
 	    loadInventoryFromKeys() {
         console.log('loadInventoryFromKeys. No of inventory: ' ,this.inventoriesKeys);
-		
+
 		console.log(this.inventoriesKeys.map(key => key.inventoryKey));
         let that = this;
 		let results = this.getMany(this.inventoriesKeys.map(key => key.inventoryKey));
 		console.log('loadInventoryFromKeys. No of inventory results: ' , results.map(key => JSON.parse(key[1])));
-		
+
         return that.inventory = results.map(result => {
             return that.parseJson(result[1]);
         });
 
 	}
-	
+
 	getInventory() {
         console.log('InventroyRealm: Inventory. Count ' + this.inventory.length);
         return this.inventory;

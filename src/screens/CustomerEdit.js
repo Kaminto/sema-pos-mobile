@@ -19,6 +19,7 @@ import { bindActionCreators } from 'redux';
 import Events from 'react-native-simple-events';
 
 import Icon from 'react-native-vector-icons/Ionicons';
+import RNPickerSelect from 'react-native-picker-select';
 
 import * as ToolbarActions from '../actions/ToolBarActions';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -128,12 +129,12 @@ class CustomerEdit extends Component {
 			salescid: 0,
 			language: "",
 			name: this.props.selectedCustomer.name ? this.props.selectedCustomer.name : "",
-			phoneNumber: this.props.selectedCustomer.name ? this.props.selectedCustomer.phoneNumber : "",
-			secondPhoneNumber: this.props.selectedCustomer.name ? this.props.selectedCustomer.secondPhoneNumber : "",
-			address: this.props.selectedCustomer.name ? this.props.selectedCustomer.address : "",
-			reference: this.props.selectedCustomer.name ? this.props.selectedCustomer.frequency : "",
-			customerType: this.props.selectedCustomer.name ? this.props.selectedCustomer.customerTypeId : 0,
-			customerChannel: this.props.selectedCustomer.name ? this.props.selectedCustomer.salesChannelId : 0
+			phoneNumber: this.props.selectedCustomer.phoneNumber ? this.props.selectedCustomer.phoneNumber : "",
+			secondPhoneNumber: this.props.selectedCustomer.secondPhoneNumber ? this.props.selectedCustomer.secondPhoneNumber : "",
+			address: this.props.selectedCustomer.address ? this.props.selectedCustomer.address : "",
+			reference: this.props.selectedCustomer.frequency ? this.props.selectedCustomer.frequency : 1,
+			customerType: this.props.selectedCustomer.customerTypeId ? this.props.selectedCustomer.customerTypeId : 0,
+			customerChannel: this.props.selectedCustomer.salesChannelId ? this.props.selectedCustomer.salesChannelId : 0
 		};
 
 
@@ -151,12 +152,29 @@ class CustomerEdit extends Component {
 			console.log(channel);
 			return channel.displayName;
 		});
-		console.log(this.channelOptions);
+
+		this.salesChannelOptions = this.salesChannels.map(channel => {
+			var rObj = {};
+			rObj.label = channel.displayName;
+			rObj.value = channel.id;
+			return rObj;
+		});
+
+		console.log("Mean Sales: " +JSON.stringify(this.salesChannelOptions));
 
 		this.customerTypes = PosStorage.getCustomerTypesForDisplay(this.saleschannelid);
 		this.customerTypeOptions = this.customerTypes.map(customerType => {
 			return customerType.displayName;
 		});
+
+		this.customerTypesOptions = this.customerTypes.map(customerType => {
+			var rObj = {};
+			rObj.label = customerType.displayName;
+			rObj.value = customerType.id;
+			return rObj;
+		 });
+		 console.log("Mean Customers: " +JSON.stringify(this.customerTypesOptions));
+
 		this.customerTypesIndicies = this.customerTypes.map(customerType => {
 			return customerType.id;
 		});
@@ -243,7 +261,7 @@ class CustomerEdit extends Component {
 				this.state.address,
 				salesChannelId,
 				customerTypeId,
-				this.state.frequency,
+				this.state.reference,
 				this.state.secondPhoneNumber
 			);
 			this.props.customerActions.CustomerSelected({});
@@ -257,7 +275,7 @@ class CustomerEdit extends Component {
 				this.props.settings.siteId,
 				salesChannelId,
 				customerTypeId,
-				this.state.frequency,
+				this.state.reference,
 				this.state.secondPhoneNumber
 			);
 			this.props.customerActions.setCustomers(PosStorage.getCustomers());
@@ -270,6 +288,17 @@ class CustomerEdit extends Component {
 
 
 	render() {
+		const cplaceholder = {
+			label: 'Customer Type',
+			value: null,
+			color: '#000',
+		  };
+
+		  const splaceholder = {
+			label: 'Sales Channel',
+			value: null,
+			color: '#000',
+		  };
 
 		console.log(this.props);
 		console.log(this.state);
@@ -280,88 +309,133 @@ class CustomerEdit extends Component {
 			return <Picker.Item key={i} value={s.id} label={s.displayName} />
 		});
 		return (
-			<View style={{ flex: 1, backgroundColor: '#fff' }}>
+			<View style={{ flex: 1, backgroundColor: '#fff', justifyContent: 'center' }}>
 				<KeyboardAwareScrollView
 					style={{ flex: 1 }}
 					resetScrollToCoords={{ x: 0, y: 0 }}
 					scrollEnabled={true}>
 					<View style={{ flex: 1, alignItems: 'center' }}>
 
-						<Card
-							containerStyle={{ width: 500, marginTop: 30 }}
-						>
+						<Card containerStyle={{ width: '60%', marginTop: 30 }}>
 
 							<Input
 								placeholder={i18n.t(
 									'account-name'
 								)}
 								onChangeText={this.onChangeName}
-								label={i18n.t('account-name')}
+								// label={i18n.t('account-name')}
 								underlineColorAndroid="transparent"
 								keyboardType="default"
 								value={this.state.name}
-								style={[styles.inputText]}
+								inputContainerStyle={[styles.inputText]}
+								leftIcon={
+									<Icon
+									  name='md-person'
+									  size={24}
+									  color='black'
+									/>
+								}
 							/>
-
+						<View style={{ flex: 1, flexDirection: 'row' }}>
 							<Input
-								placeholder={i18n.t(
-									'telephone-number'
-								)}
+								placeholder={i18n.t('telephone-number')}
 								onChangeText={this.onChangeTeleOne.bind(this)}
 								value={this.state.phoneNumber}
 								keyboardType="phone-pad"
-								label={i18n.t('telephone-number')}
-								inputStyle={[styles.inputText]}
+								// label={i18n.t('telephone-number')}
+								inputContainerStyle={[styles.inputText]}
+								containerStyle={{ flex:.5 }}
+								leftIcon={
+									<Icon
+									  name='md-contact'
+									  size={24}
+									  color='black'
+									/>
+								}
 							/>
 
 							<Input
-								placeholder={i18n.t(
-									'second-phone-number'
-								)}
+								placeholder={i18n.t('second-phone-number')}
 								value={this.state.secondPhoneNumber}
 								keyboardType="phone-pad"
 								onChangeText={this.onChangeTeleTwo.bind(this)}
-								label={i18n.t('second-phone-number')}
-								inputStyle={[styles.inputText]}
+								// label={i18n.t('second-phone-number')}
+								inputContainerStyle={[styles.inputText]}
+								containerStyle={{ flex:.5 }}
+								leftIcon={
+									<Icon
+									  name='md-contact'
+									  size={24}
+									  color='black'
+									/>
+								}
 							/>
-
+							</View>
 							<Input
 								placeholder={i18n.t(
 									'address'
 								)}
+								keyboardType="default"
 								value={this.state.address}
 								onChangeText={this.onChangeAddress.bind(this)}
-								label={i18n.t('address')}
-								inputStyle={[styles.inputText]}
+								// label={i18n.t('address')}
+								inputContainerStyle={[styles.inputText]}
+								leftIcon={
+									<Icon
+									  name='md-map'
+									  size={24}
+									  color='black'
+									/>
+								}
 							/>
 
 							<Input
 								placeholder="Frequency"
-								label="Frequency"
+								// label="Frequency"
 								value={this.state.reference}
 								keyboardType="number-pad"
 								onChangeText={this.onChangeReference.bind(this)}
-								inputStyle={[styles.inputText]}
+								inputContainerStyle={[styles.inputText]}
+								leftIcon={
+									<Icon
+									  name='md-alarm'
+									  size={24}
+									  color='black'
+									/>
+								}
 							/>
+						{/* <View style={{ flex: 1, flexDirection: 'row' }}> */}
 
+							<RNPickerSelect
+										onValueChange={(value) => {
+											this.setState({ customerChannel: value });
+										}}
+										value={this.state.customerChannel}
+										placeholder={splaceholder}
+										items={[
+											{"label":"Direct","value":2},
+											{"label":"Reseller","value":3},
+											{"label":"Water club","value":4},
+											{"label":"Outlet franchise","value":5}
+											]}
+											// style={pickerSelectStyles}
+									/>
+									<RNPickerSelect
+										value={this.state.customerType}
+										onValueChange={(value) => {
+											this.setState({ customerType: value });
+										}}
+										placeholder={cplaceholder}
+										items={[
+											{"label":"Business","value":5},
+											{"label":"Household","value":6},
+											{"label":"Retailer","value":4},
+											{"label":"Outlet Franchise","value":8}
+										]}
+										// style={pickerSelectStyles}
 
-							<Picker
-								selectedValue={this.state.customerChannel}
-								onValueChange={(itemValue, itemIndex) => {
-									this.setState({ customerChannel: itemValue })
-								}
-								}>
-								{salesChannelOption}
-							</Picker>
-
-							<Picker
-								selectedValue={this.state.customerType}
-								onValueChange={(itemValue, itemIndex) => {
-									this.setState({ customerType: itemValue });
-								}
-								}>
-								{customerTypesOption}
-							</Picker>
+									/>
+							{/* </View> */}
 
 							<Button
 								onPress={() => this.onEdit()}
@@ -394,7 +468,7 @@ class CustomerEdit extends Component {
 		if (this.props.isEdit) {
 			this.setState({ name: this.props.selectedCustomer.name });
 			this.setState({ phoneNumber: this.props.selectedCustomer.phoneNumber });
-			this.setState({ secondPhoneNumber: this.props.selectedCustomer.secondPhoneNumber }),
+			this.setState({ secondPhoneNumber: this.props.selectedCustomer.secondPhoneNumber });
 			this.setState({ address: this.props.selectedCustomer.address });
 			this.setState({ reference: this.props.selectedCustomer.frequency });
 			this.setState({ customerType: this.props.selectedCustomer.customerTypeId });
@@ -574,10 +648,10 @@ class CustomerEdit extends Component {
 	}
 
 	isValidPhoneNumber(text) {
-		let test = /^\d{9,14}$/.test(text);
+		let test = /^\d{8,14}$/.test(text);
 		if (!test) {
 			alert(
-				'Phone number should be atleast 9 digits long. Example 0752XXXYYY'
+				'Phone number should be atleast 8 digits long. Example 0752XXXYYY'
 			);
 		}
 		return test;
@@ -847,6 +921,36 @@ export default connect(
 	mapDispatchToProps
 )(CustomerEdit);
 
+const pickerSelectStyles = StyleSheet.create({
+	inputIOS: {
+	  fontSize: 16,
+	  paddingVertical: 12,
+	  paddingHorizontal: 10,
+	  borderWidth: 1,
+	  borderColor: '#CCC',
+	  backgroundColor: '#CCC',
+	  borderRadius: 4,
+	  color: 'black',
+	  margin: 5,
+	  flex:1,
+	  paddingRight: 30, // to ensure the text is never behind the icon
+	},
+	inputAndroid: {
+	  fontSize: 16,
+	  paddingHorizontal: 10,
+	  paddingVertical: 8,
+	  borderWidth: 0.5,
+	  borderColor: '#CCC',
+	  backgroundColor: '#CCC',
+	  borderRadius: 10,
+	  color: 'black',
+	  margin: 5,
+	  flex:1,
+
+	  paddingRight: 30, // to ensure the text is never behind the icon
+	},
+  });
+
 const styles = StyleSheet.create({
 	headerText: {
 		fontSize: 24,
@@ -856,13 +960,14 @@ const styles = StyleSheet.create({
 	submit: {
 		backgroundColor: '#2858a7',
 		borderRadius: 20,
+		padding: 10,
 		marginTop: '1%'
 	},
 	inputContainer: {
 		borderWidth: 2,
 		borderRadius: 10,
-		borderColor: '#2858a7',
-		backgroundColor: 'white'
+		borderColor: '#CCC',
+		backgroundColor: '#CCC'
 	},
 	buttonText: {
 		fontWeight: 'bold',
@@ -871,21 +976,24 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		width: 300
 	},
+
 	inputText: {
 		fontSize: 24,
 		alignSelf: 'center',
-		backgroundColor: 'white',
-		width: 400,
+		borderWidth: 2,
+		borderRadius: 10,
+		borderColor: '#CCC',
+		backgroundColor: '#CCC',
 		margin: 5
 	},
+
 	phoneInputText: {
 		fontSize: 24,
-		alignSelf: 'center',
 		backgroundColor: 'white',
-		width: 195,
 		margin: 5,
 		paddingRight: 5
 	},
+
 	dropdownText: {
 		fontSize: 24
 	},

@@ -89,7 +89,7 @@
   "processing-order": "Processing order...",
 
   "sales": "Sales",
-  "inventory": "Inventory",
+  "inventory": "Closing Stock",
   "meter-reading": "Meter Reading",
 
   "cancel-this-order": "cancel this order",
@@ -107,7 +107,7 @@
   "topup": "Top Up",
   "topup-placeholder": "Top Up",
   "previous": "Previous",
-  "current": "Current",
+  "current": "Closing Stock",
   "delta-liters": "Delta Liters",
   "delta-inventory": "Delta Inventory",
   "output": "Output",

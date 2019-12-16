@@ -539,6 +539,7 @@ class OrderPaymentScreen extends Component {
 	formatAndSaveSale = async () => {
 		let receipt = null;
 		let priceTotal = 0;
+		let reminder = null;
 		if (!this.isPayoffOnly()) {
 			// Assumes that there is at least one product
 			let receiptDate = this.state.receiptDate
@@ -689,6 +690,29 @@ class OrderPaymentScreen extends Component {
 				);
 			}
 		}
+
+		//new reminder module
+
+		reminder = {
+			id: receipt.id + this.props.selectedCustomer.customerId,
+			customer_id: this.props.selectedCustomer.customerId,
+			dueAmount: this.props.selectedCustomer.dueAmount,
+			phoneNumber: this.props.selectedCustomer.phoneNumber,
+			name: this.props.selectedCustomer.name,
+			amountCash: receipt.amountCash,
+			total:receipt.total,
+			address: this.props.selectedCustomer.address,
+			kioskId: this.props.selectedCustomer.siteId,
+			reminder_date: this.props.selectedCustomer.reminder_date,
+			salesChannelId: this.props.selectedCustomer.salesChannelId,
+			customerTypeId: receipt.customerTypeId,
+			products: receipt.products,
+			createdAt: this.props.selectedCustomer.reminder_date,
+			comment: null,
+			receipt: receipt.id
+			 };
+
+			PosStorage.addReminder(reminder);
 		return true;
 	};
 

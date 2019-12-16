@@ -119,16 +119,19 @@ class InventoryReport extends Component {
 		
 			return (
 				<View style={{ flex: 1 }}>
-					<DateFilter/>
+					<View style={{ flex: .2, flexDirection: 'row' }}>
+					   <DateFilter/>
+					</View>
+
 					<View style={{ flex: .7, backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10, }}>
-						<View style = {styles.titleText}>
+						{/* <View style = {styles.titleText}>
 							<View style = {styles.leftHeader}>
 								<Text style = {styles.titleItem}>{i18n.t('sales')}</Text>
 							</View>
 							<View style = {styles.rightHeader}>
 								<Text style = {styles.titleItem}>{i18n.t('inventory')}</Text>
 							</View>
-						</View>
+						</View> */}
 						<FlatList
 							data={this.getInventoryData()}
 							extraData={this.state.refresh}
@@ -143,20 +146,21 @@ class InventoryReport extends Component {
 						/>
 
 					</View>
+
 					<View style={{
-						flex: .5,
+						flex: .4,
 						backgroundColor: 'white',
 						marginLeft: 10,
 						marginRight: 10,
 						marginBottom: 10,
 					}}>
-						<View style={{ flex: 1, flexDirection: 'row' }}>
+						{/* <View style={{ flex: 1, flexDirection: 'row' }}>
 							<Text style={[styles.totalItem, { flex: 1.5 }]}> </Text>
 							<Text style={[styles.totalItem, { flex: .7 }]}>{i18n.t('total-sales')}</Text>
 							<Text style={[styles.totalItem, { flex: 1.0 }]}>{this.getTotalLiters()}</Text>
 							<Text style={[styles.totalItem, { flex: .8 }]}>{i18n.t('delta-inventory')}</Text>
 							<Text style={[styles.totalItem, { flex: .6 }]}>{this.getTotalInventory()}</Text>
-						</View>
+						</View> */}
 						<View style={{ flex: 1, flexDirection: 'row', marginTop:15 }}>
 							<Text style={[styles.totalItem, { flex: 1.7 }]}> </Text>
 							<Text style={[styles.totalItem, { flex: .4}]}>{i18n.t('output')}</Text>
@@ -261,21 +265,21 @@ class InventoryReport extends Component {
 				<View style={[{ flex: .5 }]}>
 					<Text style={[styles.rowItemCenter]}>{item.quantity}</Text>
 				</View>
-				<View style={[{ flex: .7 }]}>
+				{/* <View style={[{ flex: .7 }]}>
 					<Text style={[styles.rowItemCenter]}>{this.getItemLitersPerSku(item)}</Text>
-				</View>
+				</View> */}
 				<View style={[{ flex: .7 }]}>
 					<Text style={[styles.rowItemCenter]}>{this.getItemTotalLiters(item)}</Text>
 				</View>
 				<View style ={[{width:20}]}/>
 
-				<View style={[{ flex: .7 }]}>
+				{/* <View style={[{ flex: .7 }]}>
 					<Text style={[styles.rowItemCenter]}>{this.getInventorySkuForDisplay(false, item)}</Text>
-				</View>
+				</View> */}
 				{this.getCurrentInventory(item)}
-				<View style={[{ flex: .7 }]}>
+				{/* <View style={[{ flex: .7 }]}>
 					<Text style={[styles.rowItemCenter]}>{this.getTotalForSkuDisplay(item)}</Text>
-				</View>
+				</View> */}
 				<InventoryEdit
 					type = "wastageName"
 					skuToShow = {this.state.currentSkuEdit}
@@ -336,24 +340,15 @@ class InventoryReport extends Component {
 				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.headerItem, styles.leftMargin]}>SKU</Text>
 				</View>
-				<View style={[{ flex: .5 }]}>
+				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('quantity')}</Text>
 				</View>
-				<View style={[{ flex: .7 }]}>
-					<Text style={[styles.headerItemCenter]}>{i18n.t('liters-per-sku')}</Text>
-				</View>
-				<View style={[{ flex: .7 }]}>
+				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('total-liters')}</Text>
 				</View>
 				<View style ={[{width:20}]}/>
-				<View style={[{ flex: .7 }]}>
-					<Text style={[styles.headerItemCenter]}>{i18n.t('previous')}</Text>
-				</View>
-				<View style={[{ flex: .7 }]}>
+				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('current')}</Text>
-				</View>
-				<View style={[{ flex: .7 }]}>
-					<Text style={[styles.headerItemCenter]}>{i18n.t('delta-liters')}</Text>
 				</View>
 			</View>
 		);
@@ -562,24 +557,24 @@ const styles = StyleSheet.create({
 	rowItem:{
 		fontSize:16,
 		paddingLeft:10,
-		borderLeftWidth:1,
-		borderColor:'black',
-		borderTopWidth:1,
-		borderBottomWidth:1,
-		borderRightWidth:1,
+		paddingTop:5,
+		paddingBottom:5
 	},
 	rowItemCenter:{
 		fontSize:16,
 		paddingLeft:10,
-		borderLeftWidth:1,
-		borderColor:'black',
-		borderTopWidth:1,
-		borderBottomWidth:1,
-		borderRightWidth:1,
+		paddingTop:5,
+		paddingBottom:5,
 		textAlign:'center'
 	},
 	rowBackground:{
-		backgroundColor:'white'
+		backgroundColor:'white',
+		borderLeftWidth:1,
+		borderColor:'#f1f1f1',
+		borderTopWidth:1,
+		borderBottomWidth:1,
+		borderRightWidth:1,
+		padding:5
 	},
 
 	headerBackground:{

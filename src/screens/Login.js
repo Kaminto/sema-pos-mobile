@@ -164,6 +164,7 @@ class Login extends Component {
 								<Input
 									placeholder={i18n.t('password-placeholder')}
 									label={i18n.t('password-placeholder')}
+									textContentType='password'
 									onChangeText={this.onChangePassword.bind(this)}
 									leftIcon={
 										<Icon
