@@ -4,10 +4,13 @@ import InventroyRealm from '../database/inventory/index';
 import Communications from '../services/Communications';
 import TopUpService from '../services/topup';
 import InventoryService from '../services/inventory';
+
+
 import Events from 'react-native-simple-events';
 import * as _ from 'lodash';
 import InventorySync from './sync/inventory';
 import CreditSync from './sync/credit';
+import CustomerSync from './sync/customer.sync'
 class Synchronization {
 	initialize(lastCustomerSync, lastProductSync, lastSalesSync, lastCreditSync, lastInventorySync) {
 		console.log('Synchronization:initialize');
@@ -95,7 +98,7 @@ class Synchronization {
 		if (this.isConnected) {
 			//this.synchronize();
 			//Sync customers
-			this.synchronizeCustomers();
+			CustomerSync.synchronizeCustomers();
 
 			// //Sync Sales
 			// this.synchronizeSales();
@@ -128,7 +131,7 @@ class Synchronization {
 								'synchronize - SalesChannels and Customer Types: ' +
 								values
 							);
-							const promiseCustomers = this.synchronizeCustomers().then(
+							const promiseCustomers = CustomerSync.synchronizeCustomers().then(
 								customerSync => {
 									syncResult.customers = customerSync;
 									return customerSync;
@@ -138,7 +141,7 @@ class Synchronization {
 							const promiseTopUps = CreditSync.synchronizeCredits().then(
 								topUpSync => {
 									// console.log('topUpSync', topUpSync);
-									this.updateLastTopUpSync()
+									//this.updateLastTopUpSync()
 									syncResult.topups = topUpSync;
 									return topUpSync;
 								}
@@ -147,7 +150,7 @@ class Synchronization {
 							const promiseInventory = InventorySync.synchronizeInventory(this.lastInventorySync).then(
 								inventorySync => {
 									// console.log('topUpSync', topUpSync);
-									this.updateInventorySync();
+									//this.updateInventorySync();
 									syncResult.inventory = inventorySync;
 									return inventorySync;
 								}
@@ -256,7 +259,7 @@ class Synchronization {
 							})
 							.catch(error => {
 								console.log(
-									'Synchronization:synchronizeCustomers Create receipt failed: error-' +
+									'Synchronization:synchronizeSales Create receipt failed: error-' +
 									error
 								);
 								if (error === 400) {
@@ -278,134 +281,7 @@ class Synchronization {
 		});
 	}
 
-	synchronizeCustomers() {
-		return new Promise(resolve => {
-			console.log('Synchronization:synchronizeCustomers - Begin');
-			Communications.getCustomers(this.lastCustomerSync)
-				.then(web_customers => {
-					if (web_customers.hasOwnProperty('customers')) {
-						this.updateLastCustomerSync();
-						console.log(
-							'Synchronization:synchronizeCustomers No of new remote customers: ' +
-							web_customers.customers.length
-						);
-						// Get the list of customers that need to be sent to the server
-						let {
-							pendingCustomers,
-							updated
-						} = PosStorage.mergeCustomers(web_customers.customers);
-						console.log(
-							'Synchronization:synchronizeCustomers No of local pending customers: ' +
-							pendingCustomers.length
-						);
-						resolve({
-							error: null,
-							localCustomers: pendingCustomers.length,
-							remoteCustomers: web_customers.customers.length
-						});
-						pendingCustomers.forEach(customerKey => {
-							PosStorage.getCustomerFromKey(customerKey).then(
-								customer => {
-									if (customer != null) {
-										if (customer.syncAction === 'create') {
-											console.log(
-												'Synchronization:synchronizeCustomers -creating customer - ' +
-												customer.name
-											);
-											Communications.createCustomer(
-												customer
-											)
-												.then(() => {
-													console.log(
-														'Synchronization:synchronizeCustomers - Removing customer from pending list - ' +
-														customer.name
-													);
-													PosStorage.removePendingCustomer(
-														customerKey
-													);
-												})
-												.catch(error => {
-													console.log(
-														'Synchronization:synchronizeCustomers Create Customer failed'
-													);
-												});
-										} else if (
-											customer.syncAction === 'delete'
-										) {
-											console.log(
-												'Synchronization:synchronizeCustomers -deleting customer - ' +
-												customer.name
-											);
-											Communications.deleteCustomer(
-												customer
-											)
-												.then(() => {
-													console.log(
-														'Synchronization:synchronizeCustomers - Removing customer from pending list - ' +
-														customer.name
-													);
-													PosStorage.removePendingCustomer(
-														customerKey
-													);
-												})
-												.catch(error => {
-													console.log(
-														'Synchronization:synchronizeCustomers Delete Customer failed ' +
-														error
-													);
-												});
-										} else if (
-											customer.syncAction === 'update'
-										) {
-											console.log(
-												'Synchronization:synchronizeCustomers -updating customer - ' +
-												customer.name
-											);
-											Communications.updateCustomer(
-												customer
-											)
-												.then(() => {
-													console.log(
-														'Synchronization:synchronizeCustomers - Removing customer from pending list - ' +
-														customer.name
-													);
-													PosStorage.removePendingCustomer(
-														customerKey
-													);
-												})
-												.catch(error => {
-													console.log(
-														'Synchronization:synchronizeCustomers Update Customer failed ' +
-														error
-													);
-												});
-										}
-									} else {
-										PosStorage.removePendingCustomer(
-											customerKey
-										);
-									}
-								}
-							);
-						});
-						if (updated) {
-							Events.trigger('CustomersUpdated', {});
-						}
-					}
-				})
-				.catch(error => {
-					console.log(
-						'Synchronization.getCustomers - error ' + error
-					);
-					resolve({
-						error: error.message,
-						localCustomers: null,
-						remoteCustomers: null
-					});
-				});
-		});
-	}
-
+ 
 	synchronizeProducts() {
 		return new Promise(resolve => {
 			console.log('Synchronization:synchronizeProducts - Begin');

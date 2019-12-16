@@ -190,8 +190,7 @@ class PosStorage {
 				this.stringify(this.reminderData)
 			]
 		];
-		// TopUps.initialiseTable();
-		//InventroyRealm.initialiseTable();
+		
 		InventroyRealm.initialise();
 		CreditRealm.initialise();
 		console.log(keyArray);

@@ -1,5 +1,5 @@
 var Realm = require('realm');
-
+import { CustomerSchema, CustomerSyncDateSchema} from './customers/customer.model'
 // Realm schema creation
 const SEMA_SCHEMA = {
     name: 'SemaRealm',
@@ -54,9 +54,18 @@ const CreditSyncDateSchema = {
     }
 };
 
+
 export default realm = new Realm({
-    schema: [SEMA_SCHEMA, InventorySchema, InventorySyncDateSchema, CreditSchema, CreditSyncDateSchema],
-    schemaVersion: 41,
+    schema: [
+        SEMA_SCHEMA,
+        InventorySchema,
+        InventorySyncDateSchema,
+        CreditSchema,
+        CreditSyncDateSchema,
+        CustomerSchema,
+        CustomerSyncDateSchema
+    ],
+    schemaVersion: 43,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
         console.log('newRealm', newRealm)
