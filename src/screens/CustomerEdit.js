@@ -24,6 +24,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import * as ToolbarActions from '../actions/ToolBarActions';
 import ModalDropdown from 'react-native-modal-dropdown';
 import PosStorage from '../database/PosStorage';
+import CustomerRealm from '../database/customers/customer.operations'
 import * as CustomerActions from '../actions/CustomerActions';
 
 import i18n from '../app/i18n';
@@ -254,7 +255,8 @@ class CustomerEdit extends Component {
 		// }
 		if (this.props.isEdit) {
 			this.setReminderIfExists(this.props.selectedCustomer);
-			PosStorage.updateCustomer(
+			 
+			CustomerRealm.updateCustomer(
 				this.props.selectedCustomer,
 				this.state.phoneNumber,
 				this.state.name,
@@ -263,12 +265,23 @@ class CustomerEdit extends Component {
 				customerTypeId,
 				this.state.reference,
 				this.state.secondPhoneNumber
-			);
+			)
+			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
 			this.props.customerActions.CustomerSelected({});
 			this.setState({ isEditInProgress: true });
 			this.props.navigation.goBack();
 		} else {
-			let newCustomer = PosStorage.createCustomer(
+			// let newCustomer = PosStorage.createCustomer(
+			// 	this.state.phoneNumber,
+			// 	this.state.name,
+			// 	this.state.address,
+			// 	this.props.settings.siteId,
+			// 	salesChannelId,
+			// 	customerTypeId,
+			// 	this.state.reference,
+			// 	this.state.secondPhoneNumber
+			// );
+			CustomerRealm.createCustomer(
 				this.state.phoneNumber,
 				this.state.name,
 				this.state.address,
@@ -276,9 +289,9 @@ class CustomerEdit extends Component {
 				salesChannelId,
 				customerTypeId,
 				this.state.reference,
-				this.state.secondPhoneNumber
 			);
-			this.props.customerActions.setCustomers(PosStorage.getCustomers());
+			//this.props.customerActions.setCustomers(PosStorage.getCustomers());
+			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
 			this.props.customerActions.CustomerSelected({});
 			this.props.navigation.goBack();
 		}
@@ -733,7 +746,8 @@ class CustomerEdit extends Component {
 		}
 		if (this.props.isEdit) {
 			this.setReminderIfExists(this.props.selectedCustomer);
-			PosStorage.updateCustomer(
+		 
+			CustomerRealm.updateCustomer(
 				this.props.selectedCustomer,
 				this.phone.current.state.propertyText,
 				this.name.current.state.propertyText,
@@ -743,8 +757,20 @@ class CustomerEdit extends Component {
 				this.frequency.current.state.propertyText,
 				this.secondPhoneNumber.current.state.propertyText
 			);
+			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
+
 		} else {
-			let newCustomer = PosStorage.createCustomer(
+			// let newCustomer = PosStorage.createCustomer(
+			// 	this.phone.current.state.propertyText,
+			// 	this.name.current.state.propertyText,
+			// 	this.address.current.state.propertyText,
+			// 	this.props.settings.siteId,
+			// 	salesChannelId,
+			// 	customerTypeId,
+			// 	this.frequency.current.state.propertyText,
+			// 	this.secondPhoneNumber.current.state.propertyText
+			// );
+			CustomerRealm.createCustomer(
 				this.phone.current.state.propertyText,
 				this.name.current.state.propertyText,
 				this.address.current.state.propertyText,
@@ -753,8 +779,9 @@ class CustomerEdit extends Component {
 				customerTypeId,
 				this.frequency.current.state.propertyText,
 				this.secondPhoneNumber.current.state.propertyText
-			);
-			this.props.customerActions.setCustomers(PosStorage.getCustomers());
+			)
+			//this.props.customerActions.setCustomers(PosStorage.getCustomers());
+			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
 			this.props.customerActions.CustomerSelected(newCustomer);
 		}
 
@@ -821,18 +848,28 @@ class CustomerEdit extends Component {
 		}
 		if (this.props.isEdit) {
 			this.setReminderIfExists(this.props.selectedCustomer);
-			PosStorage.updateCustomer(
-				this.props.selectedCustomer,
+			 
+			CustomerRealm.updateCustomer(this.props.selectedCustomer,
 				this.phone.current.state.propertyText,
 				this.name.current.state.propertyText,
 				this.address.current.state.propertyText,
 				salesChannelId,
 				customerTypeId,
 				this.frequency.current.state.propertyText,
-				this.secondPhoneNumber.current.state.propertyText
-			);
+				this.secondPhoneNumber.current.state.propertyText);
+				this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
 		} else {
-			let newCustomer = PosStorage.createCustomer(
+			// let newCustomer = PosStorage.createCustomer(
+			// 	this.phone.current.state.propertyText,
+			// 	this.name.current.state.propertyText,
+			// 	this.address.current.state.propertyText,
+			// 	this.props.settings.siteId,
+			// 	salesChannelId,
+			// 	customerTypeId,
+			// 	this.frequency.current.state.propertyText,
+			// 	this.secondPhoneNumber.current.state.propertyText
+			// );
+			CustomerRealm.createCustomer(
 				this.phone.current.state.propertyText,
 				this.name.current.state.propertyText,
 				this.address.current.state.propertyText,
@@ -842,7 +879,8 @@ class CustomerEdit extends Component {
 				this.frequency.current.state.propertyText,
 				this.secondPhoneNumber.current.state.propertyText
 			);
-			this.props.customerActions.setCustomers(PosStorage.getCustomers());
+			//this.props.customerActions.setCustomers(PosStorage.getCustomers());
+			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
 			this.props.navigation.navigate('ListCustomers');
 			this.props.customerActions.CustomerSelected(newCustomer);
 		}

@@ -35,8 +35,8 @@ class InventoryService {
 		}; 
         let url = 'sema/kiosk_closing_stock?kiosk_id=' + this._siteId;
 
-		if (updatedSince) {
-			url = url + '&updated-date=' + updatedSince.toISOString();
+		if (updatedSince) {			
+			url = url + '&updated-date=' + updatedSince;
 		} 
 
 		return fetch(this._url + url, options)

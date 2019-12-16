@@ -11,7 +11,7 @@ import * as ProductActions from '../actions/ProductActions';
 import * as ToolbarActions from '../actions/ToolBarActions';
 import * as receiptActions from '../actions/ReceiptActions';
 import * as AuthActions from '../actions/AuthActions';
-
+import CustomerRealm from '../database/customers/customer.operations'
 import PosStorage from '../database/PosStorage';
 import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
@@ -174,7 +174,10 @@ class CustomSidebarMenu extends Component {
 				// console.log(
 				// 	'Synchronization-result: ' + JSON.stringify(syncResult)
 				// );
-				// let foo = this._getSyncResults(syncResult);
+        // let foo = this._getSyncResults(syncResult);
+        this.props.customerActions.setCustomers(
+          CustomerRealm.getAllCustomer()
+      );
 				Alert.alert(
 					i18n.t('sync-results'),
 					this._getSyncResults(syncResult),

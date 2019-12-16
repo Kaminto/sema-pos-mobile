@@ -39,7 +39,7 @@ class TopUpService {
 		let url = 'sema/customer_credit/allTopUps';
 		console.log('this._url', this._url);
 		if (updatedSince) {
-			url = url + '?updated-date=' + updatedSince.toISOString();
+			url = url + '?updated-date=' + updatedSince;
 		}
 
 		return fetch(this._url + url, options)
