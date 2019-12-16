@@ -276,9 +276,7 @@ class PosStorage {
 		this.receipts = this.parseJson(results[15][1]); // remoteReceiptsKey
 		this.reminderDataKeys = this.parseJson(
 			results[16][1]
-		); //reminderData
-		TopUps.loadTableData();
-		//InventroyRealm.loadTableData();
+		); //reminderData;
 		InventroyRealm.initialise();
 		CreditRealm.initialise();
 

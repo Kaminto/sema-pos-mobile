@@ -138,6 +138,7 @@ class Synchronization {
 							const promiseTopUps = CreditSync.synchronizeCredits().then(
 								topUpSync => {
 									// console.log('topUpSync', topUpSync);
+									this.updateLastTopUpSync()
 									syncResult.topups = topUpSync;
 									return topUpSync;
 								}
@@ -146,7 +147,7 @@ class Synchronization {
 							const promiseInventory = InventorySync.synchronizeInventory(this.lastInventorySync).then(
 								inventorySync => {
 									// console.log('topUpSync', topUpSync);
-									updateInventorySync();
+									this.updateInventorySync();
 									syncResult.inventory = inventorySync;
 									return inventorySync;
 								}
