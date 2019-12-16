@@ -108,6 +108,7 @@ class InventroyRealm {
             realm.write(() => {
                 let inventoryObj = realm.objects('Inventory').filtered(`closingStockId = "${inventory.closingStockId}"`);
                 inventoryObj[0].active = true;
+                inventoryObj[0].syncAction = null;
             })
 
         } catch (e) {
@@ -115,6 +116,9 @@ class InventroyRealm {
         }
 
     }
+
+
+  // Hard delete when active property is false or when active property and syncAction is delete
 
     hardDeleteInventory(inventory) {
         try {

@@ -122,6 +122,7 @@ class AuthLoadingScreen extends React.Component {
                     CreditRealm.getLastCreditSync(),
                     InventroyRealm.getLastInventorySync(),
                 );
+                console.log(' CreditRealm.getLastCreditSync(),',  CreditRealm.getLastCreditSync(),)
                 Synchronization.setConnected(this.props.network.isNWConnected);
 
                 this.props.settingsActions.setSettings({ ...settings, loginSync: false });
