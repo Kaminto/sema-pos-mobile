@@ -12,6 +12,7 @@ import receiptReducer from "./ReceiptReducer";
 import authReducer from "./AuthReducers";
 import reminderReducer from "./ReminderReducer.js";
 import topupReducer from "./TopUpReducer";
+import inventoryReducer from "./InventoryReducer";
 
 // Combine all the reducers
 const RootReducer = combineReducers({
@@ -26,7 +27,8 @@ const RootReducer = combineReducers({
 	receiptReducer,
 	authReducer,
 	reminderReducer,
-	topupReducer
+	topupReducer,
+	inventoryReducer
 });
 
 export default RootReducer;

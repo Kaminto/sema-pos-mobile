@@ -1,13 +1,15 @@
-// import mock_customers from "../mock_data/customers";
 import PosStorage from '../database/PosStorage';
-import TopUps from '../database/topup/index';
+import CreditRealm from '../database/credit/index';
+import InventroyRealm from '../database/inventory/index';
 import Communications from '../services/Communications';
 import TopUpService from '../services/topup';
+import InventoryService from '../services/inventory';
 import Events from 'react-native-simple-events';
 import * as _ from 'lodash';
-
+import InventorySync from './sync/inventory';
+import CreditSync from './sync/credit';
 class Synchronization {
-	initialize(lastCustomerSync, lastProductSync, lastSalesSync, lastTopUpSync) {
+	initialize(lastCustomerSync, lastProductSync, lastSalesSync, lastCreditSync, lastInventorySync) {
 		console.log('Synchronization:initialize');
 		this.lastCustomerSync = lastCustomerSync;
 		this.lastProductSync = lastProductSync;
@@ -15,7 +17,8 @@ class Synchronization {
 		this.intervalId = null;
 		this.firstSyncId = null;
 		this.isConnected = false;
-		this.lastTopUpSync = lastTopUpSync;
+		this.lastCreditSync = lastCreditSync;
+		this.lastInventorySync = lastInventorySync;
 	}
 
 	setConnected(isConnected) {
@@ -37,7 +40,8 @@ class Synchronization {
 		if (
 			PosStorage.getCustomers().length == 0 ||
 			PosStorage.getProducts().length == 0 ||
-			TopUps.getTopUps().length == 0
+			CreditRealm.getAllCredit().length == 0 ||
+			InventroyRealm.getAllInventory().length == 0
 		) {
 			// No local customers or products, sync now
 			timeoutX = 1000;
@@ -77,8 +81,14 @@ class Synchronization {
 	}
 
 	updateLastTopUpSync() {
-		this.lastTopUpSync = new Date();
-		TopUps.setLastTopUpSync(this.lastTopUpSync);
+		this.lastCreditSync = new Date();
+		CreditRealm.setLastCreditSync(this.lastCreditSync);
+	}
+
+
+	updateInventorySync() {
+		this.lastInventorySync = new Date();
+		InventroyRealm.setLastInventorySync(this.lastInventorySync);
 	}
 
 	doSynchronize() {
@@ -125,11 +135,20 @@ class Synchronization {
 								}
 							);
 
-							const promiseTopUps = this.synchronizeCredits().then(
+							const promiseTopUps = CreditSync.synchronizeCredits().then(
 								topUpSync => {
 									// console.log('topUpSync', topUpSync);
 									syncResult.topups = topUpSync;
 									return topUpSync;
+								}
+							);
+
+							const promiseInventory = InventorySync.synchronizeInventory(this.lastInventorySync).then(
+								inventorySync => {
+									// console.log('topUpSync', topUpSync);
+									updateInventorySync();
+									syncResult.inventory = inventorySync;
+									return inventorySync;
 								}
 							);
 
@@ -166,6 +185,7 @@ class Synchronization {
 							[
 								promiseCustomers,
 								promiseTopUps,
+								promiseInventory,
 								promiseProducts,
 								promiseSales,
 								promiseProductMrps,
@@ -253,139 +273,6 @@ class Synchronization {
 					console.log(
 						'Synchronization.synchronizeSales - error ' + error
 					);
-				});
-		});
-	}
-
-	synchronizeCredits() {
-		return new Promise(resolve => {
-			console.log('Synchronization:synchronizeCredits - Begin');
-			TopUpService.getTopUps(this.lastTopUpSync)
-				.then(web_topup => {
-					console.log('web_topup',web_topup);
-					if (web_topup.hasOwnProperty('topup')) {
-						this.updateLastTopUpSync();
-						console.log(
-							'Synchronization:synchronizeCredits No of new remote Credits: ' +
-							web_topup.topup.length
-						);
-						// Get the list of Credits that need to be sent to the server
-						let {
-							pendingTopUps,
-							updated
-						} = TopUps.mergeTopUps(web_topup.topup);
-						console.log(
-							'Synchronization:synchronizeTopUps No of local pending Credits: ' +
-							pendingTopUps.length
-						);
-						
-						pendingTopUps.forEach(topup => {
-							//console.log('topup',topup);
-							// TopUps.getTopUpFromKey(topUpKey).then(
-							// 	topup => {
-								//	console.log('topup',topup)
-									if (topup != null) {
-										if (topup.syncAction === 'create') {
-											console.log(
-												'Synchronization:synchronizetopUp - creating TopUp - ' +
-												topup.topup
-											);
-											TopUpService.createTopUp(
-												topup
-											)
-												.then(() => {
-													console.log(
-														'Synchronization:synchronizetopUp - Removing topup from pending list - ' +
-														topup.topup
-													);
-													TopUps.removePendingTopUp(
-														topUpKey
-													);
-												})
-												.catch(error => {
-													console.log(
-														'Synchronization:synchronizeTopUp Create TopUp failed'
-													);
-												});
-										} else if (
-											topup.syncAction === 'delete'
-										) {
-											console.log(
-												'Synchronization:synchronizeTopUp -deleting TopUp - ' +
-												topup.topup
-											);
-											TopUpService.deleteTopUp(
-												topup
-											)
-												.then(() => {
-													console.log(
-														'Synchronization:synchronizetopup - Removing topup from pending list - ' +
-														topup.topup
-													);
-													TopUps.removePendingTopUp(
-														topUpKey
-													);
-												})
-												.catch(error => {
-													console.log(
-														'Synchronization:synchronizetopup Delete topup failed ' +
-														error
-													);
-												});
-										} else if (
-											topup.syncAction === 'update'
-										) {
-											console.log(
-												'Synchronization:synchronizeCustomers -updating customer - ' +
-												topup.topup
-											);
-											TopUpService.updateCustomerCredit(
-												topup
-											)
-												.then(() => {
-													console.log(
-														'Synchronization:synchronizeTopup - Removing topup from pending list - ' +
-														topup.topup
-													);
-													TopUps.removePendingTopUp(
-														topUpKey
-													);
-												})
-												.catch(error => {
-													console.log(
-														'Synchronization:synchronizeTopup Update topup failed ' +
-														error
-													);
-												});
-										}
-									} else {
-										TopUps.removePendingTopUp(
-											topUpKey
-										);
-									}
-								// });
-						});
-
-						resolve({
-							error: null,
-							localTopup: pendingTopUps.length,
-							remoteTopup: web_topup.topup.length
-						});
-
-						if (updated) {
-							Events.trigger('synchronizeTopup', {});
-						}
-					}
-				})
-				.catch(error => {
-					console.log(
-						'Synchronization.getTopup - error ' + error
-					);
-					resolve({
-						error: error.message,
-						localTopup: null,
-						remoteTopup: null
-					});
 				});
 		});
 	}
@@ -537,7 +424,7 @@ class Synchronization {
 							products.products.length
 						);
 						console.log(
-							'Synchronization:synchronizeProducts. No of new remote products: ' ,
+							'Synchronization:synchronizeProducts. No of new remote products: ',
 							products.products
 						);
 						const updated = PosStorage.mergeProducts(
@@ -614,8 +501,6 @@ class Synchronization {
 		});
 	}
 
-
-
 	async synchronizeReceipts() {
 		let settings = PosStorage.getSettings();
 		let remoteReceipts = await PosStorage.loadRemoteReceipts();
@@ -682,7 +567,7 @@ class Synchronization {
 		Communications.getReceiptsBySiteIdAndDate(settings.siteId, date).then(
 			json => {
 				console.log(JSON.stringify(json));
-				console.log('receipt json',json);
+				console.log('receipt json', json);
 				if (json) {
 					PosStorage.addRemoteReceipts(json).then(saved => {
 						Events.trigger('ReceiptsFetched', saved);
@@ -704,7 +589,7 @@ class Synchronization {
 			// TODO: Figure out a more scalable approach to this. As the product_mrp table may grow fast.
 			Communications.getProductMrps(null, false)
 				.then(productMrps => {
-					console.log('productMrps',productMrps);
+					console.log('productMrps', productMrps);
 					if (productMrps.hasOwnProperty('productMRPs')) {
 						console.log(
 							'Synchronization:synchronizeProductMrps. No of remote product MRPs: ' +
@@ -825,7 +710,7 @@ class Synchronization {
 		let settings = PosStorage.getSettings();
 		Communications.getReceiptsBySiteIdAndDate(settings.siteId, date).then(
 			json => {
-				console.log('receipt json',json);
+				console.log('receipt json', json);
 				PosStorage.addRemoteReceipts(json).then(saved => {
 					Events.trigger('ReceiptsFetched', saved);
 				});

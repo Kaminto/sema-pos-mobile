@@ -1,6 +1,4 @@
-import moment from 'moment-timezone';
-import PosStorage from '../database/PosStorage';
-class TopUpService {
+class InventoryService {
 	constructor() {
 		this._url = 'http://142.93.115.206:3006/';
 		this._site = '';
@@ -8,7 +6,6 @@ class TopUpService {
 		this._password = '';
 		this._token = '';
 		this._siteId = '';
-		this.customer_account_id = '';
 	}
 
 	initialize(url, site, user, password) {
@@ -29,18 +26,18 @@ class TopUpService {
 		this._siteId = siteId;
 	}
 
-	getTopUps(updatedSince) {
+	getInventories(updatedSince) {
 		let options = {
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer ' + this._token
 			}
-		};
-		let url = 'sema/customer_credit/allTopUps';
-		console.log('this._url', this._url);
+		}; 
+        let url = 'sema/kiosk_closing_stock?kiosk_id=' + this._siteId;
+
 		if (updatedSince) {
-			url = url + '?updated-date=' + updatedSince.toISOString();
-		}
+			url = url + '&updated-date=' + updatedSince.toISOString();
+		} 
 
 		return fetch(this._url + url, options)
 		.then(response => response.json())
@@ -48,13 +45,13 @@ class TopUpService {
 				return responseJson;
 			})
 			.catch(error => {
-				console.log('Communications:getTopUps: ' + error);
+				console.log('Communications:getInventories: ' + error);
 				throw error;
 			});
 	}
 
-	createTopUp(topup) {
-		// TODO - Resolve topup.... Is it needed, currently hardcoded...
+	createInventory(inventory) {
+		// TODO - Resolve inventory.... Is it needed, currently hardcoded...
 
 		let options = {
 			method: 'POST',
@@ -63,11 +60,11 @@ class TopUpService {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + this._token
 			},
-			body: JSON.stringify(topup)
+			body: JSON.stringify(inventory)
 		};
 		console.log('this._url', this._url);
 		return new Promise((resolve, reject) => {
-			fetch(this._url + 'sema/customer_credit', options)
+			fetch(this._url + 'sema/kiosk_closing_stock/', options)
 				.then(response => {
 					if (response.status === 200) {
 						response
@@ -81,26 +78,26 @@ class TopUpService {
 							})
 							.catch(error => {
 								console.log(
-									'createTopUp - Parse JSON: ' +
+									'createInventory - Parse JSON: ' +
 									error
 								);
 								reject();
 							});
 					} else {
 						console.log(
-							'createTopUp - Fetch status: ' + response.status
+							'createInventory - Fetch status: ' + response.status
 						);
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('createTopUp - Fetch: ' + error.message);
+					console.log('createInventory - Fetch: ' + error.message);
 					reject();
 				});
 		});
 	}
-	// Note that deleting a topup actually just deactivates the TopUp
-	deleteTopUp(topup) {
+	// Note that deleting a inventory actually just deactivates the Inventory
+	deleteInventory(inventory) {
 		let options = {
 			method: 'DELETE',
 			headers: {
@@ -114,7 +111,7 @@ class TopUpService {
 		};
 		return new Promise((resolve, reject) => {
 			fetch(
-				this._url + 'sema/customer_credit/' + topup.topUpId,
+				this._url + 'sema/kiosk_closing_stock/' + inventory.closingStockId,
 				options
 			)
 				.then(response => {
@@ -122,19 +119,19 @@ class TopUpService {
 						resolve();
 					} else {
 						console.log(
-							'deleteTopUp - Fetch status: ' + response.status
+							'deleteInventory - Fetch status: ' + response.status
 						);
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('deleteTopUp - Fetch: ' + error.message);
+					console.log('deleteInventory - Fetch: ' + error.message);
 					reject();
 				});
 		});
 	}
 
-	updateCustomerCredit(topup) {
+	updateInventory(inventory) {
 		let options = {
 			method: 'PUT',
 			headers: {
@@ -142,11 +139,11 @@ class TopUpService {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + this._token
 			},
-			body: JSON.stringify(topup)
+			body: JSON.stringify(inventory)
 		};
 		return new Promise((resolve, reject) => {
 			fetch(
-				this._url + 'sema/customer_credit/' + topup.topUpId,
+				this._url + 'sema/kiosk_closing_stock/' + inventory.closingStockId,
 				options
 			)
 				.then(response => {
@@ -158,24 +155,28 @@ class TopUpService {
 							})
 							.catch(error => {
 								console.log(
-									'updateTopUp - Parse JSON: ' +
+									'updateInventory - Parse JSON: ' +
 									error.message
 								);
 								reject();
 							});
 					} else {
 						console.log(
-							'updateTopUp - Fetch status: ' + response.status
+							'updateInventory - Fetch status: ' + response.status
 						);
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('createTopUp - Fetch: ' + error.message);
+					console.log('createInventory - Fetch: ' + error.message);
 					reject();
 				});
 		});
 	}
+
+
+
+
 }
 
-export default new TopUpService();
+export default new InventoryService();

@@ -13,16 +13,19 @@ import i18n from '../app/i18n';
 
 import * as CustomerActions from '../actions/CustomerActions';
 import * as TopUpActions from '../actions/TopUpActions';
+import * as InventoryActions from '../actions/InventoryActions';
 import * as NetworkActions from '../actions/NetworkActions';
 import * as SettingsActions from '../actions/SettingsActions';
 import * as ProductActions from '../actions/ProductActions';
 import * as receiptActions from '../actions/ReceiptActions';
 
 import PosStorage from '../database/PosStorage';
-import TopUps from '../database/topup/index';
+import CreditRealm from '../database/credit/index';
+import InventroyRealm from '../database/inventory/index';
 import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
 import TopUpService from '../services/topup';
+import InventoryService from '../services/inventory';
 import NetInfo from "@react-native-community/netinfo";
 
 class AuthLoadingScreen extends React.Component {
@@ -80,19 +83,31 @@ class AuthLoadingScreen extends React.Component {
                 );
                 TopUpService.setToken(settings.token);
                 TopUpService.setSiteId(settings.siteId);
+
+                
+                InventoryService.initialize(
+                    settings.semaUrl,
+                    settings.site,
+                    settings.user,
+                    settings.password
+                );
+                InventoryService.setToken(settings.token);
+                InventoryService.setSiteId(settings.siteId);
                 
 
                 this.posStorage.loadLocalData();
-                TopUps.loadTableData();
-
-                console.log('TopUps', TopUps.getTopUps());
 
                 this.props.customerActions.setCustomers(
                     this.posStorage.getCustomers()
                 );
                 this.props.topUpActions.setTopups(
-                    TopUps.getTopUps()
+                    CreditRealm.getAllCredit()
                 );
+                
+                this.props.inventoryActions.setInventory(
+                    InventroyRealm.getAllInventory()
+                );
+
                 this.props.productActions.setProducts(
                     this.posStorage.getProducts()
                 );
@@ -104,7 +119,8 @@ class AuthLoadingScreen extends React.Component {
                     PosStorage.getLastCustomerSync(),
                     PosStorage.getLastProductSync(),
                     PosStorage.getLastSalesSync(),
-                    TopUps.getLastTopUpSync()
+                    CreditRealm.getLastCreditSync(),
+                    InventroyRealm.getLastInventorySync(),
                 );
                 Synchronization.setConnected(this.props.network.isNWConnected);
 
@@ -163,6 +179,7 @@ function mapDispatchToProps(dispatch) {
         settingsActions: bindActionCreators(SettingsActions, dispatch),
         customerActions: bindActionCreators(CustomerActions, dispatch),
         topUpActions: bindActionCreators(TopUpActions, dispatch),
+        inventoryActions: bindActionCreators(InventoryActions, dispatch),        
         productActions: bindActionCreators(ProductActions, dispatch),
         receiptActions: bindActionCreators(receiptActions, dispatch)
     };

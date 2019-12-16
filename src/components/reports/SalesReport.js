@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, FlatList, Image, TouchableHighlight } from 'react-native';
-import {bindActionCreators} from "redux";
-import {connect} from "react-redux";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 import * as reportActions from "../../actions/ReportActions";
 import DateFilter from "./DateFilter";
 import * as Utilities from "../../services/Utilities";
@@ -67,60 +67,62 @@ class SalesReport extends Component {
 					</View>
 
 				</View>
-			);
+
+			</View>
+		);
 	}
-	getSalesData(){
-		let sales=[];
-		let temp=[];
-		if( this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate") ){
-			if( this.props.dateFilter.startDate == this.startDate && this.props.dateFilter.endDate == this.endDate){
+	getSalesData() {
+		let sales = [];
+		let temp = [];
+		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
+			if (this.props.dateFilter.startDate == this.startDate && this.props.dateFilter.endDate == this.endDate) {
 				//return this.props.salesData.salesItems;
-				sales=this.props.salesData.salesItems;
+				sales = this.props.salesData.salesItems;
 				//return this.removeDuplicates(this.props.salesData.salesItems, "id");
-			}else{
+			} else {
 				// Get new data
 				this.startDate = this.props.dateFilter.startDate;
 				this.endDate = this.props.dateFilter.endDate;
 				this.updateReport();
 				//return this.props.salesData.salesItems;
-				sales=this.props.salesData.salesItems;
+				sales = this.props.salesData.salesItems;
 				//return this.removeDuplicates(this.props.salesData.salesItems, "id");
 			}
-		}else{
+		} else {
 			//return this.props.salesData.salesItems;
-			sales=this.props.salesData.salesItems;
+			sales = this.props.salesData.salesItems;
 			//return this.removeDuplicates(this.props.salesData.salesItems, "id");
 		}
 		return sales;
 	}
-	getTotalSales (){
-		if( this.props.salesData.totalSales ){
+	getTotalSales() {
+		if (this.props.salesData.totalSales) {
 			return this.props.salesData.totalSales;
-		}else{
+		} else {
 			return 0;
 		}
 	}
 
 	// removeDuplicates(arr, comp){
 	// 	const unique = arr
-    //    	.map(e => e[comp])
-    // 	.map((e, i, final) => final.indexOf(e) === i && i)
-   	// 	.filter(e => arr[e]).map(e => arr[e]);
+	//    	.map(e => e[comp])
+	// 	.map((e, i, final) => final.indexOf(e) === i && i)
+	// 	.filter(e => arr[e]).map(e => arr[e]);
 
-   	// 	return unique;
+	// 	return unique;
 	// }
 
-	getTotalLiters(){
-		if( this.props.salesData.totalLiters && this.props.salesData.totalLiters !== 'N/A' ){
+	getTotalLiters() {
+		if (this.props.salesData.totalLiters && this.props.salesData.totalLiters !== 'N/A') {
 			return this.props.salesData.totalLiters.toFixed(2);
-		}else{
+		} else {
 			return 0;
 		}
 
 	}
 
 	getItemTotalLiters(item) {
-		if( item.totalLiters && item.totalLiters !== 'N/A' ){
+		if (item.totalLiters && item.totalLiters !== 'N/A') {
 			return `${item.totalLiters.toFixed(2)} L`;
 		}
 		return 'N/A';
@@ -133,32 +135,32 @@ class SalesReport extends Component {
 		return 'N/A';
 	}
 
-	getRow = (item)=>{
+	getRow = (item) => {
 		console.log("SalesReport - getRow");
 		return (
-			<View style={[{flex: 1, flexDirection: 'row',  alignItems:'center'},styles.rowBackground]}>
-				<View style={ [{flex: 1}]}>
-					<Text numberOfLines={1}  style={[styles.rowItem,styles.leftMargin]}>{item.description}</Text>
+			<View style={[{ flex: 1, flexDirection: 'row', alignItems: 'center' }, styles.rowBackground]}>
+				<View style={[{ flex: 1 }]}>
+					<Text numberOfLines={1} style={[styles.rowItem, styles.leftMargin]}>{item.description}</Text>
 				</View>
-				<View style={[ {flex: .5, }]}>
+				<View style={[{ flex: .5, }]}>
 					<Text style={[styles.rowItemCenter]}>{item.quantity}</Text>
 				</View>
-				<View style={[ {flex: .7}]}>
+				<View style={[{ flex: .7 }]}>
 					<Text style={[styles.rowItemCenter]}>{this.getItemLitersPerSku(item)}</Text>
 				</View>
-				<View style={[{flex: .7}]}>
+				<View style={[{ flex: .7 }]}>
 					<Text style={[styles.rowItemCenter]}>{this.getItemTotalLiters(item)}</Text>
 				</View>
-				<View style={[{flex: .7}]}>
+				<View style={[{ flex: .7 }]}>
 					<Text style={[styles.rowItemCenter]}>{item.pricePerSku.toFixed(2)}</Text>
 				</View>
-				<View style={ [{flex: .7}]}>
+				<View style={[{ flex: .7 }]}>
 					<Text style={[styles.rowItemCenter]}>{item.totalSales.toFixed(2)}</Text>
 				</View>
 			</View>
 		);
 	};
-	showHeader = () =>{
+	showHeader = () => {
 		return (
 			<View style={[{flex: 1, flexDirection: 'row', height:50, alignItems:'center'},styles.headerBackground]}>
 				<View style={ [{flex: 1}]}>
@@ -183,20 +185,21 @@ class SalesReport extends Component {
 		);
 	};
 
-	updateReport(){
-		this.props.reportActions.GetSalesReportData( this.startDate, this.endDate);
+	updateReport() {
+		this.props.reportActions.GetSalesReportData(this.startDate, this.endDate);
 	}
 }
 
 function mapStateToProps(state, props) {
-	return { salesData: state.reportReducer.salesData,
-			 dateFilter: state.reportReducer.dateFilter,
-			 reportType: state.reportReducer.reportType
+	return {
+		salesData: state.reportReducer.salesData,
+		dateFilter: state.reportReducer.dateFilter,
+		reportType: state.reportReducer.reportType
 	};
 }
 
 function mapDispatchToProps(dispatch) {
-	return {reportActions:bindActionCreators(reportActions, dispatch) };
+	return { reportActions: bindActionCreators(reportActions, dispatch) };
 }
 
 //Connect everything
@@ -204,14 +207,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(SalesReport);
 
 const styles = StyleSheet.create({
 
-	headerItem:{
-		fontWeight:"bold",
-		fontSize:18,
+	headerItem: {
+		fontWeight: "bold",
+		fontSize: 18,
 	},
-	headerItemCenter:{
-		fontWeight:"bold",
-		fontSize:18,
-		textAlign:'center'
+	headerItemCenter: {
+		fontWeight: "bold",
+		fontSize: 18,
+		textAlign: 'center'
 	},
 	rowItem:{
 		fontSize:16,
@@ -254,21 +257,21 @@ const styles = StyleSheet.create({
 		color: 'white',
 		paddingLeft:10,
 	},
-	titleItem:{
-		fontWeight:"bold",
-		fontSize:20
+	titleItem: {
+		fontWeight: "bold",
+		fontSize: 20
 	},
 	titleText: {
 		backgroundColor: 'white',
 		height: 36,
-		flexDirection:'row',
+		flexDirection: 'row',
 
 	},
 
 	leftHeader: {
-		flexDirection:'row',
-		flex:1,
-		alignItems:'center'
+		flexDirection: 'row',
+		flex: 1,
+		alignItems: 'center'
 
 	},
 
