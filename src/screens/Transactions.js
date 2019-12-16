@@ -178,6 +178,7 @@ class TransactionDetail extends Component {
 			</View>
 
 		    	{receiptLineItems}
+
 			<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
 			    <Text style={[styles.customername, { flex: .7, fontWeight: 'bold'}]}>TOTAL </Text>
 				<Text style={[styles.customername, { flex: .3, fontWeight: 'bold'}]}>
@@ -336,17 +337,6 @@ class Transactions extends Component {
 							ItemSeparatorComponent={this.renderSeparator}
 							extraData={this.state.refresh}
 						/>
-
-						{/* <SectionList
-								sections={this.prepareData()}
-								keyExtractor={(item, index) => item.id}
-								renderItem={this.renderReceipt.bind(this)}
-								renderSectionHeader={({ section: { createdAt } }) => (
-								<Text style={{ fontColor: '#f00' }}>{moment
-									.tz(this.props.item.createdAt, moment.tz.guess())
-									.format('dddd Do MMMM YYYY')}</Text>
-								)}
-							/> */}
 					</View>
 
 					<View style={{ flex: 2, backgroundColor: '#fff' }}>

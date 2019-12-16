@@ -116,85 +116,80 @@ class InventoryReport extends Component {
 		console.log(this.props)
 		console.log(PosStorage.getInventory());
 		console.log(InventroyRealm.getAllInventory());
-		
+
 			return (
 				<View style={{ flex: 1 }}>
-					<View style={{ flex: .2, flexDirection: 'row' }}>
+					<View style={{ flex: .1, flexDirection: 'row' }}>
 					   <DateFilter/>
 					</View>
 
-					<View style={{ flex: .7, backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10, }}>
-						{/* <View style = {styles.titleText}>
-							<View style = {styles.leftHeader}>
-								<Text style = {styles.titleItem}>{i18n.t('sales')}</Text>
-							</View>
-							<View style = {styles.rightHeader}>
-								<Text style = {styles.titleItem}>{i18n.t('inventory')}</Text>
-							</View>
-						</View> */}
-						<FlatList
-							data={this.getInventoryData()}
-							extraData={this.state.refresh}
-							ListHeaderComponent={this.showHeader}
-							renderItem={({ item, index, separators }) => (
-								<View>
-									{this.getRow(item, index, separators)}
+					<View style={{ flex: .6, backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10 }}>
+						<View style={{ flex:1, flexDirection: 'row' }}>
+							<FlatList
+								style={{ flex: .4 }}
+								data={this.getInventoryData()}
+								extraData={this.state.refresh}
+								ListHeaderComponent={this.showHeader}
+								renderItem={({ item, index, separators }) => (
+									<View>
+										{this.getRow(item, index, separators)}
+									</View>
+								)}
+								keyExtractor={item => item.wastageName}
+								initialNumToRender={50}
+							/>
+							<View style={[{ flex: .6 , padding: 10}]}>
+								<View style={{ flex: 1, flexDirection: 'row',  alignItems:"center" }}>
+									<Text style={[styles.totalItem, { flex: .5 }]}>{i18n.t('previous-meter')}</Text>
+									<Text style={[styles.totalItem, { flex: .5 }]}>{i18n.t('current-meter')}</Text>
 								</View>
-							)}
-							keyExtractor={item => item.wastageName}
-							initialNumToRender={50}
-						/>
+								<View style={[{ flex: 1, flexDirection: 'row', alignItems:"center" }]}>
+									<Text style={[styles.rowItemCenter, { flex: .5 }]}>{this.getInventoryMeterForDisplay(false)}</Text>
+									{this.getCurrentMeter()}
 
+									<InventoryEdit
+									    style = {{ flex: .5 }}
+										type = "currentMeter"
+										visible = {this.state.currentMeterVisible}
+										wastageName={""}
+										title = "Current Meter"
+										quantity = {this.getInventoryCurrentMeterForEdit()}
+										cancelMethod = {this.onCancelCurrentMeter.bind(this)}
+										okMethod = {this.onOkCurrentMeter.bind(this)}>
+									</InventoryEdit>
+						    	</View>
+							</View>
+						</View>
 					</View>
 
 					<View style={{
-						flex: .4,
-						backgroundColor: 'white',
+						flex: .3,
+						backgroundColor: '#f1f1f1',
 						marginLeft: 10,
 						marginRight: 10,
 						marginBottom: 10,
 					}}>
-						{/* <View style={{ flex: 1, flexDirection: 'row' }}>
-							<Text style={[styles.totalItem, { flex: 1.5 }]}> </Text>
-							<Text style={[styles.totalItem, { flex: .7 }]}>{i18n.t('total-sales')}</Text>
-							<Text style={[styles.totalItem, { flex: 1.0 }]}>{this.getTotalLiters()}</Text>
-							<Text style={[styles.totalItem, { flex: .8 }]}>{i18n.t('delta-inventory')}</Text>
-							<Text style={[styles.totalItem, { flex: .6 }]}>{this.getTotalInventory()}</Text>
-						</View> */}
-						<View style={{ flex: 1, flexDirection: 'row', marginTop:15 }}>
-							<Text style={[styles.totalItem, { flex: 1.7 }]}> </Text>
-							<Text style={[styles.totalItem, { flex: .4}]}>{i18n.t('output')}</Text>
-							<Text style={[styles.totalItem, { flex: 1.0 }]}>({i18n.t('sales')} + {i18n.t('inventory')})</Text>
-							<Text style={[styles.totalItem, { flex: .5 }]}>{this.getOutput()} </Text>
+						<View style={{ flex: 1,
+									   height: 90,
+										borderRadius: 10,
+										flexDirection: 'row',
+										marginTop: 10,
+										 backgroundColor: '#2462a0',
+										 overflow: 'hidden',
+										 color: '#fff' }}>
+								<View style={{ height: 90, flex: .33, color: '#fff' }} >
+									<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('output').toUpperCase()} ({i18n.t('sales')} + {i18n.t('inventory')})</Text>
+									<Text style={[styles.totalItem, { flex: .6 }]}>{this.getOutput()}</Text>
+								</View>
+								<View style={{ height: 90, flex: .33, color: '#fff' }} >
+									<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-production').toUpperCase()}</Text>
+									<Text style={[styles.totalItem, { flex: .6 }]}>{this.getTotalProduction()}</Text>
+								</View>
+								<View style={{ height: 90, flex: .33, color: '#fff' }} >
+									<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('wastage').toUpperCase()}</Text>
+									<Text style={[styles.totalItem, { flex: .6 }]}>{this.getWastage()}</Text>
+								</View>
 						</View>
-						<View style={{ flex: 1, flexDirection: 'row', marginTop:15, alignItems:"center" }}>
-							<Text style={[styles.totalItem, { flex: .50 }]}> </Text>
-							<Text style={[styles.production, { flex: .33}]}>{i18n.t('production')}</Text>
-							<Text style={[styles.totalItem, { flex: .33 }]}>{i18n.t('previous-meter')}</Text>
-							<Text style={[styles.totalItem, { flex: .33 }]}>{i18n.t('current-meter')}</Text>
-							<Text style={[styles.totalItem, { flex: .40 }]}>{i18n.t('total-production')}</Text>
-						</View>
-
-						<View style={[{ flex: 1, flexDirection: 'row', alignItems:"center", marginTop:5 }]}>
-							<Text style={[styles.totalItem, { flex: .83 }]}> </Text>
-							<Text style={[styles.rowItemCenter, { flex: .33 }]}>{this.getInventoryMeterForDisplay(false)}</Text>
-							{this.getCurrentMeter()}
-							<Text style={[styles.rowItemCenter, { flex: .40 }]}>{this.getTotalProduction()}</Text>
-						</View>
-						<View style={{ flex: 1, flexDirection: 'row', marginTop:15, marginBottom:10 }}>
-							<Text style={[styles.totalItem, { flex: .66 }]}> </Text>
-							<Text style={[styles.totalItem, { flex: .33 }]}>{i18n.t('wastage')}: </Text>
-							<Text style={[styles.totalItem, { flex: .33 }]}>{this.getWastage()}</Text>
-						</View>
-						<InventoryEdit
-							type = "currentMeter"
-							visible = {this.state.currentMeterVisible}
-							wastageName={""}
-							title = "Current Meter"
-							quantity = {this.getInventoryCurrentMeterForEdit()}
-							cancelMethod = {this.onCancelCurrentMeter.bind(this)}
-							okMethod = {this.onOkCurrentMeter.bind(this)}>
-						</InventoryEdit>
 					</View>
 
 				</View>
@@ -536,7 +531,7 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
 	return {
 		reportActions:bindActionCreators(reportActions, dispatch),
-		inventoryActions: bindActionCreators(InventoryActions, dispatch),    
+		inventoryActions: bindActionCreators(InventoryActions, dispatch),
 	 };
 }
 

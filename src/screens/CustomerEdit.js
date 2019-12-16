@@ -28,99 +28,6 @@ import * as CustomerActions from '../actions/CustomerActions';
 
 import i18n from '../app/i18n';
 
-class CustomerProperty extends Component {
-	constructor(props) {
-		super(props);
-		this.state = { propertyText: this.props.valueFn(this.props.parent) };
-	}
-
-	render() {
-		return (
-			<View
-				style={[
-					{ marginTop: this.props.marginTop },
-					styles.inputContainer
-				]}>
-				<TextInput
-					ref={this.props.reference}
-					style={[styles.inputText]}
-					underlineColorAndroid="transparent"
-					placeholder={this.props.placeHolder}
-					value={this.state.propertyText}
-					keyboardType={this.props.kbType}
-					onChangeText={this.onChangeText}
-				/>
-			</View>
-		);
-	}
-	onChangeText = text => {
-		if (this.props.reference === 'customerFrequency') {
-			if (text) {
-				if (/^\d+$/.test(text)) {
-					this.setState({
-						propertyText: text
-					});
-				} else {
-					alert('Digits only please');
-				}
-			} else {
-				this.setState({
-					propertyText: ''
-				});
-			}
-		} else {
-			this.setState({ propertyText: text });
-		}
-	};
-}
-
-class PhoneProperty extends Component {
-	constructor(props) {
-		super(props);
-		this.state = { propertyText: this.props.valueFn(this.props.parent) };
-	}
-
-	render() {
-		return (
-			<View
-				style={[
-					{ marginTop: this.props.marginTop },
-					styles.inputContainer
-				]}>
-				<TextInput
-					ref={this.props.reference}
-					style={[styles.phoneInputText]}
-					underlineColorAndroid="transparent"
-					placeholder={this.props.placeHolder}
-					value={this.state.propertyText}
-					keyboardType={this.props.kbType}
-					onChangeText={this.onChangeText}
-				/>
-			</View>
-		);
-	}
-	onChangeText = text => {
-		if (this.props.reference === 'customerFrequency' ||
-			this.props.reference === 'customerNumber' || this.props.reference === 'secondPhoneNumber') {
-			if (text) {
-				// if (/^\d+$/.test(text)) {
-				this.setState({
-					propertyText: text
-				});
-				// } else {
-				// 	alert('Digits only please');
-				// }
-			} else {
-				this.setState({
-					propertyText: ''
-				});
-			}
-		} else {
-			this.setState({ propertyText: text });
-		}
-	};
-}
-
 class CustomerEdit extends Component {
 	constructor(props) {
 		super(props);
@@ -291,13 +198,13 @@ class CustomerEdit extends Component {
 		const cplaceholder = {
 			label: 'Customer Type',
 			value: null,
-			color: '#000',
+			color: '#333',
 		  };
 
 		  const splaceholder = {
 			label: 'Sales Channel',
 			value: null,
-			color: '#000',
+			color: '#333',
 		  };
 
 		console.log(this.props);
@@ -309,14 +216,14 @@ class CustomerEdit extends Component {
 			return <Picker.Item key={i} value={s.id} label={s.displayName} />
 		});
 		return (
-			<View style={{ flex: 1, backgroundColor: '#fff', justifyContent: 'center' }}>
+			<View style={{ flex: 1, backgroundColor: '#f1f1f1', justifyContent: 'center' }}>
 				<KeyboardAwareScrollView
 					style={{ flex: 1 }}
 					resetScrollToCoords={{ x: 0, y: 0 }}
 					scrollEnabled={true}>
 					<View style={{ flex: 1, alignItems: 'center' }}>
 
-						<Card containerStyle={{ width: '60%', marginTop: 30 }}>
+						<Card containerStyle={{ width: '55%', marginTop: 30, padding: 0 }}>
 
 							<Input
 								placeholder={i18n.t(
@@ -404,8 +311,8 @@ class CustomerEdit extends Component {
 									/>
 								}
 							/>
-						{/* <View style={{ flex: 1, flexDirection: 'row' }}> */}
-
+						<View style={{ flex: 1, flexDirection: 'row' }}>
+						<View style={{ flex: 1 }}>
 							<RNPickerSelect
 										onValueChange={(value) => {
 											this.setState({ customerChannel: value });
@@ -420,6 +327,7 @@ class CustomerEdit extends Component {
 											]}
 											// style={pickerSelectStyles}
 									/>
+									</View><View style={{ flex: 1 }}>
 									<RNPickerSelect
 										value={this.state.customerType}
 										onValueChange={(value) => {
@@ -435,11 +343,20 @@ class CustomerEdit extends Component {
 										// style={pickerSelectStyles}
 
 									/>
-							{/* </View> */}
+									</View>
+							</View>
 
 							<Button
 								onPress={() => this.onEdit()}
-								buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10 }}
+								buttonStyle={{ padding:20 }}
+								containerStyle={{
+									bottom: 0,
+									borderRadius: 0,
+									flex: 1,
+									marginLeft: 0,
+									marginRight: 0,
+									marginBottom: 0,
+									marginTop: 10 }}
 								title={this.getSubmitText()} />
 
 						</Card>
@@ -524,7 +441,6 @@ class CustomerEdit extends Component {
 		//}
 	};
 
-
 	getTelephoneNumber(me) {
 		if (me.props.isEdit) {
 			return me.props.selectedCustomer.phoneNumber;
@@ -532,7 +448,6 @@ class CustomerEdit extends Component {
 			return '';
 		}
 	}
-
 
 	getSecondTelephoneNumber(me) {
 		try {
@@ -762,7 +677,6 @@ class CustomerEdit extends Component {
 	}
 
 
-
 	onEditd() {
 		let salesChannelId = -1;
 		let customerTypeId = -1;
@@ -860,6 +774,7 @@ class CustomerEdit extends Component {
 	onShowChannel() {
 		this.customerChannel.current.show();
 	}
+
 	onShowCustomerType() {
 		this.customerType.current.show();
 	}
@@ -870,6 +785,7 @@ class CustomerEdit extends Component {
 		}
 		return false;
 	}
+
 	showEditInProgress() {
 		let that = this;
 		if (this.state.isEditInProgress) {
@@ -922,32 +838,15 @@ export default connect(
 )(CustomerEdit);
 
 const pickerSelectStyles = StyleSheet.create({
-	inputIOS: {
-	  fontSize: 16,
-	  paddingVertical: 12,
-	  paddingHorizontal: 10,
-	  borderWidth: 1,
-	  borderColor: '#CCC',
-	  backgroundColor: '#CCC',
-	  borderRadius: 4,
-	  color: 'black',
-	  margin: 5,
-	  flex:1,
-	  paddingRight: 30, // to ensure the text is never behind the icon
-	},
 	inputAndroid: {
-	  fontSize: 16,
-	  paddingHorizontal: 10,
-	  paddingVertical: 8,
-	  borderWidth: 0.5,
-	  borderColor: '#CCC',
-	  backgroundColor: '#CCC',
-	  borderRadius: 10,
-	  color: 'black',
-	  margin: 5,
-	  flex:1,
-
-	  paddingRight: 30, // to ensure the text is never behind the icon
+		fontSize: 18,
+		alignSelf: 'center',
+		borderWidth: 2,
+		borderRadius: 10,
+		borderColor: '#CCC',
+		backgroundColor: '#CCC',
+		margin: 5,
+	    paddingRight: 30, // to ensure the text is never behind the icon
 	},
   });
 
