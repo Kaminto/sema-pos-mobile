@@ -6,6 +6,7 @@ import * as reportActions from "../../actions/ReportActions";
 import DateFilter from "./DateFilter";
 import * as Utilities from "../../services/Utilities";
 
+
 import i18n from '../../app/i18n';
 
 class SalesReport extends Component {
@@ -27,13 +28,30 @@ class SalesReport extends Component {
 	render() {
 			return (
 				<View style={{ flex: 1 }}>
-					<DateFilter/>
-					<View style={{ flex: .7, backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10, }}>
-						<View style = {styles.titleText}>
-							<View style = {styles.leftHeader}>
-								<Text style = {styles.titleItem}>{i18n.t('sales')}</Text>
+
+					<View style={{
+						flex: .2,
+						backgroundColor: 'white',
+						marginLeft: 10,
+						marginRight: 10,
+						marginBottom: 10,
+					}}>
+						<View style={{ flex: 1, flexDirection: 'row' }}>
+						   <DateFilter/>
+
+							<View style={{ flex: .7, height: 90, borderRadius: 10, flexDirection: 'row', marginTop: 10, backgroundColor: '#2462a0', overflow: 'hidden', color: '#fff' }}>
+								<View style={{ height: 90, flex: .5, color: '#fff' }} >
+									<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-liters').toUpperCase()}</Text>
+									<Text style={[styles.totalItem, { flex: .6 }]}>{this.getTotalLiters()}</Text>
+								</View>
+									<View style={{ height: 90, flex: .5, color: '#fff' }} >
+									<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-sales').toUpperCase()}</Text>
+									<Text style={[styles.totalItem, { flex: .6 }]}>{Utilities.formatCurrency(this.getTotalSales())}</Text>
+									</View>
+								</View>
 							</View>
-						</View>
+					</View>
+					<View style={{ flex: .8, backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10, }}>
 						<FlatList
 							data={this.getSalesData()}
 							ListHeaderComponent={this.showHeader}
@@ -46,21 +64,6 @@ class SalesReport extends Component {
 							keyExtractor={item => item.sku}
 							initialNumToRender={50}
 						/>
-					</View>
-					<View style={{
-						flex: .3,
-						backgroundColor: 'white',
-						marginLeft: 10,
-						marginRight: 10,
-						marginBottom: 10,
-					}}>
-						<View style={{ flex: 1, flexDirection: 'row' }}>
-							<Text style={[styles.totalItem, { flex: 1.5 }]}> </Text>
-							<Text style={[styles.totalItem, { flex: .7 }]}>{i18n.t('total-liters')}</Text>
-							<Text style={[styles.totalItem, { flex: .6 }]}>{this.getTotalLiters()}</Text>
-							<Text style={[styles.totalItem, { flex: .7 }]}>{i18n.t('total-sales')}</Text>
-							<Text style={[styles.totalItem, { flex: .9 }]}>{Utilities.formatCurrency(this.getTotalSales())}</Text>
-						</View>
 					</View>
 
 				</View>
@@ -159,22 +162,22 @@ class SalesReport extends Component {
 		return (
 			<View style={[{flex: 1, flexDirection: 'row', height:50, alignItems:'center'},styles.headerBackground]}>
 				<View style={ [{flex: 1}]}>
-					<Text style={[styles.headerItem,styles.leftMargin]}>SKU</Text>
+					<Text style={[styles.headerItem,styles.leftMargin]}>{'Product'.toUpperCase()}</Text>
 				</View>
 				<View style={[ {flex: .5}]}>
-					<Text style={[styles.headerItemCenter]}>{i18n.t('quantity')}</Text>
+					<Text style={[styles.headerItemCenter]}>{i18n.t('quantity').toUpperCase()}</Text>
 				</View>
 				<View style={ [ {flex: .7}]}>
-					<Text style={[styles.headerItemCenter]}>{i18n.t('liters-per-sku')}</Text>
+					<Text style={[styles.headerItemCenter]}>{i18n.t('liters-per-sku').toUpperCase()}</Text>
 				</View>
 				<View style={ [{flex: .7}]}>
-					<Text style={[styles.headerItemCenter]}>{i18n.t('total-liters')}</Text>
+					<Text style={[styles.headerItemCenter]}>{i18n.t('total-liters').toUpperCase()}</Text>
 				</View>
 				<View style={ [{flex: .7}]}>
-					<Text style={[styles.headerItemCenter]}>{i18n.t('price-per-sku')}</Text>
+					<Text style={[styles.headerItemCenter]}>{i18n.t('price-per-sku').toUpperCase()}</Text>
 				</View>
 				<View style={ [{flex: .7}]}>
-					<Text style={[styles.headerItemCenter]}>{i18n.t('total-sales')}</Text>
+					<Text style={[styles.headerItemCenter]}>{i18n.t('total-sales').toUpperCase()}</Text>
 				</View>
 			</View>
 		);
@@ -213,33 +216,42 @@ const styles = StyleSheet.create({
 	rowItem:{
 		fontSize:16,
 		paddingLeft:10,
-		borderLeftWidth:1,
-		borderColor:'black',
-		borderTopWidth:1,
-		borderBottomWidth:1,
-		borderRightWidth:1
+		paddingTop:5,
+		paddingBottom:5
 	},
 	rowItemCenter:{
 		fontSize:16,
 		paddingLeft:10,
-		borderLeftWidth:1,
-		borderColor:'black',
-		borderTopWidth:1,
-		borderBottomWidth:1,
-		borderRightWidth:1,
+		paddingTop:5,
+		paddingBottom:5,
 		textAlign:'center'
 	},
 
 	rowBackground:{
-		backgroundColor:'white'
+		backgroundColor:'white',
+		borderLeftWidth:1,
+		borderColor:'#f1f1f1',
+		borderTopWidth:1,
+		borderBottomWidth:1,
+		borderRightWidth:1,
+		padding:5
 	},
 
 	headerBackground:{
-		backgroundColor:'white'
+		backgroundColor:'#f1f1f1',
+		borderColor: '#CCC',
+		padding: 5
 	},
 	totalItem:{
 		fontWeight:"bold",
+		fontSize:24,
+		color: 'white',
+		paddingLeft:10,
+	},
+	totalLabel:{
+		fontWeight:"bold",
 		fontSize:18,
+		color: 'white',
 		paddingLeft:10,
 	},
 	titleItem:{

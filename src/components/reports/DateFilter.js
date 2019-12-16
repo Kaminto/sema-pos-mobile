@@ -3,6 +3,7 @@ import { Text, View, Image, TouchableHighlight, StyleSheet } from 'react-native'
 import { bindActionCreators } from "redux";
 import * as reportActions from "../../actions/ReportActions";
 import { connect } from "react-redux";
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import i18n from '../../app/i18n';
 
@@ -20,11 +21,13 @@ class DateFilter extends Component {
 		console.log( "DateFilter - minDate = " + this.minDate.toString());
 		this.props.reportActions.setReportFilter( this.state.currentDate, new Date( this.state.currentDate.getTime() + dayInMilliseconds));
 	}
+
+
 	render() {
 		return (
 			<View style={styles.filterContainer}>
 				<View style={styles.filterItemContainer}>
-					<Text style={{fontSize:20}}>{i18n.t('daily-data')}</Text>
+					{/* <Text style={{fontSize:20}}>{i18n.t('daily-data')}</Text> */}
 				</View>
 				<View style={styles.filterItemContainer}>
 					{this.getPreviousButton()}
@@ -38,31 +41,54 @@ class DateFilter extends Component {
 			</View>
 		)
 	}
+
 	getPreviousButton(){
 		const prevDate = new Date( this.state.currentDate.getTime() - dayInMilliseconds );
 		if( prevDate > this.minDate){
 			return (
 				<TouchableHighlight onPress={() => this.onPreviousDay()}>
-					<Image source={require('../../images/left-arrow.png')} style={styles.filterImage}/>
+					               {
+										<Icon
+											name='md-arrow-round-back'
+											size={40}
+											color='black'
+										/>
+									}
 				</TouchableHighlight>
 			)
 		}else{
 			return (
-				<Image source={require('../../images/left-arrow.png')} style={[styles.filterImage, {opacity:.4 }]}/>
+				<Icon
+				name='md-arrow-round-back'
+				size={40}
+				color='black'
+				style={{opacity:.4 }}
+				/>
+
 			);
 		}
 	}
+
 	getNextButton(){
 		const nextDate = new Date( this.state.currentDate.getTime() + dayInMilliseconds );
 		if( nextDate < this.maxDate){
 			return (
 				<TouchableHighlight onPress={() => this.onNextDay()}>
-					<Image source={require('../../images/right-arrow.png')} style={styles.filterImage}/>
+					<Icon
+						name='md-arrow-round-forward'
+						size={40}
+						color='black'
+					/>
 				</TouchableHighlight>
 			)
 		}else{
 			return (
-				<Image source={require('../../images/right-arrow.png')} style={[styles.filterImage, {opacity:.4 }]}/>
+				<Icon
+						name='md-arrow-round-forward'
+						size={40}
+						color='black'
+						style={{opacity:.4 }}
+					/>
 			);
 		}
 	}
@@ -98,16 +124,16 @@ export default connect(mapStateToProps, mapDispatchToProps)(DateFilter);
 const styles = StyleSheet.create({
 
 	filterContainer:{
-		flex: .15,
+		flex: .3,
 		backgroundColor: 'white',
-		marginLeft: 30,
+		marginLeft: 10,
 		marginTop: 20,
 		flexDirection:'row',
 		width:500
 	},
 	filterItemContainer:{
 		justifyContent:"center",
-		paddingLeft:20
+		paddingLeft:10
 	},
 	filterImage:{
 		width: 30,

@@ -10,7 +10,8 @@ import {
 	TouchableNativeFeedback,
 	Alert,
 	ToastAndroid,
-	ScrollView
+	ScrollView,
+	SectionList
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from 'prop-types';
@@ -31,6 +32,14 @@ import i18n from '../app/i18n';
 import moment from 'moment-timezone';
 
 class TransactionDetail extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			refresh: false,
+		};
+	}
+
 	handleUpdate() {
 		this.setState({
 			refresh: !this.state.refresh
@@ -103,7 +112,6 @@ class TransactionDetail extends Component {
 
 		const receiptLineItems = this.props.item.receiptLineItems.map((lineItem, idx) => {
 			return (
-				// <View style={{ flex: 1, padding: 20, overflow: 'visible'  }}>
 					<ReceiptLineItem
 						receiptActions={this.props.receiptActions}
 						remoteReceipts={this.props.remoteReceipts}
@@ -114,25 +122,34 @@ class TransactionDetail extends Component {
 						handleUpdate={this.handleUpdate.bind(this)}
 						receiptIndex={this.props.item.index}
 					/>
-				// </View>
 			);
 		});
 
 		return (
 			<View style={{ padding: 15 }}>
-			<View style={styles.deleteButtonContainer}>
-			{!this.props.item.active && (
-			<TouchableOpacity
-			        onPress={this.onDeleteReceipt(this.props.item)}
-					style={[
-						styles.receiptDeleteButton,
-						{ backgroundColor: this.props.item.active ? 'red' : 'grey' }
-					]}>
-					<Text style={styles.receiptDeleteButtonText}>X</Text>
-				</TouchableOpacity>
-				)}
+					<View style={styles.deleteButtonContainer}>
+					<TouchableOpacity
+						onPress={this.onDeleteReceipt(this.props.item)}
+						style={[
+							styles.receiptDeleteButton,
+							{ backgroundColor: this.props.item.active ? 'red' : 'grey' }
+						]}>
+						<Text style={styles.receiptDeleteButtonText}>X</Text>
+					</TouchableOpacity>
+				</View>
+			<View style={styles.itemData}>
+				<Text style={styles.customername}>{this.props.item.customerAccount.name}</Text>
 			</View>
-			<Text style={{ fontSize: 17 }}>#{this.props.item.totalCount}</Text>
+			<View style={styles.itemData}>
+				<Text>
+					{moment
+						.tz(this.props.item.createdAt, moment.tz.guess())
+						.format('dddd Do MMMM YYYY')}
+				</Text>
+			</View>
+			<View>
+
+			</View>
 			<View style={styles.receiptStats}>
 				{!this.props.item.active && (
 					<Text style={styles.receiptStatusText}>
@@ -155,27 +172,23 @@ class TransactionDetail extends Component {
 						</View>
 					)}
 			</View>
-			<View style={styles.itemData}>
-				<Text style={styles.label}># </Text>
-				<Text>{this.props.item.id}</Text>
-			</View>
-			<View style={styles.itemData}>
-				<Text>
-					{moment
-						.tz(this.props.item.createdAt, moment.tz.guess())
-						.format('dddd Do MMMM YYYY')}
-				</Text>
-			</View>
-			<View style={styles.itemData}>
-				<Text style={styles.label}>Customer Name: </Text>
-				<Text>{this.props.item.customerAccount.name}</Text>
+
+			<View>
+				<Text style={{ fontSize: 16, fontWeight: "bold" }}>PRODUCTS</Text>
 			</View>
 			{receiptLineItems}
+			<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
+			    <Text style={[styles.customername, { flex: .7, fontWeight: 'bold'}]}>TOTAL </Text>
+				<Text style={[styles.customername, { flex: .3, fontWeight: 'bold'}]}>
+			    	{this.props.item.currency.toUpperCase()} {this.props.item.totalAmount}
+				</Text>
+			</View>
 		</View>
 		)
 	}
 
 }
+
 class ReceiptLineItem extends Component {
 	constructor(props) {
 		super(props);
@@ -193,25 +206,18 @@ class ReceiptLineItem extends Component {
 				}}>
 				<Image
 					source={{ uri: this.getImage(this.props.item.product) }}
-					style={styles.productImage}
+					style={[styles.productImage, {flex:.1 }]}
 				/>
-				<View style={{ justifyContent: 'space-around' }}>
+				<View style={{ justifyContent: 'space-around', flex:.6 }}>
 					<View style={styles.itemData}>
-						<Text style={styles.label}>Product Description: </Text>
-						<Text>{this.props.item.product.description}</Text>
+						<Text style={[styles.label, {fontSize: 15}]}>{this.props.item.product.description}</Text>
 					</View>
 					<View style={styles.itemData}>
-						<Text style={styles.label}>Product SKU: </Text>
-						<Text>{this.props.item.product.sku}</Text>
+						<Text style={[styles.label, {fontSize: 16}]}>{this.props.item.quantity} </Text>
 					</View>
-					<View style={styles.itemData}>
-						<Text style={styles.label}>Quantity Purchased: </Text>
-						<Text>{this.props.item.quantity}</Text>
-					</View>
-					<View style={styles.itemData}>
-						<Text style={styles.label}>Total Cost: </Text>
-						<Text>{this.props.item.price_total}</Text>
-					</View>
+				</View>
+				<View style={[styles.itemData, {flex:.3}]}>
+				<Text style={[styles.label, {fontSize: 15, padding:10}]}>{this.props.item.currency_code.toUpperCase()} {this.props.item.price_total}</Text>
 				</View>
 			</View>
 		);
@@ -329,6 +335,17 @@ class Transactions extends Component {
 							ItemSeparatorComponent={this.renderSeparator}
 							extraData={this.state.refresh}
 						/>
+
+						{/* <SectionList
+								sections={this.prepareData()}
+								keyExtractor={(item, index) => item.id}
+								renderItem={this.renderReceipt.bind(this)}
+								renderSectionHeader={({ section: { createdAt } }) => (
+								<Text style={{ fontColor: '#f00' }}>{moment
+									.tz(this.props.item.createdAt, moment.tz.guess())
+									.format('dddd Do MMMM YYYY')}</Text>
+								)}
+							/> */}
 					</View>
 
 					<View style={{ flex: 2, backgroundColor: '#fff' }}>
@@ -363,7 +380,9 @@ class Transactions extends Component {
 				index,
 				updated: receipt.updated,
 				amountLoan: receipt.amount_loan,
-				totalCount
+				totalCount,
+				currency: receipt.currency_code,
+				totalAmount: receipt.total
 			};
 		});
 
@@ -454,7 +473,9 @@ class Transactions extends Component {
 				item.customerAccount.name,
 				item.customerAccount.address,
 				item.customerAccount.salesChannelId,
-				item.customerAccount.frequency
+				item.customerAccount.customerTypeId,
+				item.customerAccount.frequency,
+				item.customerAccount.secondPhoneNumber
 			);
 		}
 
@@ -462,21 +483,6 @@ class Transactions extends Component {
 	}
 
 	renderReceipt({ item, index }) {
-		// const receiptLineItems = item.receiptLineItems.map((lineItem, idx) => {
-		// 	return (
-		// 		<ReceiptLineItem
-		// 			receiptActions={this.props.receiptActions}
-		// 			remoteReceipts={this.props.remoteReceipts}
-		// 			item={lineItem}
-		// 			key={lineItem.id}
-		// 			lineItemIndex={idx}
-		// 			products={this.props.products}
-		// 			handleUpdate={this.handleUpdate.bind(this)}
-		// 			receiptIndex={item.index}
-		// 		/>
-		// 	);
-		// });
-
 
 		return (
 		<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
@@ -505,11 +511,13 @@ class Transactions extends Component {
 							</View>
 						)}
 				</View>
-				<View style={styles.itemData}>
-					<Text style={styles.label}># </Text>
-					<Text>{item.id}</Text>
-				</View>
-				<View style={styles.itemData}>
+				{/* <View style={styles.itemData}>
+					<Text style={styles.label}># {item.id}</Text>
+				</View> */}
+				<Text style={styles.customername}>
+				{item.currency.toUpperCase()} {item.totalAmount}
+				</Text>
+				<View style={styles.label}>
 					<Text>
 						{moment
 							.tz(item.createdAt, moment.tz.guess())
@@ -517,10 +525,8 @@ class Transactions extends Component {
 					</Text>
 				</View>
 				<View style={styles.itemData}>
-					<Text style={styles.label}>Customer Name: </Text>
-					<Text>{item.customerAccount.name}</Text>
+					<Text style={styles.customername}>{item.customerAccount.name}</Text>
 				</View>
-				{/* {receiptLineItems} */}
 			</View>
 			</TouchableNativeFeedback>
 		);
@@ -701,6 +707,11 @@ const styles = StyleSheet.create({
 
 	label: {
 		color: '#111'
+	},
+
+	customername: {
+		color: '#111',
+		fontSize: 18
 	},
 
 	itemData: {
