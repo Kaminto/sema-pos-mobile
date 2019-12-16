@@ -283,6 +283,7 @@ class Synchronization {
 			console.log('Synchronization:synchronizeCustomers - Begin');
 			Communications.getCustomers(this.lastCustomerSync)
 				.then(web_customers => {
+					console.log('web_customers', web_customers);
 					if (web_customers.hasOwnProperty('customers')) {
 						this.updateLastCustomerSync();
 						console.log(
@@ -306,6 +307,8 @@ class Synchronization {
 						pendingCustomers.forEach(customerKey => {
 							PosStorage.getCustomerFromKey(customerKey).then(
 								customer => {
+console.log('customercustomercustomercustomer', customer);
+
 									if (customer != null) {
 										if (customer.syncAction === 'create') {
 											console.log(

@@ -74,7 +74,7 @@ class AuthLoadingScreen extends React.Component {
                 );
                 Communications.setToken(settings.token);
                 Communications.setSiteId(settings.siteId);
-
+                
                 TopUpService.initialize(
                     settings.semaUrl,
                     settings.site,
@@ -122,7 +122,15 @@ class AuthLoadingScreen extends React.Component {
                     CreditRealm.getLastCreditSync(),
                     InventroyRealm.getLastInventorySync(),
                 );
-                console.log(' CreditRealm.getLastCreditSync(),',  CreditRealm.getLastCreditSync(),)
+
+
+
+                console.log(' CreditRealm.getLastCreditSync(),',  CreditRealm.getLastCreditSync())
+                Communications.getCustomers(CreditRealm.getLastCreditSync())
+				.then(web_customers => {
+                    console.log('web_customers', web_customers);
+                })
+                
                 Synchronization.setConnected(this.props.network.isNWConnected);
 
                 this.props.settingsActions.setSettings({ ...settings, loginSync: false });
