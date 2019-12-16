@@ -6,15 +6,15 @@ class InventroyRealm {
         this.inventory = [];
         let firstSyncDate = new Date('November 7, 1973');
         realm.write(() => {
-            if (Object.values(JSON.parse(JSON.stringify(realm.objects('InventoryInventorySynDate')))).length == 0) {
-                realm.create('InventoryInventorySynDate', { lastInventorySync: firstSyncDate });
+            if (Object.values(JSON.parse(JSON.stringify(realm.objects('InventorySyncDate')))).length == 0) {
+                realm.create('InventorySyncDate', { lastInventorySync: firstSyncDate });
             }
         });
         this.lastInventorySync = firstSyncDate;
     }
 
     getLastInventorySync() {
-        return this.lastInventorySync = JSON.parse(JSON.stringify(realm.objects('InventoryInventorySynDate')))['0'].lastInventorySync;
+        return this.lastInventorySync = JSON.parse(JSON.stringify(realm.objects('InventorySyncDate')))['0'].lastInventorySync;
     }
 
     truncate() {
@@ -23,7 +23,7 @@ class InventroyRealm {
     }
 
     setLastInventorySync(lastSyncTime) {
-        let syncDate = realm.objects('InventoryInventorySynDate');
+        let syncDate = realm.objects('InventorySyncDate');
         syncDate[0].quantity = lastSyncTime.toISOString()
     }
 

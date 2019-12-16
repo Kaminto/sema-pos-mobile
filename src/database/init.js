@@ -25,8 +25,8 @@ const InventorySchema = {
     }
 };
 
-const InventorySynDateSchema = {
-    name: 'InventorySynDate',
+const InventorySyncDateSchema = {
+    name: 'InventorySyncDate',
     properties: {
         lastInventorySync: 'date',
     }
@@ -55,7 +55,7 @@ const CreditSyncDateSchema = {
 };
 
 export default realm = new Realm({
-    schema: [SEMA_SCHEMA, InventorySchema, InventorySynDateSchema, CreditSchema, CreditSyncDateSchema],
+    schema: [SEMA_SCHEMA, InventorySchema, InventorySyncDateSchema, CreditSchema, CreditSyncDateSchema],
     schemaVersion: 41,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
