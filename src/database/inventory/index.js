@@ -29,8 +29,10 @@ class InventroyRealm {
     }
 
     setLastInventorySync(lastSyncTime) {
+        realm.write(() => {
         let syncDate = realm.objects('InventorySyncDate');
-        syncDate[0].quantity = lastSyncTime.toISOString()
+        syncDate[0].lastInventorySync = lastSyncTime.toISOString()
+        })
     }
 
     getAllInventory() {

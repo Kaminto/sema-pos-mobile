@@ -21,11 +21,13 @@ import * as receiptActions from '../actions/ReceiptActions';
 
 import PosStorage from '../database/PosStorage';
 import CreditRealm from '../database/credit/index';
+import CustomerRealm from '../database/customers/customer.operations'
 import InventroyRealm from '../database/inventory/index';
 import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
 import TopUpService from '../services/topup';
 import InventoryService from '../services/inventory';
+import CustomerApi from '../services/customer.api';
 import NetInfo from "@react-native-community/netinfo";
 
 class AuthLoadingScreen extends React.Component {
@@ -93,12 +95,22 @@ class AuthLoadingScreen extends React.Component {
                 );
                 InventoryService.setToken(settings.token);
                 InventoryService.setSiteId(settings.siteId);
+               
+
+                CustomerApi.initialize(
+                    settings.semaUrl,
+                    settings.site,
+                    settings.user,
+                    settings.password
+                );
+                CustomerApi.setToken(settings.token);
+                CustomerApi.setSiteId(settings.siteId);
                 
 
                 this.posStorage.loadLocalData();
 
                 this.props.customerActions.setCustomers(
-                    this.posStorage.getCustomers()
+                    CustomerRealm.getAllCustomer()
                 );
                 this.props.topUpActions.setTopups(
                     CreditRealm.getAllCredit()
@@ -116,7 +128,7 @@ class AuthLoadingScreen extends React.Component {
                 );
 
                 Synchronization.initialize(
-                    PosStorage.getLastCustomerSync(),
+                    CustomerRealm.getLastCustomerSync(),
                     PosStorage.getLastProductSync(),
                     PosStorage.getLastSalesSync(),
                     CreditRealm.getLastCreditSync(),
@@ -124,12 +136,13 @@ class AuthLoadingScreen extends React.Component {
                 );
 
 
-
-                console.log(' CreditRealm.getLastCreditSync(),',  CreditRealm.getLastCreditSync())
-                Communications.getCustomers(CreditRealm.getLastCreditSync())
-				.then(web_customers => {
-                    console.log('web_customers', web_customers);
-                })
+                //CustomerRealm.truncate();
+                 console.log('CreditRealm.getLastCreditSync(),',  CreditRealm.getLastCreditSync())
+                 console.log('CustomerRealm.getLastCustomerSync()(),',  CustomerRealm.getLastCustomerSync())
+                // Communications.getCustomers(CustomerRealm.getLastCustomerSync())
+				// .then(web_customers => {
+                //     console.log('web_customers', web_customers);
+                // })
                 
                 Synchronization.setConnected(this.props.network.isNWConnected);
 

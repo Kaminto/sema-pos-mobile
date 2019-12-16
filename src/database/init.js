@@ -65,7 +65,7 @@ export default realm = new Realm({
         CustomerSchema,
         CustomerSyncDateSchema
     ],
-    schemaVersion: 41,
+    schemaVersion: 43,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
         console.log('newRealm', newRealm)

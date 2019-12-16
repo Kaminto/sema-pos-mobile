@@ -182,8 +182,8 @@ class CustomerList extends Component {
                     onOpen={name => {
                         console.log(this.props);
                         this.props.customerActions.CustomerSelected({});
-                        this.props.customerActions.setCustomerEditStatus(true);
-                        this.props.navigation.setParams({ isCustomerSelected: true });
+                        this.props.customerActions.setCustomerEditStatus(false);
+                        this.props.navigation.setParams({ isCustomerSelected: false });
                         this.props.navigation.setParams({ customerName: '' });
                         this.props.navigation.navigate('EditCustomer');
                     }}

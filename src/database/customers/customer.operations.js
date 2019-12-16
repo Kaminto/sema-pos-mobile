@@ -1,6 +1,6 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-
+import moment from 'moment-timezone';
 class CustomerRealm {
     constructor() {
         this.customer = [];
@@ -20,8 +20,8 @@ class CustomerRealm {
     truncate() {
         try {
             realm.write(() => {
-                let inventories = realm.objects('Customer');
-                realm.delete(inventories);
+                let customers = realm.objects('Customer');
+                realm.delete(customers);
             })
         } catch (e) {
             console.log("Error on creation", e);
@@ -29,8 +29,10 @@ class CustomerRealm {
     }
 
     setLastCustomerSync(lastSyncTime) {
+        realm.write(() => {
         let syncDate = realm.objects('CustomerSyncDate');
-        syncDate[0].quantity = lastSyncTime.toISOString()
+        syncDate[0].lastCustomerSync = lastSyncTime.toISOString()
+        })
     }
 
     getAllCustomer() {
@@ -57,44 +59,77 @@ class CustomerRealm {
     }
 
 
-    createCustomer(kiosk_id, product_id, quantity, filterDate) {
-        let existingCustomer = this.getAllCustomer().filter(customer => this.formatDay(customer.created_at) === this.formatDay(filterDate) && customer.product_id === product_id);
-        console.log('existingCustomer', existingCustomer)
+    createCustomer(
+        phone,
+        name,
+        address,
+        siteId,
+        salesChannelId,
+        customerTypeId,
+        frequency,
+        secondPhoneNumber) {
         const now = new Date();
-        if (existingCustomer.length === 0) {
-            const newCustomer = {
-                closingStockId: uuidv1(),
-                kiosk_id,
-                product_id,
-                quantity,
-                created_at: now,
-                updated_at: now,
-                syncAction: 'create',
-                active: false
-            };
-            try {
-                realm.write(() => {
-                    realm.create('Customer', newCustomer);
-                });
-            } catch (e) {
-                console.log("Error on creation", e);
-            }
-        }
 
-        if (existingCustomer.length > 0) {
-            return this.updateCustomer(
-                { ...existingCustomer[0], quantity: quantity, updated_at: now, syncAction: 'update' }
-            )
-        }
-    }
-
-    updateCustomer(customer) {
+        const newCustomer = {
+            customerId: uuidv1(),
+            name: name,
+            phoneNumber: phone,
+            address: address,
+            siteId: siteId,
+            dueAmount: 0,
+            salesChannelId: salesChannelId,
+            customerTypeId: customerTypeId,
+            createdDate: now,
+            updatedDate: now,
+            frequency: frequency,
+            secondPhoneNumber: secondPhoneNumber,
+            syncAction: 'create',
+            active: false
+        };
         try {
             realm.write(() => {
-                let customerObj = realm.objects('Customer').filtered(`closingStockId = "${customer.closingStockId}"`);
-                customerObj[0].quantity = customer.quantity;
-                customerObj[0].updated_at = customer.updated_at;
-                customerObj[0].syncAction = customer.syncAction;
+                realm.create('Customer', newCustomer);
+            });
+        } catch (e) {
+            console.log("Error on creation", e);
+        }
+
+
+
+    }
+
+    updateCustomer(
+        customer,
+        phone,
+		name,
+		address,
+		salesChannelId,
+		customerTypeId,
+		frequency,
+		secondPhoneNumber
+        ) {
+        try {
+            realm.write(() => {
+                let customerObj = realm.objects('Customer').filtered(`customerId = "${customer.customerId}"`);
+              
+                customerObj[0].name = name;
+                customerObj[0].phoneNumber = phone;
+                customerObj[0].address = address;
+                customerObj[0].salesChannelId = salesChannelId;
+                customerObj[0].customerTypeId = customerTypeId;
+                customerObj[0].updatedDate = new Date();
+                customerObj[0].syncAction = 'update';
+                customerObj[0].frequency = frequency;
+                customerObj[0].secondPhoneNumber = secondPhoneNumber
+        
+                if (customer.reminder_date) {
+                    customerObj[0].reminder_date = moment(customer.reminder_date).format(
+                        'YYYY-MM-DD'
+                    );
+                }
+
+
+
             })
 
         } catch (e) {
@@ -106,7 +141,7 @@ class CustomerRealm {
     synched(customer) {
         try {
             realm.write(() => {
-                let customerObj = realm.objects('Customer').filtered(`closingStockId = "${customer.closingStockId}"`);
+                let customerObj = realm.objects('Customer').filtered(`customerId = "${customer.customerId}"`);
                 customerObj[0].active = true;
                 customerObj[0].syncAction = null;
             })
@@ -118,14 +153,14 @@ class CustomerRealm {
     }
 
 
-  // Hard delete when active property is false or when active property and syncAction is delete
+    // Hard delete when active property is false or when active property and syncAction is delete
 
     hardDeleteCustomer(customer) {
         try {
             realm.write(() => {
                 console.log("customer", customer);
-                let inventories = realm.objects('Customer');
-                let deleteCustomer = inventories.filtered(`closingStockId = "${customer.closingStockId}"`);
+                let customers = realm.objects('Customer');
+                let deleteCustomer = customers.filtered(`customerId = "${customer.customerId}"`);
                 realm.delete(deleteCustomer);
             })
 
@@ -138,7 +173,7 @@ class CustomerRealm {
         try {
             realm.write(() => {
                 realm.write(() => {
-                    let customerObj = realm.objects('Customer').filtered(`closingStockId = "${customer.closingStockId}"`);
+                    let customerObj = realm.objects('Customer').filtered(`customerId = "${customer.customerId}"`);
                     customerObj[0].syncAction = 'delete';
                 })
             })
@@ -148,11 +183,11 @@ class CustomerRealm {
         }
     }
 
-    createManyInventories(inventories) {
-        console.log('inventories', inventories)
+    createManyCustomers(customers) {
+        console.log('customers', customers)
         try {
             realm.write(() => {
-                inventories.forEach(obj => {
+                customers.forEach(obj => {
                     realm.create('Customer', obj);
                 });
             });

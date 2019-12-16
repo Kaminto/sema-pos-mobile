@@ -2,7 +2,7 @@ import realm from '../init';
 const uuidv1 = require('uuid/v1');
 
 class CreditRealm {
-    constructor() { 
+    constructor() {
         this.credit = [];
         let firstSyncDate = new Date('November 7, 1973');
         realm.write(() => {
@@ -18,13 +18,21 @@ class CreditRealm {
     }
 
     truncate() {
-        let credits = realm.objects('Credit');
-        realm.delete(credits);
+        try {
+            realm.write(() => {
+                let credits = realm.objects('Credit');
+                realm.delete(credits);
+            })
+        } catch (e) {
+            console.log("Error on creation", e);
+        }
     }
 
     setLastCreditSync(lastSyncTime) {
-        let syncDate = realm.objects('Credit');
-        syncDate[0].quantity = lastSyncTime.toISOString()
+        realm.write(() => {
+            let syncDate = realm.objects('CreditSyncDate');
+            syncDate[0].lastCreditSync = lastSyncTime.toISOString();
+        })
     }
 
     getAllCredit() {
@@ -53,25 +61,25 @@ class CreditRealm {
 
     createCredit(customer_account_id, topup, balance) {
         const now = new Date();
-       
-            const newCredit = {
-                topUpId: uuidv1(),
-                customer_account_id,
-                topup,
-                balance,
-                created_at: now,
-                updated_at: now,
-                syncAction: 'create',
-                active: false
-            };
 
-            try {
-                realm.write(() => {
-                    realm.create('Credit', newCredit);
-                });
-            } catch (e) {
-                console.log("Error on creation", e);
-            }      
+        const newCredit = {
+            topUpId: uuidv1(),
+            customer_account_id,
+            topup,
+            balance,
+            created_at: now,
+            updated_at: now,
+            syncAction: 'create',
+            active: false
+        };
+
+        try {
+            realm.write(() => {
+                realm.create('Credit', newCredit);
+            });
+        } catch (e) {
+            console.log("Error on creation", e);
+        }
     }
 
     updateCredit(credit) {
@@ -120,12 +128,12 @@ class CreditRealm {
 
     softDeleteCredit(credit) {
         try {
+
             realm.write(() => {
-                realm.write(() => {
-                    let creditObj = realm.objects('Credit').filtered(`topUpId = "${credit.topUpId}"`);
-                    creditObj[0].syncAction = 'delete';
-                })
+                let creditObj = realm.objects('Credit').filtered(`topUpId = "${credit.topUpId}"`);
+                creditObj[0].syncAction = 'delete';
             })
+
 
         } catch (e) {
             console.log("Error on creation", e);
