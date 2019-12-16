@@ -2,7 +2,7 @@ import realm from '../init';
 const uuidv1 = require('uuid/v1');
 
 class InventroyRealm {
-    constructor() { 
+    constructor() {
         this.inventory = [];
         let firstSyncDate = new Date('November 7, 1973');
         realm.write(() => {
@@ -18,8 +18,14 @@ class InventroyRealm {
     }
 
     truncate() {
-        let inventories = realm.objects('Inventory');
-        realm.delete(inventories);
+        try {
+            realm.write(() => {
+                let inventories = realm.objects('Inventory');
+                realm.delete(inventories);
+            })
+        } catch (e) {
+            console.log("Error on creation", e);
+        }
     }
 
     setLastInventorySync(lastSyncTime) {
