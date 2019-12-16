@@ -176,7 +176,8 @@ class TransactionDetail extends Component {
 			<View>
 				<Text style={{ fontSize: 16, fontWeight: "bold" }}>PRODUCTS</Text>
 			</View>
-			{receiptLineItems}
+
+		    	{receiptLineItems}
 			<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
 			    <Text style={[styles.customername, { flex: .7, fontWeight: 'bold'}]}>TOTAL </Text>
 				<Text style={[styles.customername, { flex: .3, fontWeight: 'bold'}]}>

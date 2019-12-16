@@ -418,7 +418,7 @@ class CustomerEdit extends Component {
 											{"label":"Water club","value":4},
 											{"label":"Outlet franchise","value":5}
 											]}
-											style={pickerSelectStyles}
+											// style={pickerSelectStyles}
 									/>
 									<RNPickerSelect
 										value={this.state.customerType}
@@ -432,7 +432,7 @@ class CustomerEdit extends Component {
 											{"label":"Retailer","value":4},
 											{"label":"Outlet Franchise","value":8}
 										]}
-										style={pickerSelectStyles}
+										// style={pickerSelectStyles}
 
 									/>
 							{/* </View> */}
