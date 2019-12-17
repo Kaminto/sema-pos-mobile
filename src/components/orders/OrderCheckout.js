@@ -12,6 +12,7 @@ import { connect } from "react-redux";
 import i18n from "../../app/i18n";
 import Icon from 'react-native-vector-icons/Ionicons';
 import PosStorage from "../../database/PosStorage";
+import CustomerTypeRealm from '../../database/customer-types/customer-types.operations';
 import * as Utilities from "../../services/Utilities";
 const uuidv1 = require('uuid/v1');
 import Events from "react-native-simple-events";
@@ -377,7 +378,7 @@ class OrderCheckout extends Component {
 	}
 
 	_isAnonymousCustomer(customer) {
-		return PosStorage.getCustomerTypeByName('anonymous').id ==
+		return CustomerTypeRealm.getCustomerTypeByName('anonymous').id ==
 			customer.customerTypeId
 			? true
 			: false;

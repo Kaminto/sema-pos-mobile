@@ -1,12 +1,12 @@
-import CreditRealm from '../../database/credit/index';
-import TopUpService from '../../services/topup';
+import CreditRealm from '../../database/credit/credit.operations';
+import CreditApi from '../api/credit.api';
 import * as _ from 'lodash';
 
 class CreditSync {
 
     synchronizeCredits(lastCreditSync) {
         return new Promise(resolve => {
-            TopUpService.getTopUps(new Date(lastCreditSync))
+            CreditApi.getTopUps(new Date(lastCreditSync))
                 .then(remoteCredit => {
                     let initlocalCredits = CreditRealm.getAllCredit();
                     let localCredits = [...initlocalCredits];
@@ -61,7 +61,7 @@ class CreditSync {
 
                         if (onlyLocally.length > 0) {
                             onlyLocally.forEach(localCredit => {
-                                TopUpService.createTopUp(
+                                CreditApi.createTopUp(
                                     localCredit
                                 )
                                     .then((response) => {
@@ -83,7 +83,7 @@ class CreditSync {
                             inLocal.forEach(localCredit => {
 
                                 if (localCredit.active === true && localCredit.syncAction === 'delete') {
-                                    TopUpService.deleteTopUp(
+                                    CreditApi.deleteTopUp(
                                         localCredit
                                     )
                                         .then((response) => {
@@ -104,7 +104,7 @@ class CreditSync {
                                 }
 
                                 if (localCredit.active === true && localCredit.syncAction === 'update') {
-                                    TopUpService.updateCustomerCredit(
+                                    CreditApi.updateCustomerCredit(
                                         localCredit
                                     )
                                         .then((response) => {
@@ -121,7 +121,7 @@ class CreditSync {
                                         });
 
                                 } else if (localCredit.active === false && localCredit.syncAction === 'update') {
-                                    TopUpService.createTopUp(
+                                    CreditApi.createTopUp(
                                         localCredit
                                     )
                                         .then((response) => {

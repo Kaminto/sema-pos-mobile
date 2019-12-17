@@ -1,4 +1,4 @@
-class InventoryService {
+class InventoryApi {
 	constructor() {
 		this._url = 'http://142.93.115.206:3006/';
 		this._site = '';
@@ -179,4 +179,4 @@ class InventoryService {
 
 }
 
-export default new InventoryService();
+export default new InventoryApi();

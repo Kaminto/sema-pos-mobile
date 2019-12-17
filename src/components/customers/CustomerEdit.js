@@ -18,8 +18,9 @@ import Events from 'react-native-simple-events';
 import * as ToolbarActions from '../../actions/ToolBarActions';
 import ModalDropdown from 'react-native-modal-dropdown';
 import PosStorage from '../../database/PosStorage';
+import CustomerTypeRealm from '../../database/customer-types/customer-types.operations';
 import * as CustomerActions from '../../actions/CustomerActions';
-
+import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 import i18n from '../../app/i18n';
 
 class CustomerProperty extends Component {
@@ -130,12 +131,12 @@ class CustomerEdit extends Component {
 		this.customerType = React.createRef();
 		this.frequency = React.createRef();
 
-		this.salesChannels = PosStorage.getSalesChannelsForDisplay();
+		this.salesChannels = SalesChannelRealm.getSalesChannelsForDisplay();
 		this.channelOptions = this.salesChannels.map(channel => {
 			return channel.displayName;
 		});
 
-		this.customerTypes = PosStorage.getCustomerTypesForDisplay(this.saleschannelid);
+		this.customerTypes = CustomerTypeRealm.getCustomerTypesForDisplay(this.saleschannelid);
 		this.customerTypeOptions = this.customerTypes.map(customerType => {
 			   return customerType.displayName;
 		});
@@ -514,7 +515,7 @@ class CustomerEdit extends Component {
 			this.saleschannelid = tindex;
             console.log("Adams" + this.saleschannelid);
 			this.setState({ salescid: tindex });
-			this.customerTypes = PosStorage.getCustomerTypesForDisplay(tindex);
+			this.customerTypes = CustomerTypeRealm.getCustomerTypesForDisplay(tindex);
 			this.customerTypeOptions = this.customerTypes.map(customerType => {
 				return customerType.displayName;
 		    });

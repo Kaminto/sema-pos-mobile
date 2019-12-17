@@ -1,12 +1,12 @@
-import InventroyRealm from '../../database/inventory/index';
-import InventoryService from '../../services/inventory';
+import InventroyRealm from '../../database/inventory/inventory.operations';
+import InventoryApi from '../api/inventory.api';
 import * as _ from 'lodash';
 
 class InventorySync {
 
     synchronizeInventory(lastInventorySync) {
         return new Promise(resolve => {
-            InventoryService.getInventories(new Date(lastInventorySync))
+            InventoryApi.getInventories(new Date(lastInventorySync))
                 .then(remoteInventory => {
                     let initlocalInventories = InventroyRealm.getAllInventory();
                     let localInventories = [...initlocalInventories];
@@ -61,7 +61,7 @@ class InventorySync {
 
                         if (onlyLocally.length > 0) {
                             onlyLocally.forEach(localInventory => {
-                                InventoryService.createInventory(
+                                InventoryApi.createInventory(
                                     localInventory
                                 )
                                     .then((response) => {
@@ -83,7 +83,7 @@ class InventorySync {
                             inLocal.forEach(localInventory => {
 
                                 if (localInventory.active === true && localInventory.syncAction === 'delete') {
-                                    InventoryService.deleteInventory(
+                                    InventoryApi.deleteInventory(
                                         localInventory
                                     )
                                         .then((response) => {
@@ -104,7 +104,7 @@ class InventorySync {
                                 }
 
                                 if (localInventory.active === true && localInventory.syncAction === 'update') {
-                                    InventoryService.updateInventory(
+                                    InventoryApi.updateInventory(
                                         localInventory
                                     )
                                         .then((response) => {
@@ -121,7 +121,7 @@ class InventorySync {
                                         });
 
                                 } else if (localInventory.active === false && localInventory.syncAction === 'update') {
-                                    InventoryService.createInventory(
+                                    InventoryApi.createInventory(
                                         localInventory
                                     )
                                         .then((response) => {

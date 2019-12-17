@@ -24,7 +24,9 @@ import RNPickerSelect from 'react-native-picker-select';
 import * as ToolbarActions from '../actions/ToolBarActions';
 import ModalDropdown from 'react-native-modal-dropdown';
 import PosStorage from '../database/PosStorage';
-import CustomerRealm from '../database/customers/customer.operations'
+import CustomerRealm from '../database/customers/customer.operations';
+import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
+import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
 import * as CustomerActions from '../actions/CustomerActions';
 
 import i18n from '../app/i18n';
@@ -148,7 +150,7 @@ class CustomerEdit extends Component {
 		this.customerType = React.createRef();
 		this.frequency = React.createRef();
 
-		this.salesChannels = PosStorage.getSalesChannelsForDisplay();
+		this.salesChannels = SalesChannelRealm.getSalesChannelsForDisplay();
 		this.channelOptions = this.salesChannels.map(channel => {
 			console.log(channel);
 			return channel.displayName;
@@ -163,7 +165,7 @@ class CustomerEdit extends Component {
 
 		console.log("Mean Sales: " +JSON.stringify(this.salesChannelOptions));
 
-		this.customerTypes = PosStorage.getCustomerTypesForDisplay(this.saleschannelid);
+		this.customerTypes = CustomerTypeRealm.getCustomerTypesForDisplay(this.saleschannelid);
 		this.customerTypeOptions = this.customerTypes.map(customerType => {
 			return customerType.displayName;
 		});
@@ -682,7 +684,7 @@ class CustomerEdit extends Component {
 		this.saleschannelid = tindex;
 		console.log("Adams" + this.saleschannelid);
 		this.setState({ salescid: tindex });
-		this.customerTypes = PosStorage.getCustomerTypesForDisplay(tindex);
+		this.customerTypes = CustomerTypeRealm.getCustomerTypesForDisplay(tindex);
 		this.customerTypeOptions = this.customerTypes.map(customerType => {
 			return customerType.displayName;
 		});

@@ -22,7 +22,8 @@ import { bindActionCreators } from 'redux';
 import ModalDropdown from 'react-native-modal-dropdown';
 
 import PosStorage from '../database/PosStorage';
-
+import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
+import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
 import Events from 'react-native-simple-events';
 import i18n from '../app/i18n';
 
@@ -196,7 +197,7 @@ class CustomerList extends Component {
     }
 
     prepareData = () => {
-        this.salesChannels = PosStorage.getSalesChannelsForDisplay();
+        this.salesChannels = SalesChannelRealm.getSalesChannelsForDisplay();
         let data = [];
         if (this.props.customers.length > 0) {
             data = this.filterItems(this.props.customers);
@@ -309,7 +310,7 @@ class CustomerList extends Component {
     }
 
     _isAnonymousCustomer(customer) {
-        return PosStorage.getCustomerTypeByName('anonymous').id ==
+        return CustomerTypeRealm.getCustomerTypeByName('anonymous').id ==
             customer.customerTypeId
             ? true
             : false;

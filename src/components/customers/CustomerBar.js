@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, TextInput, Alert } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PosStorage from '../../database/PosStorage';
+import CustomerTypeRealm from '../../database/customer-types/customer-types.operations';
 import * as NetworkActions from '../../actions/NetworkActions';
 import * as CustomerActions from '../../actions/CustomerActions';
 import * as CustomerBarActions from '../../actions/CustomerBarActions';
@@ -363,7 +364,7 @@ class CustomerBar extends Component {
 	};
 
 	_isAnonymousCustomer(customer) {
-		const customerType = PosStorage.getCustomerTypeByName('anonymous');
+		const customerType = CustomerTypeRealm.getCustomerTypeByName('anonymous');
 		if (customerType && customerType.id == customer.customerTypeId) {
 			return true;
 		}

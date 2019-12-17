@@ -20,14 +20,23 @@ import * as ProductActions from '../actions/ProductActions';
 import * as receiptActions from '../actions/ReceiptActions';
 
 import PosStorage from '../database/PosStorage';
-import CreditRealm from '../database/credit/index';
+import CreditRealm from '../database/credit/credit.operations';
 import CustomerRealm from '../database/customers/customer.operations'
-import InventroyRealm from '../database/inventory/index';
+import InventroyRealm from '../database/inventory/inventory.operations';
+import ProductMRPRealm from '../database/productmrp/productmrp.operations';
+
+import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
+import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
+
+import ProductsRealm from '../database/products/product.operations';
 import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
-import TopUpService from '../services/topup';
-import InventoryService from '../services/inventory';
-import CustomerApi from '../services/customer.api';
+import CreditApi from '../services/api/credit.api';
+import InventoryApi from '../services/api/inventory.api';
+import CustomerApi from '../services/api/customer.api';
+import ProductApi from '../services/api/product.api';
+import SalesChannelApi from '../services/api/sales-channel.api';
+import CustomerTypeApi from '../services/api/customer-types.api';
 import NetInfo from "@react-native-community/netinfo";
 
 class AuthLoadingScreen extends React.Component {
@@ -76,26 +85,26 @@ class AuthLoadingScreen extends React.Component {
                 );
                 Communications.setToken(settings.token);
                 Communications.setSiteId(settings.siteId);
-                
-                TopUpService.initialize(
-                    settings.semaUrl,
-                    settings.site,
-                    settings.user,
-                    settings.password
-                );
-                TopUpService.setToken(settings.token);
-                TopUpService.setSiteId(settings.siteId);
 
-                
-                InventoryService.initialize(
+                CreditApi.initialize(
                     settings.semaUrl,
                     settings.site,
                     settings.user,
                     settings.password
                 );
-                InventoryService.setToken(settings.token);
-                InventoryService.setSiteId(settings.siteId);
-               
+                CreditApi.setToken(settings.token);
+                CreditApi.setSiteId(settings.siteId);
+
+
+                InventoryApi.initialize(
+                    settings.semaUrl,
+                    settings.site,
+                    settings.user,
+                    settings.password
+                );
+                InventoryApi.setToken(settings.token);
+                InventoryApi.setSiteId(settings.siteId);
+
 
                 CustomerApi.initialize(
                     settings.semaUrl,
@@ -105,7 +114,34 @@ class AuthLoadingScreen extends React.Component {
                 );
                 CustomerApi.setToken(settings.token);
                 CustomerApi.setSiteId(settings.siteId);
-                
+
+                ProductApi.initialize(
+                    settings.semaUrl,
+                    settings.site,
+                    settings.user,
+                    settings.password
+                );
+                ProductApi.setToken(settings.token);
+                ProductApi.setSiteId(settings.siteId);
+
+                CustomerTypeApi.initialize(
+                    settings.semaUrl,
+                    settings.site,
+                    settings.user,
+                    settings.password
+                );
+                CustomerTypeApi.setToken(settings.token);
+                CustomerTypeApi.setSiteId(settings.siteId);
+
+                SalesChannelApi.initialize(
+                    settings.semaUrl,
+                    settings.site,
+                    settings.user,
+                    settings.password
+                );
+                SalesChannelApi.setToken(settings.token);
+                SalesChannelApi.setSiteId(settings.siteId);
+
 
                 this.posStorage.loadLocalData();
 
@@ -115,13 +151,13 @@ class AuthLoadingScreen extends React.Component {
                 this.props.topUpActions.setTopups(
                     CreditRealm.getAllCredit()
                 );
-              // InventroyRealm.truncate();
+                // InventroyRealm.truncate();
                 this.props.inventoryActions.setInventory(
                     InventroyRealm.getAllInventory()
                 );
-               
+
                 this.props.productActions.setProducts(
-                    this.posStorage.getProducts()
+                    ProductsRealm.getProducts()
                 );
                 this.props.receiptActions.setRemoteReceipts(
                     this.posStorage.getRemoteReceipts()
@@ -129,21 +165,24 @@ class AuthLoadingScreen extends React.Component {
 
                 Synchronization.initialize(
                     CustomerRealm.getLastCustomerSync(),
-                    PosStorage.getLastProductSync(),
+                    ProductsRealm.getLastProductsync(),
                     PosStorage.getLastSalesSync(),
                     CreditRealm.getLastCreditSync(),
                     InventroyRealm.getLastInventorySync(),
                 );
 
 
-                //CustomerRealm.truncate();
-                 console.log('CreditRealm.getLastCreditSync(),',  CreditRealm.getLastCreditSync())
-                 console.log('CustomerRealm.getLastCustomerSync()(),',  CustomerRealm.getLastCustomerSync())
-                // Communications.getCustomers(CustomerRealm.getLastCustomerSync())
-				// .then(web_customers => {
-                //     console.log('web_customers', web_customers);
-                // })
-                
+                //ProductsRealm.truncate();
+
+
+
+                console.log('SalesChannelRealm', SalesChannelRealm.getSalesChannels());
+                console.log('CustomerTypeRealm', CustomerTypeRealm.getCustomerTypes());
+                console.log(ProductsRealm.getProducts());
+
+                console.log('CreditRealm.getLastCreditSync(),', CreditRealm.getLastCreditSync())
+                console.log('CustomerRealm.getLastCustomerSync()(),', CustomerRealm.getLastCustomerSync())
+
                 Synchronization.setConnected(this.props.network.isNWConnected);
 
                 this.props.settingsActions.setSettings({ ...settings, loginSync: false });
@@ -201,7 +240,7 @@ function mapDispatchToProps(dispatch) {
         settingsActions: bindActionCreators(SettingsActions, dispatch),
         customerActions: bindActionCreators(CustomerActions, dispatch),
         topUpActions: bindActionCreators(TopUpActions, dispatch),
-        inventoryActions: bindActionCreators(InventoryActions, dispatch),        
+        inventoryActions: bindActionCreators(InventoryActions, dispatch),
         productActions: bindActionCreators(ProductActions, dispatch),
         receiptActions: bindActionCreators(receiptActions, dispatch)
     };

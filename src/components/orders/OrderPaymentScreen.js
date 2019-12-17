@@ -20,7 +20,7 @@ import * as OrderActions from '../../actions/OrderActions';
 import * as CustomerBarActions from '../../actions/CustomerBarActions';
 import * as CustomerActions from '../../actions/CustomerActions';
 import PosStorage from '../../database/PosStorage';
-
+import CustomerTypeRealm from '../../database/customer-types/customer-types.operations';
 import * as Utilities from '../../services/Utilities';
 import i18n from '../../app/i18n';
 import Events from 'react-native-simple-events';
@@ -319,7 +319,7 @@ class OrderPaymentScreen extends Component {
 	}
 
 	_isAnonymousCustomer(customer) {
-		return PosStorage.getCustomerTypeByName('anonymous').id ==
+		return CustomerTypeRealm.getCustomerTypeByName('anonymous').id ==
 			customer.customerTypeId
 			? true
 			: false;
