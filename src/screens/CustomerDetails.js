@@ -22,7 +22,7 @@ import Events from 'react-native-simple-events';
 import * as ToolbarActions from '../actions/ToolBarActions';
 import ModalDropdown from 'react-native-modal-dropdown';
 import PosStorage from '../database/PosStorage';
-import CreditRealm from '../database/credit/index';
+import CreditRealm from '../database/credit/credit.operations';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as TopUpActions from '../actions/TopUpActions';
 import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';

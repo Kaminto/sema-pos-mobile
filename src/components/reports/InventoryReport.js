@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import DateFilter from "./DateFilter";
 import PosStorage from "../../database/PosStorage";
 
-import InventroyRealm from "../../database/inventory/index";
+import InventroyRealm from "../../database/inventory/inventory.operations";
 import i18n from '../../app/i18n';
 const uuidv1 = require('uuid/v1');
 class InventoryEdit extends Component {

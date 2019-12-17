@@ -1,4 +1,5 @@
 import PosStorage from '../database/PosStorage';
+import ProductMRPRealm from '../database/productmrp/productmrp.operations';
 import { REMOVE_PRODUCT } from './OrderActions';
 import moment from 'moment-timezone';
 
@@ -172,7 +173,7 @@ const getSalesData = (beginDate, endDate) => {
 };
 
 const getMrps = products => {
-	let productMrp = PosStorage.getProductMrps();
+	let productMrp = ProductMRPRealm.getFilteredProductMRP();
 	console.log('productMrp', productMrp);
 	console.log('Object.keys', Object.keys(productMrp));
 	let ids = Object.keys(productMrp).map(key => productMrp[key].productId);

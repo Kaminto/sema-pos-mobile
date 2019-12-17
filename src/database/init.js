@@ -1,5 +1,13 @@
 var Realm = require('realm');
-import { CustomerSchema, CustomerSyncDateSchema} from './customers/customer.model'
+import { CustomerSchema, CustomerSyncDateSchema } from './customers/customer.model';
+import { CreditSchema, CreditSyncDateSchema } from './credit/credit.model';
+import { InventorySchema, InventorySyncDateSchema } from './inventory/inventory.model';
+import { ProductMRPSchema, ProductMRPSyncDateSchema } from './productmrp/productmrp.model';
+import { ProductSchema, ProductSyncDateSchema } from './products/product.model';
+import { SalesChannelSchema } from './sales-channels/sales-channels.model';
+import { CustomerTypesSchema } from './customer-types/customer-types.model';
+
+
 // Realm schema creation
 const SEMA_SCHEMA = {
     name: 'SemaRealm',
@@ -10,51 +18,6 @@ const SEMA_SCHEMA = {
     }
 };
 
-const InventorySchema = {
-    name: 'Inventory',
-    properties: {
-        id: { type: 'int', optional: true },
-        closingStockId: 'string',
-        kiosk_id: { type: 'int' },
-        product_id: 'string',
-        quantity: 'int',
-        active: { type: 'bool', optional: true },
-        syncAction: { type: 'string', optional: true },
-        created_at: 'date',
-        updated_at: 'date'
-    }
-};
-
-const InventorySyncDateSchema = {
-    name: 'InventorySyncDate',
-    properties: {
-        lastInventorySync: 'date',
-    }
-};
-
-const CreditSchema = {
-    name: 'Credit',
-    properties: {
-        id: { type: 'int', optional: true },
-        topUpId: 'string',
-        customer_account_id: { type: 'int' },
-        topup: 'int',
-        balance: 'int',
-        active: { type: 'bool', optional: true },
-        syncAction: { type: 'string', optional: true },
-        created_at: 'date',
-        updated_at: 'date'
-    }
-};
-
-const CreditSyncDateSchema = {
-    name: 'CreditSyncDate',
-    properties: {
-        lastCreditSync: 'date',
-    }
-};
-
-
 export default realm = new Realm({
     schema: [
         SEMA_SCHEMA,
@@ -63,9 +26,15 @@ export default realm = new Realm({
         CreditSchema,
         CreditSyncDateSchema,
         CustomerSchema,
-        CustomerSyncDateSchema
+        CustomerSyncDateSchema,
+        ProductMRPSchema,
+        ProductMRPSyncDateSchema,
+        ProductSchema,
+        ProductSyncDateSchema,
+        CustomerTypesSchema,
+        SalesChannelSchema
     ],
-    schemaVersion: 43,
+    schemaVersion: 46,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
         console.log('newRealm', newRealm)

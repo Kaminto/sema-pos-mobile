@@ -4,13 +4,12 @@ This class contains the persistence implementation of the tablet business object
 import { capitalizeWord } from '../services/Utilities';
 import Events from 'react-native-simple-events';
 import moment from 'moment-timezone';
-import TopUps from './credit/index';
-import InventroyRealm from './inventory/index';
-import CreditRealm from './credit/index';
+import TopUps from './credit/credit.operations';
+import InventroyRealm from './inventory/inventory.operations';
+import CreditRealm from './credit/credit.operations';
 import realm from './init';
 
-// var Realm = require('realm');
-// let realm;
+ 
 
 const uuidv1 = require('uuid/v1');
 

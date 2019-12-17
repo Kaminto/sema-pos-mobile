@@ -43,19 +43,23 @@
   "delete-all-data": "delete all data (This cannot be undone)",
 
   "search-placeholder": "Search by Name or Telephone",
+  "salefilter-placeholder": "Search by Name",
   "account-name": "Customer Name",
   "telephone-number": "Telephone #",
   "second-phone-number": "Telephone #2",
   "backdating": "Change Receipt Date",
   "over-due-amount-title": "Over Due Amount",
   "over-due-amount-text": "The payoff amount is greater than the due amount. The due amount is : ",
-
+ 
+  "product": "Product", 
 
   "address": "Address",
   "balance": "Balance",
   "channel": "Channel",
   "edit": "Edit",
   "delete": "Delete",
+
+  "details": "Details",
 
   "edit-customer": "Edit Customer",
   "new-customer": "New Customer",
@@ -77,6 +81,7 @@
   "order-total": "Order Total",
   "item": "Item",
   "quantity": "Quantity",
+  "unitPrice": "Unit Price",
   "charge": "Charge",
 
   "cash": "Cash",

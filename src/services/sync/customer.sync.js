@@ -1,5 +1,5 @@
 import CustomerRealm from '../../database/customers/customer.operations';
-import CustomerApi from '../../services/customer.api';
+import CustomerApi from '../api/customer.api';
 import * as _ from 'lodash';
 
 class CustomerSync {
@@ -21,12 +21,10 @@ class CustomerSync {
                     let inLocal = [];
                     let inRemote = [];
                     let bothLocalRemote = {};
-
+                    let updateCount = 0;
                     if (initlocalCustomers.length > 0) {
 
-                        console.log('initlocalCustomers', initlocalCustomers);
-                        console.log('localCustomers', localCustomers);
-                        console.log('remoteCustomers', remoteCustomers);
+                       
                         initlocalCustomers.forEach(localCustomer => {
                             let filteredObj = remoteCustomers.filter(obj => obj.customerId === localCustomer.customerId)
                            
@@ -82,7 +80,7 @@ class CustomerSync {
                             })
                         }
 
-                        let updateCount = 0;
+                        
                         if (inLocal.length > 0 && inRemote.length > 0) {
                             
                             inLocal.forEach(localCustomer => {                                
@@ -157,9 +155,7 @@ class CustomerSync {
                     }
                     resolve({
                         error: null,
-                        updatedCustomers: 0,
-                        localCustomers: onlyLocally.length + updateCount,
-                        remoteCustomers: onlyRemote.length
+                        updatedCustomers: onlyLocally.length + onlyRemote.length + updateCount
                     });
 
                 })
@@ -169,9 +165,7 @@ class CustomerSync {
                     );
                     resolve({
 						error: error.message,
-                        localCustomers: 0,
                         updatedCustomers: 0,
-						remoteCustomers: 0
 					});
                 });
         });

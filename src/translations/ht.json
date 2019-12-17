@@ -43,8 +43,11 @@
   "delete-all-data": "efase tout done yo (ou pap ka rekipere yo aprè)",
 
   "search-placeholder": "Chèche pa Non Oswa pa Nimewo",
+  "salefilter-placeholder": "Search by Name",
   "account-name": "Non Kliyan",
   "telephone-number": "# Telefòn",
+
+  "product": "Product", 
 
   "address": "Adrès",
   "balance": "Balans",
@@ -70,6 +73,9 @@
   "order-total": "Total Kòmand",
   "item": "Pwodui senkronizeui",
   "quantity": "Kantite",
+  "unitPrice": "Unit Price",
+
+  "details": "Details",
 
   "charge": "Fakti",
   "pay": "Peye",

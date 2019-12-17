@@ -165,11 +165,8 @@ class CustomSidebarMenu extends Component {
 		try {
 			this.setState({ isLoading: true });
 			Synchronization.synchronize().then(syncResult => {
-				this.setState({ isLoading: false });
-				// console.log(
-				// 	'Synchronization-result: ' + JSON.stringify(syncResult)
-				// );
-        // let foo = this._getSyncResults(syncResult);
+        this.setState({ isLoading: false });
+        
         this.props.customerActions.setCustomers(
           CustomerRealm.getAllCustomer()
       );
@@ -187,6 +184,7 @@ class CustomSidebarMenu extends Component {
 
   _getSyncResults(syncResult) {
 		try {
+
 			if (syncResult.status != 'success')
 				return i18n.t('sync-error', { error: syncResult.error });
 			if (
@@ -217,8 +215,7 @@ class CustomSidebarMenu extends Component {
 				});
 			else {
 				if (
-					syncResult.customers.localCustomers == 0 &&
-					syncResult.customers.remoteCustomers == 0 &&
+					syncResult.customers.updatedCustomers == 0 &&
 					syncResult.products.remoteProducts == 0 &&
 					syncResult.sales.localReceipts == 0 &&
 					syncResult.productMrps.remoteProductMrps == 0
@@ -226,8 +223,7 @@ class CustomSidebarMenu extends Component {
 					return i18n.t('data-is-up-to-date');
 				} else {
           // console.log('syncResult', syncResult);
-					return `${syncResult.customers.localCustomers +
-						syncResult.customers.remoteCustomers} ${i18n.t(
+					return `${syncResult.customers.updatedCustomers} ${i18n.t(
 							'customers-updated'
 						)}
         ${syncResult.products.remoteProducts} ${i18n.t('products-updated')}

@@ -1,6 +1,4 @@
-import moment from 'moment-timezone';
-import PosStorage from '../database/PosStorage';
-class TopUpService {
+class CreditApi {
 	constructor() {
 		this._url = 'http://142.93.115.206:3006/';
 		this._site = '';
@@ -178,4 +176,4 @@ class TopUpService {
 	}
 }
 
-export default new TopUpService();
+export default new CreditApi();

@@ -1,16 +1,21 @@
 import PosStorage from '../database/PosStorage';
-import CreditRealm from '../database/credit/index';
-import InventroyRealm from '../database/inventory/index';
+import CreditRealm from '../database/credit/credit.operations';
+import InventroyRealm from '../database/inventory/inventory.operations';
+
 import Communications from '../services/Communications';
-import TopUpService from '../services/topup';
-import InventoryService from '../services/inventory';
+import CreditApi from './api/credit.api';
+import InventoryApi from './api/inventory.api';
 
 
 import Events from 'react-native-simple-events';
 import * as _ from 'lodash';
-import InventorySync from './sync/inventory';
-import CreditSync from './sync/credit';
-import CustomerSync from './sync/customer.sync'
+import InventorySync from './sync/inventory.sync';
+import CreditSync from './sync/credit.sync';
+import CustomerSync from './sync/customer.sync';
+import ProductSync from './sync/product.sync';
+import ProductMRPSync from './sync/productmrp.sync';
+import SalesChannelSync from './sync/sales-channel.sync';
+import CustomerTypeSync from './sync/customer-types.sync';
 class Synchronization {
 	initialize(lastCustomerSync, lastProductSync, lastSalesSync, lastCreditSync, lastInventorySync) {
 		console.log('Synchronization:initialize');
@@ -121,14 +126,14 @@ class Synchronization {
 				this._refreshToken()
 					.then(() => {
 						let lastProductSync = this.lastProductSync;
-						const promiseSalesChannels = this.synchronizeSalesChannels();
-						const promiseCustomerTypes = this.synchronizeCustomerTypes();
+						const promiseSalesChannels = SalesChannelSync.synchronizeSalesChannels();
+						const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes();
 						Promise.all([
 							promiseSalesChannels,
 							promiseCustomerTypes
 						]).then(values => {
 							console.log(
-								'synchronize - SalesChannels and Customer Types: ' +
+								'synchronize - SalesChannels and Customer Types: ',
 								values
 							);
 							const promiseCustomers = CustomerSync.synchronizeCustomers().then(
@@ -157,24 +162,27 @@ class Synchronization {
 							);
 
 
-							const promiseProducts = this.synchronizeProducts().then(
+							const promiseProducts = ProductSync.synchronizeProducts().then(
 								productSync => {
 									syncResult.products = productSync;
 									return productSync;
 								}
 							);
-							const promiseSales = this.synchronizeSales().then(
-								saleSync => {
-									syncResult.sales = saleSync;
-									return saleSync;
-								}
-							);
-							const promiseProductMrps = this.synchronizeProductMrps(
+
+							const promiseProductMrps = ProductMRPSync.synchronizeProductMrps(
 								lastProductSync
 							).then(productMrpSync => {
 								syncResult.productMrps = productMrpSync;
 								return productMrpSync;
 							});
+
+
+							const promiseSales = this.synchronizeSales().then(
+								saleSync => {
+									syncResult.sales = saleSync;
+									return saleSync;
+								}
+							);							
 
 							const promiseReceipts = this.synchronizeReceipts().then(
 								results => {
@@ -182,7 +190,6 @@ class Synchronization {
 									return results;
 								}
 							);
-
 
 
 							// This will make sure they run synchronously
@@ -281,7 +288,7 @@ class Synchronization {
 		});
 	}
 
- 
+
 	synchronizeProducts() {
 		return new Promise(resolve => {
 			console.log('Synchronization:synchronizeProducts - Begin');
@@ -330,6 +337,10 @@ class Synchronization {
 							'Synchronization:synchronizeSalesChannels. No of sales channels: ' +
 							salesChannels.salesChannels.length
 						);
+						console.log(
+							'Synchronization:synchronizeSalesChannels. No of sales channels: ',
+							salesChannels.salesChannels
+						);
 						if (
 							!_.isEqual(
 								savedSalesChannels,
@@ -362,6 +373,10 @@ class Synchronization {
 						console.log(
 							'Synchronization:synchronizeCustomerTypes. No of customer types: ' +
 							customerTypes.customerTypes.length
+						);
+						console.log(
+							'Synchronization:synchronizeCustomerTypes. No of customer types: ',
+							customerTypes.customerTypes
 						);
 						PosStorage.saveCustomerTypes(
 							customerTypes.customerTypes
@@ -453,83 +468,7 @@ class Synchronization {
 			}
 		);
 	}
-
-	synchronizeProductMrps(lastProductSync) {
-		return new Promise(async resolve => {
-			console.log('Synchronization:synchronizeProductMrps - Begin');
-			// Note- Because product mrps, do not currently have an 'active' flag,
-			// if a user 'deletes' a mapping by removing the row in the table, the delta won't get detected
-			// The current work around is return all mappings, (i.e. no deltas and re-write the mappings each time
-			// Note that this won't scale too well with many productMrps
-			// Communications.getProductMrps(lastProductSync)
-			const savedProductMrps = await PosStorage.loadProductMrps();
-			// TODO: Figure out a more scalable approach to this. As the product_mrp table may grow fast.
-			Communications.getProductMrps(null, false)
-				.then(productMrps => {
-					console.log('productMrps', productMrps);
-					if (productMrps.hasOwnProperty('productMRPs')) {
-						console.log(
-							'Synchronization:synchronizeProductMrps. No of remote product MRPs: ' +
-							productMrps.productMRPs.length
-						);
-						if (
-							!_.isEqual(
-								savedProductMrps,
-								productMrps.productMRPs
-							)
-						) {
-							PosStorage.saveProductMrps(productMrps.productMRPs);
-							Events.trigger('ProductMrpsUpdated', {});
-						}
-						resolve({
-							error: null,
-							remoteProductMrps: productMrps.productMRPs.length
-						});
-					}
-				})
-				.catch(error => {
-
-					resolve({ error: error.message, remoteProducts: null });
-					console.log(
-						'Synchronization.ProductsMrpsUpdated - error ' + error
-					);
-				});
-		});
-	}
-
-	synchronizeProductMrpsBySiteid(siteId) {
-		return new Promise(async resolve => {
-			console.log('Synchronization:synchronizeProductMrps - Begin');
-			Communications.getProductMrpsBySiteId(siteId)
-				.then(productMrps => {
-					if (productMrps.hasOwnProperty('productMRPs')) {
-						console.log(
-							'Synchronization:synchronizeProductMrps. No of remote product MRPs: ' +
-							productMrps.productMRPs.length
-						);
-						if (
-							!_.isEqual(
-								savedProductMrps,
-								productMrps.productMRPs
-							)
-						) {
-							PosStorage.saveProductMrps(productMrps.productMRPs);
-							Events.trigger('ProductMrpsUpdated', {});
-						}
-						resolve({
-							error: null,
-							remoteProductMrps: productMrps.productMRPs.length
-						});
-					}
-				})
-				.catch(error => {
-					resolve({ error: error.message, remoteProducts: null });
-					console.log(
-						'Synchronization.ProductsMrpsUpdated - error ' + error
-					);
-				});
-		});
-	}
+	 	
 
 	_refreshToken() {
 		// Check if token exists or has expired
