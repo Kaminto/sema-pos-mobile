@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import App from './App';
 //import configureStore from './src/store/configureStore';
 import configureStore from './src/app/store';
+import 'react-native-gesture-handler';
 
 const store = configureStore();
 

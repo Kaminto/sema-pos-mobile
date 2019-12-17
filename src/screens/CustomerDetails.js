@@ -8,7 +8,9 @@ import {
 	TouchableOpacity,
 	TouchableHighlight,
 	Alert,
-	ToastAndroid
+	ToastAndroid,
+	ScrollView,
+	TouchableNativeFeedback
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from 'prop-types';
@@ -62,25 +64,18 @@ class ReceiptLineItem extends Component {
 				}}>
 				<Image
 					source={{ uri: this.getImage(this.props.item.product) }}
-					style={styles.productImage}
+					style={[styles.productImage, {flex:.1 }]}
 				/>
-				<View style={{ justifyContent: 'space-around' }}>
+				<View style={{ justifyContent: 'space-around', flex:.6 }}>
 					<View style={styles.itemData}>
-						<Text style={styles.label}>Product Description: </Text>
-						<Text>{this.props.item.product.description}</Text>
+						<Text style={[styles.label, {fontSize: 15}]}>{this.props.item.product.description}</Text>
 					</View>
 					<View style={styles.itemData}>
-						<Text style={styles.label}>Product SKU: </Text>
-						<Text>{this.props.item.product.sku}</Text>
+						<Text style={[styles.label, {fontSize: 16}]}>{this.props.item.quantity} </Text>
 					</View>
-					<View style={styles.itemData}>
-						<Text style={styles.label}>Quantity Purchased: </Text>
-						<Text>{this.props.item.quantity}</Text>
-					</View>
-					<View style={styles.itemData}>
-						<Text style={styles.label}>Total Cost: </Text>
-						<Text>{this.props.item.price_total}</Text>
-					</View>
+				</View>
+				<View style={[styles.itemData, {flex:.3}]}>
+				<Text style={[styles.label, {fontSize: 15, padding:10}]}>{this.props.item.currency_code.toUpperCase()} {this.props.item.price_total}</Text>
 				</View>
 			</View>
 		);
@@ -149,7 +144,8 @@ class CustomerDetails extends Component {
 			refresh: false,
 			topup: "",
 			searchString: '',
-			hasScrolled: false
+			hasScrolled: false,
+			selected: this.prepareData()[0],
 		};
 
 
@@ -166,6 +162,10 @@ class CustomerDetails extends Component {
 	}
 	componentWillUnmount() {
 		Events.rm('ScrollCustomerTo', 'customerId1');
+	}
+
+	setSelected(item) {
+		this.setState({ selected: item });
 	}
 
 	onScrollCustomerTo(data) {
@@ -185,6 +185,7 @@ class CustomerDetails extends Component {
 		return true;
 	}
 
+
 	render() {
 
 		console.log('props -', this.props.topups);
@@ -192,7 +193,6 @@ class CustomerDetails extends Component {
 		console.log('getReceipts', PosStorage.getReceipts())
 		return (
 			<View style={{ flex: 1 }}>
-
 				<View style={{
 					flexDirection: 'row',
 					height: 100,
@@ -202,8 +202,8 @@ class CustomerDetails extends Component {
 					<View style={[styles.leftToolbar]}>
 						<SelectedCustomerDetails
 							selectedCustomer={this.props.selectedCustomer}
-							totalCredit={this.totalCredit()}
-							balanceCredit={this.balanceCredit()}
+							// totalCredit={this.totalCredit()}
+							// balanceCredit={this.balanceCredit()}
 						/>
 					</View>
 				</View>
@@ -370,7 +370,9 @@ class CustomerDetails extends Component {
 					index,
 					updated: receipt.updated,
 					amountLoan: receipt.amount_loan,
-					totalCount
+					totalCount,
+					currency: receipt.currency_code,
+				    totalAmount: receipt.total
 				};
 			});
 
@@ -552,35 +554,9 @@ class CustomerDetails extends Component {
 
 	renderReceipt({ item, index }) {
 
-		console.log("Item reciep", item);
-		const receiptLineItems = item.receiptLineItems.map((lineItem, idx) => {
-			return (
-				<ReceiptLineItem
-					receiptActions={this.props.receiptActions}
-					remoteReceipts={this.props.remoteReceipts}
-					item={lineItem}
-					key={lineItem.id}
-					lineItemIndex={idx}
-					products={this.props.products}
-					handleUpdate={this.handleUpdate.bind(this)}
-					receiptIndex={item.index}
-				/>
-			);
-		});
-
-
 		return (
+		<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
 			<View key={index} style={{ padding: 15 }}>
-				<View style={styles.deleteButtonContainer}>
-					<TouchableOpacity
-						onPress={this.onDeleteReceipt(item)}
-						style={[
-							styles.receiptDeleteButton,
-							{ backgroundColor: item.active ? 'red' : 'grey' }
-						]}>
-						<Text style={styles.receiptDeleteButtonText}>X</Text>
-					</TouchableOpacity>
-				</View>
 				<Text style={{ fontSize: 17 }}>#{item.totalCount - index}</Text>
 				<View style={styles.receiptStats}>
 					{!item.active && (
@@ -616,8 +592,8 @@ class CustomerDetails extends Component {
 					<Text style={styles.label}>Customer Name: </Text>
 					<Text>{item.customerAccount.name}</Text>
 				</View>
-				{receiptLineItems}
 			</View>
+			</TouchableNativeFeedback>
 		);
 	}
 

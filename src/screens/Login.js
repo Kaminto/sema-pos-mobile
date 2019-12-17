@@ -139,40 +139,35 @@ class Login extends Component {
 						style={{ flex: 1 }}
 						resetScrollToCoords={{ x: 0, y: 0 }}
 						scrollEnabled={false}>
-						<View style={{ flex: 1, alignItems: 'center', backgroundColor: 'white' }}>
+						<View style={{ flex: 1, alignItems: 'center', backgroundColor: '#f1f1f1' }}>
 
 							<Card
-								title={i18n.t('connect')}
-								containerStyle={{ width: 500, marginTop: 30 }}
-							>
+								title={'Welcome to SEMA'}
+								titleStyle={{ fontSize: 26 }}
+								containerStyle={{ width: '40%', marginTop: 30 }}>
 
 								<Input
-									placeholder={i18n.t(
-										'username-or-email-placeholder'
-									)}
+									// placeholder={i18n.t(
+									// 	'username-or-email-placeholder'
+									// )}
 									label={i18n.t('username-or-email-placeholder')}
 									onChangeText={this.onChangeEmail.bind(this)}
-									leftIcon={
-										<Icon
-											name='md-mail'
-											size={24}
-											color='black'
-										/>
-									}
+									// leftIcon={
+									// 	<Icon
+									// 		name='md-mail'
+									// 		size={24}
+									// 		color='black'
+									// 	/>
+									// }
+									inputContainerStyle={[styles.inputText]}
 								/>
 
 								<Input
-									placeholder={i18n.t('password-placeholder')}
+									// placeholder={i18n.t('password-placeholder')}
 									label={i18n.t('password-placeholder')}
-									textContentType='password'
+									secureTextEntry={true}
 									onChangeText={this.onChangePassword.bind(this)}
-									leftIcon={
-										<Icon
-											name='md-compass'
-											size={24}
-											color='black'
-										/>
-									}
+									inputContainerStyle={[styles.inputText]}
 								/>
 
 
@@ -187,14 +182,8 @@ class Login extends Component {
 								</Picker>
 
 								<Button
-									icon={<Icon
-										name='md-mail'
-										size={24}
-										color='black'
-										style={{ marginRight: 10 }}
-									/>}
 									onPress={this.onConnection.bind(this)}
-									buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10 }}
+									buttonStyle={{ borderRadius: 8, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10, padding: 10 }}
 									title={i18n.t('connect')} />
 
 							</Card>
@@ -1106,13 +1095,13 @@ const styles = StyleSheet.create({
 	imgBackground: {
 		width: '100%',
 		height: '100%',
-		flex: 1
+		flex: 1,
 	},
 	container: {
 		flex: 1,
 		width: '100%',
 		height: '100%',
-		backgroundColor: '#fff'
+		backgroundColor: '#f1f1f1'
 	},
 
 	headerText: {
@@ -1131,6 +1120,16 @@ const styles = StyleSheet.create({
 		borderColor: '#2858a7',
 		backgroundColor: 'white'
 	},
+	inputText: {
+		fontSize: 22,
+		alignSelf: 'center',
+		borderWidth: 2,
+		borderRadius: 8,
+		borderColor: '#f1f1f1',
+		backgroundColor: '#f1f1f1',
+		margin: 5
+	},
+
 	buttonText: {
 		fontWeight: 'bold',
 		fontSize: 24,
@@ -1141,13 +1140,13 @@ const styles = StyleSheet.create({
 		paddingRight: 30
 		// paddingBottom:10
 	},
-	inputText: {
-		fontSize: inputFontHeight,
-		alignSelf: 'center',
-		backgroundColor: 'white',
-		width: inputTextWidth,
-		margin: marginTextInput
-	},
+	// inputText: {
+	// 	fontSize: inputFontHeight,
+	// 	alignSelf: 'center',
+	// 	backgroundColor: 'white',
+	// 	width: inputTextWidth,
+	// 	margin: marginTextInput
+	// },
 	labelText: {
 		fontSize: inputFontHeight,
 		alignSelf: 'flex-end',

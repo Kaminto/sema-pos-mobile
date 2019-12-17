@@ -162,7 +162,7 @@ class CustomerEdit extends Component {
 		// }
 		if (this.props.isEdit) {
 			this.setReminderIfExists(this.props.selectedCustomer);
-			 
+
 			CustomerRealm.updateCustomer(
 				this.props.selectedCustomer,
 				this.state.phoneNumber,
@@ -222,12 +222,6 @@ class CustomerEdit extends Component {
 
 		console.log(this.props);
 		console.log(this.state);
-		let salesChannelOption = this.salesChannels.map((s, i) => {
-			return <Picker.Item key={i} value={s.id} label={s.displayName} />
-		});
-		let customerTypesOption = this.customerTypes.map((s, i) => {
-			return <Picker.Item key={i} value={s.id} label={s.displayName} />
-		});
 		return (
 			<View style={{ flex: 1, backgroundColor: '#f1f1f1', justifyContent: 'center' }}>
 				<KeyboardAwareScrollView
@@ -661,7 +655,7 @@ class CustomerEdit extends Component {
 		}
 		if (this.props.isEdit) {
 			this.setReminderIfExists(this.props.selectedCustomer);
-		 
+
 			CustomerRealm.updateCustomer(
 				this.props.selectedCustomer,
 				this.phone.current.state.propertyText,
@@ -762,7 +756,7 @@ class CustomerEdit extends Component {
 		}
 		if (this.props.isEdit) {
 			this.setReminderIfExists(this.props.selectedCustomer);
-			 
+
 			CustomerRealm.updateCustomer(this.props.selectedCustomer,
 				this.phone.current.state.propertyText,
 				this.name.current.state.propertyText,
@@ -919,8 +913,8 @@ const styles = StyleSheet.create({
 		alignSelf: 'center',
 		borderWidth: 2,
 		borderRadius: 10,
-		borderColor: '#CCC',
-		backgroundColor: '#CCC',
+		borderColor: '#f1f1f1',
+		backgroundColor: '#f1f1f1',
 		margin: 5
 	},
 

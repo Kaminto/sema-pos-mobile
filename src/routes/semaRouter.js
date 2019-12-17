@@ -163,7 +163,7 @@ const ListCustomerStack = createStackNavigator({
                         }}>
                         {navigation.getParam('isCustomerSelected') && (
                             <Icon
-                                name='md-business'
+                                name='md-water'
                                 size={25}
                                 color="white"
                                 style={{
@@ -223,14 +223,16 @@ const ListCustomerStack = createStackNavigator({
                         {!navigation.getParam('isEdit') && (
                             <Text style={{
                                 fontWeight: 'bold',
-                                fontSize: 18
+								fontSize: 18,
+								color: 'white'
                             }}>New Customer</Text>
                         )}
 
                         {navigation.getParam('isEdit') && (
                             <Text style={{
                                 fontWeight: 'bold',
-                                fontSize: 18
+								fontSize: 18,
+								color: 'white'
                             }}>Edit Customer</Text>
                         )}
                     </View>
@@ -293,21 +295,6 @@ const SalesReportStack = createStackNavigator({
     },
 });
 
-const SalesLogStack = createStackNavigator({
-    SalesLog: {
-        screen: SalesLog,
-        navigationOptions: ({ navigation }) => ({
-            title: 'Sales Log',
-            headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
-            headerStyle: {
-                backgroundColor: '#00549C',
-            },
-            headerTintColor: '#fff',
-        }),
-    },
-});
-
-
 const InventoryStack = createStackNavigator({
     Inventory: {
         screen: InventoryReport,
@@ -367,13 +354,8 @@ const JibuDrawerNavigation = createDrawerNavigator({
         navigationOptions: {
             drawerLabel: 'Sales Reports',
         },
-    },
-    SalesLog: {
-        screen: SalesLogStack,
-        navigationOptions: {
-            drawerLabel: 'Sales Log',
-        },
-    },
+	},
+
     Inventory: {
         screen: InventoryStack,
         navigationOptions: {
@@ -386,7 +368,7 @@ const JibuDrawerNavigation = createDrawerNavigator({
             drawerLabel: 'Reminders',
         },
     },
-}, 
+},
 {
     contentOptions: {
         activeTintColor: '#e91e63',

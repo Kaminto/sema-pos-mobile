@@ -41,7 +41,7 @@ class InventoryEdit extends Component {
 								style={ [styles.inventoryInput, {flex:.5, paddingRight:40, marginRight:20 }]}
 								underlineColorAndroid='transparent'
 								onSubmitEditing = {() => this.props.okMethod(this.props.wastageName, this.state.inventoryQuantity)}
-								keyboardType = 'numeric'
+								keyboardType = 'decimal-pad'
 								onChangeText = {this.onChangeText.bind(this)}
 								value = {this.state.inventoryQuantity}
 								ref = {this.quantityInput}
@@ -138,17 +138,18 @@ class InventoryReport extends Component {
 								keyExtractor={item => item.wastageName}
 								initialNumToRender={50}
 							/>
-							<View style={[{ flex: .6 , padding: 10}]}>
-								<View style={{ flex: 1, flexDirection: 'row',  alignItems:"center" }}>
-									<Text style={[styles.totalItem, { flex: .5 }]}>{i18n.t('previous-meter')}</Text>
-									<Text style={[styles.totalItem, { flex: .5 }]}>{i18n.t('current-meter')}</Text>
+							<View style={[{ flex: .6 , padding: 5}]}>
+								<View style={{ flex: .3, flexDirection: 'row',  alignItems:"center" }}>
+									<Text style={[styles.totalItem, { flex: .4 }]}>{i18n.t('previous-meter')}</Text>
+									<Text style={[styles.rowItemCenter, { flex: .6, padding: 5, backgroundColor: '#CCC' }]}>{this.getInventoryMeterForDisplay(false)}</Text>
+
 								</View>
-								<View style={[{ flex: 1, flexDirection: 'row', alignItems:"center" }]}>
-									<Text style={[styles.rowItemCenter, { flex: .5 }]}>{this.getInventoryMeterForDisplay(false)}</Text>
+								<View style={[{ flex: .3, flexDirection: 'row', alignItems:"center" }]}>
+								    <Text style={[styles.totalItem, { flex: .4 }]}>{i18n.t('current-meter')}</Text>
+
 									{this.getCurrentMeter()}
 
 									<InventoryEdit
-									    style = {{ flex: .5 }}
 										type = "currentMeter"
 										visible = {this.state.currentMeterVisible}
 										wastageName={""}
@@ -170,24 +171,26 @@ class InventoryReport extends Component {
 						marginBottom: 10,
 					}}>
 						<View style={{ flex: 1,
-									   height: 90,
 										borderRadius: 10,
 										flexDirection: 'row',
 										marginTop: 10,
-										 backgroundColor: '#2462a0',
+										//  backgroundColor: '#2462a0',
 										 overflow: 'hidden',
 										 color: '#fff' }}>
-								<View style={{ height: 90, flex: .33, color: '#fff' }} >
-									<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('output').toUpperCase()} ({i18n.t('sales')} + {i18n.t('inventory')})</Text>
-									<Text style={[styles.totalItem, { flex: .6 }]}>{this.getOutput()}</Text>
+								<View style={{ flex: .33, color: '#fff' , padding: 10 }} >
+									<Text style={[styles.totalLabel, { flex: .2, fontWeight:'bold' }]}>{i18n.t('output').toUpperCase()}</Text>
+									<Text style={[styles.totalLabel, { flex: .2 }]}> ({i18n.t('sales')} + {i18n.t('inventory')})</Text>
+									<Text style={[styles.totalItem, { flex: .6, fontSize:28 }]}>{this.getOutput()}</Text>
 								</View>
-								<View style={{ height: 90, flex: .33, color: '#fff' }} >
-									<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-production').toUpperCase()}</Text>
-									<Text style={[styles.totalItem, { flex: .6 }]}>{this.getTotalProduction()}</Text>
+								<View style={{  flex: .33, color: '#fff', padding: 10 }} >
+									<Text style={[styles.totalLabel, { flex: .2, fontWeight:'bold' }]}>{i18n.t('total-production').toUpperCase()}</Text>
+									<Text style={[styles.totalLabel, { flex: .2 }]}> (Current Meter - Previous Meter)</Text>
+									<Text style={[styles.totalItem, { flex: .6, fontSize:28 }]}>{this.getTotalProduction()}</Text>
 								</View>
-								<View style={{ height: 90, flex: .33, color: '#fff' }} >
-									<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('wastage').toUpperCase()}</Text>
-									<Text style={[styles.totalItem, { flex: .6 }]}>{this.getWastage()}</Text>
+								<View style={{  flex: .33, color: '#fff', padding: 10 }} >
+									<Text style={[styles.totalLabel, { flex: .2, fontWeight:'bold' }]}>{i18n.t('wastage').toUpperCase()}</Text>
+									<Text style={[styles.totalLabel, { flex: .2 }]}> (Production - Output) %</Text>
+									<Text style={[styles.totalItem, { flex: .6, fontSize:28 }]}>{this.getWastage()}</Text>
 								</View>
 						</View>
 					</View>
@@ -263,9 +266,9 @@ class InventoryReport extends Component {
 				{/* <View style={[{ flex: .7 }]}>
 					<Text style={[styles.rowItemCenter]}>{this.getItemLitersPerSku(item)}</Text>
 				</View> */}
-				<View style={[{ flex: .7 }]}>
+				{/* <View style={[{ flex: .7 }]}>
 					<Text style={[styles.rowItemCenter]}>{this.getItemTotalLiters(item)}</Text>
-				</View>
+				</View> */}
 				<View style ={[{width:20}]}/>
 
 				{/* <View style={[{ flex: .7 }]}>
@@ -333,17 +336,18 @@ class InventoryReport extends Component {
 			<View
 				style={[{ flex: 1, flexDirection: 'row', height: 50, alignItems: 'center' }, styles.headerBackground]}>
 				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.headerItem, styles.leftMargin]}>SKU</Text>
+					<Text style={[styles.headerItem, styles.leftMargin]}>PRODUCT</Text>
 				</View>
 				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.headerItemCenter]}>{i18n.t('quantity')}</Text>
+					{/* <Text style={[styles.headerItemCenter]}>{i18n.t('quantity')}</Text> */}
+					<Text style={[styles.headerItemCenter]}>QUANTITY SOLD</Text>
 				</View>
-				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.headerItemCenter]}>{i18n.t('total-liters')}</Text>
-				</View>
+				{/* <View style={[{ flex: 1 }]}>
+					<Text style={[styles.headerItemCenter]}>{i18n.t('total-liters').toUpperCase()}</Text>
+				</View> */}
 				<View style ={[{width:20}]}/>
 				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.headerItemCenter]}>{i18n.t('current')}</Text>
+					<Text style={[styles.headerItemCenter]}>{i18n.t('closing-stock').toUpperCase()}</Text>
 				</View>
 			</View>
 		);
@@ -365,7 +369,7 @@ class InventoryReport extends Component {
 					style={styles.currentInventory}
 					onPress= {() => this.displayEditCurrentSku( item.wastageName )}
 					underlayColor='#18376A'>
-					<Text style={[styles.currentInventoryText]}>{ this.getInventorySkuForDisplay(true, item)}</Text>
+					<Text style={[styles.currentInventoryText, {padding: 5}]}>{ this.getInventorySkuForDisplay(true, item)}</Text>
 				</TouchableHighlight>
 			</View>
 		);
@@ -440,12 +444,12 @@ class InventoryReport extends Component {
 
 	getCurrentMeter( value ){
 		return (
-			<View style={[{ flex: .33}]}>
+			<View style={[{ flex: .6}]}>
 				<TouchableHighlight
 					style={styles.currentInventory}
 					onPress={() => {this.displayCurrentMeter()}}
 					underlayColor='#18376A'>
-					<Text style={[styles.currentInventoryText]}>{this.getInventoryMeterForDisplay(true)}</Text>
+					<Text style={[styles.currentInventoryText, {padding: 5}]}>{this.getInventoryMeterForDisplay(true)}</Text>
 				</TouchableHighlight>
 			</View>
 		);
