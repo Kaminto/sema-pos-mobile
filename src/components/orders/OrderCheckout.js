@@ -179,13 +179,13 @@ class OrderCheckout extends Component {
 					<View style={{ flex: 0.5, justifyContent: 'center' }}>
 						<TouchableHighlight underlayColor='#c0c0c0'
 							onPress={() => this.onPay()}>
-							<Text style={[{ paddingTop: 20, paddingBottom: 20, textAlign: 'center' }, styles.buttonText]}>{i18n.t('pay')}</Text>
+							<Text style={[{ paddingTop: 10, paddingBottom: 10, textAlign: 'center' }, styles.buttonText]}>{i18n.t('pay')}</Text>
 						</TouchableHighlight>
 					</View>
 					<View style={{ flex: 0.5, justifyContent: 'center' }}>
 						<TouchableHighlight underlayColor='#c0c0c0'
 							onPress={() => this.onSaveOrder()}>
-							<Text style={[{ paddingTop: 20, paddingBottom: 20, textAlign: 'center' }, styles.buttonText]}>{i18n.t('save-order')}</Text>
+							<Text style={[{ paddingTop: 10, paddingBottom: 10, textAlign: 'center' }, styles.buttonText]}>{i18n.t('save-order')}</Text>
 						</TouchableHighlight>
 					</View>
 				</View>
@@ -644,7 +644,7 @@ class OrderCheckout extends Component {
 		let receipt = null;
 		let priceTotal = 0;
 		console.log('payment', this.props.payment);
-		
+
 		if (!this.isPayoffOnly()) {
 			// Assumes that there is at least one product
 			let receiptDate = this.state.receiptDate

@@ -10,6 +10,7 @@ import Modal from 'react-native-modalbox';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import ToggleSwitch from 'toggle-switch-react-native';
+import  {Input} from 'react-native-elements';
 
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 const { height, width } = Dimensions.get('window');
@@ -76,6 +77,13 @@ class OrderItems extends Component {
 	}
 
 
+	onChangeQuantity = text => {
+		this.setState({
+			address: text
+		});
+	};
+
+
 	render() {
 
 		const state = this.state;
@@ -97,17 +105,22 @@ class OrderItems extends Component {
 				/>
 
 
-
-
-				<Modal style={[styles.modal, styles.modal3]} coverScreen={true} position={"center"} ref={"modal6"} isDisabled={this.state.isDisabled}>
-
+				<Modal style={[styles.modal, styles.modal3]}
+						coverScreen={true}
+						position={"center"}
+						ref={"modal6"} i
+						sDisabled={this.state.isDisabled}>
+				   <View style={{ flex:1 }}>
+				   {/* <Text>{this.state.selectedItem.product.name}</Text> */}
 					<View
 						style={{
 							justifyContent: 'flex-end',
 							flexDirection: 'row',
 							right: 100,
 						}}>
+
 						{this.getCancelButton()}
+					</View>
 					</View>
 
 
@@ -116,7 +129,7 @@ class OrderItems extends Component {
 
 						<View
 							style={{
-								height: 1,								
+								height: 1,
 							marginTop: 10,
 							marginBottom: 10,
 								backgroundColor: '#ddd',
@@ -135,9 +148,9 @@ class OrderItems extends Component {
 								<TouchableHighlight style={{ flex: 1 }}
 									onPress={() => this.counterChangedHandler('inc')}>
 									{/* <Text style={[{ textAlign: 'center' }, styles.baseItem, styles.leftMargin]}>-</Text> */}
-									
+
 									<Icon
-										size={50} 
+										size={50}
 										style={[{ textAlign: 'center' },styles.leftMargin]}
 										name="md-remove-circle-outline"
 										color="black"
@@ -146,13 +159,19 @@ class OrderItems extends Component {
 
 							</View>
 							<View style={{ flex: 1, height: 50 }} >
-								<Text style={[styles.baseItem]}>{this.state.selectedItem.quantity}@{this.getItemPrice(this.state.selectedItem.product)}</Text>
+								<Input
+								    inputStyle={{ flex:.4 }}
+								    placeholder={'Quantity'}
+									value={this.state.selectedItem.quantity}
+									keyboardType="number-pad"
+									onChangeText={this.onChangeQuantity.bind(this)}
+								/>
 							</View>
 							<View style={{ flex: 1, height: 50 }}>
 								<TouchableHighlight style={{ flex: 1 }}
 									onPress={() => this.counterChangedHandler('dec')}>
 									<Icon
-										size={50} 
+										size={50}
 										name="md-add-circle-outline"
 										color="black"
 									/>
@@ -188,12 +207,12 @@ class OrderItems extends Component {
 
 						<View style={{ flex: 1, flexDirection: 'row' }}>
 							<View style={{ flex: 1, height: 50 }}>
-								<Text style={[{ textAlign: 'center' }, styles.baseItem]}>Discounts (Show all discount applicable to this store)</Text>
+								<Text style={[{ textAlign: 'center' }, styles.baseItem]}>Discounts</Text>
 							</View>
 						</View>
 
 
-						<View style={{ flex: 1, flexDirection: 'row' }}>
+						<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
 							<View style={{ flex: 1, height: 50 }}>
 								<Text style={[{ marginLeft: 12 }, styles.baseItem]}>Kajibu</Text>
 							</View>
@@ -212,7 +231,7 @@ class OrderItems extends Component {
 							</View>
 						</View>
 
-						<View style={{ flex: 1, flexDirection: 'row' }}>
+						<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
 							<View style={{ flex: 1, height: 50 }}>
 								<Text style={[{ marginLeft: 12 }, styles.baseItem]}>20L Tap 10th Purchase</Text>
 							</View>
@@ -232,7 +251,7 @@ class OrderItems extends Component {
 							</View>
 						</View>
 
-						<View style={{ flex: 1, flexDirection: 'row' }}>
+						<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
 							<View style={{ flex: 1, height: 50 }}>
 								<Text style={[{
 									marginLeft: 12,
@@ -285,8 +304,6 @@ class OrderItems extends Component {
 							}}
 						/>
 
-
-
 					</ScrollView>
 
 				</Modal>
@@ -304,7 +321,7 @@ class OrderItems extends Component {
 		return (
 			<TouchableHighlight onPress={() => this.onCancelOrder()}>
 				<Icon
-					size={50}
+					size={40}
 					name="md-close"
 					color="black"
 				/>
@@ -339,14 +356,16 @@ class OrderItems extends Component {
 				</View>
 				<View style={[{ flex: 1 }]}>
 						<Text style={[styles.baseItem]}>{item.quantity}</Text>
-					
+
 				</View>
 				<View style={[{ flex: 1 }]}>
-					<Text numberOfLines={1} style={[styles.baseItem]}>{(item.quantity * this.getItemPrice(item.product)).toFixed(2)}</Text>
+					<Text numberOfLines={1} style={[styles.baseItem]}>
+						{(item.quantity * this.getItemPrice(item.product)).toFixed(2)}</Text>
 				</View>
 			</View>
 		);
 	};
+
 	showHeader = () => {
 		return (
 			<View style={[{ flex: 1, flexDirection: 'row' }, styles.headerBackground]}>
@@ -404,10 +423,18 @@ class OrderItems extends Component {
 					this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, this.state.accumulator, unitPrice);
 				}
 				break;
+			case 'qty':
+				if (this.state.accumulator === 0) {
+					this.refs.modal6.close();
+					this.props.orderActions.RemoveProductFromOrder(this.state.selectedItem.product, unitPrice);
+				} else {
+					this.setState((prevState) => { return { accumulator: prevState.accumulator + 1 } })
+
+					this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, this.state.accumulator, unitPrice);
+				}
+				break;
 		}
 	}
-
-
 
 	onSub = () => {
 		this.setState({ isQuantityVisible: false });
@@ -461,6 +488,7 @@ function mapStateToProps(state, props) {
 		channel: state.orderReducer.channel
 	};
 }
+
 function mapDispatchToProps(dispatch) {
 	return {
 		orderActions: bindActionCreators(OrderActions, dispatch),

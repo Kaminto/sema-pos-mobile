@@ -222,11 +222,7 @@ class CustomerDetails extends Component {
 
 					<View style={{ flex: 2, backgroundColor: '#fff' }}>
 						<ScrollView>
-							<TransactionDetail
-							    item={this.state.selected}
-								products={this.props.products}
-								receiptActions={this.props.receiptActions}
-								remoteReceipts={this.props.remoteReceipts} />
+							{this.getTransactionDetail()}
 						</ScrollView>
 					</View>
 				</View>
@@ -292,25 +288,45 @@ class CustomerDetails extends Component {
 		return null;
 	}
 
+	getTransactionDetail() {
+		if (this.state.selected) {
+			return (
+				<TransactionDetail
+							    item={this.state.selected}
+								products={this.props.products}
+								receiptActions={this.props.receiptActions}
+								remoteReceipts={this.props.remoteReceipts}
+				/>
+			);
+		} else {
+			return null;
+		}
+	}
+
 	closePaymentModal = () => {
 		this.refs.modal6.close();
 	};
 
 	totalCredit = () => {
-
-		return this.props.topups.reduce((accumulator, currentValue) => {
-			return ({ topup: Number(accumulator.topup) + Number(currentValue.topup) });
-		}), topup;
+		// if(this.props.topups) {
+			return this.props.topups.reduce((accumulator, currentValue) => {
+				return ({ topup: Number(accumulator.topup) + Number(currentValue.topup) });
+			}).topup;
+	//    } else {
+	// 	   return null;
+	//    }
 
 
 	}
 
 	balanceCredit = () => {
-
+		// if(this.props.topups) {
 		return this.props.topups.reduce((accumulator, currentValue) => {
 			return ({ balance: Number(accumulator.balance) + Number(currentValue.balance) });
-		}), balance;
-
+		}).balance;
+		// } else {
+		// 	return null;
+		// }
 	}
 
 	onChangeTopup = topup => {
@@ -471,9 +487,6 @@ class CustomerDetails extends Component {
 
 	}
 
-
-
-
 	renderSeparator() {
 		return (
 			<View
@@ -597,8 +610,6 @@ class CustomerDetails extends Component {
 		);
 	}
 
-
-
 	showHeader = () => {
 		console.log('Displaying header');
 		return (
@@ -633,14 +644,12 @@ class CustomerDetails extends Component {
 
 }
 
-
 class SelectedCustomerDetails extends React.Component {
 	render() {
 		return (
 			<View style={styles.commandBarContainer}>
 				<View style={{ flexDirection: 'row', height: 40 }}>
 					<Text style={styles.selectedCustomerText}>
-					    {i18n.t('account-name')} :
 						{this.getName()}
 					</Text>
 					<Text style={styles.selectedCustomerText}>
@@ -649,7 +658,6 @@ class SelectedCustomerDetails extends React.Component {
 				</View>
 				<View style={{ flexDirection: 'row', height: 40 }}>
 					<Text style={styles.selectedCustomerText}>
-					{i18n.t('telephone-number')} :
 					 {this.getPhone()}
 					</Text>
 					<Text style={styles.selectedCustomerText}>
@@ -755,21 +763,20 @@ class TransactionDetail extends Component {
 	}
 
 	render() {
-
-		const receiptLineItems = this.props.item.receiptLineItems.map((lineItem, idx) => {
-			return (
-					<ReceiptLineItem
-						receiptActions={this.props.receiptActions}
-						remoteReceipts={this.props.remoteReceipts}
-						item={lineItem}
-						key={lineItem.id}
-						lineItemIndex={idx}
-						products={this.props.products}
-						handleUpdate={this.handleUpdate.bind(this)}
-						receiptIndex={this.props.item.index}
-					/>
-			);
-		});
+			const receiptLineItems = this.props.item.receiptLineItems.map((lineItem, idx) => {
+					return (
+							<ReceiptLineItem
+								receiptActions={this.props.receiptActions}
+								remoteReceipts={this.props.remoteReceipts}
+								item={lineItem}
+								key={lineItem.id}
+								lineItemIndex={idx}
+								products={this.props.products}
+								handleUpdate={this.handleUpdate.bind(this)}
+								receiptIndex={this.props.item.index}
+							/>
+					);
+				});
 
 		return (
 			<View style={{ padding: 15 }}>

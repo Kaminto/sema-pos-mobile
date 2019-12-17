@@ -110,20 +110,25 @@ class TransactionDetail extends Component {
 
 	render() {
 
-		const receiptLineItems = this.props.item.receiptLineItems.map((lineItem, idx) => {
-			return (
-					<ReceiptLineItem
-						receiptActions={this.props.receiptActions}
-						remoteReceipts={this.props.remoteReceipts}
-						item={lineItem}
-						key={lineItem.id}
-						lineItemIndex={idx}
-						products={this.props.products}
-						handleUpdate={this.handleUpdate.bind(this)}
-						receiptIndex={this.props.item.index}
-					/>
-			);
-		});
+		var receiptLineItems;
+		if(this.props.item.receiptLineItems !== undefined) {
+			receiptLineItems = this.props.item.receiptLineItems.map((lineItem, idx) => {
+				return (
+						<ReceiptLineItem
+							receiptActions={this.props.receiptActions}
+							remoteReceipts={this.props.remoteReceipts}
+							item={lineItem}
+							key={lineItem.id}
+							lineItemIndex={idx}
+							products={this.props.products}
+							handleUpdate={this.handleUpdate.bind(this)}
+							receiptIndex={this.props.item.index}
+						/>
+				);
+			});
+		} else {
+			receiptLineItems = {};
+		}
 
 		return (
 			<View style={{ padding: 15 }}>
@@ -324,6 +329,21 @@ class Transactions extends Component {
 		return true;
 	}
 
+	getTransactionDetail() {
+		if (this.state.selected) {
+			return (
+				<TransactionDetail
+							    item={this.state.selected}
+								products={this.props.products}
+								receiptActions={this.props.receiptActions}
+								remoteReceipts={this.props.remoteReceipts}
+				/>
+			);
+		} else {
+			return null;
+		}
+	}
+
 	render() {
 
         console.log('props -', this.props);
@@ -341,11 +361,7 @@ class Transactions extends Component {
 
 					<View style={{ flex: 2, backgroundColor: '#fff' }}>
 						<ScrollView>
-							<TransactionDetail
-							    item={this.state.selected}
-								products={this.props.products}
-								receiptActions={this.props.receiptActions}
-								remoteReceipts={this.props.remoteReceipts} />
+							{this.getTransactionDetail()}
 						</ScrollView>
 					</View>
 				</View>
