@@ -9,8 +9,7 @@ import InventroyRealm from './inventory/inventory.operations';
 import CreditRealm from './credit/credit.operations';
 import realm from './init';
 
-// var Realm = require('realm');
-// let realm;
+ 
 
 const uuidv1 = require('uuid/v1');
 
