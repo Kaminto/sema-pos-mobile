@@ -4,8 +4,9 @@ export const CUSTOMERS_SET = 'CUSTOMERS_SET';
 export const CUSTOMERS_SEARCH = 'CUSTOMERS_SEARCH';
 export const CUSTOMER_EDIT = 'CUSTOMER_EDIT';
 
+
 export function CustomerSelected(customer) {
-	// console.log("CustomerSelected - action");
+	console.log("CustomerSelected - action", customer);
 	const data = customer;
 	return (dispatch) => {
 		dispatch({ type: CUSTOMER_SELECTED, data: data });

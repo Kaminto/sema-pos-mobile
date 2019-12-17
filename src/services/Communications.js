@@ -30,6 +30,7 @@ class Communications {
 	}
 
 	login() {
+		console.log("loginin");
 		let options = {
 			method: 'POST',
 			headers: {

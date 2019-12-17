@@ -96,12 +96,12 @@ class PhoneProperty extends Component {
 	}
 	onChangeText = text => {
 		if (this.props.reference === 'customerFrequency' ||
-		this.props.reference === 'customerNumber' || this.props.reference === 'secondPhoneNumber') {
+			this.props.reference === 'customerNumber' || this.props.reference === 'secondPhoneNumber') {
 			if (text) {
 				// if (/^\d+$/.test(text)) {
-					this.setState({
-						propertyText: text
-					});
+				this.setState({
+					propertyText: text
+				});
 				// } else {
 				// 	alert('Digits only please');
 				// }
@@ -121,7 +121,8 @@ class CustomerEdit extends Component {
 		super(props);
 		this.state = {
 			isEditInProgress: false,
-			salescid: 0 };
+			salescid: 0
+		};
 		this.saleschannelid = 0;
 		this.phone = React.createRef();
 		this.secondPhoneNumber = React.createRef();
@@ -135,11 +136,13 @@ class CustomerEdit extends Component {
 		this.channelOptions = this.salesChannels.map(channel => {
 			return channel.displayName;
 		});
+		//this.channelOptions = ['displayName', 'displayName2', 'displayName3'];
 
 		this.customerTypes = CustomerTypeRealm.getCustomerTypesForDisplay(this.saleschannelid);
 		this.customerTypeOptions = this.customerTypes.map(customerType => {
 			   return customerType.displayName;
 		});
+		//this.customerTypeOptions = ['1displayName', '2displayName2', '3displayName3'];
 		this.customerTypesIndicies = this.customerTypes.map(customerType => {
 			return customerType.id;
 		});
@@ -381,7 +384,7 @@ class CustomerEdit extends Component {
 			} else {
 				return '';
 			}
-		} catch (error) {}
+		} catch (error) { }
 	}
 
 	getName(me) {
@@ -502,7 +505,7 @@ class CustomerEdit extends Component {
 		return test;
 	}
 
-	changeCustomerTypeList(value){
+	changeCustomerTypeList(value) {
 
 			let tindex = 0;
 			if(value === 'Direct') {
@@ -654,7 +657,7 @@ class CustomerEdit extends Component {
 				this.customerChannel.current.state.selectedIndex
 			].id;
 		}
-
+ 
 		if (this.customerType.current.state.selectedIndex === -1) {
 			this.customerType.current.show();
 			return;
@@ -800,7 +803,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white',
 		width: 195,
 		margin: 5,
-		paddingRight:5
+		paddingRight: 5
 	},
 	dropdownText: {
 		fontSize: 24

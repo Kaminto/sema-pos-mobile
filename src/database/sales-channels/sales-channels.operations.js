@@ -1,5 +1,5 @@
 import realm from '../init';
-
+import { capitalizeWord } from '../../services/Utilities';
 class SalesChannelRealm {
     constructor() {
         this.salesChannels = [];

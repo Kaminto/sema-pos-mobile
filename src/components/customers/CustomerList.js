@@ -120,6 +120,7 @@ class CustomerList extends Component {
 	};
 
 	filterItems = data => {
+		console.log("here listne", this.state.searchString)
 		let filteredItems = data.filter(item => {
 			let salesChannel = this._getSalesChannelName(
 				item.salesChannelId,
@@ -249,7 +250,7 @@ class CustomerList extends Component {
 
 	onLongPressItem = (item, event) => {
 		this.setState({ refresh: !this.state.refresh });
-		let actions = [i18n.t('edit'), i18n.t('delete')];
+		let actions = [i18n.t('edit'), i18n.t('delete'), i18n.t('details')];
 		this.props.customerActions.CustomerSelected(item);
 		// if (!this._isAnonymousCustomer(item)) {
 			if (event && event.target) {
@@ -268,6 +269,8 @@ class CustomerList extends Component {
 			this.props.toolbarActions.ShowScreen('editCustomer');
 		} else if (index === 1) {
 			this.deleteCustomer();
+		} else if (index === 2) {			
+		this.props.toolbarActions.ShowScreen("customerDetails");
 		}
 	}
 	deleteCustomer() {
@@ -324,7 +327,7 @@ class CustomerList extends Component {
 
 	onPressItem = item => {
 		console.log('_onPressItem');
-		this.props.customerActions.CustomerSelected(item);
+		this.props.customerActions.CustomerSelected(item);		
 		// this.setState({ selectedCustomer:item });
 		this.setState({ refresh: !this.state.refresh });
 		Events.trigger('onOrder', { customer: item });
