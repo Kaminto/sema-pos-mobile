@@ -13,6 +13,8 @@ import i18n from "../../app/i18n";
 import Icon from 'react-native-vector-icons/Ionicons';
 import PosStorage from "../../database/PosStorage";
 import CustomerTypeRealm from '../../database/customer-types/customer-types.operations';
+import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
+import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import * as Utilities from "../../services/Utilities";
 const uuidv1 = require('uuid/v1');
 import Events from "react-native-simple-events";
@@ -494,12 +496,12 @@ class OrderCheckout extends Component {
 	};
 
 	_getItemMrp = item => {
-		let salesChannel = PosStorage.getSalesChannelFromName(
+		let salesChannel = SalesChannelRealm.getSalesChannelFromName(
 			this.props.channel.salesChannel
 		);
 		if (salesChannel) {
-			let productMrp = PosStorage.getProductMrps()[
-				PosStorage.getProductMrpKeyFromIds(
+			let productMrp = ProductMRPRealm.getFilteredProductMRP()[
+				ProductMRPRealm.getgProductMrpKeyFromIds(
 					item.productId,
 					salesChannel.id
 				)
@@ -873,7 +875,7 @@ class OrderCheckout extends Component {
 	}
 
 	_isAnonymousCustomer(customer) {
-		return PosStorage.getCustomerTypeByName('anonymous').id ==
+		return CustomerTypeRealm.getCustomerTypeByName('anonymous').id ==
 			customer.customerTypeId
 			? true
 			: false;
@@ -965,12 +967,12 @@ class OrderCheckout extends Component {
 	};
 
 	_getItemMrp = item => {
-		let salesChannel = PosStorage.getSalesChannelFromName(
+		let salesChannel = SalesChannelRealm.getSalesChannelFromName(
 			this.props.channel.salesChannel
 		);
 		if (salesChannel) {
-			let productMrp = PosStorage.getProductMrps()[
-				PosStorage.getProductMrpKeyFromIds(
+			let productMrp = ProductMRPRealm.getFilteredProductMRP()[
+				ProductMRPRealm.getProductMrpKeyFromIds(
 					item.productId,
 					salesChannel.id
 				)
@@ -1261,9 +1263,9 @@ class OrderCheckout extends Component {
 	};
 
 	getItemPrice = (product) => {
-		let salesChannel = PosStorage.getSalesChannelFromName(this.props.channel.salesChannel);
+		let salesChannel = SalesChannelRealm.getSalesChannelFromName(this.props.channel.salesChannel);
 		if (salesChannel) {
-			let productMrp = PosStorage.getProductMrps()[PosStorage.getProductMrpKeyFromIds(product.productId, salesChannel.id)];
+			let productMrp = ProductMRPRealm.getFilteredProductMRP()[ProductMRPRealm.getProductMrpKeyFromIds(product.productId, salesChannel.id)];
 			if (productMrp) {
 				return productMrp.priceAmount;
 			}

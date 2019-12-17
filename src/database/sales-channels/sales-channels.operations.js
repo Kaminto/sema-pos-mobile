@@ -17,7 +17,7 @@ class SalesChannelRealm {
  
  
     getSalesChannels() {
-        return this.salesChannels =Object.values(JSON.parse(JSON.stringify(realm.objects('SalesChannel'))));
+        return this.salesChannels = Object.values(JSON.parse(JSON.stringify(realm.objects('SalesChannel'))));
     }
 
     getSalesChannelsForDisplay() {
@@ -50,6 +50,14 @@ class SalesChannelRealm {
         return date = year + '-' + month + '-' + day;
     }
 
+    getSalesChannelFromName(name) {
+		for (let i = 0; i < this.salesChannels.length; i++) {
+			if (this.salesChannels[i].name === name) {
+				return this.salesChannels[i];
+			}
+		}
+		return null;
+	}
  
     createManySalesChannel(salesChannels) {
         console.log('salesChannels', salesChannels)
