@@ -140,12 +140,16 @@ class InventoryReport extends Component {
 							/>
 							<View style={[{ flex: .6 , padding: 5}]}>
 								<View style={{ flex: .3, flexDirection: 'row',  alignItems:"center" }}>
-									<Text style={[styles.totalItem, { flex: .4 }]}>{i18n.t('previous-meter')}</Text>
-									<Text style={[styles.rowItemCenter, { flex: .6, padding: 5, backgroundColor: '#CCC' }]}>{this.getInventoryMeterForDisplay(false)}</Text>
+									<Text style={[styles.totalItem, { flex: .45 }]}>{i18n.t('previous-meter')}</Text>
+									<Text style={[styles.rowItemCenter, { flex: .55,
+										borderRadius: 5,
+										fontSize: 25,
+										fontWeight: 'bold',
+										backgroundColor: '#CCC' }]}>{this.getInventoryMeterForDisplay(false)}</Text>
 
 								</View>
 								<View style={[{ flex: .3, flexDirection: 'row', alignItems:"center" }]}>
-								    <Text style={[styles.totalItem, { flex: .4 }]}>{i18n.t('current-meter')}</Text>
+								    <Text style={[styles.totalItem, { flex: .45 }]}>{i18n.t('current-meter')}</Text>
 
 									{this.getCurrentMeter()}
 
@@ -165,7 +169,9 @@ class InventoryReport extends Component {
 
 					<View style={{
 						flex: .3,
-						backgroundColor: '#f1f1f1',
+						backgroundColor: '#2462a0',
+						color: '#fff',
+						borderRadius: 8,
 						marginLeft: 10,
 						marginRight: 10,
 						marginBottom: 10,
@@ -174,23 +180,22 @@ class InventoryReport extends Component {
 										borderRadius: 10,
 										flexDirection: 'row',
 										marginTop: 10,
-										//  backgroundColor: '#2462a0',
 										 overflow: 'hidden',
 										 color: '#fff' }}>
 								<View style={{ flex: .33, color: '#fff' , padding: 10 }} >
-									<Text style={[styles.totalLabel, { flex: .2, fontWeight:'bold' }]}>{i18n.t('output').toUpperCase()}</Text>
-									<Text style={[styles.totalLabel, { flex: .2 }]}> ({i18n.t('sales')} + {i18n.t('inventory')})</Text>
-									<Text style={[styles.totalItem, { flex: .6, fontSize:28 }]}>{this.getOutput()}</Text>
+									<Text style={[styles.totalLabel, { flex: .2, fontWeight:'bold', color: '#fff' }]}>{i18n.t('output').toUpperCase()}</Text>
+									<Text style={[styles.totalLabel, { flex: .2, color: '#fff' }]}> ({i18n.t('sales')} + {i18n.t('inventory')})</Text>
+									<Text style={[styles.totalItem, { flex: .6, fontSize:28, color: '#fff' }]}>{this.getOutput()}</Text>
 								</View>
 								<View style={{  flex: .33, color: '#fff', padding: 10 }} >
-									<Text style={[styles.totalLabel, { flex: .2, fontWeight:'bold' }]}>{i18n.t('total-production').toUpperCase()}</Text>
-									<Text style={[styles.totalLabel, { flex: .2 }]}> (Current Meter - Previous Meter)</Text>
-									<Text style={[styles.totalItem, { flex: .6, fontSize:28 }]}>{this.getTotalProduction()}</Text>
+									<Text style={[styles.totalLabel, { flex: .2, fontWeight:'bold', color: '#fff' }]}>{i18n.t('total-production').toUpperCase()}</Text>
+									<Text style={[styles.totalLabel, { flex: .2, color: '#fff' }]}> (Current Meter - Previous Meter)</Text>
+									<Text style={[styles.totalItem, { flex: .6, fontSize:28 , color: '#fff'}]}>{this.getTotalProduction()}</Text>
 								</View>
 								<View style={{  flex: .33, color: '#fff', padding: 10 }} >
-									<Text style={[styles.totalLabel, { flex: .2, fontWeight:'bold' }]}>{i18n.t('wastage').toUpperCase()}</Text>
-									<Text style={[styles.totalLabel, { flex: .2 }]}> (Production - Output) %</Text>
-									<Text style={[styles.totalItem, { flex: .6, fontSize:28 }]}>{this.getWastage()}</Text>
+									<Text style={[styles.totalLabel, { flex: .2, fontWeight:'bold', color: '#fff' }]}>{i18n.t('wastage').toUpperCase()}</Text>
+									<Text style={[styles.totalLabel, { flex: .2, color: '#fff' }]}> (Production - Output) %</Text>
+									<Text style={[styles.totalItem, { flex: .6, fontSize:28, color: '#fff' }]}>{this.getWastage()}</Text>
 								</View>
 						</View>
 					</View>
@@ -449,7 +454,7 @@ class InventoryReport extends Component {
 					style={styles.currentInventory}
 					onPress={() => {this.displayCurrentMeter()}}
 					underlayColor='#18376A'>
-					<Text style={[styles.currentInventoryText, {padding: 5}]}>{this.getInventoryMeterForDisplay(true)}</Text>
+					<Text style={[styles.currentInventoryText, {padding: 5, fontWeight: 'bold', fontSize: 25}]}>{this.getInventoryMeterForDisplay(true)}</Text>
 				</TouchableHighlight>
 			</View>
 		);

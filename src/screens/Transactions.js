@@ -332,22 +332,6 @@ class Transactions extends Component {
 	getTransactionDetail() {
 		if (this.state.selected) {
 			return (
-				<TransactionDetail
-							    item={this.state.selected}
-								products={this.props.products}
-								receiptActions={this.props.receiptActions}
-								remoteReceipts={this.props.remoteReceipts}
-				/>
-			);
-		} else {
-			return null;
-		}
-	}
-
-	render() {
-
-        console.log('props -', this.props);
-			return (
 				<View style={{ flex: 1, flexDirection: 'row' }}>
                     <View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 4, borderRightColor: '#CCC' }}>
 						<FlatList
@@ -361,9 +345,31 @@ class Transactions extends Component {
 
 					<View style={{ flex: 2, backgroundColor: '#fff' }}>
 						<ScrollView>
-							{this.getTransactionDetail()}
+						<TransactionDetail
+							    item={this.state.selected}
+								products={this.props.products}
+								receiptActions={this.props.receiptActions}
+								remoteReceipts={this.props.remoteReceipts}
+							/>
 						</ScrollView>
 					</View>
+				</View>
+			);
+		} else {
+			return (
+				<View style={{ flex: 1, flexDirection: 'row' }}>
+					<Text style={{ fontSize: 20, fontWeight: 'bold', alignContent:"center", justifyContent:"center" }}>Record this customers sales.</Text>
+				</View>
+			);
+		}
+	}
+
+	render() {
+
+        console.log('props -', this.props);
+			return (
+				<View style={{ flex: 1 }}>
+							{this.getTransactionDetail()}
 				</View>
 			);
 		return null;

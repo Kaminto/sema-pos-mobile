@@ -26,9 +26,9 @@ class DateFilter extends Component {
 	render() {
 		return (
 			<View style={styles.filterContainer}>
-				<View style={styles.filterItemContainer}>
+				{/* <View style={styles.filterItemContainer}>
 				<Text style={{fontSize:20}}>{i18n.t('daily-data')}</Text>
-				</View>
+				</View> */}
 				<View style={styles.filterItemContainer}>
 					{this.getPreviousButton()}
 				</View>
