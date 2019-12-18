@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import * as colors from '../../styles/sema_colors';
 import SalesReport from './SalesReport';
-import InventoryReport from './InventoryReport';
-import SalesLog from './SalesLog';
+import InventoryReport from './InventoryReport'; 
 import Sidebar from './Sidebar';
 import RemindersReport from './ReminderReport';
 
@@ -27,8 +26,7 @@ class Report extends Component {
 					backgroundColor: colors.COLOR_REPORT__BACKGROUND
 				}}>
 				<SalesReport />
-				<InventoryReport />
-				<SalesLog />
+				<InventoryReport /> 
 				<RemindersReport />
 			</View>
 		);

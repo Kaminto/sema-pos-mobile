@@ -8,7 +8,7 @@ class SalesChannelApi {
 		this._siteId = '';
 	}
 
-	initialize(url, site, user, password) {
+	initialize(url, site, user, password, token, siteId) {
 		if (!url.endsWith('/')) {
 			url = url + '/';
 		}
@@ -16,9 +16,9 @@ class SalesChannelApi {
 		this._site = site;
 		this._user = user;
 		this._password = password;
-		this._token = 'not set';
+		this._token = token;
+		this._siteId = siteId;
 	}
-
 	setToken(token) {
 		this._token = token;
 	}

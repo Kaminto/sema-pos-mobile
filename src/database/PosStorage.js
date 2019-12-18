@@ -33,6 +33,7 @@ const salesKey = '@Sema:SalesKey';
 const saleItemKey = '@Sema:SaleItemKey';
 const lastSalesSyncKey = '@Sema:LastSalesSyncKey';
 const pendingSalesKey = '@Sema:PendingSalesKey';
+
 const remoteReceiptsKey = '@Sema:remoteReceiptsKey';
 
 const salesChannelsKey = '@Sema:SalesChannelsKey';

@@ -23,7 +23,7 @@ import PosStorage from '../database/PosStorage';
 import CreditRealm from '../database/credit/credit.operations';
 import CustomerRealm from '../database/customers/customer.operations'
 import InventroyRealm from '../database/inventory/inventory.operations';
-import ProductMRPRealm from '../database/productmrp/productmrp.operations';
+import SettingRealm from '../database/settings/settings.operations';
 
 import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
 import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
@@ -57,22 +57,29 @@ class AuthLoadingScreen extends React.Component {
 
         let isInitialized = this.posStorage.checkLocalDb();
         let settings = this.posStorage.loadSettings();
-
-        if (isInitialized === 'SetUp Required') {
-            this.posStorage.initialLocalDb();
-            this.posStorage.saveSettings(
-                settings.semaUrl,
-                settings.site,
-                settings.user,
-                settings.password,
-                settings.uiLanguage,
-                settings.token,
-                settings.siteId,
-                true,
-            );
-            this.props.settingsActions.setSettings({ ...settings, loginSync: true });
-            this.props.navigation.navigate('Login');
+        console.log('settings', settings)
+        console.log('SettingRealm', SettingRealm.getAllSetting());
+        let settings2 = SettingRealm.getAllSetting();
+        console.log('settings2', settings2)
+        if(settings2.site === "" && settings2.siteId === ""){
+            console.log('login login login');
+            //this.props.settingsActions.setSettings({ ...settings, loginSync: true });
+            //this.props.navigation.navigate('Login');
         }
+
+
+        if(settings2.site != "" && settings2.siteId != ""){
+            console.log('not login');
+            if (settings2.token.length > 1) {
+
+            }
+
+            if (settings2.token.length === 0) {
+                this.props.settingsActions.setSettings({ ...settings, loginSync: true });
+                this.props.navigation.navigate('Login');
+            }
+        }
+   
 
         if (isInitialized === 'SetUp Not Required') {
             if (settings.token.length > 1) {
@@ -81,67 +88,10 @@ class AuthLoadingScreen extends React.Component {
                     settings.semaUrl,
                     settings.site,
                     settings.user,
-                    settings.password
-                );
-                Communications.setToken(settings.token);
-                Communications.setSiteId(settings.siteId);
-
-                CreditApi.initialize(
-                    settings.semaUrl,
-                    settings.site,
-                    settings.user,
-                    settings.password
-                );
-                CreditApi.setToken(settings.token);
-                CreditApi.setSiteId(settings.siteId);
-
-
-                InventoryApi.initialize(
-                    settings.semaUrl,
-                    settings.site,
-                    settings.user,
-                    settings.password
-                );
-                InventoryApi.setToken(settings.token);
-                InventoryApi.setSiteId(settings.siteId);
-
-
-                CustomerApi.initialize(
-                    settings.semaUrl,
-                    settings.site,
-                    settings.user,
-                    settings.password
-                );
-                CustomerApi.setToken(settings.token);
-                CustomerApi.setSiteId(settings.siteId);
-
-                ProductApi.initialize(
-                    settings.semaUrl,
-                    settings.site,
-                    settings.user,
-                    settings.password
-                );
-                ProductApi.setToken(settings.token);
-                ProductApi.setSiteId(settings.siteId);
-
-                CustomerTypeApi.initialize(
-                    settings.semaUrl,
-                    settings.site,
-                    settings.user,
-                    settings.password
-                );
-                CustomerTypeApi.setToken(settings.token);
-                CustomerTypeApi.setSiteId(settings.siteId);
-
-                SalesChannelApi.initialize(
-                    settings.semaUrl,
-                    settings.site,
-                    settings.user,
-                    settings.password
-                );
-                SalesChannelApi.setToken(settings.token);
-                SalesChannelApi.setSiteId(settings.siteId);
-
+                    settings.password,
+                    settings.token,
+                    settings.siteId
+                );         
 
                 this.posStorage.loadLocalData();
 
@@ -155,14 +105,15 @@ class AuthLoadingScreen extends React.Component {
                 this.props.inventoryActions.setInventory(
                     InventroyRealm.getAllInventory()
                 );
-
                 this.props.productActions.setProducts(
                     ProductsRealm.getProducts()
                 );
                 this.props.receiptActions.setRemoteReceipts(
                     this.posStorage.getRemoteReceipts()
                 );
-
+                console.log('getRemoteReceipts', this.posStorage.getRemoteReceipts());
+                console.log('SalesChannelRealm',CustomerTypeRealm.getCustomerTypes())
+                console.log('SalesChannelRealm',CustomerTypeRealm.getCustomerTypeByName('anonymous'));
                 Synchronization.initialize(
                     CustomerRealm.getLastCustomerSync(),
                     ProductsRealm.getLastProductsync(),
@@ -173,15 +124,6 @@ class AuthLoadingScreen extends React.Component {
 
 
                 //ProductsRealm.truncate();
-
-
-
-                console.log('SalesChannelRealm', SalesChannelRealm.getSalesChannels());
-                console.log('CustomerTypeRealm', CustomerTypeRealm.getCustomerTypes());
-                console.log(ProductsRealm.getProducts());
-
-                console.log('CreditRealm.getLastCreditSync(),', CreditRealm.getLastCreditSync())
-                console.log('CustomerRealm.getLastCustomerSync()(),', CustomerRealm.getLastCustomerSync())
 
                 Synchronization.setConnected(this.props.network.isNWConnected);
 

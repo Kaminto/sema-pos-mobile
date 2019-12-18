@@ -1,7 +1,14 @@
 //import React from 'react';
 //import PosStorage from '../database/PosStorage';
 import moment from 'moment-timezone';
-import PosStorage from '../database/PosStorage';
+import CreditApi from './api/credit.api';
+import InventoryApi from './api/inventory.api';
+import CustomerApi from './api/customer.api';
+import ProductApi from './api/product.api';
+import SalesChannelApi from './api/sales-channel.api';
+import CustomerTypeApi from './api/customer-types.api';
+
+
 class Communications {
 	constructor() {
 		this._url = 'h';
@@ -11,7 +18,7 @@ class Communications {
 		this._token = '';
 		this._siteId = '';
 	}
-	initialize(url, site, user, password) {
+	initialize(url, site, user, password, token, siteId) {
 		if (!url.endsWith('/')) {
 			url = url + '/';
 		}
@@ -19,7 +26,67 @@ class Communications {
 		this._site = site;
 		this._user = user;
 		this._password = password;
-		this._token = 'not set';
+		this._token = token;
+		this._siteId = siteId;
+ 
+
+		CreditApi.initialize(
+			url,
+			site,
+			user,
+			password,
+			token,
+			siteId
+		); 
+
+
+		InventoryApi.initialize(
+			url,
+			site,
+			user,
+			password,
+			token,
+			siteId
+		); 
+
+
+		CustomerApi.initialize(
+			url,
+			site,
+			user,
+			password,
+			token,
+			siteId
+		); 
+
+		ProductApi.initialize(
+			url,
+			site,
+			user,
+			password,
+			token,
+			siteId
+		); 
+
+		CustomerTypeApi.initialize(
+			url,
+			site,
+			user,
+			password,
+			token,
+			siteId
+		); 
+
+		SalesChannelApi.initialize(
+			url,
+			site,
+			user,
+			password,
+			token,
+			siteId
+		); 
+
+
 	}
 
 	setToken(token) {
@@ -109,219 +176,7 @@ class Communications {
 		});
 	}
 
-	getSiteId(token, siteName) {
-		let options = {
-			method: 'GET',
-			headers: {
-				Authorization: 'Bearer ' + token
-			}
-		};
-		console.log('options', options);
-		return new Promise((resolve, reject) => {
-			fetch(this._url + 'sema/kiosks', options)
-				.then(response => {
-					console.log(response);
-					response
-						.json()
-						.then(responseJson => {
-							let result = -1;
-							for (
-								let i = 0;
-								i < responseJson.kiosks.length;
-								i++
-							) {
-								if (responseJson.kiosks[i].name === siteName) {
-									if (
-										responseJson.kiosks[i].hasOwnProperty(
-											'active'
-										) &&
-										!responseJson.kiosks[i].active
-									) {
-										result = -2;
-									} else {
-										result = responseJson.kiosks[i].id;
-									}
-									break;
-								}
-							}
-							resolve(result);
-						})
-						.catch(error => {
-
-							resolve(-1);
-						});
-				})
-				.catch(error => {
-					resolve(-1);
-				});
-		});
-	}
-
-	getCustomers(updatedSince) {
-		let options = {
-			method: 'GET',
-			headers: {
-				Authorization: 'Bearer ' + this._token
-			}
-		};
-		let url = 'sema/site/customers?site-id=' + this._siteId;
-
-		if (updatedSince) {
-			url = url + '&updated-date=' + updatedSince.toISOString();
-		}
-		return fetch(this._url + url, options)
-			.then(response => response.json())
-			.then(responseJson => {
-				return responseJson;
-			})
-			.catch(error => {
-				console.log('Communications:getCustomers: ' + error);
-				throw error;
-			});
-	}
-
-	createCustomer(customer) {
-		// TODO - Resolve customer type.... Is it needed, currently hardcoded...
-		customer.customerType = 128; // FRAGILE
-		let options = {
-			method: 'POST',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + this._token
-			},
-			body: JSON.stringify(customer)
-		};
-		return new Promise((resolve, reject) => {
-			fetch(this._url + 'sema/site/customers', options)
-				.then(response => {
-					if (response.status === 200) {
-						response
-							.json()
-							.then(responseJson => {
-								resolve(responseJson);
-							})
-							.catch(error => {
-								console.log(
-									'createCustomer - Parse JSON: ' +
-									error.message
-								);
-								reject();
-							});
-					} else {
-						console.log(
-							'createCustomer - Fetch status: ' + response.status
-						);
-						reject();
-					}
-				})
-				.catch(error => {
-					console.log('createCustomer - Fetch: ' + error.message);
-					reject();
-				});
-		});
-	}
-	// Note that deleting a csutomer actually just deactivates the customer
-	deleteCustomer(customer) {
-		let options = {
-			method: 'PUT',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + this._token
-			},
-			body: JSON.stringify({
-				active: false
-			})
-		};
-		return new Promise((resolve, reject) => {
-			fetch(
-				this._url + 'sema/site/customers/' + customer.customerId,
-				options
-			)
-				.then(response => {
-					if (response.status === 200 || response.status === 404) {
-						resolve();
-					} else {
-						console.log(
-							'deleteCustomer - Fetch status: ' + response.status
-						);
-						reject();
-					}
-				})
-				.catch(error => {
-					console.log('deleteCustomer - Fetch: ' + error.message);
-					reject();
-				});
-		});
-	}
-
-	updateCustomer(customer) {
-		let options = {
-			method: 'PUT',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + this._token
-			},
-			body: JSON.stringify(customer)
-		};
-		return new Promise((resolve, reject) => {
-			fetch(
-				this._url + 'sema/site/customers/' + customer.customerId,
-				options
-			)
-				.then(response => {
-					if (response.status === 200) {
-						response
-							.json()
-							.then(responseJson => {
-								resolve(responseJson);
-							})
-							.catch(error => {
-								console.log(
-									'updateCustomer - Parse JSON: ' +
-									error.message
-								);
-								reject();
-							});
-					} else {
-						console.log(
-							'updateCustomer - Fetch status: ' + response.status
-						);
-						reject();
-					}
-				})
-				.catch(error => {
-					console.log('createCustomer - Fetch: ' + error.message);
-					reject();
-				});
-		});
-	}
-
-	getProducts(updatedSince) {
-		let options = {
-			method: 'GET',
-			headers: {
-				Authorization: 'Bearer ' + this._token
-			}
-		};
-		let url = 'sema/products';
-
-		if (updatedSince) {
-			url = url + '?updated-date=' + updatedSince.toISOString();
-		}
-		return fetch(this._url + url, options)
-			.then(response => response.json())
-			.then(responseJson => {
-				console.log('Communications:getProducts: ', responseJson.products);
-				return responseJson;
-			})
-			.catch(error => {
-				console.log('Communications:getProducts: ' + error);
-				throw error;
-			});
-	}
+	
 
 	createReceipt(receipt) {
 		console.log('==============================');
@@ -370,51 +225,7 @@ class Communications {
 		});
 	}
 
-	// getAll will determine whether to get all product mappings or not, if it's true,
-	// it will send a site/kiosk ID of -1 to the server
-	getProductMrps(updatedSince, getAll) {
-		let options = {
-			method: 'GET',
-			headers: {
-				Authorization: 'Bearer ' + this._token
-			}
-		};
-		let url = `sema/site/product-mrps?site-id=${
-			getAll ? -1 : this._siteId
-			}`;
 
-		if (updatedSince) {
-			url = url + '&updated-date=' + updatedSince.toISOString();
-		}
-		return fetch(this._url + url, options)
-			.then(response => response.json())
-			.then(responseJson => {
-				return responseJson;
-			})
-			.catch(error => {
-				console.log('Communications:getProductMrps: ' + error);
-				throw error;
-			});
-	}
-
-	getProductMrpsBySiteId(siteId) {
-		let options = {
-			method: 'GET',
-			headers: {
-				Authorization: 'Bearer ' + this._token
-			}
-		};
-		let url = `sema/site/product-mrps?site-id=${siteId}`;
-		return fetch(this._url + url, options)
-			.then(response => response.json())
-			.then(responseJson => {
-				return responseJson;
-			})
-			.catch(error => {
-				console.log('Communications:getProductMrps: ' + error);
-				throw error;
-			});
-	}
 
 	_remoteReceiptFromReceipt(receipt) {
 		return receipt;

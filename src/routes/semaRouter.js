@@ -9,14 +9,12 @@ import CustomerDetails from '../screens/CustomerDetails';
 import Login from '../screens/Login';
 import AuthLoadingScreen from '../screens/AuthLoadingScreen';
 import Transactions from '../screens/Transactions';
-//import SalesReport from '../screens/SalesReport';
 
 import OrderView from '../components/orders/OrderView';
 
 import InventoryReport from '../components/reports/InventoryReport';
 import RemindersReport from '../components/reports/ReminderReport';
 
-import SalesLog from '../components/reports/SalesLog';
 import SalesReport from '../components/reports/SalesReport';
 
 import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';

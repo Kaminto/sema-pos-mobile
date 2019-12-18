@@ -245,6 +245,10 @@ class Synchronization {
 						'Synchronization:synchronizeSales - Number of sales receipts: ' +
 						salesReceipts.length
 					);
+					console.log(
+						'Synchronization:synchronizeSales - Number of sales receipts: ',
+						salesReceipts
+					);
 					resolve({
 						error: null,
 						localReceipts: salesReceipts.length
@@ -288,114 +292,12 @@ class Synchronization {
 		});
 	}
 
-
-	synchronizeProducts() {
-		return new Promise(resolve => {
-			console.log('Synchronization:synchronizeProducts - Begin');
-			// Temporary get rid of this.lastProductSync
-			// TODO: Figure out why it wouldn't pull new products when using this.lastProductSync
-			Communications.getProducts()
-				.then(products => {
-					resolve({
-						error: null,
-						remoteProducts: products.products.length
-					});
-
-					if (products.hasOwnProperty('products')) {
-						this.updateLastProductSync();
-						console.log(
-							'Synchronization:synchronizeProducts. No of new remote products: ' +
-							products.products.length
-						);
-						console.log(
-							'Synchronization:synchronizeProducts. No of new remote products: ',
-							products.products
-						);
-						const updated = PosStorage.mergeProducts(
-							products.products
-						);
-						if (updated) {
-							Events.trigger('ProductsUpdated', {});
-						}
-					}
-				})
-				.catch(error => {
-					resolve({ error: error.message, remoteProducts: null });
-					console.log('Synchronization.getProducts - error ' + error);
-				});
-		});
-	}
-
-	synchronizeSalesChannels() {
-		return new Promise(async resolve => {
-			console.log('Synchronization:synchronizeSalesChannels - Begin');
-			const savedSalesChannels = await PosStorage.loadSalesChannels();
-			Communications.getSalesChannels()
-				.then(salesChannels => {
-					if (salesChannels.hasOwnProperty('salesChannels')) {
-						console.log(
-							'Synchronization:synchronizeSalesChannels. No of sales channels: ' +
-							salesChannels.salesChannels.length
-						);
-						console.log(
-							'Synchronization:synchronizeSalesChannels. No of sales channels: ',
-							salesChannels.salesChannels
-						);
-						if (
-							!_.isEqual(
-								savedSalesChannels,
-								salesChannels.salesChannels
-							)
-						) {
-							PosStorage.saveSalesChannels(
-								salesChannels.salesChannels
-							);
-							Events.trigger('SalesChannelsUpdated', {});
-						}
-					}
-					resolve(salesChannels);
-				})
-				.catch(error => {
-					console.log(
-						'Synchronization.getSalesChannels - error ' + error
-					);
-					resolve(null);
-				});
-		});
-	}
-
-	synchronizeCustomerTypes() {
-		return new Promise(resolve => {
-			console.log('Synchronization:synchronizeCustomerTypes - Begin');
-			Communications.getCustomerTypes()
-				.then(customerTypes => {
-					if (customerTypes.hasOwnProperty('customerTypes')) {
-						console.log(
-							'Synchronization:synchronizeCustomerTypes. No of customer types: ' +
-							customerTypes.customerTypes.length
-						);
-						console.log(
-							'Synchronization:synchronizeCustomerTypes. No of customer types: ',
-							customerTypes.customerTypes
-						);
-						PosStorage.saveCustomerTypes(
-							customerTypes.customerTypes
-						);
-					}
-					resolve(customerTypes);
-				})
-				.catch(error => {
-					console.log(
-						'Synchronization.getCustomerTypes - error ' + error
-					);
-					resolve(null);
-				});
-		});
-	}
-
+ 
+ 
 	async synchronizeReceipts() {
 		let settings = PosStorage.getSettings();
 		let remoteReceipts = await PosStorage.loadRemoteReceipts();
+		console.log('remoteReceiptsremoteReceipts', remoteReceipts);
 		const receiptIds = [];
 		remoteReceipts = remoteReceipts
 			.map(receipt => {
@@ -427,7 +329,8 @@ class Synchronization {
 			// so we're sending their IDs too.
 			// Sending only remote receipts and local receipts that have been updated.
 			.filter(receipt => receipt.updated || !receipt.isLocal);
-
+console.log('remoteReceipts', remoteReceipts);
+console.log('receiptIds', receiptIds);
 		return Communications.sendLoggedReceipts(
 			settings.siteId,
 			remoteReceipts,
