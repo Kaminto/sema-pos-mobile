@@ -32,7 +32,7 @@ export function formatCurrency(value) {
 		locale = NativeModules.I18nManager.localeIdentifier;
 		locale = locale.replace('_', '-');
 	} catch (error) {
-		console.log("formatCurrency - NativeModules.I18nManager - error " + error.message);
+		console.log("formatCurrency - NativeModules.I18nManager - error " + error);
 	}
 	if (PosStorage.getProducts().length > 0) {
 		if (PosStorage.getProducts()[0].priceCurrency.length === 3) {
@@ -54,7 +54,7 @@ export function formatCurrency(value) {
 		});
 		return formatter.format(value).replace('$', '');
 	} catch (error) {
-		console.log("formatCurrency - IntlPolyFill - error " + error.message);
+		console.log("formatCurrency - IntlPolyFill - error " + error);
 		return value;
 	}
 }

@@ -77,7 +77,7 @@ class CustomerTypeSync {
                         'Synchronization.getInventory - error ' , error
                     );
                     resolve({
-                        error: error.message,
+                        error: error,
                         customerTypes: 0
                     });
                 });

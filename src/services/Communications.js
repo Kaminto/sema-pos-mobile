@@ -1,5 +1,3 @@
-//import React from 'react';
-//import PosStorage from '../database/PosStorage';
 import moment from 'moment-timezone';
 import CreditApi from './api/credit.api';
 import InventoryApi from './api/inventory.api';
@@ -203,7 +201,7 @@ class Communications {
 							.catch(error => {
 								console.log(
 									'createReceipt - Parse JSON: ' +
-									error.message
+									error
 								);
 								reject();
 							});
@@ -219,7 +217,7 @@ class Communications {
 					}
 				})
 				.catch(error => {
-					console.log('createReceipt - Fetch: ' + error.message);
+					console.log('createReceipt - Fetch: ' + error);
 					reject();
 				});
 		});

@@ -93,7 +93,7 @@ class CreditApi {
 					}
 				})
 				.catch(error => {
-					console.log('createTopUp - Fetch: ' + error.message);
+					console.log('createTopUp - Fetch: ' + error);
 					reject();
 				});
 		});
@@ -127,7 +127,7 @@ class CreditApi {
 					}
 				})
 				.catch(error => {
-					console.log('deleteTopUp - Fetch: ' + error.message);
+					console.log('deleteTopUp - Fetch: ' + error);
 					reject();
 				});
 		});
@@ -158,7 +158,7 @@ class CreditApi {
 							.catch(error => {
 								console.log(
 									'updateTopUp - Parse JSON: ' +
-									error.message
+									error
 								);
 								reject();
 							});
@@ -170,7 +170,7 @@ class CreditApi {
 					}
 				})
 				.catch(error => {
-					console.log('createTopUp - Fetch: ' + error.message);
+					console.log('createTopUp - Fetch: ' + error);
 					reject();
 				});
 		});

@@ -160,7 +160,7 @@ class InventorySync {
                         'Synchronization.getInventory - error ' + error
                     );
                     resolve({
-                        error: error.message,
+                        error: error,
                         localInventory: 0,
                         remoteInventory: 0
                     });

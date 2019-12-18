@@ -415,7 +415,7 @@ class InventoryReport extends Component {
 			}
 		}catch( error ){
 			console.log(JSON.stringify(this.props.inventoryData));
-			console.log("getTotalInventory " + error.message);
+			console.log("getTotalInventory " + error);
 		}
 		return '-';
 	}

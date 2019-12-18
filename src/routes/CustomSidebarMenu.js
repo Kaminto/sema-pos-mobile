@@ -11,7 +11,8 @@ import * as ProductActions from '../actions/ProductActions';
 import * as ToolbarActions from '../actions/ToolBarActions';
 import * as receiptActions from '../actions/ReceiptActions';
 import * as AuthActions from '../actions/AuthActions';
-import CustomerRealm from '../database/customers/customer.operations'
+import CustomerRealm from '../database/customers/customer.operations';
+import SettingRealm from '../database/settings/settings.operations';
 import PosStorage from '../database/PosStorage';
 import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
@@ -139,12 +140,12 @@ class CustomSidebarMenu extends Component {
 
   onLogout = () => {
     this.props.toolbarActions.SetLoggedIn(false);
-    let settings = PosStorage.loadSettings();
+    let settings = SettingRealm.getAllSetting();
     console.log(settings);
     this.props.authActions.isAuth(false);
 
     // // Save with empty token - This will force username/password validation
-    PosStorage.saveSettings(
+    SettingRealm.saveSettings(
       settings.semaUrl,
       settings.site,
       settings.user,
@@ -154,7 +155,7 @@ class CustomSidebarMenu extends Component {
       settings.siteId,
       false
     );
-    this.props.settingsActions.setSettings(PosStorage.loadSettings());
+    this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
     //As we are not going to the Login, the reason no reason to disable the token
     Communications.setToken('');
    // this.props.toolbarActions.ShowScreen('settings');

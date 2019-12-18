@@ -22,7 +22,7 @@ export function GetSalesReportData(beginDate, endDate) {
 				});
 			})
 			.catch(error => {
-				console.log('GetSalesReportData - Error ' + error.message);
+				console.log('GetSalesReportData - Error ' + error);
 				dispatch({
 					type: SALES_REPORT_FROM_ORDERS,
 					data: { salesData: [] }
@@ -201,7 +201,7 @@ export function GetInventoryReportData(beginDate, endDate, products) {
 				});
 			})
 			.catch(error => {
-				console.log('GetInventoryReportData - Error ' + error.message);
+				console.log('GetInventoryReportData - Error ' + error);
 				dispatch({
 					type: INVENTORY_REPORT,
 					data: { inventoryData: [] }

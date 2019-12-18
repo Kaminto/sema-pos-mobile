@@ -39,6 +39,7 @@ class ProductApi {
 		if (updatedSince) {
 			url = url + '?updated-date=' + updatedSince.toISOString();
 		}
+		console.log(this._url + url);
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.then(responseJson => {
@@ -46,7 +47,7 @@ class ProductApi {
 				return responseJson;
 			})
 			.catch(error => {
-				console.log('Communications:getProducts: ' + error);
+				console.log('Communications:getProducts: ', error);
 				throw error;
 			});
 	}
