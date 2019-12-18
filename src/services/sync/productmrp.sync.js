@@ -78,7 +78,7 @@ class ProductMRPSync {
                         'Synchronization.getInventory - error ' + error
                     );
                     resolve({
-                        error: error.message,
+                        error: error,
                         remoteProductMrps: 0
                     });
                 });
@@ -111,7 +111,7 @@ class ProductMRPSync {
 					}
 				})
 				.catch(error => {
-					resolve({ error: error.message, remoteProducts: null });
+					resolve({ error: error, remoteProducts: null });
 					console.log(
 						'Synchronization.ProductsMrpsUpdated - error ' + error
 					);

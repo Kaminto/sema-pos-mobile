@@ -78,7 +78,7 @@ class SalesChannelSync {
                         'Synchronization.getInventory - error ' , error
                     );
                     resolve({
-                        error: error.message,
+                        error: error,
                         salesChannels: 0
                     });
                 });

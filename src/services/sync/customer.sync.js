@@ -164,7 +164,7 @@ class CustomerSync {
                         'Synchronization.getInventory - error ' + error
                     );
                     resolve({
-						error: error.message,
+						error: error,
                         updatedCustomers: 0,
 					});
                 });

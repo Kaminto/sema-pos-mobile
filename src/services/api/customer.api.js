@@ -79,7 +79,7 @@ class CustomerApi {
                             .catch(error => {
                                 console.log(
                                     'createCustomer - Parse JSON: ' +
-                                    error.message
+                                    error
                                 );
                                 reject();
                             });
@@ -91,7 +91,7 @@ class CustomerApi {
                     }
                 })
                 .catch(error => {
-                    console.log('createCustomer - Fetch: ' + error.message);
+                    console.log('createCustomer - Fetch: ' + error);
                     reject();
                 });
         });
@@ -125,7 +125,7 @@ class CustomerApi {
                     }
                 })
                 .catch(error => {
-                    console.log('deleteCustomer - Fetch: ' + error.message);
+                    console.log('deleteCustomer - Fetch: ' + error);
                     reject();
                 });
         });
@@ -156,7 +156,7 @@ class CustomerApi {
                             .catch(error => {
                                 console.log(
                                     'updateCustomer - Parse JSON: ' +
-                                    error.message
+                                    error
                                 );
                                 reject();
                             });
@@ -168,7 +168,7 @@ class CustomerApi {
                     }
                 })
                 .catch(error => {
-                    console.log('createCustomer - Fetch: ' + error.message);
+                    console.log('createCustomer - Fetch: ' + error);
                     reject();
                 });
         });

@@ -6,10 +6,16 @@ export const SettingsSchema = {
         user: { type: 'string', optional: true },
         password: { type: 'string', optional: true },
         uiLanguage: { type: 'string', optional: true },
-        siteId: { type: 'string', optional: true },
+        siteId: { type: 'int', optional: true },
         token: { type: 'string', optional: true },
         loginSync: { type: 'bool', optional: true },
     }
 };
 
+export const TokenExpirySchema = {
+    name: 'TokenExpiry',
+    properties: {
+        expirationDate: 'date',
+    }
+};
 

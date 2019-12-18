@@ -22,14 +22,26 @@ import Synchronization from '../services/Synchronization';
 
 import PosStorage from '../database/PosStorage';
 import SettingRealm from '../database/settings/settings.operations';
+import CreditRealm from '../database/credit/credit.operations';
+import CustomerRealm from '../database/customers/customer.operations'
+import InventroyRealm from '../database/inventory/inventory.operations';
+import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
+import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
+import ProductsRealm from '../database/products/product.operations';
+
+import SalesChannelSync from '../services/sync/sales-channel.sync';
+import CustomerTypeSync from '../services/sync/customer-types.sync';
 
 import * as TopUpActions from '../actions/TopUpActions';
 import * as SettingsActions from '../actions/SettingsActions';
 import * as ToolbarActions from '../actions/ToolBarActions';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as NetworkActions from '../actions/NetworkActions';
-import * as AuthActions from '../actions/AuthActions';
-import ModalDropdown from 'react-native-modal-dropdown';
+import * as AuthActions from '../actions/AuthActions';   
+import * as ProductActions from '../actions/ProductActions';
+import * as receiptActions from '../actions/ReceiptActions';
+import * as InventoryActions from '../actions/InventoryActions';
+
 
 import Events from 'react-native-simple-events';
 
@@ -49,47 +61,9 @@ const supportedUILanguages = [
 	{ name: 'Kreyòl Ayisyen', iso_code: 'ht' }
 ];
 
-class SettingsButton extends Component {
-	render() {
-		return (
-			<View
-				style={[styles.submit, { marginLeft: 30 }, this.getOpacity()]}>
-				<View
-					style={[
-						{
-							justifyContent: 'center',
-							height: 60,
-							alignItems: 'center'
-						}
-					]}>
-					{this.showEnabled()}
-				</View>
-			</View>
-		);
-	}
-	getOpacity() {
-		return this.props.enableFn() ? { opacity: 1 } : { opacity: 0.7 };
-	}
-	showEnabled() {
-		if (this.props.enableFn()) {
-			console.log('Enabled - ' + this.props.label);
-			return (
-				<TouchableHighlight
-					underlayColor="#c0c0c0"
-					onPress={() => this.props.pressFn()}>
-					<Text style={[styles.buttonText]}>{this.props.label}</Text>
-				</TouchableHighlight>
-			);
-		} else {
-			console.log('Disabled - ' + this.props.label);
-			return <Text style={[styles.buttonText]}>{this.props.label}</Text>;
-		}
-	}
-}
-
 class Login extends Component {
 	constructor(props) {
-		let setting = PosStorage.loadSettings();
+		let setting = SettingRealm.getAllSetting();
 		console.log(setting);
 		super(props);
 		// this.url = React.createRef();
@@ -118,7 +92,7 @@ class Login extends Component {
 	componentDidMount() {
 		console.log(this.props.settings);
 		this.props.authActions.isAuth(
-			PosStorage.getSettings().token.length > 0 || false
+			SettingRealm.getAllSetting().token.length > 0 || false
 		);
 	}
 
@@ -192,23 +166,7 @@ class Login extends Component {
 
 
 
-							{/* <View
-								style={{
-									flexDirection: 'row',
-									flex: 1,
-									alignItems: 'center'
-								}}>
-
-								{this.state.isLoggedIn && (
-									<SettingsButton
-										pressFn={this.onSynchronize.bind(this)}
-										enableFn={this.enableConnectionOrSync.bind(
-											this
-										)}
-										label={i18n.t('sync-now')}
-									/>
-								)}
-							</View> */}
+						
 						</View>
 					</KeyboardAwareScrollView>
 					{this.state.animating && (
@@ -231,8 +189,8 @@ class Login extends Component {
 
 	getSettingsCancel() {
 		try {
-			if (PosStorage.getCustomerTypes()) {
-				if (PosStorage.getCustomerTypes().length > 0) {
+			if (CustomerTypeRealm.getCustomerTypes()) {
+				if (CustomerTypeRealm.getCustomerTypes().length > 0) {
 					if (Communications._token) {
 						return (
 							<TouchableHighlight
@@ -396,13 +354,15 @@ class Login extends Component {
 			PosStorage.clearDataOnly();
 
 			Events.trigger('ClearLoggedSales', {});
-			this.props.settingsActions.setSettings(PosStorage.getSettings());
-			this.props.customerActions.setCustomers(PosStorage.getCustomers());
+			this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
+			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
 			const saveConnected = Synchronization.isConnected;
 			Synchronization.initialize(
-				PosStorage.getLastCustomerSync(),
-				PosStorage.getLastProductSync(),
-				PosStorage.getLastSalesSync()
+				CustomerRealm.getLastCustomerSync(),
+				ProductsRealm.getLastProductsync(),
+				PosStorage.getLastSalesSync(),
+				CreditRealm.getLastCreditSync(),
+				InventroyRealm.getLastInventorySync(),
 			);
 			Synchronization.setConnected(saveConnected);
 		} catch (error) { }
@@ -423,14 +383,18 @@ class Login extends Component {
 
 	onConnection() {
 		this.setState({ animating: true });
+
+		let settings = SettingRealm.getAllSetting();
 		Communications.initialize(
-			"http://142.93.115.206:3006/",
-			"",
+			settings.semaUrl,
+			settings.site,
 			this.state.user,
-			this.state.password
+			this.state.password,
+			settings.token,
+			settings.siteId
 		);
 
-		console.log(this.props.settings.loginSync);
+		console.log(this.props.settings);
 		if (this.props.settings.loginSync) {
 			this.loginWithSync()
 				.then(data => {
@@ -471,7 +435,8 @@ class Login extends Component {
 								result.response.token
 							);
 							Communications.setSiteId(result.response.data.kiosk.id);
-							PosStorage.setTokenExpiration();
+							SettingRealm.setTokenExpiration();
+							console.log("TokenExpiration is set");
 							this.props.navigation.navigate('App');
 
 						} else {
@@ -530,7 +495,7 @@ class Login extends Component {
 						console.log(
 							'Passed - status' +
 							result.status +
-							' ' +
+							' ' ,
 							JSON.stringify(result.response)
 						);
 						if (result.status === 200) {
@@ -549,8 +514,9 @@ class Login extends Component {
 								result.response.token
 							);
 							Communications.setSiteId(result.response.data.kiosk.id);
-							PosStorage.setTokenExpiration();
-							await Synchronization.synchronizeSalesChannels();
+							SettingRealm.setTokenExpiration();
+							console.log("TokenExpiration is set");
+							await SalesChannelSync.synchronizeSalesChannels();
 							Synchronization.scheduleSync();
 
 							let date = new Date();
@@ -562,9 +528,6 @@ class Login extends Component {
 								date
 							)
 								.then(json => {
-									console.log('ORIGINAL');
-									console.log(JSON.stringify(json));
-									console.log('END');
 
 									resolve({
 										status: 200,
@@ -651,316 +614,35 @@ class Login extends Component {
 
 	loadSyncedData() {
 		PosStorage.loadLocalData();
-
 		this.props.customerActions.setCustomers(
-			PosStorage.getCustomers()
+			CustomerRealm.getAllCustomer()
+		);
+		this.props.topUpActions.setTopups(
+			CreditRealm.getAllCredit()
+		);
+		// InventroyRealm.truncate();
+		this.props.inventoryActions.setInventory(
+			InventroyRealm.getAllInventory()
 		);
 		this.props.productActions.setProducts(
-			PosStorage.getProducts()
+			ProductsRealm.getProducts()
 		);
 		this.props.receiptActions.setRemoteReceipts(
 			PosStorage.getRemoteReceipts()
 		);
-
-		this.props.topUpActions.setTopups(
-			TopUps.getTopUps()
-		);
-
 		Synchronization.initialize(
-			PosStorage.getLastCustomerSync(),
-			PosStorage.getLastProductSync(),
+			CustomerRealm.getLastCustomerSync(),
+			ProductsRealm.getLastProductsync(),
 			PosStorage.getLastSalesSync(),
-			TopUps.getLastTopUpSync()
+			CreditRealm.getLastCreditSync(),
+			InventroyRealm.getLastInventorySync(),
 		);
+
+		//ProductsRealm.truncate();
+
 		Synchronization.setConnected(this.props.network.isNWConnected);
 	}
 
-	onConnectionee() {
-		this.setState({ animating: true });
-		console.log(this.state.user, this.state.password);
-		// Communications.initialize(
-		// 	"http://142.93.115.206:3006/",
-		// 	"",
-		// 	this.state.user,
-		// 	this.state.password
-		// );
-		Communications.initialize(
-			"http://142.93.115.206:3006/",
-			"",
-			"administrator",
-			"Let'sGrow"
-		);
-
-
-		try {
-			let message = i18n.t('successful-connection');
-			Communications.login()
-				.then(result => {
-					console.log(
-						'Passed - status' +
-						result.status +
-						' ' +
-						JSON.stringify(result.response)
-					);
-					if (result.status === 200) {
-						console.log(result);
-
-						// console.log("Response site name: " + result.response.data.kiosk.name);
-						Communications.getSiteId(
-							result.response.token,
-							result.response.data.kiosk.name
-						)
-							.then(async siteId => {
-								if (siteId === -1) {
-									message = i18n.t(
-										'successful-connection-but',
-										{
-											what: this.site.current.state
-												.propertyText,
-											happened: i18n.t('does-not-exist')
-										}
-									);
-								} else if (siteId === -2) {
-									message = i18n.t(
-										'successful-connection-but',
-										{
-											what: this.site.current.state
-												.propertyText,
-											happened: i18n.t('is-not-active')
-										}
-									);
-								} else {
-									this.props.authActions.isAuth(true);
-									this.saveSettings(
-										result.response.data.kiosk.name,
-										result.response.token,
-										siteId
-									);
-									Communications.setToken(
-										result.response.token
-									);
-									Communications.setSiteId(siteId);
-									PosStorage.setTokenExpiration();
-									await Synchronization.synchronizeSalesChannels();
-									Synchronization.scheduleSync();
-
-									let date = new Date();
-									//date.setDate(date.getDate() - 30);
-									date.setDate(date.getDate() - 7);
-									Communications.getReceiptsBySiteIdAndDate(
-										siteId,
-										date
-									)
-										.then(json => {
-											console.log('ORIGINAL');
-											console.log(JSON.stringify(json));
-											console.log('END');
-
-											PosStorage.addRemoteReceipts(
-												json
-											).then(saved => {
-												console.log('SAVED');
-												console.log(
-													JSON.stringify(saved)
-												);
-												console.log('END');
-												Events.trigger(
-													'ReceiptsFetched',
-													saved
-												);
-											});
-										})
-										.catch(error => { });
-								}
-								this.setState({ animating: false });
-								Alert.alert(
-									i18n.t('network-connection'),
-									message,
-									[{ text: i18n.t('ok'), style: 'cancel' }],
-									{ cancelable: true }
-								);
-								this.props.navigation.navigate('App');
-								if (siteId !== -1 && siteId !== -2) {
-									this.closeHandler();
-								}
-							})
-							.catch(error => { });
-					} else {
-						this.setState({ animating: false });
-						message =
-							result.response.msg +
-							'(Error code: ' +
-							result.status +
-							')';
-						Alert.alert(
-							i18n.t('network-connection'),
-							message,
-							[{ text: i18n.t('ok'), style: 'cancel' }],
-							{ cancelable: true }
-						);
-					}
-				})
-				.catch(result => {
-					console.log(
-						'Failed- status ' +
-						result.status +
-						' ' +
-						result.response.message
-					);
-					this.setState({ animating: false });
-					Alert.alert(
-						i18n.t('network-connection'),
-						result.response.message + '. (' + result.status + ')',
-						[{ text: i18n.t('ok'), style: 'cancel' }],
-						{ cancelable: true }
-					);
-				});
-		} catch (error) {
-			this.setState({ animating: false });
-			console.log(JSON.stringify(error));
-		}
-	}
-
-
-
-	onConnectionw() {
-		this.setState({ animating: true });
-		Communications.initialize(
-			"http://142.93.115.206:3006/",
-			"",
-			this.user.current.state.propertyText,
-			this.password.current.state.propertyText
-		);
-		try {
-			let message = i18n.t('successful-connection');
-			Communications.login()
-				.then(result => {
-					console.log(
-						'Passed - status' +
-						result.status +
-						' ' +
-						JSON.stringify(result.response)
-					);
-					if (result.status === 200) {
-						this.saveSettings(
-							"http://142.93.115.206:3006/",
-							result.response.token,
-							result.response.data.kiosk.name
-						);
-						// console.log("Response site name: " + result.response.data.kiosk.name);
-						Communications.getSiteId(
-							result.response.token,
-							result.response.data.kiosk.name
-						)
-							.then(async siteId => {
-								if (siteId === -1) {
-									message = i18n.t(
-										'successful-connection-but',
-										{
-											what: this.site.current.state
-												.propertyText,
-											happened: i18n.t('does-not-exist')
-										}
-									);
-								} else if (siteId === -2) {
-									message = i18n.t(
-										'successful-connection-but',
-										{
-											what: this.site.current.state
-												.propertyText,
-											happened: i18n.t('is-not-active')
-										}
-									);
-								} else {
-									this.props.authActions.isAuth(true);
-									this.saveSettings(
-										result.response.data.kiosk.name,
-										result.response.token,
-										siteId
-									);
-									Communications.setToken(
-										result.response.token
-									);
-									Communications.setSiteId(siteId);
-									PosStorage.setTokenExpiration();
-									await Synchronization.synchronizeSalesChannels();
-									Synchronization.scheduleSync();
-
-									let date = new Date();
-									//date.setDate(date.getDate() - 30);
-									date.setDate(date.getDate() - 7);
-									Communications.getReceiptsBySiteIdAndDate(
-										siteId,
-										date
-									)
-										.then(json => {
-											console.log('ORIGINAL');
-											console.log(JSON.stringify(json));
-											console.log('END');
-
-											PosStorage.addRemoteReceipts(
-												json
-											).then(saved => {
-												console.log('SAVED');
-												console.log(
-													JSON.stringify(saved)
-												);
-												console.log('END');
-												Events.trigger(
-													'ReceiptsFetched',
-													saved
-												);
-											});
-										})
-										.catch(error => { });
-								}
-								this.setState({ animating: false });
-								Alert.alert(
-									i18n.t('network-connection'),
-									message,
-									[{ text: i18n.t('ok'), style: 'cancel' }],
-									{ cancelable: true }
-								);
-								if (siteId !== -1 && siteId !== -2) {
-									this.closeHandler();
-								}
-							})
-							.catch(error => { });
-					} else {
-						this.setState({ animating: false });
-						message =
-							result.response.msg +
-							'(Error code: ' +
-							result.status +
-							')';
-						Alert.alert(
-							i18n.t('network-connection'),
-							message,
-							[{ text: i18n.t('ok'), style: 'cancel' }],
-							{ cancelable: true }
-						);
-					}
-				})
-				.catch(result => {
-					console.log(
-						'Failed- status ' +
-						result.status +
-						' ' +
-						result.response.message
-					);
-					this.setState({ animating: false });
-					Alert.alert(
-						i18n.t('network-connection'),
-						result.response.message + '. (' + result.status + ')',
-						[{ text: i18n.t('ok'), style: 'cancel' }],
-						{ cancelable: true }
-					);
-				});
-		} catch (error) {
-			this.setState({ animating: false });
-			console.log(JSON.stringify(error));
-		}
-	}
 
 	enableConnectionOrSync() {
 		// let url = this.url.current
@@ -990,7 +672,7 @@ class Login extends Component {
 
 	saveSettings(site, token, siteId) {
 		// Check to see if the site has changed
-		let currentSettings = PosStorage.loadSettings();
+		let currentSettings = SettingRealm.getAllSetting();
 		if (currentSettings.siteId != siteId) {
 			// New site - clear all data
 			this._clearDataAndSync();
@@ -1011,7 +693,7 @@ class Login extends Component {
 			siteId,
 			false
 		);
-		this.props.settingsActions.setSettings(PosStorage.loadSettings());
+		this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
 		this.setState({ isLoading: false });
 	}
 
@@ -1046,7 +728,7 @@ class Login extends Component {
 				i18n.locale = this.state.selectedLanguage.iso_code;
 
 				Events.trigger('SalesChannelsUpdated', {});
-				let currentSettings = PosStorage.loadSettings();
+				let currentSettings = SettingRealm.getAllSetting();
 				console.log(currentSettings);
 				SettingRealm.saveSettings(
 					"http://142.93.115.206:3006/",
@@ -1058,7 +740,7 @@ class Login extends Component {
 					currentSettings.siteId,
 					false
 				);
-				this.props.settingsActions.setSettings(PosStorage.loadSettings());
+				this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
 				//this.props.settings.uiLanguage.name
 				this.setState({ isLoading: false });
 
@@ -1076,7 +758,11 @@ class Login extends Component {
 // };
 
 function mapStateToProps(state, props) {
-	return { settings: state.settingsReducer.settings, auth: state.authReducer, network: state.networkReducer.network, };
+	return { 
+		settings: state.settingsReducer.settings,
+		auth: state.authReducer,
+		network: state.networkReducer.network
+	 };
 }
 function mapDispatchToProps(dispatch) {
 	return {
@@ -1085,7 +771,10 @@ function mapDispatchToProps(dispatch) {
 		topUpActions: bindActionCreators(TopUpActions, dispatch),
 		settingsActions: bindActionCreators(SettingsActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
-		authActions: bindActionCreators(AuthActions, dispatch)
+		authActions: bindActionCreators(AuthActions, dispatch),
+        inventoryActions: bindActionCreators(InventoryActions, dispatch),
+        productActions: bindActionCreators(ProductActions, dispatch),
+        receiptActions: bindActionCreators(receiptActions, dispatch)
 	};
 }
 

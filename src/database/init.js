@@ -6,7 +6,7 @@ import { ProductMRPSchema, ProductMRPSyncDateSchema } from './productmrp/product
 import { ProductSchema, ProductSyncDateSchema } from './products/product.model';
 import { SalesChannelSchema } from './sales-channels/sales-channels.model';
 import { CustomerTypesSchema } from './customer-types/customer-types.model';
-import { SettingsSchema } from './settings/settings.model';
+import { SettingsSchema, TokenExpirySchema } from './settings/settings.model';
 
 
 // Realm schema creation
@@ -34,9 +34,10 @@ export default realm = new Realm({
         ProductSyncDateSchema,
         CustomerTypesSchema,
         SalesChannelSchema,
-        SettingsSchema
+        SettingsSchema,
+        TokenExpirySchema
     ],
-    schemaVersion: 46,
+    schemaVersion: 47,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
         console.log('newRealm', newRealm)

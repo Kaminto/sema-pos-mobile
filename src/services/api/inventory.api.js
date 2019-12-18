@@ -92,7 +92,7 @@ class InventoryApi {
 					}
 				})
 				.catch(error => {
-					console.log('createInventory - Fetch: ' + error.message);
+					console.log('createInventory - Fetch: ' + error);
 					reject();
 				});
 		});
@@ -126,7 +126,7 @@ class InventoryApi {
 					}
 				})
 				.catch(error => {
-					console.log('deleteInventory - Fetch: ' + error.message);
+					console.log('deleteInventory - Fetch: ' + error);
 					reject();
 				});
 		});
@@ -157,7 +157,7 @@ class InventoryApi {
 							.catch(error => {
 								console.log(
 									'updateInventory - Parse JSON: ' +
-									error.message
+									error
 								);
 								reject();
 							});
@@ -169,7 +169,7 @@ class InventoryApi {
 					}
 				})
 				.catch(error => {
-					console.log('createInventory - Fetch: ' + error.message);
+					console.log('createInventory - Fetch: ' + error);
 					reject();
 				});
 		});

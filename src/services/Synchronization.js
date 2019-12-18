@@ -1,7 +1,7 @@
 import PosStorage from '../database/PosStorage';
 import CreditRealm from '../database/credit/credit.operations';
 import InventroyRealm from '../database/inventory/inventory.operations';
-
+import SettingRealm from '../database/settings/settings.operations';
 import Communications from '../services/Communications';
 import CreditApi from './api/credit.api';
 import InventoryApi from './api/inventory.api';
@@ -221,16 +221,17 @@ class Synchronization {
 						});
 					})
 					.catch(error => {
-						syncResult.error = error.message;
+						syncResult.error = error;
 						syncResult.status = 'failure';
 						resolve(syncResult);
-						console.log(error.message);
+						console.log(error);
 					});
 			} catch (error) {
-				syncResult.error = error.message;
+				console.log('error', error);
+				syncResult.error = error;
 				syncResult.status = 'failure';
 				resolve(syncResult);
-				console.log(error.message);
+				console.log(error);
 			}
 		});
 	}
@@ -284,9 +285,9 @@ class Synchronization {
 					});
 				})
 				.catch(error => {
-					resolve({ error: error.message, localReceipts: null });
+					resolve({ error: error, localReceipts: null });
 					console.log(
-						'Synchronization.synchronizeSales - error ' + error
+						'Synchronization.synchronizeSales - error ', error
 					);
 				});
 		});
@@ -295,7 +296,7 @@ class Synchronization {
  
  
 	async synchronizeReceipts() {
-		let settings = PosStorage.getSettings();
+		let settings = SettingRealm.getAllSetting();
 		let remoteReceipts = await PosStorage.loadRemoteReceipts();
 		console.log('remoteReceiptsremoteReceipts', remoteReceipts);
 		const receiptIds = [];
@@ -357,7 +358,7 @@ console.log('receiptIds', receiptIds);
 
 	synchReceipts() {
 		let date = new Date();
-		let settings = PosStorage.getSettings();
+		let settings = SettingRealm.getAllSetting();
 		date.setMinutes(date.getMinutes() - 12);
 		Communications.getReceiptsBySiteIdAndDate(settings.siteId, date).then(
 			json => {
@@ -376,12 +377,12 @@ console.log('receiptIds', receiptIds);
 	_refreshToken() {
 		// Check if token exists or has expired
 		return new Promise((resolve, reject) => {
-			let settings = PosStorage.getSettings();
-			let tokenExpirationDate = PosStorage.getTokenExpiration();
+			let settings = SettingRealm.getAllSetting();
+			let tokenExpirationDate = SettingRealm.getTokenExpiration();
 			let currentDateTime = new Date();
 
 			if (
-				settings.token.length == 0 ||
+				settings.token.length === 0 ||
 				currentDateTime > tokenExpirationDate
 			) {
 				// Either user has previously logged out or its time for a new token
@@ -392,17 +393,18 @@ console.log('receiptIds', receiptIds);
 					.then(result => {
 						if (result.status === 200) {
 							console.log('New token Acquired');
-							PosStorage.saveSettings(
+							SettingRealm.saveSettings(
 								settings.semaUrl,
 								settings.site,
 								settings.user,
 								settings.password,
 								settings.uiLanguage,
 								result.response.token,
-								settings.siteId
+								settings.siteId,
+								false
 							);
 							Communications.setToken(result.response.token);
-							PosStorage.setTokenExpiration();
+							SettingRealm.setTokenExpiration();
 						}
 						resolve();
 					})
@@ -426,7 +428,7 @@ console.log('receiptIds', receiptIds);
 		let date = new Date();
 		//date.setDate(date.getDate() - 30);
 		date.setDate(date.getDate() - 7);
-		let settings = PosStorage.getSettings();
+		let settings = SettingRealm.getAllSetting();
 		Communications.getReceiptsBySiteIdAndDate(settings.siteId, date).then(
 			json => {
 				console.log('receipt json', json);

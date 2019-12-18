@@ -77,7 +77,7 @@ class ProductSync {
                     'Synchronization.getInventory - error ' + error
                 );
                 resolve({
-                    error: error.message,
+                    error: error,
                     remoteProducts: 0
                 });
             });

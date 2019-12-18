@@ -24,11 +24,10 @@ import CreditRealm from '../database/credit/credit.operations';
 import CustomerRealm from '../database/customers/customer.operations'
 import InventroyRealm from '../database/inventory/inventory.operations';
 import SettingRealm from '../database/settings/settings.operations';
-
 import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
 import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
-
 import ProductsRealm from '../database/products/product.operations';
+
 import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
 import CreditApi from '../services/api/credit.api';
@@ -43,47 +42,25 @@ class AuthLoadingScreen extends React.Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             isConnected: false,
         };
         this.posStorage = PosStorage;
-
     }
 
     async componentDidMount() {
-
         console.log('PosApp - componentDidMount enter');
-
-        let isInitialized = this.posStorage.checkLocalDb();
-        let settings = this.posStorage.loadSettings();
-        console.log('settings', settings)
-        console.log('SettingRealm', SettingRealm.getAllSetting());
-        let settings2 = SettingRealm.getAllSetting();
-        console.log('settings2', settings2)
-        if(settings2.site === "" && settings2.siteId === ""){
-            console.log('login login login');
-            //this.props.settingsActions.setSettings({ ...settings, loginSync: true });
-            //this.props.navigation.navigate('Login');
+        let settings = SettingRealm.getAllSetting();
+        console.log('settings', settings);
+        if (settings.site === "" && settings.siteId === 0) {
+            this.props.settingsActions.setSettings({ ...settings, loginSync: true });
+            this.props.navigation.navigate('Login');
         }
 
 
-        if(settings2.site != "" && settings2.siteId != ""){
-            console.log('not login');
-            if (settings2.token.length > 1) {
+        if (settings.site != "" && settings.siteId > 0) {
 
-            }
-
-            if (settings2.token.length === 0) {
-                this.props.settingsActions.setSettings({ ...settings, loginSync: true });
-                this.props.navigation.navigate('Login');
-            }
-        }
-   
-
-        if (isInitialized === 'SetUp Not Required') {
             if (settings.token.length > 1) {
-
                 Communications.initialize(
                     settings.semaUrl,
                     settings.site,
@@ -91,7 +68,7 @@ class AuthLoadingScreen extends React.Component {
                     settings.password,
                     settings.token,
                     settings.siteId
-                );         
+                );
 
                 this.posStorage.loadLocalData();
 
@@ -112,8 +89,8 @@ class AuthLoadingScreen extends React.Component {
                     this.posStorage.getRemoteReceipts()
                 );
                 console.log('getRemoteReceipts', this.posStorage.getRemoteReceipts());
-                console.log('SalesChannelRealm',CustomerTypeRealm.getCustomerTypes())
-                console.log('SalesChannelRealm',CustomerTypeRealm.getCustomerTypeByName('anonymous'));
+                console.log('SalesChannelRealm', CustomerTypeRealm.getCustomerTypes())
+                console.log('SalesChannelRealm', CustomerTypeRealm.getCustomerTypeByName('anonymous'));
                 Synchronization.initialize(
                     CustomerRealm.getLastCustomerSync(),
                     ProductsRealm.getLastProductsync(),
@@ -121,7 +98,6 @@ class AuthLoadingScreen extends React.Component {
                     CreditRealm.getLastCreditSync(),
                     InventroyRealm.getLastInventorySync(),
                 );
-
 
                 //ProductsRealm.truncate();
 
@@ -135,17 +111,13 @@ class AuthLoadingScreen extends React.Component {
                 this.props.settingsActions.setSettings({ ...settings, loginSync: true });
                 this.props.navigation.navigate('Login');
             }
-
         }
-
 
         NetInfo.isConnected.fetch().then(isConnected => {
             console.log('Network is ' + (isConnected ? 'online' : 'offline'));
             this.props.networkActions.NetworkConnection(isConnected);
             Synchronization.setConnected(isConnected);
         });
-
-
         console.log('PosApp = Mounted-Done');
     }
 
@@ -159,11 +131,10 @@ class AuthLoadingScreen extends React.Component {
             <View style={styles.container}>
                 <ActivityIndicator size={120} color="#0000ff" />
                 <StatusBar barStyle="light-content" />
+
             </View>
         );
     }
-
-
 
 }
 

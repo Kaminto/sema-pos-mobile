@@ -33,7 +33,7 @@ class SalesChannelApi {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-		let url = 'sema/sales-channels';
+		let url = 'sema/sales-channels'; 
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.then(responseJson => {

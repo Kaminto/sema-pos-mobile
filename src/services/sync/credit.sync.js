@@ -160,7 +160,7 @@ class CreditSync {
                         'Synchronization.getInventory - error ' + error
                     );
                     resolve({
-                        error: error.message,
+                        error: error,
                         localCredit: 0,
                         remoteCredit: 0
                     });
