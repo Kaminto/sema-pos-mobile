@@ -12,6 +12,11 @@ import { bindActionCreators } from 'redux';
 import * as ProductActions from '../../actions/ProductActions';
 import * as OrderActions from '../../actions/OrderActions';
 import PosStorage from '../../database/PosStorage';
+
+// import PosStorage from '../../database/PosStorage';
+// import PosStorage from '../../database/PosStorage';
+// import PosStorage from '../../database/PosStorage';
+
 import Communications from '../../services/Communications';
 
 import randomMC from 'random-material-color';

@@ -379,10 +379,13 @@ class OrderCheckout extends Component {
 	}
 
 	_isAnonymousCustomer(customer) {
-		return CustomerTypeRealm.getCustomerTypeByName('anonymous').id ==
+		if(CustomerTypeRealm.getCustomerTypeByName('anonymous')){
+			return CustomerTypeRealm.getCustomerTypeByName('anonymous').id ==
 			customer.customerTypeId
 			? true
 			: false;
+		}
+		return false;
 	}
 
 	calculateOrderDue() {
@@ -875,10 +878,16 @@ class OrderCheckout extends Component {
 	}
 
 	_isAnonymousCustomer(customer) {
-		return CustomerTypeRealm.getCustomerTypeByName('anonymous').id ==
+
+		if(CustomerTypeRealm.getCustomerTypeByName('anonymous')){
+			return CustomerTypeRealm.getCustomerTypeByName('anonymous').id ==
 			customer.customerTypeId
 			? true
 			: false;
+		}
+		return false;
+
+		
 	}
 
 	calculateOrderDue() {
@@ -970,6 +979,7 @@ class OrderCheckout extends Component {
 		let salesChannel = SalesChannelRealm.getSalesChannelFromName(
 			this.props.channel.salesChannel
 		);
+		console.log('salesChannel', salesChannel);
 		if (salesChannel) {
 			let productMrp = ProductMRPRealm.getFilteredProductMRP()[
 				ProductMRPRealm.getProductMrpKeyFromIds(
@@ -1160,6 +1170,7 @@ class OrderCheckout extends Component {
 			});
 			receipt.total = priceTotal;
 			receipt.cogs = cogsTotal;
+			console.log('receipt.products ', receipt.products);
 			console.log(receipt);
 			console.log('receipt.receiptreceiptreceipt()');
 		}

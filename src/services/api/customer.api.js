@@ -8,16 +8,18 @@ class CustomerApi {
         this._siteId = '';
     }
 
-    initialize(url, site, user, password) {
-        if (!url.endsWith('/')) {
-            url = url + '/';
-        }
-        this._url = url;
-        this._site = site;
-        this._user = user;
-        this._password = password;
-        this._token = 'not set';
-    }
+    initialize(url, site, user, password, token, siteId) {
+		if (!url.endsWith('/')) {
+			url = url + '/';
+		}
+		this._url = url;
+		this._site = site;
+		this._user = user;
+		this._password = password;
+		this._token = token;
+		this._siteId = siteId;
+	}
+
 
     setToken(token) {
         this._token = token;

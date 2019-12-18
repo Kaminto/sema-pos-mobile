@@ -6,6 +6,7 @@ import { ProductMRPSchema, ProductMRPSyncDateSchema } from './productmrp/product
 import { ProductSchema, ProductSyncDateSchema } from './products/product.model';
 import { SalesChannelSchema } from './sales-channels/sales-channels.model';
 import { CustomerTypesSchema } from './customer-types/customer-types.model';
+import { SettingsSchema } from './settings/settings.model';
 
 
 // Realm schema creation
@@ -32,7 +33,8 @@ export default realm = new Realm({
         ProductSchema,
         ProductSyncDateSchema,
         CustomerTypesSchema,
-        SalesChannelSchema
+        SalesChannelSchema,
+        SettingsSchema
     ],
     schemaVersion: 46,
     migration: (oldRealm, newRealm) => {
