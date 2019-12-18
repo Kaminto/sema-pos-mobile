@@ -21,6 +21,7 @@ import { bindActionCreators } from 'redux';
 import Synchronization from '../services/Synchronization';
 
 import PosStorage from '../database/PosStorage';
+import SettingRealm from '../database/settings/settings.operations';
 
 import * as TopUpActions from '../actions/TopUpActions';
 import * as SettingsActions from '../actions/SettingsActions';
@@ -999,7 +1000,7 @@ class Login extends Component {
 		console.log(this.state);
 		console.log(this.state.selectedLanguage);
 		console.log(token);
-		PosStorage.saveSettings(
+		SettingRealm.saveSettings(
 			"http://142.93.115.206:3006/",
 			site,
 			this.state.user,
@@ -1046,14 +1047,15 @@ class Login extends Component {
 				Events.trigger('SalesChannelsUpdated', {});
 				let currentSettings = PosStorage.loadSettings();
 				console.log(currentSettings);
-				PosStorage.saveSettings(
+				SettingRealm.saveSettings(
 					"http://142.93.115.206:3006/",
 					currentSettings.site,
 					currentSettings.user,
 					currentSettings.password,
 					this.state.selectedLanguage,
 					currentSettings.token,
-					currentSettings.siteId
+					currentSettings.siteId,
+					false
 				);
 				this.props.settingsActions.setSettings(PosStorage.loadSettings());
 				//this.props.settings.uiLanguage.name

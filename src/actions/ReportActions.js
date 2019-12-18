@@ -168,6 +168,8 @@ const getSalesData = (beginDate, endDate) => {
 		finalData.mapping.clear();
 		delete finalData.mapping;
 
+		console.log('finalData', finalData)
+
 		resolve(finalData);
 	});
 };
