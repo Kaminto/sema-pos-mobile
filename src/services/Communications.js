@@ -46,8 +46,7 @@ class Communications {
 			token,
 			siteId
 		); 
-
-
+		
 		CustomerApi.initialize(
 			url,
 			site,
@@ -89,9 +88,24 @@ class Communications {
 
 	setToken(token) {
 		this._token = token;
+		SalesChannelApi.setToken(token);
+		CreditApi.setToken(token);
+		InventoryApi.setToken(token);
+		CustomerApi.setToken(token);
+		ProductApi.setToken(token);
+		CustomerTypeApi.setToken(token);
+		SalesChannelApi.setToken(token);
+
 	}
 	setSiteId(siteId) {
 		this._siteId = siteId;
+		SalesChannelApi.setSiteId(siteId);
+		CreditApi.setSiteId(siteId);
+		InventoryApi.setSiteId(siteId);
+		CustomerApi.setSiteId(siteId);
+		ProductApi.setSiteId(siteId);
+		CustomerTypeApi.setSiteId(siteId);
+		SalesChannelApi.setSiteId(siteId);
 	}
 
 	login() {

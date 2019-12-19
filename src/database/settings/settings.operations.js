@@ -1,6 +1,4 @@
-import realm from '../init';
-const uuidv1 = require('uuid/v1');
-import moment from 'moment-timezone';
+import realm from '../init'; 
 
 class SettingRealm {
     constructor() {
@@ -24,7 +22,6 @@ class SettingRealm {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('TokenExpiry')))).length == 0) {
                 let expirationDate = new Date();
                 expirationDate.setTime(expirationDate.getTime() + 22 * 60 * 60 * 1000);
-                console.log('Token will expire at: ' + expirationDate.toString());
                 realm.create('TokenExpiry', { expirationDate: expirationDate.toString() });
             }
         });
@@ -56,7 +53,6 @@ class SettingRealm {
         realm.write(() => {
             let expirationDate = new Date();
             expirationDate.setTime(expirationDate.getTime() + 22 * 60 * 60 * 1000);
-            console.log('Token will expire at: ' + expirationDate.toString());
             let tokenExpiryObj = realm.objects('TokenExpiry');
             tokenExpiryObj[0].expirationDate = expirationDate.toISOString()
         })
@@ -84,7 +80,6 @@ class SettingRealm {
 
 
     saveSettings(url, site, user, password, uiLanguage, token, siteId, loginSync) {
-        console.log('uiLanguage', uiLanguage);
         let settings = {
             semaUrl: url,
             site,
@@ -99,16 +94,28 @@ class SettingRealm {
         try {
             realm.write(() => {
                 let settingObj = realm.objects('Settings');
-                console.log(settingObj[0])
                 settingObj[0].semaUrl = settings.semaUrl;
                 settingObj[0].site = site;
                 settingObj[0].user = user;
                 settingObj[0].password = password;
                 settingObj[0].uiLanguage = settings.uiLanguage;
-                settingObj[0].token = token;
+                settingObj[0].token = settings.token;
                 settingObj[0].siteId = siteId;
                 settingObj[0].loginSync = loginSync;
+            })
 
+        } catch (e) {
+            console.log("Error on creation", e);
+        }
+
+    }
+
+
+    setUILanguage(uiLanguage) {
+        try {
+            realm.write(() => {
+                let settingObj = realm.objects('Settings');
+                settingObj[0].uiLanguage = JSON.stringify(uiLanguage);
             })
 
         } catch (e) {
