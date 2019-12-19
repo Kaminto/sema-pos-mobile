@@ -232,7 +232,7 @@ class CustomerEdit extends Component {
 					scrollEnabled={true}>
 					<View style={{ flex: 1, alignItems: 'center' }}>
 
-						<Card containerStyle={{ width: '55%', marginTop: 30, padding: 0 }}>
+						<Card containerStyle={{ width: '55%', marginTop: 30, padding: 0, borderRadius: 8 }}>
 
 							<Input
 								placeholder={i18n.t(
@@ -320,40 +320,30 @@ class CustomerEdit extends Component {
 									/>
 								}
 							/>
-						<View style={{ flex: 1, flexDirection: 'row' }}>
-						<View style={{ flex: 1 }}>
+						{/* <View style={{ flex: 1, flexDirection: 'row' }}>
+						<View style={{ flex: .5 }}>
 							<RNPickerSelect
 										onValueChange={(value) => {
 											this.setState({ customerChannel: value });
 										}}
 										value={this.state.customerChannel}
 										placeholder={splaceholder}
-										items={[
-											{"label":"Direct","value":2},
-											{"label":"Reseller","value":3},
-											{"label":"Water club","value":4},
-											{"label":"Outlet franchise","value":5}
-											]}
-											// style={pickerSelectStyles}
+										items={this.salesChannelOptions}
+									    style={pickerSelectStyles}
 									/>
-									</View><View style={{ flex: 1 }}>
+									</View><View style={{ flex: .5 }}> */}
 									<RNPickerSelect
 										value={this.state.customerType}
 										onValueChange={(value) => {
 											this.setState({ customerType: value });
 										}}
 										placeholder={cplaceholder}
-										items={[
-											{"label":"Business","value":5},
-											{"label":"Household","value":6},
-											{"label":"Retailer","value":4},
-											{"label":"Outlet Franchise","value":8}
-										]}
-										// style={pickerSelectStyles}
+										items={this.customerTypesOptions}
+										style={pickerSelectStyles}
 
 									/>
-									</View>
-							</View>
+									{/* </View> */}
+							{/* </View> */}
 
 							<Button
 								onPress={() => this.onEdit()}
@@ -874,13 +864,13 @@ export default connect(
 const pickerSelectStyles = StyleSheet.create({
 	inputAndroid: {
 		fontSize: 18,
-		alignSelf: 'center',
 		borderWidth: 2,
-		borderRadius: 10,
-		borderColor: '#CCC',
-		backgroundColor: '#CCC',
-		margin: 5,
-	    paddingRight: 30, // to ensure the text is never behind the icon
+		borderRadius: 8,
+		borderColor: '#f1f1f1',
+		backgroundColor: '#f1f1f1',
+		alignItems: 'center',
+		margin: 10,
+	    paddingRight: 30 // to ensure the text is never behind the icon
 	},
   });
 
@@ -914,7 +904,7 @@ const styles = StyleSheet.create({
 		fontSize: 24,
 		alignSelf: 'center',
 		borderWidth: 2,
-		borderRadius: 10,
+		borderRadius: 8,
 		borderColor: '#f1f1f1',
 		backgroundColor: '#f1f1f1',
 		margin: 5

@@ -100,7 +100,9 @@ class Login extends Component {
 							<Card
 								title={'Welcome to SEMA'}
 								titleStyle={{ fontSize: 26 }}
-								containerStyle={{ width: '40%', marginTop: 30 }}>
+								dividerStyle={{ display: 'none' }}
+								containerStyle={{ width: '40%', marginTop: 30, elevation: 5 }}>
+
 								<Input
 									label={i18n.t('username-or-email-placeholder')}
 									onChangeText={this.onChangeEmail.bind(this)}

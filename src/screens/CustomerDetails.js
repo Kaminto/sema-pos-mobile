@@ -208,25 +208,8 @@ class CustomerDetails extends Component {
 					</View>
 				</View>
 
-				<View style={{ flex: 1, backgroundColor: '#fff' }}>
-					<View style={{ flex: 1, flexDirection: 'row' }}>
-                    <View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 4, borderRightColor: '#CCC' }}>
-						<FlatList
-							data={this.prepareData()}
-							renderItem={this.renderReceipt.bind(this)}
-							keyExtractor={(item, index) => item.id}
-							ItemSeparatorComponent={this.renderSeparator}
-							extraData={this.state.refresh}
-						/>
-					</View>
+				{this.getTransactionDetail()}
 
-					<View style={{ flex: 2, backgroundColor: '#fff' }}>
-						<ScrollView>
-							{this.getTransactionDetail()}
-						</ScrollView>
-					</View>
-				</View>
-				</View>
 				<FloatingAction
 					actions={actions}
 					onPressItem={name => {
@@ -291,15 +274,36 @@ class CustomerDetails extends Component {
 	getTransactionDetail() {
 		if (this.state.selected) {
 			return (
-				<TransactionDetail
+
+				<View style={{ flex: 1, flexDirection: 'row' }}>
+                    <View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 4, borderRightColor: '#CCC' }}>
+						<FlatList
+							data={this.prepareData()}
+							renderItem={this.renderReceipt.bind(this)}
+							keyExtractor={(item, index) => item.id}
+							ItemSeparatorComponent={this.renderSeparator}
+							extraData={this.state.refresh}
+						/>
+					</View>
+
+					<View style={{ flex: 2, backgroundColor: '#fff' }}>
+						<ScrollView>
+						<TransactionDetail
 							    item={this.state.selected}
 								products={this.props.products}
 								receiptActions={this.props.receiptActions}
 								remoteReceipts={this.props.remoteReceipts}
-				/>
+			        	/>
+						</ScrollView>
+					</View>
+				</View>
 			);
 		} else {
-			return null;
+			return (
+				<View style={{ flex: 1, flexDirection: 'row' }}>
+					<Text style={{ fontSize: 20, fontWeight: 'bold', alignContent:"center", justifyContent:"center" }}>Record this customer's sales.</Text>
+				</View>
+			);
 		}
 	}
 
