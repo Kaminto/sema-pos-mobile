@@ -293,7 +293,7 @@ class PosStorage {
 		realm.write(() => {
 			value = realm.objectForPrimaryKey('SemaRealm', key);
 		});
-		if(value.data){
+		if(value){
 		return value.data;
 		}
 		return [];
@@ -343,7 +343,7 @@ class PosStorage {
 						'SemaRealm',
 						keyArray[i]
 					);
-					if(value.data){
+					if(value){
 						let semaobject = [keyArray[i], value.data];
 						result.push(semaobject);
 					}
@@ -364,7 +364,7 @@ class PosStorage {
 				'SemaRealm',
 				keyArray[i]
 			);
-			if(value.data){
+			if(value){
 			let semaobject = [keyArray[i], value.data];
 			result.push(semaobject);
 			}
