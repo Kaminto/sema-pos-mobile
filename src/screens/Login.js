@@ -183,13 +183,11 @@ class Login extends Component {
 	}
 
 	onChangeEmail = user => {
-		console.log(user);
 		this.setState({ user });
 		//this.props.parent.forceUpdate();
 	};
 
 	onChangePassword = password => {
-		console.log(password);
 		this.setState({ password });
 		//this.props.parent.forceUpdate();
 	};
@@ -336,21 +334,11 @@ class Login extends Component {
 				)[0]
 			},
 			() => {
-				console.log(
-					`Selected language is ${this.state.selectedLanguage.name}`
-				);
-				console.log(
-					`Selected language is ${this.state.selectedLanguage.iso_code}`
-				);
 				i18n.locale = this.state.selectedLanguage.iso_code;
-
-				Events.trigger('SalesChannelsUpdated', {});
-				//SettingRealm.setUILanguage(this.state.selectedLanguage);
+				SettingRealm.setUILanguage(this.state.selectedLanguage);
 				this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
-
 			}
 		);
-		console.log(this.state.selectedLanguage);
 	}
 }
 
