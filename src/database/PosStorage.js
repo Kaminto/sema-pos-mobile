@@ -9,7 +9,7 @@ import InventroyRealm from './inventory/inventory.operations';
 import CreditRealm from './credit/credit.operations';
 import realm from './init';
 
- 
+
 
 const uuidv1 = require('uuid/v1');
 
@@ -190,7 +190,7 @@ class PosStorage {
 				this.stringify(this.reminderData)
 			]
 		];
-		
+
 		InventroyRealm.initialise();
 		CreditRealm.initialise();
 		console.log(keyArray);
