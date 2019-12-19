@@ -75,7 +75,7 @@ class SalesChannelSync {
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization.getInventory - error ' , error
+                        'Synchronization.SalesChannel - error ' , error
                     );
                     resolve({
                         error: error,

@@ -35,6 +35,8 @@ class CustomerTypeApi {
 			}
 		};
 		let url = 'sema/customer-types';
+		console.log('this._url + url', this._url + url);
+		console.log('this._token', this._token);
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.then(responseJson => {

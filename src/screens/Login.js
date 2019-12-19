@@ -37,7 +37,7 @@ import * as SettingsActions from '../actions/SettingsActions';
 import * as ToolbarActions from '../actions/ToolBarActions';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as NetworkActions from '../actions/NetworkActions';
-import * as AuthActions from '../actions/AuthActions';   
+import * as AuthActions from '../actions/AuthActions';
 import * as ProductActions from '../actions/ProductActions';
 import * as receiptActions from '../actions/ReceiptActions';
 import * as InventoryActions from '../actions/InventoryActions';
@@ -63,47 +63,29 @@ const supportedUILanguages = [
 
 class Login extends Component {
 	constructor(props) {
-		let setting = SettingRealm.getAllSetting();
-		console.log(setting);
 		super(props);
-		// this.url = React.createRef();
-		// this.site = React.createRef();
-		this.url = setting.semaUrl;
-		this.site = setting.site;
-		this.user = React.createRef();
+	 
 		this.supportedLanguages = React.createRef();
-		this.password = React.createRef();
 
 		this.state = {
-			animating: false,
 			language: '',
 			user: "administrator",
 			password: "Let'sGrow",
 			selectedLanguage: {},
-			isLoggedIn: setting.token.length > 0 || false,
 			isLoading: false
 		};
 
 		this.onShowLanguages = this.onShowLanguages.bind(this);
 		this.onLanguageSelected = this.onLanguageSelected.bind(this);
-		this.onSaveSettings = this.onSaveSettings.bind(this);
 	}
 
 	componentDidMount() {
-		console.log(this.props.settings);
-		this.props.authActions.isAuth(
-			SettingRealm.getAllSetting().token.length > 0 || false
-		);
 	}
 
-	componentDidUpdate(oldProps) {
-		if (this.props.auth.status !== oldProps.auth.status) {
-			this.setState({ isLoggedIn: this.props.auth.status })
-		}
+	componentDidUpdate() {
 	}
 
 	render() {
-		console.log(this.props.settings);
 		let serviceItems = supportedUILanguages.map((s, i) => {
 			return <Picker.Item key={i} value={s.iso_code} label={s.name} />
 		});
@@ -115,7 +97,6 @@ class Login extends Component {
 						resetScrollToCoords={{ x: 0, y: 0 }}
 						scrollEnabled={false}>
 						<View style={{ flex: 1, alignItems: 'center', backgroundColor: '#f1f1f1' }}>
-
 							<Card
 								title={'Welcome to SEMA'}
 								titleStyle={{ fontSize: 26 }}
@@ -123,30 +104,16 @@ class Login extends Component {
 								containerStyle={{ width: '40%', marginTop: 30, elevation: 5 }}>
 
 								<Input
-									// placeholder={i18n.t(
-									// 	'username-or-email-placeholder'
-									// )}
 									label={i18n.t('username-or-email-placeholder')}
 									onChangeText={this.onChangeEmail.bind(this)}
-									// leftIcon={
-									// 	<Icon
-									// 		name='md-mail'
-									// 		size={24}
-									// 		color='black'
-									// 	/>
-									// }
 									inputContainerStyle={[styles.inputText]}
 								/>
-
 								<Input
-									// placeholder={i18n.t('password-placeholder')}
 									label={i18n.t('password-placeholder')}
 									secureTextEntry={true}
 									onChangeText={this.onChangePassword.bind(this)}
 									inputContainerStyle={[styles.inputText]}
 								/>
-
-
 								<Picker
 									selectedValue={this.state.selectedLanguage.iso_code}
 									onValueChange={(itemValue, itemIndex) => {
@@ -156,24 +123,14 @@ class Login extends Component {
 								>
 									{serviceItems}
 								</Picker>
-
 								<Button
 									onPress={this.onConnection.bind(this)}
 									buttonStyle={{ borderRadius: 8, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10, padding: 10 }}
 									title={i18n.t('connect')} />
 
 							</Card>
-
-
-
-						
 						</View>
 					</KeyboardAwareScrollView>
-					{this.state.animating && (
-						<View style={styles.activityIndicator}>
-							<ActivityIndicator size="large" />
-						</View>
-					)}
 					{
 						this.state.isLoading && (
 							<ActivityIndicator size={120} color="#0000ff" />
@@ -183,172 +140,29 @@ class Login extends Component {
 			</View>
 		);
 	}
-
-
-
-
-	getSettingsCancel() {
-		try {
-			if (CustomerTypeRealm.getCustomerTypes()) {
-				if (CustomerTypeRealm.getCustomerTypes().length > 0) {
-					if (Communications._token) {
-						return (
-							<TouchableHighlight
-								onPress={() => this.onCancelSettings()}>
-								<Image
-									source={require('../images/icons8-cancel-50.png')}
-									style={{ marginRight: 100 }}
-								/>
-							</TouchableHighlight>
-						);
-					}
-				}
-			}
-			return null;
-		} catch (error) { }
-	}
-
-	getUrl() {
-		return this.props.settings.semaUrl;
-	}
-
-	getUser() {
-		return this.props.settings.user;
-	}
-
-	getPassword() {
-		return this.props.settings.password;
-	}
-
-	getSite() {
-		return this.props.settings.site;
-	}
-
-	onCancelSettings() {
-		this.props.toolbarActions.ShowScreen('main');
-	}
-
+ 
 	onShowLanguages() {
 		this.supportedLanguages.current.show();
-	}
+	} 
 
-	closeHandler() {
-		this.onCancelSettings();
-	}
-
-	onSaveSettings() {
-		this.setState({ isLoading: true });
-		// TODO - Validate fields and set focus to invalid field;
-		this.saveSettings(
-			this.props.settings.site,
-			this.props.settings.token,
-			this.props.settings.siteId
-		);
-	}
-
-	enableSaveSettings() {
-		return true;
-	}
 	onSynchronize() {
 		try {
 			this.setState({ isLoading: true });
 			Synchronization.synchronize().then(syncResult => {
 				this.setState({ isLoading: false });
 				console.log(
-					'Synchronization-result: ' + JSON.stringify(syncResult)
+					'Synchronization-result: ', syncResult
 				);
-				// let foo = this._getSyncResults(syncResult);
-				Alert.alert(
-					i18n.t('sync-results'),
-					this._getSyncResults(syncResult),
-					[{ text: i18n.t('ok'), style: 'cancel' }],
-					{ cancelable: true }
-				);
-			});
-			//Added by Jean Pierre
-			Synchronization.getLatestSales();
-		} catch (error) { }
-	}
-	_getSyncResults(syncResult) {
-		try {
-			if (syncResult.status != 'success')
-				return i18n.t('sync-error', { error: syncResult.error });
-			if (
-				syncResult.hasOwnProperty('customers') &&
-				syncResult.customers.error != null
-			)
-				return i18n.t('sync-error', {
-					error: syncResult.customers.error
-				});
-			if (
-				syncResult.hasOwnProperty('products') &&
-				syncResult.products.error != null
-			)
-				return i18n.t('sync-error', {
-					error: syncResult.products.error
-				});
-			if (
-				syncResult.hasOwnProperty('sales') &&
-				syncResult.sales.error != null
-			)
-				return i18n.t('sync-error', { error: syncResult.sales.error });
-			if (
-				syncResult.hasOwnProperty('productMrps') &&
-				syncResult.productMrps.error != null
-			)
-				return i18n.t('sync-error', {
-					error: syncResult.productMrps.error
-				});
-			else {
-				if (
-					syncResult.customers.localCustomers == 0 &&
-					syncResult.customers.remoteCustomers == 0 &&
-					syncResult.products.remoteProducts == 0 &&
-					syncResult.sales.localReceipts == 0 &&
-					syncResult.productMrps.remoteProductMrps == 0
-				) {
-					return i18n.t('data-is-up-to-date');
-				} else {
-					return `${syncResult.customers.localCustomers +
-						syncResult.customers.remoteCustomers} ${i18n.t(
-							'customers-updated'
-						)}
-				${syncResult.products.remoteProducts} ${i18n.t('products-updated')}
-				${syncResult.sales.localReceipts} ${i18n.t('sales-receipts-updated')}
-				${syncResult.productMrps.remoteProductMrps} ${i18n.t(
-							'product-sales-channel-prices-updated'
-						)}`;
-				}
-			}
-		} catch (error) { }
-	}
-	onClearAll() {
-		console.log('Settings:onClearAll');
-		let alertMessage = i18n.t('clear-all-data');
-		Alert.alert(
-			alertMessage,
-			i18n.t('are-you-sure', { doThat: i18n.t('delete-all-data') }),
-			[
-				{
-					text: i18n.t('no'),
-					onPress: () => console.log('Cancel Pressed'),
-					style: 'cancel'
-				},
-				{
-					text: i18n.t('yes'),
-					onPress: () => {
-						this._clearDataAndSync();
-						this.closeHandler();
-					}
-				}
-			],
-			{ cancelable: false }
-		);
-	}
-	enableClearAll() {
-		return true;
-	}
 
+				Synchronization.getLatestSales();
+				this.loadSyncedData();
+				this.props.navigation.navigate('App')
+			});
+
+		} catch (error) { }
+	};
+
+  
 	_clearDataAndSync() {
 		try {
 			PosStorage.clearDataOnly();
@@ -369,248 +183,92 @@ class Login extends Component {
 	}
 
 	onChangeEmail = user => {
-		console.log(user);
 		this.setState({ user });
 		//this.props.parent.forceUpdate();
 	};
 
 	onChangePassword = password => {
-		console.log(password);
 		this.setState({ password });
 		//this.props.parent.forceUpdate();
 	};
 
-
 	onConnection() {
-		this.setState({ animating: true });
+		this.setState({ isLoading: true });
 
-		let settings = SettingRealm.getAllSetting();
-		Communications.initialize(
-			settings.semaUrl,
-			settings.site,
-			this.state.user,
-			this.state.password,
-			settings.token,
-			settings.siteId
-		);
+		Communications.login()
+			.then(result => {
+				console.log('Passed - status' + result.status + ' ', result.response);
+				if (result.status === 200) {
+					let oldSettings = { ...SettingRealm.getAllSetting() };
+					SettingRealm.saveSettings(
+						"http://142.93.115.206:3006/",
+						result.response.data.kiosk.name,
+						this.state.user,
+						this.state.password,
+						this.state.selectedLanguage,
+						result.response.token,
+						result.response.data.kiosk.id,
+						false
+					);
 
-		console.log(this.props.settings);
-		if (this.props.settings.loginSync) {
-			this.loginWithSync()
-				.then(data => {
-					console.log('data', data);
-					this.props.navigation.navigate('App');
-				})
-				.catch(error => {
-					console.log('error', error);
-				});
+					Communications.initialize(
+						"http://142.93.115.206:3006/",
+						result.response.data.kiosk.name,
+						this.state.user,
+						this.state.password,
+						result.response.token,
+						result.response.data.kiosk.id,
+					);
 
-		}
-
-		if (!this.props.settings.loginSync) {
-
-			if (this.state.user === this.props.settings.user && this.state.password === this.props.settings.password) {
-
-				Communications.login()
-					.then(result => {
-						console.log(
-							'Passed - status' +
-							result.status +
-							' ' +
-							JSON.stringify(result.response)
-						);
-						if (result.status === 200) {
-							console.log('reponse', result.response);
-							console.log('kiosks', result.response.data.kioskUser);
-							//'UGTraining',
-
-							console.log('siteId', result.response.data.kiosk.id)
-							this.props.authActions.isAuth(true);
-							this.saveSettings(
-								result.response.data.kiosk.name,
-								result.response.token,
-								result.response.data.kiosk.id
-							);
-							Communications.setToken(
-								result.response.token
-							);
-							Communications.setSiteId(result.response.data.kiosk.id);
-							SettingRealm.setTokenExpiration();
-							console.log("TokenExpiration is set");
-							this.props.navigation.navigate('App');
-
-						} else {
-							this.setState({ animating: false });
-							message =
-								result.response.msg +
-								'(Error code: ' +
-								result.status +
-								')';
-							Alert.alert(
-								i18n.t('network-connection'),
-								message,
-								[{ text: i18n.t('ok'), style: 'cancel' }],
-								{ cancelable: true }
-							);
-						}
-					})
-					.catch(result => {
-						console.log(
-							'Failed- status ' +
-							result.status +
-							' ' +
-							result.response.message
-						);
-						this.setState({ animating: false });
-						Alert.alert(
-							i18n.t('network-connection'),
-							result.response.message + '. (' + result.status + ')',
-							[{ text: i18n.t('ok'), style: 'cancel' }],
-							{ cancelable: true }
-						);
-					});
+					Communications.setToken(
+						result.response.token
+					);
+					Communications.setSiteId(result.response.data.kiosk.id);
+					SettingRealm.setTokenExpiration();
 
 
-			} else {
-				this.setState({ animating: true });
+					if (this.isSiteIdDifferent(result.response.data.kiosk.id, oldSettings.siteId)) {
+						console.log('different site id Sync');
+						this.onSynchronize();
+						this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
+						this.setState({ isLoading: false });
+						this.props.navigation.navigate('App');
+					}
+
+					if (!this.isSiteIdDifferent(result.response.data.kiosk.id, oldSettings.siteId)) {
+						console.log('same site id load data');
+						this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
+						this.setState({ isLoading: false });
+						this.props.navigation.navigate('App');
+					}
+
+				} else {
+					this.setState({ isLoading: false });
+					message =
+						result.response.msg +
+						'(Error code: ' +
+						result.status +
+						')';
+					Alert.alert(
+						i18n.t('network-connection'),
+						message,
+						[{ text: i18n.t('ok'), style: 'cancel' }],
+						{ cancelable: true }
+					);
+				}
+			})
+			.catch(result => {
+				console.log('Failed- status ', result.status + ' ', result.response.message);
+				this.setState({ isLoading: false });
 				Alert.alert(
 					i18n.t('network-connection'),
-					'Wrong Credentials have been Provided',
+					result.response.message + '. (' + result.status + ')',
 					[{ text: i18n.t('ok'), style: 'cancel' }],
 					{ cancelable: true }
 				);
-			}
-
-		}
+			});
 
 	}
-
-
-	loginWithSync() {
-		return new Promise((resolve, reject) => {
-			try {
-				let message = i18n.t('successful-connection');
-				Communications.login()
-					.then(async result => {
-						console.log(
-							'Passed - status' +
-							result.status +
-							' ' ,
-							JSON.stringify(result.response)
-						);
-						if (result.status === 200) {
-
-							console.log(result.response.token);
-							console.log('kiosks', result.response.data.kiosk);
-							console.log('kiosks', result.response.data.kioskUser);
-
-							this.props.authActions.isAuth(true);
-							this.saveSettings(
-								result.response.data.kiosk.name,
-								result.response.token,
-								result.response.data.kiosk.id
-							);
-							Communications.setToken(
-								result.response.token
-							);
-							Communications.setSiteId(result.response.data.kiosk.id);
-							SettingRealm.setTokenExpiration();
-							console.log("TokenExpiration is set");
-							await SalesChannelSync.synchronizeSalesChannels();
-							Synchronization.scheduleSync();
-
-							let date = new Date();
-							//date.setDate(date.getDate() - 30);
-							date.setDate(date.getDate() - 7);
-							//	this.props.navigation.navigate('App');
-							Communications.getReceiptsBySiteIdAndDate(
-								result.response.data.kiosk.id,
-								date
-							)
-								.then(json => {
-
-									resolve({
-										status: 200,
-										response: 'Success'
-									});
-									PosStorage.addRemoteReceipts(
-										json
-									).then(saved => {
-										console.log('SAVED');
-										console.log(
-											JSON.stringify(saved)
-										);
-										console.log('END');
-										this.setState({ animating: false });
-										Alert.alert(
-											i18n.t('network-connection'),
-											message,
-											[{ text: i18n.t('ok'), style: 'cancel' }],
-											{ cancelable: true }
-										);
-										this.loadSyncedData();
-
-										Events.trigger(
-											'ReceiptsFetched',
-											saved
-										);
-									});
-								})
-								.catch(error => {
-									reject({
-										status: 418,
-										response: error
-									});
-								});
-
-
-						} else {
-							this.setState({ animating: false });
-							message =
-								result.response.msg +
-								'(Error code: ' +
-								result.status +
-								')';
-							Alert.alert(
-								i18n.t('network-connection'),
-								message,
-								[{ text: i18n.t('ok'), style: 'cancel' }],
-								{ cancelable: true }
-							);
-						}
-					})
-					.catch(result => {
-						console.log(
-							'Failed- status ' +
-							result.status +
-							' ' +
-							result.response.message
-						);
-						this.setState({ animating: false });
-						reject({
-							status: 418,
-							response: 'error'
-						});
-						Alert.alert(
-							i18n.t('network-connection'),
-							result.response.message + '. (' + result.status + ')',
-							[{ text: i18n.t('ok'), style: 'cancel' }],
-							{ cancelable: true }
-						);
-					});
-			} catch (error) {
-				this.setState({ animating: false });
-				console.log(JSON.stringify(error));
-				reject({
-					status: 418,
-					response: error
-				});
-			}
-
-		});
-
-	}
-
 
 	loadSyncedData() {
 		PosStorage.loadLocalData();
@@ -620,7 +278,6 @@ class Login extends Component {
 		this.props.topUpActions.setTopups(
 			CreditRealm.getAllCredit()
 		);
-		// InventroyRealm.truncate();
 		this.props.inventoryActions.setInventory(
 			InventroyRealm.getAllInventory()
 		);
@@ -638,64 +295,19 @@ class Login extends Component {
 			InventroyRealm.getLastInventorySync(),
 		);
 
-		//ProductsRealm.truncate();
-
 		Synchronization.setConnected(this.props.network.isNWConnected);
 	}
 
-
-	enableConnectionOrSync() {
-		// let url = this.url.current
-		// 	? this.url.current.state.propertyText
-		// 	: this.getUrl();
-		// let site = this.site.current
-		// 	? this.site.current.state.propertyText
-		// 	: this.getSite();
-		let user = this.url.current
-			? this.user.current.state.propertyText
-			: this.getUser();
-		let password = this.password.current
-			? this.password.current.state.propertyText
-			: this.getPassword();
-
-		if (
-			// url.length > 0 &&
-			// site.length > 0 &&
-			user.length > 0 &&
-			password.length > 0
-		) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	saveSettings(site, token, siteId) {
-		// Check to see if the site has changed
-		let currentSettings = SettingRealm.getAllSetting();
-		if (currentSettings.siteId != siteId) {
+	isSiteIdDifferent(newSiteID, oldSiteID) {
+		//Check is locally stored siteID is different from the remote returned siteID 
+		if (newSiteID != oldSiteID) {
 			// New site - clear all data
 			this._clearDataAndSync();
+			return true;
 		}
-		console.log("jonah");
-		console.log(this.props);
-		//console.log(this.user.current.state.propertyText);
-		console.log(this.state);
-		console.log(this.state.selectedLanguage);
-		console.log(token);
-		SettingRealm.saveSettings(
-			"http://142.93.115.206:3006/",
-			site,
-			this.state.user,
-			this.state.password,
-			this.state.selectedLanguage,
-			token,
-			siteId,
-			false
-		);
-		this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
-		this.setState({ isLoading: false });
+		return false;
 	}
+
 
 	getDefaultUILanguage() {
 		console.log(
@@ -722,47 +334,21 @@ class Login extends Component {
 				)[0]
 			},
 			() => {
-				console.log(
-					`Selected language is ${this.state.selectedLanguage.name}`
-				);
 				i18n.locale = this.state.selectedLanguage.iso_code;
-
-				Events.trigger('SalesChannelsUpdated', {});
-				let currentSettings = SettingRealm.getAllSetting();
-				console.log(currentSettings);
-				SettingRealm.saveSettings(
-					"http://142.93.115.206:3006/",
-					currentSettings.site,
-					currentSettings.user,
-					currentSettings.password,
-					this.state.selectedLanguage,
-					currentSettings.token,
-					currentSettings.siteId,
-					false
-				);
+				SettingRealm.setUILanguage(this.state.selectedLanguage);
 				this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
-				//this.props.settings.uiLanguage.name
-				this.setState({ isLoading: false });
-
-				//this.onSaveSettings();
 			}
 		);
-		console.log(this.state.selectedLanguage);
 	}
 }
 
-// Login.propTypes = {
-// 	settings: PropTypes.object.isRequired,
-// 	settingsActions: PropTypes.object.isRequired,
-// 	customerActions: PropTypes.object.isRequired
-// };
 
 function mapStateToProps(state, props) {
-	return { 
+	return {
 		settings: state.settingsReducer.settings,
 		auth: state.authReducer,
 		network: state.networkReducer.network
-	 };
+	};
 }
 function mapDispatchToProps(dispatch) {
 	return {
@@ -772,9 +358,9 @@ function mapDispatchToProps(dispatch) {
 		settingsActions: bindActionCreators(SettingsActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
 		authActions: bindActionCreators(AuthActions, dispatch),
-        inventoryActions: bindActionCreators(InventoryActions, dispatch),
-        productActions: bindActionCreators(ProductActions, dispatch),
-        receiptActions: bindActionCreators(receiptActions, dispatch)
+		inventoryActions: bindActionCreators(InventoryActions, dispatch),
+		productActions: bindActionCreators(ProductActions, dispatch),
+		receiptActions: bindActionCreators(receiptActions, dispatch)
 	};
 }
 

@@ -142,7 +142,6 @@ class CustomSidebarMenu extends Component {
     this.props.toolbarActions.SetLoggedIn(false);
     let settings = SettingRealm.getAllSetting();
     console.log(settings);
-    this.props.authActions.isAuth(false);
 
     // // Save with empty token - This will force username/password validation
     SettingRealm.saveSettings(

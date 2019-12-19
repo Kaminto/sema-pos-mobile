@@ -3,8 +3,6 @@ import CreditRealm from '../database/credit/credit.operations';
 import InventroyRealm from '../database/inventory/inventory.operations';
 import SettingRealm from '../database/settings/settings.operations';
 import Communications from '../services/Communications';
-import CreditApi from './api/credit.api';
-import InventoryApi from './api/inventory.api';
 
 
 import Events from 'react-native-simple-events';
@@ -17,6 +15,11 @@ import ProductMRPSync from './sync/productmrp.sync';
 import SalesChannelSync from './sync/sales-channel.sync';
 import CustomerTypeSync from './sync/customer-types.sync';
 class Synchronization {
+
+
+	constructor() {		
+	}
+
 	initialize(lastCustomerSync, lastProductSync, lastSalesSync, lastCreditSync, lastInventorySync) {
 		console.log('Synchronization:initialize');
 		this.lastCustomerSync = lastCustomerSync;
@@ -121,6 +124,7 @@ class Synchronization {
 
 	synchronize() {
 		let syncResult = { status: 'success', error: '' };
+		console.log('setter', SettingRealm.getAllSetting());
 		return new Promise(resolve => {
 			try {
 				this._refreshToken()
