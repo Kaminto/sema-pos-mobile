@@ -21,7 +21,11 @@ import * as CustomerBarActions from '../../actions/CustomerBarActions';
 import * as CustomerActions from '../../actions/CustomerActions';
 import PosStorage from '../../database/PosStorage';
 import CustomerTypeRealm from '../../database/customer-types/customer-types.operations';
+import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
+import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
+import CustomerRealm from '../../database/customers/customer.operations';
 import * as Utilities from '../../services/Utilities';
+import SettingRealm from '../../database/settings/settings.operations';
 import i18n from '../../app/i18n';
 import Events from 'react-native-simple-events';
 const uuidv1 = require('uuid/v1');
@@ -413,12 +417,12 @@ class OrderPaymentScreen extends Component {
 	};
 
 	_getItemMrp = item => {
-		let salesChannel = PosStorage.getSalesChannelFromName(
+		let salesChannel = SalesChannelRealm.getSalesChannelFromName(
 			this.props.channel.salesChannel
 		);
 		if (salesChannel) {
-			let productMrp = PosStorage.getProductMrps()[
-				PosStorage.getProductMrpKeyFromIds(
+			let productMrp = ProductMRPRealm.getFilteredProductMRP()[
+				ProductMRPRealm.getProductMrpKeyFromIds(
 					item.productId,
 					salesChannel.id
 				)
@@ -559,7 +563,7 @@ class OrderPaymentScreen extends Component {
 				amountMobile: this.props.payment.mobile,
 				siteId: this.props.selectedCustomer.siteId
 					? this.props.selectedCustomer.siteId
-					: PosStorage.getSettings().siteId,
+					: SettingRealm.getAllSetting().siteId,
 				paymentType: '', // NOT sure what this is
 				salesChannelId: this.props.selectedCustomer.salesChannelId,
 				customerTypeId: this.props.selectedCustomer.customerTypeId,
@@ -569,8 +573,8 @@ class OrderPaymentScreen extends Component {
 
 			if (!receipt.siteId) {
 				// This fixes issues with the pseudo direct customer
-				if (PosStorage.getSettings())
-					receipt.siteId = PosStorage.getSettings().siteId;
+				if (SettingRealm.getAllSetting())
+					receipt.siteId = SettingRealm.getAllSetting().siteId;
 			}
 
 			let cogsTotal = 0;
@@ -652,7 +656,7 @@ class OrderPaymentScreen extends Component {
 			// Update dueAmount if required
 			if (receipt.amountLoan > 0) {
 				this.props.selectedCustomer.dueAmount += receipt.amountLoan;
-				await PosStorage.updateCustomer(
+				await CustomerRealm.updateCustomer(
 					this.props.selectedCustomer,
 					this.props.selectedCustomer.phoneNumber,
 					this.props.selectedCustomer.name,
@@ -664,7 +668,7 @@ class OrderPaymentScreen extends Component {
 				);
 			} else if (payoff > 0) {
 				this.props.selectedCustomer.dueAmount -= payoff;
-				await PosStorage.updateCustomer(
+				await CustomerRealm.updateCustomer(
 					this.props.selectedCustomer,
 					this.props.selectedCustomer.phoneNumber,
 					this.props.selectedCustomer.name,
@@ -678,7 +682,7 @@ class OrderPaymentScreen extends Component {
 		} else {
 			if (payoff > 0) {
 				this.props.selectedCustomer.dueAmount -= payoff;
-				await PosStorage.updateCustomer(
+				await CustomerRealm.updateCustomer(
 					this.props.selectedCustomer,
 					this.props.selectedCustomer.phoneNumber,
 					this.props.selectedCustomer.name,

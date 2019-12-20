@@ -21,7 +21,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ModalDropdown from 'react-native-modal-dropdown';
 
-import PosStorage from '../database/PosStorage';
+import CustomerRealm from '../database/customers/customer.operations';
 import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
 import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
 import Events from 'react-native-simple-events';
@@ -88,14 +88,14 @@ class CustomerList extends Component {
                         {
                             text: 'OK',
                             onPress: () => {
-                                PosStorage.deleteCustomer(
+                                CustomerRealm.softDeleteCustomer(
                                     this.props.selectedCustomer
                                 ); // Delete from storage
                                 this.props.customerActions.CustomerSelected({}); // Clear selected customer
                                 this.props.navigation.setParams({ isCustomerSelected: false });
                                 this.props.navigation.setParams({ customerName: "" });
                                 this.props.customerActions.setCustomers(
-                                    PosStorage.getCustomers()
+                                    CustomerRealm.getAllCustomer()
                                 );
                             }
                         }
@@ -361,12 +361,12 @@ class CustomerList extends Component {
                     {
                         text: i18n.t('ok'),
                         onPress: () => {
-                            PosStorage.deleteCustomer(
+                            CustomerRealm.softDeleteCustomer(
                                 this.props.selectedCustomer
                             ); // Delete from storage
                             this.props.customerActions.CustomerSelected({}); // Clear selected customer
                             this.props.customerActions.setCustomers(
-                                PosStorage.getCustomers()
+                                CustomerRealm.getAllCustomer()
                             );
                         }
                     }

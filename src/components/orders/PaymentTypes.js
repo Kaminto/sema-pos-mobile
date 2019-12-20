@@ -18,8 +18,6 @@ import { bindActionCreators } from 'redux';
 import Events from 'react-native-simple-events';
 
 import * as ToolbarActions from '../../actions/ToolBarActions';
-import ModalDropdown from 'react-native-modal-dropdown';
-import PosStorage from '../../database/PosStorage';
 import * as CustomerActions from '../../actions/CustomerActions';
 
 import i18n from '../../app/i18n';

@@ -23,6 +23,8 @@ import * as ToolbarActions from '../actions/ToolBarActions';
 import ModalDropdown from 'react-native-modal-dropdown';
 import PosStorage from '../database/PosStorage';
 import CreditRealm from '../database/credit/credit.operations';
+import CustomerRealm from '../database/customers/customer.operations';
+import SettingRealm from '../database/settings/settings.operations';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as TopUpActions from '../actions/TopUpActions';
 import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
@@ -407,8 +409,8 @@ class CustomerDetails extends Component {
 			});
 
 			let siteId = 0;
-			if (PosStorage.getSettings()) {
-				siteId = PosStorage.getSettings().siteId;
+			if (SettingRealm.getAllSetting()) {
+				siteId = SettingRealm.getAllSetting().siteId;
 			}
 
 			// return [
@@ -558,13 +560,15 @@ class CustomerDetails extends Component {
 		if (item.amountLoan) {
 			item.customerAccount.dueAmount -= item.amountLoan;
 
-			PosStorage.updateCustomer(
+			CustomerRealm.updateCustomer(
 				item.customerAccount,
 				item.customerAccount.phoneNumber,
 				item.customerAccount.name,
 				item.customerAccount.address,
 				item.customerAccount.salesChannelId,
-				item.customerAccount.frequency
+				item.customerAccount.customerTypeId,
+				item.customerAccount.frequency,
+				item.customerAccount.secondPhoneNumber
 			);
 		}
 
@@ -753,7 +757,7 @@ class TransactionDetail extends Component {
 		if (item.amountLoan) {
 			item.customerAccount.dueAmount -= item.amountLoan;
 
-			PosStorage.updateCustomer(
+			CustomerRealm.updateCustomer(
 				item.customerAccount,
 				item.customerAccount.phoneNumber,
 				item.customerAccount.name,

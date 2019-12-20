@@ -11,11 +11,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as ProductActions from '../../actions/ProductActions';
 import * as OrderActions from '../../actions/OrderActions';
-import PosStorage from '../../database/PosStorage';
-
-// import PosStorage from '../../database/PosStorage';
-// import PosStorage from '../../database/PosStorage';
-// import PosStorage from '../../database/PosStorage';
+import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
+import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 
 import Communications from '../../services/Communications';
 
@@ -80,7 +77,7 @@ class ProductList extends Component {
 	};
 
 	prepareData = () => {
-		let productMrp = PosStorage.getProductMrps();
+		let productMrp = ProductMRPRealm.getFilteredProductMRP();
 		// let keys=Object.keys(productMrp);
 		// let result=[];
 		//let ids=[];
@@ -145,13 +142,13 @@ class ProductList extends Component {
 	};
 
 	getItemPrice = item => {
-		let salesChannel = PosStorage.getSalesChannelFromName(
+		let salesChannel = SalesChannelRealm.getSalesChannelFromName(
 			this.props.filter
 		);
 
 		if (salesChannel) {
-			let productMrp = PosStorage.getProductMrps()[
-				PosStorage.getProductMrpKeyFromIds(
+			let productMrp = ProductMRPRealm.getFilteredProductMRP()[
+				ProductMRPRealm.getProductMrpKeyFromIds(
 					item.productId,
 					salesChannel.id
 				)
