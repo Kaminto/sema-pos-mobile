@@ -69,9 +69,7 @@ class CustomerEdit extends Component {
 			rObj.value = channel.id;
 			return rObj;
 		});
-
-		console.log("Mean Sales: " +JSON.stringify(this.salesChannelOptions));
-
+		 
 		this.customerTypes = CustomerTypeRealm.getCustomerTypesForDisplay(this.saleschannelid);
 		this.customerTypeOptions = this.customerTypes.map(customerType => {
 			return customerType.displayName;
@@ -82,8 +80,7 @@ class CustomerEdit extends Component {
 			rObj.label = customerType.displayName;
 			rObj.value = customerType.id;
 			return rObj;
-		 });
-		 console.log("Mean Customers: " +JSON.stringify(this.customerTypesOptions));
+		});
 
 		this.customerTypesIndicies = this.customerTypes.map(customerType => {
 			return customerType.id;
@@ -94,7 +91,7 @@ class CustomerEdit extends Component {
 		console.log('CustomerEdit = Mounted' + this.props.isEdit);
 		if (this.props.isEdit) {
 			this.props.navigation.setParams({ isEdit: true });
-		}else{
+		} else {
 			this.props.navigation.setParams({ isEdit: false });
 		}
 
@@ -103,6 +100,8 @@ class CustomerEdit extends Component {
 	componentWillUnmount() {
 		this.props.customerActions.CustomerSelected({});
 		this.props.customerActions.setCustomerEditStatus(false);
+		this.props.navigation.setParams({ isCustomerSelected: false });
+		this.props.navigation.setParams({ customerName: '' });
 	}
 
 	onEdit() {
@@ -214,13 +213,13 @@ class CustomerEdit extends Component {
 			label: 'Customer Type',
 			value: null,
 			color: '#333',
-		  };
+		};
 
-		  const splaceholder = {
+		const splaceholder = {
 			label: 'Sales Channel',
 			value: null,
 			color: '#333',
-		  };
+		};
 
 		console.log(this.props);
 		console.log(this.state);
@@ -246,46 +245,46 @@ class CustomerEdit extends Component {
 								inputContainerStyle={[styles.inputText]}
 								leftIcon={
 									<Icon
-									  name='md-person'
-									  size={24}
-									  color='black'
+										name='md-person'
+										size={24}
+										color='black'
 									/>
 								}
 							/>
-						<View style={{ flex: 1, flexDirection: 'row' }}>
-							<Input
-								placeholder={i18n.t('telephone-number')}
-								onChangeText={this.onChangeTeleOne.bind(this)}
-								value={this.state.phoneNumber}
-								keyboardType="phone-pad"
-								// label={i18n.t('telephone-number')}
-								inputContainerStyle={[styles.inputText]}
-								containerStyle={{ flex:.5 }}
-								leftIcon={
-									<Icon
-									  name='md-contact'
-									  size={24}
-									  color='black'
-									/>
-								}
-							/>
+							<View style={{ flex: 1, flexDirection: 'row' }}>
+								<Input
+									placeholder={i18n.t('telephone-number')}
+									onChangeText={this.onChangeTeleOne.bind(this)}
+									value={this.state.phoneNumber}
+									keyboardType="phone-pad"
+									// label={i18n.t('telephone-number')}
+									inputContainerStyle={[styles.inputText]}
+									containerStyle={{ flex: .5 }}
+									leftIcon={
+										<Icon
+											name='md-contact'
+											size={24}
+											color='black'
+										/>
+									}
+								/>
 
-							<Input
-								placeholder={i18n.t('second-phone-number')}
-								value={this.state.secondPhoneNumber}
-								keyboardType="phone-pad"
-								onChangeText={this.onChangeTeleTwo.bind(this)}
-								// label={i18n.t('second-phone-number')}
-								inputContainerStyle={[styles.inputText]}
-								containerStyle={{ flex:.5 }}
-								leftIcon={
-									<Icon
-									  name='md-contact'
-									  size={24}
-									  color='black'
-									/>
-								}
-							/>
+								<Input
+									placeholder={i18n.t('second-phone-number')}
+									value={this.state.secondPhoneNumber}
+									keyboardType="phone-pad"
+									onChangeText={this.onChangeTeleTwo.bind(this)}
+									// label={i18n.t('second-phone-number')}
+									inputContainerStyle={[styles.inputText]}
+									containerStyle={{ flex: .5 }}
+									leftIcon={
+										<Icon
+											name='md-contact'
+											size={24}
+											color='black'
+										/>
+									}
+								/>
 							</View>
 							<Input
 								placeholder={i18n.t(
@@ -298,9 +297,9 @@ class CustomerEdit extends Component {
 								inputContainerStyle={[styles.inputText]}
 								leftIcon={
 									<Icon
-									  name='md-map'
-									  size={24}
-									  color='black'
+										name='md-map'
+										size={24}
+										color='black'
 									/>
 								}
 							/>
@@ -314,13 +313,13 @@ class CustomerEdit extends Component {
 								inputContainerStyle={[styles.inputText]}
 								leftIcon={
 									<Icon
-									  name='md-alarm'
-									  size={24}
-									  color='black'
+										name='md-alarm'
+										size={24}
+										color='black'
 									/>
 								}
 							/>
-						{/* <View style={{ flex: 1, flexDirection: 'row' }}>
+							{/* <View style={{ flex: 1, flexDirection: 'row' }}>
 						<View style={{ flex: .5 }}>
 							<RNPickerSelect
 										onValueChange={(value) => {
@@ -332,22 +331,22 @@ class CustomerEdit extends Component {
 									    style={pickerSelectStyles}
 									/>
 									</View><View style={{ flex: .5 }}> */}
-									<RNPickerSelect
-										value={this.state.customerType}
-										onValueChange={(value) => {
-											this.setState({ customerType: value });
-										}}
-										placeholder={cplaceholder}
-										items={this.customerTypesOptions}
-										style={pickerSelectStyles}
+							<RNPickerSelect
+								value={this.state.customerType}
+								onValueChange={(value) => {
+									this.setState({ customerType: value });
+								}}
+								placeholder={cplaceholder}
+								items={this.customerTypesOptions}
+								style={pickerSelectStyles}
 
-									/>
-									{/* </View> */}
+							/>
+							{/* </View> */}
 							{/* </View> */}
 
 							<Button
 								onPress={() => this.onEdit()}
-								buttonStyle={{ padding:20 }}
+								buttonStyle={{ padding: 20 }}
 								containerStyle={{
 									bottom: 0,
 									borderRadius: 0,
@@ -355,7 +354,8 @@ class CustomerEdit extends Component {
 									marginLeft: 0,
 									marginRight: 0,
 									marginBottom: 0,
-									marginTop: 10 }}
+									marginTop: 10
+								}}
 								title={this.getSubmitText()} />
 
 						</Card>
@@ -757,7 +757,7 @@ class CustomerEdit extends Component {
 				customerTypeId,
 				this.frequency.current.state.propertyText,
 				this.secondPhoneNumber.current.state.propertyText);
-				this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
+			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
 		} else {
 			// let newCustomer = PosStorage.createCustomer(
 			// 	this.phone.current.state.propertyText,
@@ -870,9 +870,9 @@ const pickerSelectStyles = StyleSheet.create({
 		backgroundColor: '#f1f1f1',
 		alignItems: 'center',
 		margin: 10,
-	    paddingRight: 30 // to ensure the text is never behind the icon
+		paddingRight: 30 // to ensure the text is never behind the icon
 	},
-  });
+});
 
 const styles = StyleSheet.create({
 	headerText: {

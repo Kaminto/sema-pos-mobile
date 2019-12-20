@@ -2,7 +2,7 @@ import realm from '../init';
 import { capitalizeWord } from '../../services/Utilities';
 class CustomerTypeRealm {
     constructor() {
-        this.customerTypes = [];
+        this.customerTypes = Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerType'))));
     }
 
     truncate() {
