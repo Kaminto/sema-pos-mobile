@@ -3,12 +3,12 @@ import { View, Text, Button, ScrollView, FlatList, Image, TextInput, Dimensions,
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
-import PosStorage from "../../database/PosStorage";
 import * as ToolbarActions from '../../actions/ToolBarActions';
 import i18n from "../../app/i18n";
 import Modal from 'react-native-modalbox';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
+import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import ToggleSwitch from 'toggle-switch-react-native';
 import  {Input} from 'react-native-elements';
 
@@ -469,9 +469,9 @@ class OrderItems extends Component {
 		if (!item) {
 			return 1;
 		}
-		let salesChannel = PosStorage.getSalesChannelFromName(this.props.channel.salesChannel);
+		let salesChannel = SalesChannelRealm.getSalesChannelFromName(this.props.channel.salesChannel);
 		if (salesChannel) {
-			let productMrp = PosStorage.getProductMrps()[PosStorage.getProductMrpKeyFromIds(item.productId, salesChannel.id)];
+			let productMrp = ProductMRPRealm.getFilteredProductMRP()[ProductMRPRealm.getProductMrpKeyFromIds(item.productId, salesChannel.id)];
 			if (productMrp) {
 				return productMrp.priceAmount;
 			}
