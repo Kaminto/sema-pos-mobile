@@ -6,6 +6,7 @@ import OrderSummaryScreen from "./OrderSummaryScreen";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
+import * as CustomerActions from '../../actions/CustomerActions';
 import Events from "react-native-simple-events";
 import PosStorage from "../../database/PosStorage";
 
@@ -18,7 +19,6 @@ class OrderView extends Component {
 		console.log('pendingSales', PosStorage.pendingSales);
 		console.log('getReceipts', PosStorage.getReceipts());
 		console.log('getSales', PosStorage.getSales());
-
 		PosStorage.localOrders(this.lastSalesSync)
 			.then(salesReceipts => {
 				console.log('loadSalesReceipts', salesReceipts);
@@ -26,12 +26,11 @@ class OrderView extends Component {
 			.catch(error => {				
 				console.log('Synchronization.synchronizeSales - error ' + error);
 			});
-
-
 		return this.displayView();
 	}
 
 	componentDidMount() {
+		//this.props.customerActions.setCustomerEditStatus(false);
 		Events.on('ProductsUpdated', 'productsUpdate2', this.onProductsUpdated.bind(this));
 		Events.on('ProductMrpsUpdated', 'productMrpsUpdate1', this.onProductsUpdated.bind(this));
 	}
@@ -39,6 +38,7 @@ class OrderView extends Component {
 	componentWillUnmount() {
 		Events.rm('ProductsUpdated', 'productsUpdate2');
 		Events.rm('ProductMrpsUpdated', 'productMrpsUpdate1');
+		this.props.customerActions.CustomerSelected({});
 		this.props.orderActions.ClearOrder();
 	}
 
@@ -73,7 +73,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-	return { orderActions: bindActionCreators(OrderActions, dispatch) };
+	return { 
+		orderActions: bindActionCreators(OrderActions, dispatch),
+		customerActions: bindActionCreators(CustomerActions, dispatch) };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderView);

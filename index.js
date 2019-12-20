@@ -1,7 +1,6 @@
 import React from 'react';
 import { AppRegistry } from 'react-native';
 //import App from './src/app/App';
-import PosApp from './src/components/PosApp';
 import { Provider } from 'react-redux';
 import App from './App';
 //import configureStore from './src/store/configureStore';
