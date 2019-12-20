@@ -2,7 +2,7 @@ import realm from '../init';
 import { capitalizeWord } from '../../services/Utilities';
 class SalesChannelRealm {
     constructor() {
-        this.salesChannels = [];
+        this.salesChannels = Object.values(JSON.parse(JSON.stringify(realm.objects('SalesChannel'))));
     }
  
     truncate() {
@@ -53,6 +53,15 @@ class SalesChannelRealm {
     getSalesChannelFromName(name) {
 		for (let i = 0; i < this.salesChannels.length; i++) {
 			if (this.salesChannels[i].name === name) {
+				return this.salesChannels[i];
+			}
+		}
+		return null;
+    }
+    
+    getSalesChannelFromId(id) {
+		for (let i = 0; i < this.salesChannels.length; i++) {
+			if (this.salesChannels[i].id === id) {
 				return this.salesChannels[i];
 			}
 		}

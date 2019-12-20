@@ -3,7 +3,8 @@ import { View, Text, FlatList, ScrollView, TouchableHighlight, StyleSheet } from
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as OrderActions from "../../actions/OrderActions";
-import PosStorage from "../../database/PosStorage";
+import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
+import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import * as Utilities from "../../services/Utilities";
 import * as ToolbarActions from '../../actions/ToolBarActions';
 import i18n from "../../app/i18n";
@@ -30,9 +31,9 @@ class OrderTotal extends Component {
 		if (!item) {
 			return 1;
 		}
-		let salesChannel = PosStorage.getSalesChannelFromName(this.props.channel.salesChannel);
+		let salesChannel = SalesChannelRealm.getSalesChannelFromName(this.props.channel.salesChannel);
 		if (salesChannel) {
-			let productMrp = PosStorage.getProductMrps()[PosStorage.getProductMrpKeyFromIds(item.productId, salesChannel.id)];
+			let productMrp = ProductMRPRealm.getFilteredProductMRP()[ProductMRPRealm.getProductMrpKeyFromIds(item.productId, salesChannel.id)];
 			if (productMrp) {
 				return productMrp.priceAmount;
 			}
@@ -264,9 +265,9 @@ class OrderTotal extends Component {
 	};
 
 	getItemPrice = (product) => {
-		let salesChannel = PosStorage.getSalesChannelFromName(this.props.channel.salesChannel);
+		let salesChannel = SalesChannelRealm.getSalesChannelFromName(this.props.channel.salesChannel);
 		if (salesChannel) {
-			let productMrp = PosStorage.getProductMrps()[PosStorage.getProductMrpKeyFromIds(product.productId, salesChannel.id)];
+			let productMrp = ProductMRPRealm.getFilteredProductMRP()[ProductMRPRealm.getProductMrpKeyFromIds(product.productId, salesChannel.id)];
 			if (productMrp) {
 				return productMrp.priceAmount;
 			}

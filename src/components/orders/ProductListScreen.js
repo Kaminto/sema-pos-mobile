@@ -4,8 +4,7 @@ import  ProductList  from "./ProductList";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as OrderActions from "../../actions/OrderActions";
-import PosStorage from "../../database/PosStorage";
-
+import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 class ProductListScreen extends Component {
 	constructor(props) {
 		super(props);
@@ -25,7 +24,7 @@ class ProductListScreen extends Component {
 
 	componentDidMount() {
 		this.setState({
-			salesChannel: PosStorage.getSalesChannelFromId(this.props.selectedCustomer.salesChannelId)
+			salesChannel: SalesChannelRealm.getSalesChannelFromId(this.props.selectedCustomer.salesChannelId)
 		}, () => {
 			this.props.navigation.addListener('didFocus', () => {
 				console.log(`ProductListScreen-Focused - filter=${this.state.salesChannel.name}`)

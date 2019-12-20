@@ -12,6 +12,11 @@ import { connect } from "react-redux";
 import i18n from "../../app/i18n";
 import Icon from 'react-native-vector-icons/Ionicons';
 import PosStorage from "../../database/PosStorage";
+import CustomerTypeRealm from '../../database/customer-types/customer-types.operations';
+import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
+import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
+import SettingRealm from '../../database/settings/settings.operations';
+import CustomerRealm from '../../database/customers/customer.operations';
 import * as Utilities from "../../services/Utilities";
 const uuidv1 = require('uuid/v1');
 import Events from "react-native-simple-events";
@@ -375,9 +380,9 @@ class OrderCheckout extends Component {
 	_roundToDecimal(value) {
 		return parseFloat(value.toFixed(2));
 	}
-
+	
 	_isAnonymousCustomer(customer) {
-		return PosStorage.getCustomerTypeByName('anonymous').id ==
+		return CustomerTypeRealm.getCustomerTypeByName('anonymous').id ==
 			customer.customerTypeId
 			? true
 			: false;
@@ -494,12 +499,12 @@ class OrderCheckout extends Component {
 	};
 
 	_getItemMrp = item => {
-		let salesChannel = PosStorage.getSalesChannelFromName(
+		let salesChannel = SalesChannelRealm.getSalesChannelFromName(
 			this.props.channel.salesChannel
 		);
 		if (salesChannel) {
-			let productMrp = PosStorage.getProductMrps()[
-				PosStorage.getProductMrpKeyFromIds(
+			let productMrp = ProductMRPRealm.getFilteredProductMRP()[
+				ProductMRPRealm.getProductMrpKeyFromIds(
 					item.productId,
 					salesChannel.id
 				)
@@ -664,7 +669,7 @@ class OrderCheckout extends Component {
 				amountMobile: this.props.payment.mobile,
 				siteId: this.props.selectedCustomer.siteId
 					? this.props.selectedCustomer.siteId
-					: PosStorage.loadSettings().siteId,
+					: SettingRealm.getAllSetting().siteId,
 				paymentType: '', // NOT sure what this is
 				salesChannelId: this.props.selectedCustomer.salesChannelId,
 				customerTypeId: this.props.selectedCustomer.customerTypeId,
@@ -674,10 +679,10 @@ class OrderCheckout extends Component {
 
 			if (!receipt.siteId) {
 				// This fixes issues with the pseudo direct customer
-				if (PosStorage.loadSettings())
-					receipt.siteId = PosStorage.loadSettings().siteId;
+				if (SettingRealm.getAllSetting())
+					receipt.siteId = SettingRealm.getAllSetting().siteId;
 			}
-			console.log(PosStorage.loadSettings());
+			console.log(SettingRealm.getAllSetting());
 			let cogsTotal = 0;
 
 			receipt.products = await this.props.products.map(product => {
@@ -755,24 +760,28 @@ class OrderCheckout extends Component {
 			// Update dueAmount if required
 			if (receipt.amountLoan > 0) {
 				this.props.selectedCustomer.dueAmount += receipt.amountLoan;
-				await PosStorage.updateCustomer(
+				await CustomerRealm.updateCustomer(
 					this.props.selectedCustomer,
 					this.props.selectedCustomer.phoneNumber,
 					this.props.selectedCustomer.name,
 					this.props.selectedCustomer.address,
 					this.props.selectedCustomer.salesChannelId,
-					this.props.selectedCustomer.frequency
+					this.props.selectedCustomer.customerTypeId,
+					this.props.selectedCustomer.frequency,
+					this.props.selectedCustomer.secondPhoneNumber
 				);
 				console.log('check2');
 			} else if (payoff > 0) {
 				this.props.selectedCustomer.dueAmount -= payoff;
-				await PosStorage.updateCustomer(
+				await CustomerRealm.updateCustomer(
 					this.props.selectedCustomer,
 					this.props.selectedCustomer.phoneNumber,
 					this.props.selectedCustomer.name,
 					this.props.selectedCustomer.address,
 					this.props.selectedCustomer.salesChannelId,
-					this.props.selectedCustomer.frequency
+					this.props.selectedCustomer.customerTypeId,
+					this.props.selectedCustomer.frequency,
+					this.props.selectedCustomer.secondPhoneNumber
 				);
 				console.log('check3');
 			}
@@ -780,13 +789,15 @@ class OrderCheckout extends Component {
 		} else {
 			if (payoff > 0) {
 				this.props.selectedCustomer.dueAmount -= payoff;
-				await PosStorage.updateCustomer(
+				await CustomerRealm.updateCustomer(
 					this.props.selectedCustomer,
 					this.props.selectedCustomer.phoneNumber,
 					this.props.selectedCustomer.name,
 					this.props.selectedCustomer.address,
 					this.props.selectedCustomer.salesChannelId,
-					this.props.selectedCustomer.frequency
+					this.props.selectedCustomer.customerTypeId,
+					this.props.selectedCustomer.frequency,
+					this.props.selectedCustomer.secondPhoneNumber
 				);
 			}
 		}
@@ -809,9 +820,9 @@ class OrderCheckout extends Component {
 	};
 
 	getItemPrice = (product) => {
-		let salesChannel = PosStorage.getSalesChannelFromName(this.props.channel.salesChannel);
+		let salesChannel = SalesChannelRealm.getSalesChannelFromName(this.props.channel.salesChannel);
 		if (salesChannel) {
-			let productMrp = PosStorage.getProductMrps()[PosStorage.getProductMrpKeyFromIds(product.productId, salesChannel.id)];
+			let productMrp = ProductMRPRealm.getFilteredProductMRP()[ProductMRPRealm.getProductMrpKeyFromIds(product.productId, salesChannel.id)];
 			if (productMrp) {
 				return productMrp.priceAmount;
 			}
