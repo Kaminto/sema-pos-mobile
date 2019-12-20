@@ -74,7 +74,7 @@ class CustomSidebarMenu extends Component {
     return (
       <View style={styles.sideMenuContainer}>
         {/* <Icon name="ios-person" size={100} style={styles.sideMenuProfileIcon} /> */}
-        <Image source={require('../images/swe-logo.png')} resizeMode='stretch' style={{
+        <Image source={require('../images/jibulogo.png')} resizeMode='stretch' style={{
                         width: 100,
                         height: 100,
                     }} />
@@ -166,7 +166,7 @@ class CustomSidebarMenu extends Component {
 			this.setState({ isLoading: true });
 			Synchronization.synchronize().then(syncResult => {
         this.setState({ isLoading: false });
-        
+
         this.props.customerActions.setCustomers(
           CustomerRealm.getAllCustomer()
       );

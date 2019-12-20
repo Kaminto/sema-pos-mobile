@@ -69,7 +69,7 @@ class CustomerEdit extends Component {
 			rObj.value = channel.id;
 			return rObj;
 		});
-		 
+
 		this.customerTypes = CustomerTypeRealm.getCustomerTypesForDisplay(this.saleschannelid);
 		this.customerTypeOptions = this.customerTypes.map(customerType => {
 			return customerType.displayName;
@@ -339,7 +339,6 @@ class CustomerEdit extends Component {
 								placeholder={cplaceholder}
 								items={this.customerTypesOptions}
 								style={pickerSelectStyles}
-
 							/>
 							{/* </View> */}
 							{/* </View> */}
@@ -869,7 +868,10 @@ const pickerSelectStyles = StyleSheet.create({
 		borderColor: '#f1f1f1',
 		backgroundColor: '#f1f1f1',
 		alignItems: 'center',
-		margin: 10,
+		marginTop: 5,
+		marginBottom: 10,
+		marginLeft: 20,
+		marginRight: 20,
 		paddingRight: 30 // to ensure the text is never behind the icon
 	},
 });

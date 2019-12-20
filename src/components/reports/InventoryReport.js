@@ -140,7 +140,7 @@ class InventoryReport extends Component {
 							/>
 							<View style={[{ flex: .6 , padding: 5}]}>
 								<View style={{ flex: .3, flexDirection: 'row',  alignItems:"center" }}>
-									<Text style={[styles.totalItem, { flex: .45 }]}>{i18n.t('previous-meter')}</Text>
+									<Text style={[styles.totalItem, { flex: .45 }]}>{i18n.t('opening-meter')}</Text>
 									<Text style={[styles.rowItemCenter, { flex: .55,
 										borderRadius: 5,
 										fontSize: 25,
@@ -149,7 +149,7 @@ class InventoryReport extends Component {
 
 								</View>
 								<View style={[{ flex: .3, flexDirection: 'row', alignItems:"center" }]}>
-								    <Text style={[styles.totalItem, { flex: .45 }]}>{i18n.t('current-meter')}</Text>
+								    <Text style={[styles.totalItem, { flex: .45 }]}>{i18n.t('closing-meter')}</Text>
 
 									{this.getCurrentMeter()}
 
@@ -157,7 +157,7 @@ class InventoryReport extends Component {
 										type = "currentMeter"
 										visible = {this.state.currentMeterVisible}
 										wastageName={""}
-										title = "Current Meter"
+										title = "Closing Meter"
 										quantity = {this.getInventoryCurrentMeterForEdit()}
 										cancelMethod = {this.onCancelCurrentMeter.bind(this)}
 										okMethod = {this.onOkCurrentMeter.bind(this)}>
@@ -189,7 +189,7 @@ class InventoryReport extends Component {
 								</View>
 								<View style={{  flex: .33, color: '#fff', padding: 10 }} >
 									<Text style={[styles.totalLabel, { flex: .2, fontWeight:'bold', color: '#fff' }]}>{i18n.t('total-production').toUpperCase()}</Text>
-									<Text style={[styles.totalLabel, { flex: .2, color: '#fff' }]}> (Current Meter - Previous Meter)</Text>
+									<Text style={[styles.totalLabel, { flex: .2, color: '#fff' }]}> (Closing Meter - Opening Meter)</Text>
 									<Text style={[styles.totalItem, { flex: .6, fontSize:28 , color: '#fff'}]}>{this.getTotalProduction()}</Text>
 								</View>
 								<View style={{  flex: .33, color: '#fff', padding: 10 }} >
