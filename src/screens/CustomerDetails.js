@@ -161,6 +161,8 @@ class CustomerDetails extends Component {
 		);
 	}
 	componentWillUnmount() {
+		this.props.customerActions.CustomerSelected({});
+		this.props.customerActions.setCustomerEditStatus(false);
 		Events.rm('ScrollCustomerTo', 'customerId1');
 	}
 

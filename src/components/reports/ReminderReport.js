@@ -10,7 +10,7 @@ import * as orderActions from "../../actions/OrderActions";
 import * as reminderActions from "../../actions/ReminderActions.js";
 import PosStorage from "../../database/PosStorage";
 import CustomerBar from "../customers/CustomerBar";
-import {ViewSwitcher} from "../../components/PosApp";
+//import {ViewSwitcher} from "../../components/PosApp";
 import DateFilter from './DateFilter';
 import Events from 'react-native-simple-events';
 

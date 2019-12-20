@@ -52,6 +52,7 @@ class AuthLoadingScreen extends React.Component {
         );
 
         if (settings.site === "" && settings.siteId === 0) {
+            this.posStorage.initialLocalDb();
             this.props.settingsActions.setSettings({ ...settings, loginSync: true });
             this.props.navigation.navigate('Login');
         }
@@ -74,11 +75,11 @@ class AuthLoadingScreen extends React.Component {
             this.props.networkActions.NetworkConnection(isConnected);
             Synchronization.setConnected(isConnected);
         });
-        console.log('PosApp = Mounted-Done');
     }
 
     loadSyncedData() {
         this.posStorage.loadLocalData();
+       // this.posStorage.initialLocalDb();
         this.props.customerActions.setCustomers(
             CustomerRealm.getAllCustomer()
         );
@@ -97,14 +98,14 @@ class AuthLoadingScreen extends React.Component {
         Synchronization.initialize(
             CustomerRealm.getLastCustomerSync(),
             ProductsRealm.getLastProductsync(),
-            PosStorage.getLastSalesSync(),
+            '',
             CreditRealm.getLastCreditSync(),
             InventroyRealm.getLastInventorySync(),
         );
         Synchronization.setConnected(this.props.network.isNWConnected);
     };
 
-    componentWillUnmount() { }
+    componentWillUnmount() {}
 
     render() {
         const animating = this.state.animating;

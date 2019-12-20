@@ -49,6 +49,9 @@ class CustomerList extends Component {
         this.props.navigation.setParams({ checkSelectedCustomer: this.checkSelectedCustomer });
         this.props.navigation.setParams({ editCustomer: this.editCustomer });
 
+        this.props.customerActions.CustomerSelected({});
+		this.props.customerActions.setCustomerEditStatus(false); 
+
         console.log(
             'CustomerList:componentDidMount - filter: ' + this.props.searchString
         );
