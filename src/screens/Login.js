@@ -28,9 +28,11 @@ import InventroyRealm from '../database/inventory/inventory.operations';
 import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
 import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
 import ProductsRealm from '../database/products/product.operations';
-
+import DiscountRealm from '../database/discount/discount.operations';
+import OrderRealm from '../database/orders/orders.operations';
 import SalesChannelSync from '../services/sync/sales-channel.sync';
 import CustomerTypeSync from '../services/sync/customer-types.sync';
+
 
 import * as TopUpActions from '../actions/TopUpActions';
 import * as SettingsActions from '../actions/SettingsActions';
@@ -41,6 +43,7 @@ import * as AuthActions from '../actions/AuthActions';
 import * as ProductActions from '../actions/ProductActions';
 import * as receiptActions from '../actions/ReceiptActions';
 import * as InventoryActions from '../actions/InventoryActions';
+import * as discountActions from '../actions/DiscountActions';
 
 
 import Events from 'react-native-simple-events';
@@ -63,6 +66,7 @@ const supportedUILanguages = [
 
 class Login extends Component {
 	constructor(props) {
+		
 		super(props);
 	 
 		this.supportedLanguages = React.createRef();
@@ -287,6 +291,14 @@ class Login extends Component {
 		this.props.receiptActions.setRemoteReceipts(
 			PosStorage.getRemoteReceipts()
 		);
+		this.props.receiptActions.setReceipts(
+            OrderRealm.getAllOrder()
+        );
+
+		console.log('getDiscounts', DiscountRealm.getDiscounts());
+        this.props.discountActions.setDiscounts(
+            DiscountRealm.getDiscounts()
+        );
 		Synchronization.initialize(
 			CustomerRealm.getLastCustomerSync(),
 			ProductsRealm.getLastProductsync(),
@@ -347,7 +359,8 @@ function mapStateToProps(state, props) {
 	return {
 		settings: state.settingsReducer.settings,
 		auth: state.authReducer,
-		network: state.networkReducer.network
+		network: state.networkReducer.network,
+        discounts: state.discountReducer.discounts
 	};
 }
 function mapDispatchToProps(dispatch) {
@@ -360,7 +373,8 @@ function mapDispatchToProps(dispatch) {
 		authActions: bindActionCreators(AuthActions, dispatch),
 		inventoryActions: bindActionCreators(InventoryActions, dispatch),
 		productActions: bindActionCreators(ProductActions, dispatch),
-		receiptActions: bindActionCreators(receiptActions, dispatch)
+		receiptActions: bindActionCreators(receiptActions, dispatch),		
+        discountActions: bindActionCreators(discountActions, dispatch),  
 	};
 }
 

@@ -7,7 +7,8 @@ import { ProductSchema, ProductSyncDateSchema } from './products/product.model';
 import { SalesChannelSchema } from './sales-channels/sales-channels.model';
 import { CustomerTypesSchema } from './customer-types/customer-types.model';
 import { SettingsSchema, TokenExpirySchema } from './settings/settings.model';
-
+import { CustomerObjSchema, ProductObjSchema, OrderItemsSchema, OrderSchema } from './orders/orders.model';
+import { DiscountSchema } from './discount/discount.model';
 
 // Realm schema creation
 const SEMA_SCHEMA = {
@@ -35,9 +36,14 @@ export default realm = new Realm({
         CustomerTypesSchema,
         SalesChannelSchema,
         SettingsSchema,
-        TokenExpirySchema
+        TokenExpirySchema,
+        CustomerObjSchema,
+        ProductObjSchema,
+        OrderItemsSchema,
+        OrderSchema,
+        DiscountSchema
     ],
-    schemaVersion: 47,
+    schemaVersion: 57,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
         console.log('newRealm', newRealm)

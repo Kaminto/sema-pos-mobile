@@ -192,8 +192,7 @@ class SalesReport extends Component {
 function mapStateToProps(state, props) {
 	return {
 		salesData: state.reportReducer.salesData,
-		dateFilter: state.reportReducer.dateFilter,
-		reportType: state.reportReducer.reportType
+		dateFilter: state.reportReducer.dateFilter
 	};
 }
 

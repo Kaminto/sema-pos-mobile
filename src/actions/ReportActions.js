@@ -1,5 +1,6 @@
 import PosStorage from '../database/PosStorage';
 import ProductMRPRealm from '../database/productmrp/productmrp.operations';
+import OrderRealm from '../database/orders/orders.operations';
 import { REMOVE_PRODUCT } from './OrderActions';
 import moment from 'moment-timezone';
 
@@ -50,7 +51,8 @@ export function setReportFilter(startDate, endDate) {
 
 const getSalesData = (beginDate, endDate) => {
 	return new Promise(async (resolve, reject) => {
-		const loggedReceipts = PosStorage.getRemoteReceipts();
+		const loggedReceipts = OrderRealm.getAllOrder();
+		//const loggedReceipts = PosStorage.getRemoteReceipts();
 		console.log('loggedReceipts', loggedReceipts)
 		const filteredReceipts = loggedReceipts.filter(receipt =>
 			moment

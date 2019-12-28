@@ -22,6 +22,7 @@ import { bindActionCreators } from 'redux';
 import ModalDropdown from 'react-native-modal-dropdown';
 
 import CustomerRealm from '../database/customers/customer.operations';
+import OrderRealm from '../database/orders/orders.operations';
 import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
 import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
 import Events from 'react-native-simple-events';
@@ -161,7 +162,9 @@ class CustomerList extends Component {
 
     render() {
         //console.log(this.props);
-
+        //OrderRealm.truncate();
+        console.log('Order Order', OrderRealm.getAllOrder())
+		console.log('OrderItems OrderItems', OrderRealm.getOrderItems())
         return (
             <View style={{ backgroundColor: '#fff', width: '100%', height: '100%' }}>
                 <FlatList

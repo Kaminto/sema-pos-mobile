@@ -1,62 +1,110 @@
-export const ProductMRPSchema = {
-    name: 'ProductMRP',
+export const CustomerObjSchema = {
+    name: 'CustomerObj',
     properties: {
-        id: { type: 'int', optional: true },
-        currencyCode: 'string',
-        priceAmount: { type: 'int' },
-        cogsAmount: 'int',
-        productId: { type: 'int' },
-        salesChannelId: { type: 'int' },
-        siteId: { type: 'int' },
         active: { type: 'bool', optional: true },
+        address_line1: { type: 'string', optional: true },
+        address_line2: { type: 'string', optional: true },
+        address_line3: { type: 'string', optional: true },
+        consumer_base: { type: 'string', optional: true },
+        created_at: { type: 'string', optional: true },
+        customer_type_id: { type: 'int', optional: true },
+        distance: { type: 'string', optional: true },
+        due_amount: { type: 'string', optional: true },
+        frequency: { type: 'string', optional: true },
+        gender: { type: 'string', optional: true },
+        gps_coordinates: { type: 'string', optional: true },
+        id: { type: 'string', optional: true },
+        income_level: { type: 'string', optional: true },
+        kiosk_id: { type: 'int', optional: true },
+        multimedia1: { type: 'string', optional: true },
+        multimedia2: { type: 'string', optional: true },
+        multimedia3: { type: 'string', optional: true },
+        multimedia4: { type: 'string', optional: true },
+        name: { type: 'string', optional: true },
+        notes: { type: 'string', optional: true },
+        phone_number: { type: 'string', optional: true },
+        reminder_date: { type: 'string', optional: true },
+        sales_channel_id: { type: 'int', optional: true },
+        second_phone_number: { type: 'string', optional: true },
+        updated_at: { type: 'string', optional: true },
+        what3words: { type: 'string', optional: true },
+    }
+};
+
+export const ProductObjSchema = {
+    name: 'ProductObj',
+    properties: {
+        active: { type: 'bool', optional: true },
+        category_id: { type: 'int', optional: true },
+        cogs_amount: { type: 'string', optional: true },
+        created_at: { type: 'string', optional: true },
+        description: { type: 'string', optional: true },
+        id: { type: 'int', optional: true },
+        maximum_quantity: { type: 'int', optional: true },
+        minimum_quantity: { type: 'int', optional: true },
+        name: { type: 'string', optional: true },
+        price_amount: { type: 'string', optional: true },
+        price_currency: { type: 'string', optional: true },
+        sku: { type: 'string', optional: true },
+        unit_measure: { type: 'string', optional: true },
+        unit_per_product: { type: 'int', optional: true },
+        updated_at: { type: 'string', optional: true },
+        wastage_name: { type: 'string', optional: true },
+    }
+};
+
+export const OrderItemsSchema = {
+    name: 'OrderItems',
+    properties: {
+        active: { type: 'bool', optional: true },
+        cogs_total: { type: 'int', optional: true },
+        created_at: { type: 'date', optional: true },
+        currency_code: { type: 'string', optional: true },
+        id: { type: 'int', optional: true },
+        price_total: { type: 'int', optional: true },
+        product: { type: 'ProductObj', optional: true },
+        product_id: { type: 'int', optional: true },
+        quantity: { type: 'int', optional: true },
+        receipt_id: { type: 'string', optional: true },
+        updated_at: { type: 'date', optional: true },
+    }
+};
+
+
+
+export const OrderSchema = {
+    name: 'Order',
+    properties: {
+        amount_card: { type: 'string', optional: true },
+        amount_cash: { type: 'int', optional: true },
+        amount_loan: { type: 'int', optional: true },
+        amount_mobile: { type: 'int', optional: true },
+        cogs: { type: 'int', optional: true },
+        currency_code: { type: 'string', optional: true },
+        customerAccountId: { type: 'string', optional: true },
+        customer_account: { type: 'string', optional: true },
+        //customer_account: {type: 'linkingObjects', objectType: 'Customer', property: 'orders'},
+        customer_account_id: { type: 'string', optional: true },
+        customer_type_id: { type: 'int', optional: true },
+        delivery_id: { type: 'string', optional: true },
+        id: { type: 'string', optional: true },
+        isLocal: { type: 'string', optional: true },
+        is_sponsor_selected: { type: 'bool', optional: true },
+        kiosk_id: { type: 'int', optional: true },
+        payment_type: { type: 'string', optional: true },
+        //receipt_line_items: { type: 'OrderItems[]' },
+        receipt_line_items: { type: 'string', optional: true },
+        sales_channel_id: { type: 'int', optional: true },
+        sponsor_amount: { type: 'string', optional: true },
+        sponsor_id: { type: 'string', optional: true },
+        total: { type: 'int', optional: true },
+        user_id: { type: 'string', optional: true },
+        uuid: { type: 'string', optional: true },
+        receiptId: { type: 'string', optional: true },
+        active: { type: 'bool', optional: true },
+        status: { type: 'string', optional: true }, // pending - onCredit - fully paid
         syncAction: { type: 'string', optional: true },
         created_at: { type: 'date', optional: true },
         updated_at: { type: 'date', optional: true },
     }
 };
-
-// active: 1
-// amountCash: 5111
-// amountLoan: 0
-// amountMobile: 0
-// cogs: 22090
-// createdDate: "2019-12-17T18:00:29.409Z"
-// currencyCode: "ugx"
-// customerId: "07845fb0-3030-11e9-a440-41d55a52b4dc"
-// customerTypeId: 5
-// id: "517a4540-20f7-11ea-a04e-53e9ba2e5ac2"
-// paymentType: ""
-// products: (2) [{…}, {…}]
-// receiptId: "518c1f90-20f7-11ea-a04e-53e9ba2e5ac2"
-// salesChannelId: 2
-// siteId: 1112
-// total: 5111
-
-
-
-// active: true
-// amount_card: "0.00"
-// amount_cash: "16000.00"
-// amount_loan: "0.00"
-// amount_mobile: "0.00"
-// cogs: "4"
-// created_at: "2019-12-12T08:40:45.000Z"
-// currency_code: "rwf"
-// customerAccountId: "0529f4f0-3030-11e9-8cd3-d92736264baf"
-// customer_account: {id: "0529f4f0-3030-11e9-8cd3-d92736264baf", created_at: "2019-02-14T08:10:41.000Z", updated_at: "2019-11-24T16:36:03.000Z", active: true, name: "Jeanine sengiyumva", …}
-// customer_account_id: "0529f4f0-3030-11e9-8cd3-d92736264baf"
-// customer_type_id: 6
-// delivery_id: null
-// id: "1bb8cf20-1cbb-11ea-a7ec-8b2686df22b6"
-// isLocal: false
-// is_sponsor_selected: false
-// kiosk_id: 1112
-// payment_type: ""
-// receipt_line_items: [{…}]
-// sales_channel_id: 2
-// sponsor_amount: "0.00"
-// sponsor_id: null
-// total: "16000.00"
-// updated_at: "2019-12-12T08:40:45.000Z"
-// user_id: null
-// uuid: "1bbd3bf0-1cbb-11ea-a7ec-8b2686df22b6"

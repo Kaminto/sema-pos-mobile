@@ -13,6 +13,7 @@ export const CustomerSchema = {
         address: { type: 'string', optional: true },
         gpsCoordinates: { type: 'string', optional: true },
         phoneNumber: { type: 'string', optional: true },
+        //orders: { type: 'Order[]' },
         secondPhoneNumber: { type: 'string', optional: true },
         active: { type: 'bool', optional: true },
         syncAction: { type: 'string', optional: true },

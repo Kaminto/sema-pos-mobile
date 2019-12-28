@@ -14,6 +14,8 @@ import ProductSync from './sync/product.sync';
 import ProductMRPSync from './sync/productmrp.sync';
 import SalesChannelSync from './sync/sales-channel.sync';
 import CustomerTypeSync from './sync/customer-types.sync';
+import OrderSync from './sync/orders.sync';
+import DiscountSync from './sync/discounts.sync';
 class Synchronization {
 
 
@@ -180,20 +182,37 @@ class Synchronization {
 								return productMrpSync;
 							});
 
-
-							const promiseSales = this.synchronizeSales().then(
+							let settings = SettingRealm.getAllSetting();
+							console.log('siteid', settings.siteId);
+							const promiseOrders = OrderSync.synchronizeSales(settings.siteId).then(
 								saleSync => {
+									console.log(saleSync);
 									syncResult.sales = saleSync;
 									return saleSync;
 								}
-							);							
+							);	
 
-							const promiseReceipts = this.synchronizeReceipts().then(
-								results => {
-									syncResult.receipts = results;
-									return results;
+							const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId).then(
+								discountSync => {
+									console.log(discountSync);
+									syncResult.discounts = discountSync;
+									return discountSync;
 								}
-							);
+							);	
+
+							// const promiseSales = this.synchronizeSales().then(
+							// 	saleSync => {
+							// 		syncResult.sales = saleSync;
+							// 		return saleSync;
+							// 	}
+							// );							
+
+							// const promiseReceipts = this.synchronizeReceipts().then(
+							// 	results => {
+							// 		syncResult.receipts = results;
+							// 		return results;
+							// 	}
+							// );
 
 
 							// This will make sure they run synchronously
@@ -201,10 +220,11 @@ class Synchronization {
 								promiseCustomers,
 								promiseTopUps,
 								promiseInventory,
-								promiseProducts,
-								promiseSales,
+								promiseProducts,								
 								promiseProductMrps,
-								promiseReceipts
+								promiseOrders
+								// promiseSales,
+								// promiseReceipts
 							]
 								.reduce((promiseChain, currentTask) => {
 									return promiseChain.then(chainResults =>
@@ -376,6 +396,21 @@ console.log('receiptIds', receiptIds);
 			}
 		);
 	}
+
+	getLatestSales() {
+		let date = new Date();
+		//date.setDate(date.getDate() - 30);
+		date.setDate(date.getDate() - 7);
+		let settings = SettingRealm.getAllSetting();
+		Communications.getReceiptsBySiteIdAndDate(settings.siteId, date).then(
+			json => {
+				console.log('receipt json', json);
+				PosStorage.addRemoteReceipts(json).then(saved => {
+					Events.trigger('ReceiptsFetched', saved);
+				});
+			}
+		);
+	}
 	 	
 
 	_refreshToken() {
@@ -428,19 +463,6 @@ console.log('receiptIds', receiptIds);
 		});
 	}
 
-	getLatestSales() {
-		let date = new Date();
-		//date.setDate(date.getDate() - 30);
-		date.setDate(date.getDate() - 7);
-		let settings = SettingRealm.getAllSetting();
-		Communications.getReceiptsBySiteIdAndDate(settings.siteId, date).then(
-			json => {
-				console.log('receipt json', json);
-				PosStorage.addRemoteReceipts(json).then(saved => {
-					Events.trigger('ReceiptsFetched', saved);
-				});
-			}
-		);
-	}
+	
 }
 export default new Synchronization();

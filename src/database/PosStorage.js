@@ -1193,6 +1193,8 @@ class PosStorage {
 				}
 			}
 
+			console.log('receiptreceiptreceipt', receipt)
+
 			this.pendingSales.push(saleItemKey + saleDateKey);
 			let keyArray = [
 				[saleItemKey + saleDateKey, this.stringify(receipt)], // The sale

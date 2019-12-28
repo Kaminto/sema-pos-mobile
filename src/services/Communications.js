@@ -5,6 +5,8 @@ import CustomerApi from './api/customer.api';
 import ProductApi from './api/product.api';
 import SalesChannelApi from './api/sales-channel.api';
 import CustomerTypeApi from './api/customer-types.api';
+import OrderApi from './api/order.api';
+import DiscountApi from './api/discounts.api';
 
 
 class Communications {
@@ -83,6 +85,22 @@ class Communications {
 			siteId
 		); 
 
+		OrderApi.initialize(
+			url,
+			site,
+			user,
+			password,
+			token,
+			siteId
+		); 
+		DiscountApi.initialize(
+			url,
+			site,
+			user,
+			password,
+			token,
+			siteId
+		); 
 
 	}
 
@@ -95,6 +113,8 @@ class Communications {
 		ProductApi.setToken(token);
 		CustomerTypeApi.setToken(token);
 		SalesChannelApi.setToken(token);
+		OrderApi.setToken(token);
+		DiscountApi.setToken(token);
 
 	}
 	setSiteId(siteId) {
@@ -106,6 +126,8 @@ class Communications {
 		ProductApi.setSiteId(siteId);
 		CustomerTypeApi.setSiteId(siteId);
 		SalesChannelApi.setSiteId(siteId);
+		OrderApi.setSiteId(siteId);
+		DiscountApi.setSiteId(siteId);
 	}
 
 	login() {
@@ -188,133 +210,6 @@ class Communications {
 		});
 	}
 
-	
-
-	createReceipt(receipt) {
-		console.log('==============================');
-		console.log(JSON.stringify(receipt) + ' is being sent to the backend');
-		console.log('==============================');
-		let options = {
-			method: 'POST',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + this._token
-			},
-			body: JSON.stringify(this._remoteReceiptFromReceipt(receipt))
-		};
-		return new Promise((resolve, reject) => {
-			fetch(this._url + 'sema/site/receipts', options)
-				.then(response => {
-					if (response.status === 200) {
-						response
-							.json()
-							.then(responseJson => {
-								resolve(responseJson);
-							})
-							.catch(error => {
-								console.log(
-									'createReceipt - Parse JSON: ' +
-									error
-								);
-								reject();
-							});
-					} else if (response.status === 409) {
-						// Indicates this receipt has already been added
-						console.log('createReceipt - Receipt already exists');
-						resolve({});
-					} else {
-						console.log(
-							'createReceipt - Fetch status: ' + response.status
-						);
-						reject(response.status);
-					}
-				})
-				.catch(error => {
-					console.log('createReceipt - Fetch: ' + error);
-					reject();
-				});
-		});
-	}
-
-
-
-	_remoteReceiptFromReceipt(receipt) {
-		return receipt;
-	}
-
-	getReceipts(siteId) {
-		let options = {
-			method: 'GET',
-			headers: {
-				Accept: 'application/json',
-				Authorization: 'Bearer ' + this._token
-			}
-		};
-
-		let url = `sema/site/receipts/${siteId}?date=${moment
-			.tz(new Date(Date.now()), moment.tz.guess())
-			.format('YYYY-MM-DD')}`;
-		console.log('Communications:getReceipts: ');
-		console.log(
-			moment.tz(new Date(Date.now()), moment.tz.guess()).format('YYYY-MM-DD')
-		);
-		return fetch(this._url + url, options)
-			.then(async response => await response.json())
-			.catch(error => {
-				console.log('Communications:getReceipts: ' + error);
-				throw error;
-			});
-	}
-
-	getReceiptsBySiteIdAndDate(siteId, date) {
-		date = date.toISOString();
-		let options = {
-			method: 'GET',
-			headers: {
-				Accept: 'application/json',
-				Authorization: 'Bearer ' + this._token
-			}
-		};
-
-		let url = `sema/site/receipts/${siteId}?date=${date}`;
-		console.log(url);
-
-		return fetch(this._url + url, options)
-			.then(async response => await response.json())
-			.catch(error => {
-				console.log('Communications:getReceipts: ' + error);
-				throw error;
-			});
-	}
-
-	// Sends the kiosk ID, the logged receipts and the list of IDs that the client already
-	// has to the API
-	sendLoggedReceipts(siteId, receipts, exceptionList) {
-		let options = {
-			method: 'PUT',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + this._token
-			},
-			body: JSON.stringify({
-				receipts,
-				exceptionList
-			})
-		};
-
-		let url = `sema/site/receipts/${siteId}?date=${moment
-			.tz(new Date(Date.now()), moment.tz.guess())
-			.format('YYYY-MM-DD')}`;
-		console.log(this._url + url);
-		return fetch(this._url + url, options)
-			.then(response => response.json())
-			.catch(error => {
-				console.log('Communications:sendUpdatedReceipts: ' + error);
-				throw error;
-			});
-	}
 
 	// getReminders() {
 	// 	let options = {

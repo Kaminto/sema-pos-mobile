@@ -19,6 +19,15 @@ class OrderView extends Component {
 		console.log('pendingSales', PosStorage.pendingSales);
 		console.log('getReceipts', PosStorage.getReceipts());
 		console.log('getSales', PosStorage.getSales());
+
+		PosStorage.loadSale(PosStorage.getSales()[0]).then(sale=>{
+			console.log('sale', sale);
+		});
+
+		PosStorage.loadSale(PosStorage.getSales()[1]).then(sale=>{
+			console.log('sale2', sale);
+		});
+
 		PosStorage.localOrders(this.lastSalesSync)
 			.then(salesReceipts => {
 				console.log('loadSalesReceipts', salesReceipts);

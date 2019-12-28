@@ -38,7 +38,6 @@ class ProductMRPRealm {
     getFilteredProductMRP() {
         let productMrpDict = {}; // Note - This assumes that all productMrps are being saved        
         let productMrpsArray = Object.values(JSON.parse(JSON.stringify(realm.objects('ProductMRP'))));
-        console.log('productMrpsArray', productMrpsArray);
         productMrpsArray.forEach(productMrp => {
             const key = this.getProductMrpKey(productMrp);
 			productMrpDict[key] = productMrp;
@@ -81,7 +80,6 @@ class ProductMRPRealm {
 
     createProductMRP(kiosk_id, product_id, quantity, filterDate) {
         let existingProductMRP = this.getProductMRPS().filter(productMRP => this.formatDay(productMRP.created_at) === this.formatDay(filterDate) && productMRP.product_id === product_id);
-        console.log('existingProductMRP', existingProductMRP)
         const now = new Date();
         if (existingProductMRP.length === 0) {
             const newProductMRP = {
@@ -145,7 +143,6 @@ class ProductMRPRealm {
     hardDeleteProductMRP(productMRP) {
         try {
             realm.write(() => {
-                console.log("productMRP", productMRP);
                 let productMRPs = realm.objects('ProductMRP');
                 let deleteProductMRP = productMRPs.filtered(`id = "${productMRP.id}"`);
                 realm.delete(deleteProductMRP);
@@ -171,7 +168,6 @@ class ProductMRPRealm {
     }
 
     createManyProductMRP(productMRPs) {
-        console.log('productMRPs', productMRPs)
         try {
             realm.write(() => {
                 productMRPs.forEach(obj => {
