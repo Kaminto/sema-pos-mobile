@@ -17,6 +17,7 @@ import SalesChannelRealm from '../../database/sales-channels/sales-channels.oper
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import SettingRealm from '../../database/settings/settings.operations';
 import CustomerRealm from '../../database/customers/customer.operations';
+import OrderRealm from '../../database/orders/orders.operations';
 import * as Utilities from "../../services/Utilities";
 const uuidv1 = require('uuid/v1');
 import Events from "react-native-simple-events";
@@ -174,10 +175,9 @@ class OrderCheckout extends Component {
 	};
 
 	render() {
-
-
 		const state = this.state;
-
+		console.log('Order Order', OrderRealm.getAllOrder())
+		console.log('OrderItems OrderItems', OrderRealm.getOrderItems())
 		return (
 			<View style={styles.container}>
 				<View style={[{ flexDirection: 'row' }, this.getOpacity()]}>
@@ -380,7 +380,7 @@ class OrderCheckout extends Component {
 	_roundToDecimal(value) {
 		return parseFloat(value.toFixed(2));
 	}
-	
+
 	_isAnonymousCustomer(customer) {
 		return CustomerTypeRealm.getCustomerTypeByName('anonymous').id ==
 			customer.customerTypeId
@@ -647,9 +647,9 @@ class OrderCheckout extends Component {
 
 	formatAndSaveSale = async () => {
 		let receipt = null;
-		let priceTotal = 0;
+		let price_total = 0;
 		console.log('payment', this.props.payment);
-		
+
 		if (!this.isPayoffOnly()) {
 			// Assumes that there is at least one product
 			let receiptDate = this.state.receiptDate
@@ -662,17 +662,17 @@ class OrderCheckout extends Component {
 				// id: receiptDate.toISOString(),
 				id: uuidv1(),
 				createdDate: receiptDate,
-				currencyCode: this.props.products[0].product.priceCurrency,
-				customerId: this.props.selectedCustomer.customerId,
-				amountCash: this.props.payment.cash,
-				amountLoan: this.props.payment.credit,
+				currency_code: this.props.products[0].product.priceCurrency,
+				customer_account_id: this.props.selectedCustomer.customerId,
+				amount_cash: this.props.payment.cash,
+				amount_loan: this.props.payment.credit,
 				amountMobile: this.props.payment.mobile,
 				siteId: this.props.selectedCustomer.siteId
 					? this.props.selectedCustomer.siteId
 					: SettingRealm.getAllSetting().siteId,
-				paymentType: '', // NOT sure what this is
-				salesChannelId: this.props.selectedCustomer.salesChannelId,
-				customerTypeId: this.props.selectedCustomer.customerTypeId,
+				payment_type: '', // NOT sure what this is
+				sales_channel_id: this.props.selectedCustomer.salesChannelId,
+				customer_type_id: this.props.selectedCustomer.customerTypeId,
 				products: [],
 				active: 1
 			};
@@ -683,17 +683,18 @@ class OrderCheckout extends Component {
 					receipt.siteId = SettingRealm.getAllSetting().siteId;
 			}
 			console.log(SettingRealm.getAllSetting());
-			let cogsTotal = 0;
+			let cogs_total = 0;
 
 			receipt.products = await this.props.products.map(product => {
 				let receiptLineItem = {};
 				let tempValue =
 					this.getItemCogs(product.product) * product.quantity;
-				receiptLineItem.priceTotal =
+				receiptLineItem.price_total =
 					this.getItemPrice(product.product) * product.quantity;
 				receiptLineItem.quantity = product.quantity;
-				receiptLineItem.productId = product.product.productId;
-				receiptLineItem.cogsTotal =
+				receiptLineItem.product_id = product.product.productId;
+				receiptLineItem.product = product.product;
+				receiptLineItem.cogs_total =
 					tempValue == 0 ? product.quantity : tempValue;
 				// The items below are used for reporting...
 				receiptLineItem.sku = product.product.sku;
@@ -704,13 +705,13 @@ class OrderCheckout extends Component {
 				} else {
 					receiptLineItem.litersPerSku = 'N/A';
 				}
-				priceTotal += receiptLineItem.priceTotal;
-				cogsTotal += receiptLineItem.cogsTotal;
+				price_total += receiptLineItem.price_total;
+				cogs_total += receiptLineItem.cogs_total;
 				receiptLineItem.active = 1;
 				return receiptLineItem;
 			});
-			receipt.total = priceTotal;
-			receipt.cogs = cogsTotal;
+			receipt.total = price_total;
+			receipt.cogs = cogs_total;
 			console.log(receipt);
 			console.log('receipt.receiptreceiptreceipt()');
 		}
@@ -722,9 +723,9 @@ class OrderCheckout extends Component {
 			} else if (this.props.payment.hasOwnProperty('mobileToDisplay')) {
 				payoff = parseFloat(this.props.payment.mobileToDisplay);
 			}
-			if (payoff > priceTotal) {
+			if (payoff > price_total) {
 				// User is paying of loan amount
-				payoff -= priceTotal;
+				payoff -= price_total;
 				if (payoff > this.props.selectedCustomer.dueAmount) {
 					// Overpayment... this is an error
 					Alert.alert(
@@ -750,16 +751,22 @@ class OrderCheckout extends Component {
 			console.log('formatAndSaveSale ' + err.message);
 		}
 		if (receipt != null) {
+
+			console.log('receipt', receipt)
+
 			await PosStorage.addSale(receipt).then(saleKey => {
 				Events.trigger('NewSaleAdded', {
 					key: saleKey,
 					sale: receipt
 				});
 			});
+			receipt.customer_account = this.props.selectedCustomer;
+			OrderRealm.createOrder(receipt);
+
 			console.log('check1');
 			// Update dueAmount if required
-			if (receipt.amountLoan > 0) {
-				this.props.selectedCustomer.dueAmount += receipt.amountLoan;
+			if (receipt.amount_loan > 0) {
+				this.props.selectedCustomer.dueAmount += receipt.amount_loan;
 				await CustomerRealm.updateCustomer(
 					this.props.selectedCustomer,
 					this.props.selectedCustomer.phoneNumber,
@@ -829,8 +836,6 @@ class OrderCheckout extends Component {
 		}
 		return product.priceAmount;	// Just use product price
 	};
-
-
 
 	onPay = () => {
 		console.log("onPay");

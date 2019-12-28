@@ -1,5 +1,6 @@
 import {
     SET_REMOTE_RECEIPTS,
+    SET_RECEIPTS,
     ADD_REMOTE_RECEIPT,
     SET_LOCAL_RECEIPTS,
     UPDATE_REMOTE_RECEIPT,
@@ -15,6 +16,7 @@ import moment from 'moment-timezone';
 let initialState = {
     localReceipts: [],
     remoteReceipts: [],
+    receipts: [],
     updatedRemoteReceipts: [],
     recieptSearchString: ""
 };
@@ -26,6 +28,32 @@ const receiptReducer = (state = initialState, action) => {
     let newState;
 
     switch (action.type) {
+        case SET_RECEIPTS:
+            let { receipts } = action.data;
+            newState = { ...state };
+            receipts = receipts.length ? receipts : newState.receipts;
+            receipts = receipts.map(receipt => {
+                // Make sure we don't sync a logged receipt for no reason on next sync
+                if (receipt.updated) {
+                    receipt.updated = false;
+                }
+                receipt.isLocal = false;
+                return receipt;
+            })
+                // Take care of receipts that are not from this weeks
+                .filter(receipt => {
+                    //Daily
+                    // let today = moment.tz(new Date(Date.now()), moment.tz.guess()).format('YYYY-MM-DD');
+                    // return moment.tz(receipt.id, moment.tz.guess()).isSameOrAfter(today);
+                    // //Weekly delete
+                    let date = new Date(Date.now());
+                    date.setDate(date.getDate() - 7);
+                    let this_week = moment.tz(date, moment.tz.guess()).format('YYYY-MM-DD');
+                    //return moment.tz(receipt.id, moment.tz.guess()).isSameOrBefore(this_week);
+                    return moment.tz(receipt.createdAt, moment.tz.guess()).isSameOrAfter(this_week);
+                });
+            newState.receipts = receipts;
+            return newState;
         case SET_REMOTE_RECEIPTS:
             let { remoteReceipts } = action.data;
             newState = { ...state };

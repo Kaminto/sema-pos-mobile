@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import ToggleSwitch from 'toggle-switch-react-native';
-import  {Input} from 'react-native-elements';
+import { Input } from 'react-native-elements';
 
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 const { height, width } = Dimensions.get('window');
@@ -87,6 +87,7 @@ class OrderItems extends Component {
 	render() {
 
 		const state = this.state;
+		console.log('discounts', this.props.discounts);
 		return (
 			<View style={styles.container}>
 				<FlatList
@@ -106,21 +107,21 @@ class OrderItems extends Component {
 
 
 				<Modal style={[styles.modal, styles.modal3]}
-						coverScreen={true}
-						position={"center"}
-						ref={"modal6"} i
-						sDisabled={this.state.isDisabled}>
-				   <View style={{ flex:1 }}>
-				   {/* <Text>{this.state.selectedItem.product.name}</Text> */}
-					<View
-						style={{
-							justifyContent: 'flex-end',
-							flexDirection: 'row',
-							right: 100,
-						}}>
+					coverScreen={true}
+					position={"center"}
+					ref={"modal6"} i
+					sDisabled={this.state.isDisabled}>
+					<View style={{ flex: 1 }}>
+						{/* <Text>{this.state.selectedItem.product.name}</Text> */}
+						<View
+							style={{
+								justifyContent: 'flex-end',
+								flexDirection: 'row',
+								right: 100,
+							}}>
 
-						{this.getCancelButton()}
-					</View>
+							{this.getCancelButton()}
+						</View>
 					</View>
 
 
@@ -130,8 +131,8 @@ class OrderItems extends Component {
 						<View
 							style={{
 								height: 1,
-							marginTop: 10,
-							marginBottom: 10,
+								marginTop: 10,
+								marginBottom: 10,
 								backgroundColor: '#ddd',
 								width: '100%'
 							}}
@@ -151,7 +152,7 @@ class OrderItems extends Component {
 
 									<Icon
 										size={50}
-										style={[{ textAlign: 'center' },styles.leftMargin]}
+										style={[{ textAlign: 'center' }, styles.leftMargin]}
 										name="md-remove-circle-outline"
 										color="black"
 									/>
@@ -160,8 +161,8 @@ class OrderItems extends Component {
 							</View>
 							<View style={{ flex: 1, height: 50 }} >
 								<Input
-								    inputStyle={{ flex:.4 }}
-								    placeholder={'Quantity'}
+									inputStyle={{ flex: .4 }}
+									placeholder={'Quantity'}
 									value={this.state.selectedItem.quantity}
 									keyboardType="number-pad"
 									onChangeText={this.onChangeQuantity.bind(this)}
@@ -213,44 +214,18 @@ class OrderItems extends Component {
 
 
 						<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
-							<View style={{ flex: 1, height: 50 }}>
-								<Text style={[{ marginLeft: 12 }, styles.baseItem]}>Kajibu</Text>
-							</View>
-							<View style={{ flex: 1, height: 50 }}>
-								<ToggleSwitch
-									isOn={this.state.isKajibu}
-									onColor="green"
-									offColor="red"
-									labelStyle={{ color: "black", fontWeight: "900" }}
-									size="large"
-									onToggle={isOn => {
-										console.log("changed to : ", isOn);
-										this.setState({ isKajibu: isOn === true ? true : false });
-									}}
-								/>
-							</View>
+							<FlatList
+								data={this.props.discounts}
+								renderItem={({ item, index, separators }) => (
+									<TouchableHighlight
+										onShowUnderlay={separators.highlight}
+										onHideUnderlay={separators.unhighlight}>
+										{this.discountRows(item, index, separators)}
+									</TouchableHighlight>
+								)}
+							/>
 						</View>
-
-						<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
-							<View style={{ flex: 1, height: 50 }}>
-								<Text style={[{ marginLeft: 12 }, styles.baseItem]}>20L Tap 10th Purchase</Text>
-							</View>
-							<View style={{ flex: 1, height: 50 }}>
-								<ToggleSwitch
-									isOn={this.state.is20LTap}
-									onColor="green"
-									offColor="red"
-									labelStyle={{ color: "black", fontWeight: "900" }}
-									size="large"
-									onToggle={isOn => {
-										console.log("changed to : ", isOn);
-
-										this.setState({ is20LTap: isOn === true ? true : false });
-									}}
-								/>
-							</View>
-						</View>
-
+						
 						<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
 							<View style={{ flex: 1, height: 50 }}>
 								<Text style={[{
@@ -355,13 +330,53 @@ class OrderItems extends Component {
 					<Text style={[styles.baseItem, styles.leftMargin]}>{item.product.description}</Text>
 				</View>
 				<View style={[{ flex: 1 }]}>
-						<Text style={[styles.baseItem]}>{item.quantity}</Text>
+					<Text style={[styles.baseItem]}>{item.quantity}</Text>
 
 				</View>
 				<View style={[{ flex: 1 }]}>
 					<Text numberOfLines={1} style={[styles.baseItem]}>
 						{(item.quantity * this.getItemPrice(item.product)).toFixed(2)}</Text>
 				</View>
+			</View>
+		);
+	};
+
+	discountRows = (item) => {
+		return (
+			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
+
+				<View style={{ flex: 1, height: 50 }}>
+					<Text style={[{ marginLeft: 12 }, styles.baseItem]}>{item.applies_to}-{item.amount}</Text>
+				</View>
+				{/* <View style={[{ flex: 1 }]}>
+					<Text style={[styles.baseItem, styles.leftMargin]}>{item.amount}</Text>
+				</View> */}
+				<View style={{ flex: 1, height: 50 }}>
+					<ToggleSwitch
+						isOn={this.state.isKajibu}
+						onColor="green"
+						offColor="red"
+						labelStyle={{ color: "black", fontWeight: "900" }}
+						size="large"
+						onToggle={isOn => {
+							console.log("changed to : ", isOn);
+							this.setState({ isKajibu: isOn === true ? true : false });
+						}}
+					/>
+				</View>
+
+
+				{/* <View style={[{ flex: 3 }]}>
+					<Text style={[styles.baseItem, styles.leftMargin]}>{item.product.description}</Text>
+				</View>
+				<View style={[{ flex: 1 }]}>
+						<Text style={[styles.baseItem]}>{item.quantity}</Text>
+
+				</View>
+				<View style={[{ flex: 1 }]}>
+					<Text numberOfLines={1} style={[styles.baseItem]}>
+						{(item.quantity * this.getItemPrice(item.product)).toFixed(2)}</Text>
+				</View> */}
 			</View>
 		);
 	};
@@ -485,7 +500,8 @@ class OrderItems extends Component {
 function mapStateToProps(state, props) {
 	return {
 		products: state.orderReducer.products,
-		channel: state.orderReducer.channel
+		channel: state.orderReducer.channel,
+		discounts: state.discountReducer.discounts
 	};
 }
 
