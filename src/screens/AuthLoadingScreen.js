@@ -17,6 +17,7 @@ import * as AuthActions from '../actions/AuthActions';
 import * as SettingsActions from '../actions/SettingsActions';
 import * as ProductActions from '../actions/ProductActions';
 import * as receiptActions from '../actions/ReceiptActions';
+import * as discountActions from '../actions/DiscountActions';
 
 import PosStorage from '../database/PosStorage';
 import CreditRealm from '../database/credit/credit.operations';
@@ -24,6 +25,8 @@ import CustomerRealm from '../database/customers/customer.operations'
 import InventroyRealm from '../database/inventory/inventory.operations';
 import SettingRealm from '../database/settings/settings.operations';
 import ProductsRealm from '../database/products/product.operations';
+import OrderRealm from '../database/orders/orders.operations';
+import DiscountRealm from '../database/discount/discount.operations';
 
 import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
@@ -95,6 +98,18 @@ class AuthLoadingScreen extends React.Component {
         this.props.receiptActions.setRemoteReceipts(
             this.posStorage.getRemoteReceipts()
         );
+        //OrderRealm.truncate();
+        this.props.receiptActions.setReceipts(
+            OrderRealm.getAllOrder()
+        );
+
+        console.log('getDiscounts', DiscountRealm.getDiscounts());
+        this.props.discountActions.setDiscounts(
+            DiscountRealm.getDiscounts()
+        );
+
+        
+
         Synchronization.initialize(
             CustomerRealm.getLastCustomerSync(),
             ProductsRealm.getLastProductsync(),
@@ -122,6 +137,7 @@ function mapStateToProps(state, props) {
     return {
         network: state.networkReducer.network,
         settings: state.settingsReducer.settings,
+        discounts: state.discountReducer.discounts
     };
 }
 
@@ -134,7 +150,8 @@ function mapDispatchToProps(dispatch) {
         authActions: bindActionCreators(AuthActions, dispatch),
         inventoryActions: bindActionCreators(InventoryActions, dispatch),
         productActions: bindActionCreators(ProductActions, dispatch),
-        receiptActions: bindActionCreators(receiptActions, dispatch)
+        receiptActions: bindActionCreators(receiptActions, dispatch),
+        discountActions: bindActionCreators(discountActions, dispatch),        
     };
 }
 

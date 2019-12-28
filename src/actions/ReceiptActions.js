@@ -9,11 +9,18 @@ export const UPDATE_RECEIPT_LINE_ITEM = 'UPDATE_RECEIPT_LINE_ITEM';
 export const REMOVE_LOCAL_RECEIPT = 'REMOVE_LOCAL_RECEIPT';
 export const RECEIPT_SEARCH = 'RECEIPT_SEARCH';
 export const CLEAR_LOGGED_RECEIPTS = 'CLEAR_LOGGED_RECEIPTS';
+export const SET_RECEIPTS = 'SET_RECEIPTS';
 
 export function setRemoteReceipts(remoteReceipts) {
     // console.log("setRemoteReceipts - action");
     return (dispatch) => { dispatch({ type: SET_REMOTE_RECEIPTS, data: { remoteReceipts } }) };
 }
+
+
+export function setReceipts(receipts) {
+    return (dispatch) => { dispatch({ type: SET_RECEIPTS, data: { receipts } }) };
+}
+
 
 export function addRemoteReceipt(receipt) {
     // console.log('addRemoteReceipt - action');

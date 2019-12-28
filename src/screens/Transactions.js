@@ -33,6 +33,99 @@ import * as receiptActions from '../actions/ReceiptActions';
 import i18n from '../app/i18n';
 import moment from 'moment-timezone';
 
+
+class ReceiptLineItem extends Component {
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		return (
+
+			<View
+				style={{
+					flex: 1,
+					flexDirection: 'row',
+					marginBottom: 10,
+					marginTop: 10
+				}}>
+				<Image
+					source={{ uri: this.getImage(this.props.item.product) }}
+					style={[styles.productImage, {flex:.1 }]}
+				/>
+				<View style={{ justifyContent: 'space-around', flex:.6 }}>
+					<View style={styles.itemData}>
+						<Text style={[styles.label, {fontSize: 15}]}>{this.props.item.product.description}</Text>
+					</View>
+					<View style={styles.itemData}>
+						<Text style={[styles.label, {fontSize: 16}]}>{this.props.item.quantity} </Text>
+					</View>
+				</View>
+				<View style={[styles.itemData, {flex:.3}]}>
+				<Text style={[styles.label, {fontSize: 15, padding:10}]}>{this.props.item.currency_code.toUpperCase()} {this.props.item.price_total}</Text>
+				</View>
+			</View>
+		);
+	}
+
+	// We'll keep this feature for later
+	onDeleteReceiptLineItem(receiptIndex, item) {
+		return () => {
+			Alert.alert(
+				'Confirm Receipt Line Item Deletion',
+				'Are you sure you want to delete this receipt line item? (this cannot be undone)',
+				[
+					{
+						text: i18n.t('no'),
+						onPress: () => console.log('Cancel Pressed'),
+						style: 'cancel'
+					},
+					{
+						text: i18n.t('yes'),
+						onPress: () => {
+							this.deleteReceiptLineItem(
+								receiptIndex,
+								this.props.lineItemIndex,
+								{ active: false, updated: true }
+							);
+						}
+					}
+				],
+				{ cancelable: true }
+			);
+		};
+	}
+
+	deleteReceiptLineItem(receiptIndex, receiptLineItemIndex, updatedFields) {
+		this.props.receiptActions.updateReceiptLineItem(
+			receiptIndex,
+			receiptLineItemIndex,
+			updatedFields
+		);
+		PosStorage.saveRemoteReceipts(this.props.remoteReceipts);
+		this.props.handleUpdate();
+	}
+
+	getImage = item => {
+		const productImage =
+			item.base64encodedImage ||
+			this.props.products.reduce((image, product) => {
+				console.log('product', product);
+				console.log('item', item);
+				if (product.productId === item.product_id)
+					return product.base64encodedImage;
+				return image;
+			}, '');
+
+		if (productImage.startsWith('data:image')) {
+			return productImage;
+		} else {
+			return 'data:image/png;base64,' + productImage;
+		}
+	};
+}
+
+
 class TransactionDetail extends Component {
 	constructor(props) {
 		super(props);
@@ -115,10 +208,12 @@ class TransactionDetail extends Component {
 		var receiptLineItems;
 		if(this.props.item.receiptLineItems !== undefined) {
 			receiptLineItems = this.props.item.receiptLineItems.map((lineItem, idx) => {
+				console.log('lineItem-lineItem-lineItem', lineItem);
 				return (
 						<ReceiptLineItem
 							receiptActions={this.props.receiptActions}
 							remoteReceipts={this.props.remoteReceipts}
+							receipts={this.props.receipts}
 							item={lineItem}
 							key={lineItem.id}
 							lineItemIndex={idx}
@@ -198,94 +293,6 @@ class TransactionDetail extends Component {
 
 }
 
-class ReceiptLineItem extends Component {
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-		return (
-
-			<View
-				style={{
-					flex: 1,
-					flexDirection: 'row',
-					marginBottom: 10,
-					marginTop: 10
-				}}>
-				<Image
-					source={{ uri: this.getImage(this.props.item.product) }}
-					style={[styles.productImage, {flex:.1 }]}
-				/>
-				<View style={{ justifyContent: 'space-around', flex:.6 }}>
-					<View style={styles.itemData}>
-						<Text style={[styles.label, {fontSize: 15}]}>{this.props.item.product.description}</Text>
-					</View>
-					<View style={styles.itemData}>
-						<Text style={[styles.label, {fontSize: 16}]}>{this.props.item.quantity} </Text>
-					</View>
-				</View>
-				<View style={[styles.itemData, {flex:.3}]}>
-				<Text style={[styles.label, {fontSize: 15, padding:10}]}>{this.props.item.currency_code.toUpperCase()} {this.props.item.price_total}</Text>
-				</View>
-			</View>
-		);
-	}
-
-	// We'll keep this feature for later
-	onDeleteReceiptLineItem(receiptIndex, item) {
-		return () => {
-			Alert.alert(
-				'Confirm Receipt Line Item Deletion',
-				'Are you sure you want to delete this receipt line item? (this cannot be undone)',
-				[
-					{
-						text: i18n.t('no'),
-						onPress: () => console.log('Cancel Pressed'),
-						style: 'cancel'
-					},
-					{
-						text: i18n.t('yes'),
-						onPress: () => {
-							this.deleteReceiptLineItem(
-								receiptIndex,
-								this.props.lineItemIndex,
-								{ active: false, updated: true }
-							);
-						}
-					}
-				],
-				{ cancelable: true }
-			);
-		};
-	}
-
-	deleteReceiptLineItem(receiptIndex, receiptLineItemIndex, updatedFields) {
-		this.props.receiptActions.updateReceiptLineItem(
-			receiptIndex,
-			receiptLineItemIndex,
-			updatedFields
-		);
-		PosStorage.saveRemoteReceipts(this.props.remoteReceipts);
-		this.props.handleUpdate();
-	}
-
-	getImage = item => {
-		const productImage =
-			item.base64encodedImage ||
-			this.props.products.reduce((image, product) => {
-				if (product.productId === item.id)
-					return product.base64encodedImage;
-				return image;
-			}, '');
-
-		if (productImage.startsWith('data:image')) {
-			return productImage;
-		} else {
-			return 'data:image/png;base64,' + productImage;
-		}
-	};
-}
 
 class Transactions extends Component {
 	constructor(props) {
@@ -381,9 +388,11 @@ class Transactions extends Component {
 	prepareData() {
 		// Used for enumerating receipts
 		const totalCount = this.props.remoteReceipts.length;
+		//const totalCount = this.props.receipts.length;
+		console.log('this.props.receipts', this.props.receipts);
 
-		let salesLogs = [...new Set(this.props.remoteReceipts)];
-		let remoteReceipts = this.props.remoteReceipts.map((receipt, index) => {
+		let salesLogs = [...new Set(this.props.receipts)];
+		let remoteReceipts = this.props.receipts.map((receipt, index) => {
 			return {
 				active: receipt.active,
 				id: receipt.id,
@@ -498,14 +507,13 @@ class Transactions extends Component {
 	}
 
 	renderReceipt({ item, index }) {
-
 		return (
 		<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
 			<View key={index} style={{ padding: 15 }}>
 
 				<Text style={{ fontSize: 17 }}>#{item.totalCount - index}</Text>
 				<View style={styles.receiptStats}>
-					{!item.active && (
+					{!item.active && !item.syncAction === "update" && (
 						<Text style={styles.receiptStatusText}>
 							{'Deleted'.toUpperCase()}
 						</Text>
@@ -586,10 +594,12 @@ function mapStateToProps(state, props) {
 		settings: state.settingsReducer.settings,
 		localReceipts: state.receiptReducer.localReceipts,
 		remoteReceipts: state.receiptReducer.remoteReceipts,
+		receipts: state.receiptReducer.receipts,
 		customers: state.customerReducer.customers,
 		products: state.productReducer.products
 	};
 }
+
 function mapDispatchToProps(dispatch) {
 	return {
 		toolbarActions: bindActionCreators(ToolbarActions, dispatch),
