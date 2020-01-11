@@ -16,6 +16,8 @@ import SalesChannelSync from './sync/sales-channel.sync';
 import CustomerTypeSync from './sync/customer-types.sync';
 import OrderSync from './sync/orders.sync';
 import DiscountSync from './sync/discounts.sync';
+import PaymentTypeSync from './sync/payment-type.sync';
+
 class Synchronization {
 
 
@@ -134,9 +136,12 @@ class Synchronization {
 						let lastProductSync = this.lastProductSync;
 						const promiseSalesChannels = SalesChannelSync.synchronizeSalesChannels();
 						const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes();
+						const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes();
+						
 						Promise.all([
 							promiseSalesChannels,
-							promiseCustomerTypes
+							promiseCustomerTypes,
+							promisePaymentTypes
 						]).then(values => {
 							console.log(
 								'synchronize - SalesChannels and Customer Types: ',
