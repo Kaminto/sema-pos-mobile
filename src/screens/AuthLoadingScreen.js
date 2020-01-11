@@ -18,6 +18,7 @@ import * as SettingsActions from '../actions/SettingsActions';
 import * as ProductActions from '../actions/ProductActions';
 import * as receiptActions from '../actions/ReceiptActions';
 import * as discountActions from '../actions/DiscountActions';
+import * as paymentTypesActions from '../actions/PaymentTypesActions';
 
 import PosStorage from '../database/PosStorage';
 import CreditRealm from '../database/credit/credit.operations';
@@ -29,6 +30,9 @@ import OrderRealm from '../database/orders/orders.operations';
 import DiscountRealm from '../database/discount/discount.operations';
 
 import Synchronization from '../services/Synchronization';
+
+import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
+
 import Communications from '../services/Communications';
 import NetInfo from "@react-native-community/netinfo";
 
@@ -98,9 +102,13 @@ class AuthLoadingScreen extends React.Component {
         this.props.receiptActions.setRemoteReceipts(
             this.posStorage.getRemoteReceipts()
         );
-        //OrderRealm.truncate();
+        console.log('PaymentTypeRealm', PaymentTypeRealm.getPaymentTypes());
         this.props.receiptActions.setReceipts(
             OrderRealm.getAllOrder()
+        );
+        //PaymentTypeRealm.truncate();
+        this.props.paymentTypesActions.setPaymentTypes(
+            PaymentTypeRealm.getPaymentTypes()
         );
 
         console.log('getDiscounts', DiscountRealm.getDiscounts());
@@ -151,7 +159,8 @@ function mapDispatchToProps(dispatch) {
         inventoryActions: bindActionCreators(InventoryActions, dispatch),
         productActions: bindActionCreators(ProductActions, dispatch),
         receiptActions: bindActionCreators(receiptActions, dispatch),
-        discountActions: bindActionCreators(discountActions, dispatch),        
+        discountActions: bindActionCreators(discountActions, dispatch),
+        paymentTypesActions: bindActionCreators(paymentTypesActions, dispatch),        
     };
 }
 

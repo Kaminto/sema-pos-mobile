@@ -8,7 +8,6 @@ import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
 import * as CustomerActions from '../../actions/CustomerActions';
 import Events from "react-native-simple-events";
-import PosStorage from "../../database/PosStorage";
 
 class OrderView extends Component {
 	constructor(props) {
@@ -16,30 +15,10 @@ class OrderView extends Component {
 	}
 
 	render() {
-		console.log('pendingSales', PosStorage.pendingSales);
-		console.log('getReceipts', PosStorage.getReceipts());
-		console.log('getSales', PosStorage.getSales());
-
-		PosStorage.loadSale(PosStorage.getSales()[0]).then(sale=>{
-			console.log('sale', sale);
-		});
-
-		PosStorage.loadSale(PosStorage.getSales()[1]).then(sale=>{
-			console.log('sale2', sale);
-		});
-
-		PosStorage.localOrders(this.lastSalesSync)
-			.then(salesReceipts => {
-				console.log('loadSalesReceipts', salesReceipts);
-			})
-			.catch(error => {				
-				console.log('Synchronization.synchronizeSales - error ' + error);
-			});
 		return this.displayView();
 	}
 
 	componentDidMount() {
-		//this.props.customerActions.setCustomerEditStatus(false);
 		Events.on('ProductsUpdated', 'productsUpdate2', this.onProductsUpdated.bind(this));
 		Events.on('ProductMrpsUpdated', 'productMrpsUpdate1', this.onProductsUpdated.bind(this));
 	}

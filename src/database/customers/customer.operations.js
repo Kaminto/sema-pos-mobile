@@ -120,7 +120,8 @@ class CustomerRealm {
                 customerObj[0].updatedDate = new Date();
                 customerObj[0].syncAction = 'update';
                 customerObj[0].frequency = frequency;
-                customerObj[0].secondPhoneNumber = secondPhoneNumber
+                customerObj[0].secondPhoneNumber = secondPhoneNumber;
+                customerObj[0].dueAmount = customer.dueAmount;
         
                 if (customer.reminder_date) {
                     customerObj[0].reminder_date = moment(customer.reminder_date).format(
