@@ -1,6 +1,7 @@
 import { NativeModules } from 'react-native'
 
-import PosStorage from "../database/PosStorage";
+ 
+import ProductsRealm from "../database/products/product.operations";
 
 const IntlPolyFill = require('intl');
 // Add additional locales here
@@ -34,9 +35,9 @@ export function formatCurrency(value) {
 	} catch (error) {
 		console.log("formatCurrency - NativeModules.I18nManager - error " + error);
 	}
-	if (PosStorage.getProducts().length > 0) {
-		if (PosStorage.getProducts()[0].priceCurrency.length === 3) {
-			currency = PosStorage.getProducts()[0].priceCurrency;
+	if (ProductsRealm.getProducts().length > 0) {
+		if (ProductsRealm.getProducts()[0].priceCurrency.length === 3) {
+			currency = ProductsRealm.getProducts()[0].priceCurrency;
 		}
 	}
 	value = parseFloat(value.toFixed(2));

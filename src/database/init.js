@@ -10,6 +10,9 @@ import { SettingsSchema, TokenExpirySchema } from './settings/settings.model';
 import { CustomerObjSchema, ProductObjSchema, OrderItemsSchema, OrderSchema } from './orders/orders.model';
 import { DiscountSchema } from './discount/discount.model';
 
+import { PaymentTypeSchema } from './payment_types/payment_type.model';
+import { ReceiptPaymentTypeSchema } from './reciept_payment_types/reciept_payment_types.model';
+
 // Realm schema creation
 const SEMA_SCHEMA = {
     name: 'SemaRealm',
@@ -41,9 +44,11 @@ export default realm = new Realm({
         ProductObjSchema,
         OrderItemsSchema,
         OrderSchema,
-        DiscountSchema
+        DiscountSchema,
+        PaymentTypeSchema,
+        ReceiptPaymentTypeSchema
     ],
-    schemaVersion: 57,
+    schemaVersion: 60,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
         console.log('newRealm', newRealm)

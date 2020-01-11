@@ -8,6 +8,7 @@ export const DiscountSchema = {
         base64encoded_image: { type: 'string', optional: true },
         product_id:{ type: 'int', optional: true },
         region_id: { type: 'int', optional: true },
+        isSelected: { type: 'bool', optional: true, default: false },
         amount: { type: 'int', optional: true },
         kiosk_id: { type: 'int', optional: true },
         sku: { type: 'string', optional: true },

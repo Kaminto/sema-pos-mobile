@@ -90,6 +90,11 @@ class OrderSync {
                                         amountCash: localOrder.amount_cash,
                                         amountLoan: localOrder.amount_loan,
                                         amountMobile: localOrder.amount_mobile,
+                                        isWalkIn: localOrder.isWalkIn,
+                                        amount_bank: localOrder.amount_bank,
+                                        amount_cheque: localOrder.amount_cheque,
+                                        amountjibuCredit: localOrder.amountjibuCredit,
+
                                         cogs: localOrder.cogs,
                                         createdDate: localOrder.created_at,
                                         currencyCode: localOrder.currency_code,

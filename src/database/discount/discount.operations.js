@@ -83,6 +83,40 @@ class DiscountRealm {
 
     }
 
+    resetSelected(){
+        try {
+            realm.write(() => {
+                let discountObj = realm.objects('Discount');
+
+                discountObj.forEach(element=>{
+                   // console.log('element',element);
+                    element.isSelected = false;
+                })
+                
+
+            })
+
+        } catch (e) {
+            console.log("Error on creation", e);
+        }
+
+    }
+
+    isSelected(discount,isSelected) {
+        console.log(isSelected);
+        try {
+            realm.write(() => {
+                let discountObj = realm.objects('Discount').filtered(`id = "${discount.id}"`);
+                discountObj[0].isSelected = isSelected;
+
+            })
+
+        } catch (e) {
+            console.log("Error on creation", e);
+        }
+
+    }
+
     synched(discount) {
         try {
             realm.write(() => {
