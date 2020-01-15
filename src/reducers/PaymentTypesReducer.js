@@ -17,6 +17,15 @@ const paymentTypesReducer = (state = initialState, action) => {
             newState = { ...state };
             newState.selectedPaymentTypes[action.data.index] = action.data.selectedPaymentType;
             return newState;
+        case REMOVE_SELECTED_PAYMENT_TYPES:
+            newState = { ...state };
+            newState.selectedPaymentTypes = [];
+			for (let selectedPaymentType of state.selectedPaymentTypes) {
+				if (selectedPaymentType.id !== action.data.selectedPaymentType.id) {
+					newState.selectedPaymentTypes.push(selectedPaymentType);
+				}
+			}
+			return newState;
         default:
             return state;
     }

@@ -14,3 +14,7 @@ export function setSelectedPaymentTypes(selectedPaymentTypes) {
 export function updateSelectedPaymentType(selectedPaymentType, index) {
     return (dispatch) => { dispatch({ type: UPDATE_SELECTED_PAYMENT_TYPES, data: { selectedPaymentType, index } }) };
 }
+
+export function removeSelectedPaymentType(selectedPaymentType, index) {
+    return (dispatch) => { dispatch({ type: REMOVE_SELECTED_PAYMENT_TYPES, data: { selectedPaymentType, index } }) };
+}
