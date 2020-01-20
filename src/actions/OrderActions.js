@@ -56,10 +56,10 @@ export function SetOrderDiscounts(isCustom, customDiscount, product, discount, t
 	};
 }
 
-export function RemoveProductDiscountsFromOrder(product, discount, discountId) {
+export function RemoveProductDiscountsFromOrder(product) {
 	 console.log("REMOVE_PRODUCT_DISCOUNT - action");
 	return dispatch => {
-		dispatch({ type: REMOVE_PRODUCT_DISCOUNT, data: { product, discount, discountId } });
+		dispatch({ type: REMOVE_PRODUCT_DISCOUNT, data: { product} });
 	};
 }
 
