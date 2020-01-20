@@ -32,7 +32,7 @@ class OrderItems extends Component {
 			isQuantityVisible: false,
 			selectedItem: {},
 			accumulator: 0,
-			selectedDiscounts: [],
+			selectedDiscounts: {},
 			firstKey: true,
 			switch1Value: false,
 			isOpen: false,
@@ -76,6 +76,7 @@ class OrderItems extends Component {
 
 		const state = this.state;
 		console.log('discounts', this.props.discounts);
+		console.log('selectedDiscounts', this.state.selectedDiscounts);
 		return (
 			<View style={styles.container}>
 				<FlatList
@@ -116,7 +117,6 @@ class OrderItems extends Component {
 
 
 					<ScrollView>
-
 						<View
 							style={{
 								height: 1,
@@ -126,7 +126,6 @@ class OrderItems extends Component {
 								width: '100%'
 							}}
 						/>
-
 						<View style={{
 							flex: 1,
 							width: "100%",
@@ -134,11 +133,8 @@ class OrderItems extends Component {
 							alignItems: 'stretch',
 						}}>
 							<View style={{ flex: 1, height: 50 }}>
-
 								<TouchableHighlight style={{ flex: 1 }}
 									onPress={() => this.counterChangedHandler('inc')}>
-									{/* <Text style={[{ textAlign: 'center' }, styles.baseItem, styles.leftMargin]}>-</Text> */}
-
 									<Icon
 										size={50}
 										style={[{ textAlign: 'center' }, styles.leftMargin]}
@@ -146,7 +142,6 @@ class OrderItems extends Component {
 										color="black"
 									/>
 								</TouchableHighlight>
-
 							</View>
 							<View style={{ flex: 1, height: 50 }} >
 								<Input
@@ -165,7 +160,6 @@ class OrderItems extends Component {
 										name="md-add-circle-outline"
 										color="black"
 									/>
-									{/* <Text style={[styles.baseItem, styles.leftMargin]}>+</Text> */}
 								</TouchableHighlight>
 							</View>
 						</View>
@@ -209,11 +203,11 @@ class OrderItems extends Component {
 						<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
 							<FlatList
 								data={this.props.discounts}
+								extraData={this.state.selectedDiscounts}
 								renderItem={({ item, index, separators }) => (
 									this.discountRows(item, index, separators)
 								)}
 							/>
-
 						</View>
 
 						<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
@@ -223,15 +217,7 @@ class OrderItems extends Component {
 								}, styles.baseItem]}>Custom</Text>
 							</View>
 							<View style={{ flex: 1, height: 50 }}>
-								<TextInput
-									style={{
-										backgroundColor: "#eee",
-										borderColor: "#bbb"
-									}}
-									onChangeText={this.customDiscount}
-									underlineColorAndroid="transparent"
-									placeholder="Custom Discount"
-								/>
+								{this.customDiscountValue()}
 							</View>
 						</View>
 
@@ -269,7 +255,6 @@ class OrderItems extends Component {
 								width: '100%'
 							}}
 						/>
-
 					</ScrollView>
 
 				</Modal>
@@ -296,13 +281,43 @@ class OrderItems extends Component {
 
 	}
 
+	customDiscountValue() {
+
+		if (!this.state.selectedItem.hasOwnProperty('product')) {
+			console.log('selectedItem', this.state.selectedItem);
+			return;
+		}
+
+		const productIndex = this.props.selectedDiscounts.map(function (e) { return e.product.productId }).indexOf(this.state.selectedItem.product.productId);
+		console.log('productIndex', productIndex);
+
+		let customValue = 0;
+		if (productIndex >= 0) {
+			customValue = this.props.selectedDiscounts[productIndex].customDiscount;
+		}
+		console.log('customValue', customValue);
+		return (
+			<TextInput
+				style={{
+					backgroundColor: "#eee",
+					borderColor: "#bbb"
+				}}
+				onChangeText={this.customDiscount}
+				value={(customValue).toString()}
+				keyboardType="numeric"
+				underlineColorAndroid="transparent"
+				placeholder="Custom Discount"
+			/>
+		)
+	}
+
 	modalOnClose() {
 		console.log('selectedDiscounts', this.state.selectedDiscounts);
 		console.log('itemPrice', (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)).toFixed(2));
 		DiscountRealm.resetSelected();
 		this.setState(state => {
 			return {
-				selectedDiscounts: []
+				selectedDiscounts: {}
 			};
 		});
 		this.props.discountActions.setDiscounts(
@@ -320,6 +335,7 @@ class OrderItems extends Component {
 	}
 
 	onPressItem = (item) => {
+		console.log('item', item)
 		this.setState({ isQuantityVisible: true });
 		this.setState({ selectedItem: item });
 		this.setState({ accumulator: item.quantity });
@@ -336,7 +352,6 @@ class OrderItems extends Component {
 				</View>
 				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.baseItem]}>{item.quantity}</Text>
-
 				</View>
 				<View style={[{ flex: 1 }]}>
 					<Text numberOfLines={1} style={[styles.baseItem]}>
@@ -352,21 +367,13 @@ class OrderItems extends Component {
 		console.log('productIndex', productIndex);
 		if (productIndex >= 0) {
 			console.log('this.props.selectedDiscounts[productIndex]', this.props.selectedDiscounts[productIndex]);
-
+			console.log('selectedDiscounts', this.state.selectedDiscounts);
+			DiscountRealm.isSelected(this.state.selectedDiscounts, false);
+			this.props.discountActions.setDiscounts(DiscountRealm.getDiscounts());
 			if (this.props.selectedDiscounts[productIndex].discount.length > 0 && this.state.selectedDiscounts.length === 0) {
 
-				//	this.props.selectedDiscounts[productIndex].discount.forEach(element=>{
-				// this.setState(state => {
-				// 	//console.log('element==', element);
-				// 	// const selectedDiscounts2 = state.selectedDiscounts.concat(element);
-				// 	// console.log('selectedDiscounts2', selectedDiscounts2);
-				// 	return {
-				// 		selectedDiscounts: this.props.selectedDiscounts[productIndex].discount
-				// 	};
-				// });
 				this.props.orderActions.SetOrderDiscounts('Custom', searchText, this.state.selectedItem.product, this.props.selectedDiscounts[productIndex].discount, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)).toFixed(2));
 
-				//	});					
 
 			} else {
 
@@ -376,33 +383,20 @@ class OrderItems extends Component {
 
 		}
 
-		//this.props.customerActions.SearchCustomers(searchText);
-		//console.log('customDiscount ---' + this.props.customers.length);
 	};
 
 
 	discountRows = (item, index, separators) => {
 		const productIndex = this.props.selectedDiscounts.map(function (e) { return e.product.productId }).indexOf(this.state.selectedItem.product.productId);
+		console.log('productIndex', productIndex);
+
 		let isDiscountAvailable = false;
 		if (productIndex >= 0) {
-			const discountIndex = this.props.selectedDiscounts[productIndex].discount.map(function (e) { return e.id }).indexOf(item.id);
-			if (this.props.selectedDiscounts[productIndex].discount.length > 0 && this.state.selectedDiscounts.length === 0) {
-				this.setState(state => {
-					return {
-						selectedDiscounts: this.props.selectedDiscounts[productIndex].discount
-					};
-				});
-			}
-
-
-			if (discountIndex >= 0) {
-				isDiscountAvailable = true;
-			}
+			isDiscountAvailable = this.props.selectedDiscounts[productIndex].discount.id === item.id;
 		}
-		console.log('isDiscountAvailable', isDiscountAvailable)
+		console.log('isDiscountAvailable', isDiscountAvailable);
 
 		return (
-
 			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
 				<View style={{ flex: 1, height: 50 }}>
 					<Text style={[{ marginLeft: 12 }, styles.baseItem]}>{item.applies_to}-{item.amount}</Text>
@@ -416,41 +410,28 @@ class OrderItems extends Component {
 						size="large"
 						onToggle={isOn => {
 							DiscountRealm.isSelected(item, isOn === true ? true : false);
-							this.props.discountActions.setDiscounts(
-								DiscountRealm.getDiscounts()
-							);
-							console.log('selectedItem', this.state.selectedItem);
+
+							console.log('this.state.selectedDiscounts.hasOwnProperty', this.state.selectedDiscounts.hasOwnProperty('id'));
+							console.log('selectedDiscounts', this.state.selectedDiscounts);
+							console.log('isOn', isOn);
+
+							if (this.state.selectedDiscounts.hasOwnProperty('id')) {
+								DiscountRealm.isSelected(this.state.selectedDiscounts, false);
+							}
+
+							this.props.discountActions.setDiscounts(DiscountRealm.getDiscounts());
+
 							if (isOn) {
-								this.setState(state => {
-									const selectedDiscounts = state.selectedDiscounts.concat(item);
-									this.props.orderActions.SetOrderDiscounts('Not Custom', 0, this.state.selectedItem.product, selectedDiscounts, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)).toFixed(2));
-									console.log('selectedDiscounts', selectedDiscounts);
-									return {
-										selectedDiscounts
-									};
-								});
+								const selectedDiscounts = item;
+								this.props.orderActions.SetOrderDiscounts('Not Custom', 0, this.state.selectedItem.product, selectedDiscounts, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)).toFixed(2));
+								this.setState({ selectedDiscounts });
 							}
 
 							if (!isOn) {
-								this.setState(state => {
-									const itemIndex = state.selectedDiscounts.map(function (e) { return e.id }).indexOf(item.id);
-									console.log('itemIndex', itemIndex);
-									if (itemIndex >= 0) {
-										let discountArray = [...state.selectedDiscounts];
-										discountArray.splice(itemIndex, 1);
-										this.props.orderActions.RemoveProductDiscountsFromOrder(this.state.selectedItem.product, discountArray, item.id);
-										console.log('discountArray', discountArray);
-										return {
-											selectedDiscounts: discountArray
-										};
-									}
-
-								});
+								this.props.orderActions.RemoveProductDiscountsFromOrder(this.state.selectedItem.product);
+								this.setState({ selectedDiscounts: {} });
 							}
-
 							console.log('selectedDiscounts', this.state.selectedDiscounts);
-
-
 						}}
 					/>
 

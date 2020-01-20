@@ -62,13 +62,14 @@ const orderReducer = (state = initialState, action) => {
 					if (action.data.isCustom === 'Not Custom') {
 						product.discount = action.data.discount;
 						product.totalPrice = action.data.totalPrice;
+						product.customDiscount = 0;
 						newState.discounts = newState.discounts.slice();
 					}
 					if (action.data.isCustom === 'Custom') {
+						product.discount = {};
 						product.customDiscount = action.data.customDiscount;
 						newState.discounts = newState.discounts.slice();
 					}
-
 					return newState;
 				}
 			}
@@ -82,30 +83,48 @@ const orderReducer = (state = initialState, action) => {
 			return newState;
 		case REMOVE_PRODUCT_DISCOUNT:
 			newState = { ...state };
-			//newState.discounts = [];
-			console.log('state.discounts', state.discounts);
-			console.log('action.data', action.data);
+			newState.discounts = [];
 			for (let product of state.discounts) {
-				if (product.product.productId === action.data.product.productId) {
-					const itemIndex = product.discount.map(function (e) { return e.id }).indexOf(action.data.discountId);
-					//
-					console.log('itemIndex', itemIndex);
-					if (itemIndex >= 0) {
-						let discountArray = [...product.discount];
-						discountArray.splice(itemIndex, 1);
-						product.discount = discountArray;
-						console.log('product.discount', product.discount);
-						//product.discount.concat(discountArray);
-						//product.discount = discountArray;						
-						console.log('discountArray', discountArray);
-						console.log('product', product);
-						//newState.discounts.push(product);						
-					}
-
+				if (product.product.productId !== action.data.product.productId) {
+					newState.discounts.push(product);
 				}
 			}
-			console.log('newState.discounts', newState.discounts);
 			return newState;
+
+
+
+
+			// newState = { ...state };
+			// //newState.discounts = [];
+			// console.log('state.discounts', state.discounts);
+			// console.log('action.data', action.data);
+
+
+			// const productIndex = state.discounts.map(function (e) { return e.product.productId }).indexOf(action.data.product.productId);
+
+			// if (productIndex >= 0) {
+			// 	let productDiscountArray = [...state.discounts];
+			// 	productDiscountArray.splice(productIndex, 1);
+			// }
+
+			// for (let product of state.discounts) {
+			// 	if (product.product.productId === action.data.product.productId) {
+			// 		const itemIndex = product.discount.map(function (e) { return e.id }).indexOf(action.data.discountId);
+			// 		//
+			// 		console.log('itemIndex', itemIndex);
+			// 		if (itemIndex >= 0) {
+			// 			let discountArray = [...product.discount];
+			// 			discountArray.splice(itemIndex, 1);
+			// 			product.discount = discountArray;
+			// 			console.log('product.discount', product.discount);
+			// 			console.log('discountArray', discountArray);
+			// 			console.log('product', product);
+			// 		}
+
+			// 	}
+			// }
+			// console.log('newState.discounts', newState.discounts);
+			// return newState;
 
 		case SET_ORDER_FLOW:
 			newState = { ...state };
