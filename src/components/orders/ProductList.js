@@ -13,9 +13,7 @@ import * as ProductActions from '../../actions/ProductActions';
 import * as OrderActions from '../../actions/OrderActions';
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
-
 import Communications from '../../services/Communications';
-
 import randomMC from 'random-material-color';
 
 class ProductList extends Component {
