@@ -31,9 +31,7 @@ class OrderApi {
 
     
     createReceipt(receipt) {
-		console.log('==============================');
-		console.log(JSON.stringify(receipt) + ' is being sent to the backend');
-		console.log('==============================');
+		
 		let options = {
 			method: 'POST',
 			headers: {

@@ -22,14 +22,14 @@ class CustomSidebarMenu extends Component {
     super();
 
 
-		this.state = {
-			animating: false,
-			language: '',
-			user: "administrator",
-			password: "Let'sGrow",
-			selectedLanguage: {},
-			isLoading: false
-		};
+    this.state = {
+      animating: false,
+      language: '',
+      user: "administrator",
+      password: "Let'sGrow",
+      selectedLanguage: {},
+      isLoading: false
+    };
 
     this.items = [
       {
@@ -112,7 +112,7 @@ class CustomSidebarMenu extends Component {
 
                   if (item.screenToNavigate === 'LogOut') {
                     console.log(item.screenToNavigate);
-                   this.onLogout();
+                    this.onLogout();
                   }
 
                   if (item.screenToNavigate != 'LogOut' || item.screenToNavigate != 'Sync') {
@@ -120,7 +120,7 @@ class CustomSidebarMenu extends Component {
                   }
                   if (item.screenToNavigate === 'Sync') {
                     console.log(item.screenToNavigate);
-                   this.onSynchronize();
+                    this.onSynchronize();
                   }
 
                 }}>
@@ -157,115 +157,116 @@ class CustomSidebarMenu extends Component {
     this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
     //As we are not going to the Login, the reason no reason to disable the token
     Communications.setToken('');
-   // this.props.toolbarActions.ShowScreen('settings');
+    // this.props.toolbarActions.ShowScreen('settings');
     this.props.navigation.navigate('Login');
   };
 
   onSynchronize() {
-		try {
-			this.setState({ isLoading: true });
-			Synchronization.synchronize().then(syncResult => {
+    try {
+      this.setState({ isLoading: true });
+      Synchronization.synchronize().then(syncResult => {
+        console.log("syncResult", syncResult);
         this.setState({ isLoading: false });
 
         this.props.customerActions.setCustomers(
           CustomerRealm.getAllCustomer()
-      );
-				Alert.alert(
-					i18n.t('sync-results'),
-					this._getSyncResults(syncResult),
-					[{ text: i18n.t('ok'), style: 'cancel' }],
-					{ cancelable: true }
-				);
-			});
-			//Added by Jean Pierre
-			Synchronization.getLatestSales();
-		} catch (error) { }
+        );
+        Alert.alert(
+          i18n.t('sync-results'),
+          this._getSyncResults(syncResult),
+          [{ text: i18n.t('ok'), style: 'cancel' }],
+          { cancelable: true }
+        );
+      });
+      //Added by Jean Pierre
+      Synchronization.getLatestSales();
+    } catch (error) { }
   };
 
   _getSyncResults(syncResult) {
-		try {
+    try {
 
-			if (syncResult.status != 'success')
-				return i18n.t('sync-error', { error: syncResult.error });
-			if (
-				syncResult.hasOwnProperty('customers') &&
-				syncResult.customers.error != null
-			)
-				return i18n.t('sync-error', {
-					error: syncResult.customers.error
-				});
-			if (
-				syncResult.hasOwnProperty('products') &&
-				syncResult.products.error != null
-			)
-				return i18n.t('sync-error', {
-					error: syncResult.products.error
-				});
-			if (
-				syncResult.hasOwnProperty('sales') &&
-				syncResult.sales.error != null
-			)
-				return i18n.t('sync-error', { error: syncResult.sales.error });
-			if (
-				syncResult.hasOwnProperty('productMrps') &&
-				syncResult.productMrps.error != null
-			)
-				return i18n.t('sync-error', {
-					error: syncResult.productMrps.error
-				});
-			else {
-				if (
-					syncResult.customers.updatedCustomers == 0 &&
-					syncResult.products.remoteProducts == 0 &&
-					syncResult.sales.localReceipts == 0 &&
-					syncResult.productMrps.remoteProductMrps == 0
-				) {
-					return i18n.t('data-is-up-to-date');
-				} else {
+      if (syncResult.status != 'success')
+        return i18n.t('sync-error', { error: syncResult.error });
+      if (
+        syncResult.hasOwnProperty('customers') &&
+        syncResult.customers.error != null
+      )
+        return i18n.t('sync-error', {
+          error: syncResult.customers.error
+        });
+      if (
+        syncResult.hasOwnProperty('products') &&
+        syncResult.products.error != null
+      )
+        return i18n.t('sync-error', {
+          error: syncResult.products.error
+        });
+      if (
+        syncResult.hasOwnProperty('sales') &&
+        syncResult.sales.error != null
+      )
+        return i18n.t('sync-error', { error: syncResult.sales.error });
+      if (
+        syncResult.hasOwnProperty('productMrps') &&
+        syncResult.productMrps.error != null
+      )
+        return i18n.t('sync-error', {
+          error: syncResult.productMrps.error
+        });
+      else {
+        if (
+          syncResult.customers.updatedCustomers == 0 &&
+          syncResult.products.remoteProducts == 0 &&
+          syncResult.sales.updatedOrders == 0 &&
+          syncResult.productMrps.remoteProductMrps == 0
+        ) {
+          return i18n.t('data-is-up-to-date');
+        } else {
           // console.log('syncResult', syncResult);
-					return `${syncResult.customers.updatedCustomers} ${i18n.t(
-							'customers-updated'
-						)}
+          return `${syncResult.customers.updatedCustomers} ${i18n.t(
+            'customers-updated'
+          )}
         ${syncResult.products.remoteProducts} ${i18n.t('products-updated')}
         ${syncResult.topups.localTopup} ${i18n.t(
             'topups-updated'
           )}
-				${syncResult.sales.localReceipts} ${i18n.t('sales-receipts-updated')}
+				${syncResult.sales.updatedOrders} ${i18n.t('sales-receipts-updated')}
 				${syncResult.productMrps.remoteProductMrps} ${i18n.t(
-							'product-sales-channel-prices-updated'
-						)}`;
-				}
-			}
-		} catch (error) { }
-	}
+            'product-sales-channel-prices-updated'
+          )}`;
+        }
+      }
+    } catch (error) { }
+  }
 
 }
 
 
 function mapStateToProps(state, props) {
   return {
-      selectedCustomer: state.customerReducer.selectedCustomer,
-      customers: state.customerReducer.customers,
-      network: state.networkReducer.network,
-      showView: state.customerBarReducer.showView,
-      showScreen: state.toolBarReducer.showScreen,
-      settings: state.settingsReducer.settings,
-      receipts: state.receiptReducer.receipts,
-      remoteReceipts: state.receiptReducer.remoteReceipts,
-      products: state.productReducer.products,
-      auth:state.authReducer
+    selectedCustomer: state.customerReducer.selectedCustomer,
+    customers: state.customerReducer.customers,
+    network: state.networkReducer.network,
+    showView: state.customerBarReducer.showView,
+    showScreen: state.toolBarReducer.showScreen,
+    settings: state.settingsReducer.settings,
+    receipts: state.receiptReducer.receipts,
+    remoteReceipts: state.receiptReducer.remoteReceipts,
+    products: state.productReducer.products,
+    auth: state.authReducer
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-      customerActions: bindActionCreators(CustomerActions, dispatch),
-      productActions: bindActionCreators(ProductActions, dispatch),
-      networkActions: bindActionCreators(NetworkActions, dispatch),
-      toolbarActions: bindActionCreators(ToolbarActions, dispatch),
-      settingsActions: bindActionCreators(SettingsActions, dispatch),
-      receiptActions: bindActionCreators(receiptActions, dispatch),
-      authActions: bindActionCreators(AuthActions, dispatch)
+    customerActions: bindActionCreators(CustomerActions, dispatch),
+    productActions: bindActionCreators(ProductActions, dispatch),
+    networkActions: bindActionCreators(NetworkActions, dispatch),
+    toolbarActions: bindActionCreators(ToolbarActions, dispatch),
+    settingsActions: bindActionCreators(SettingsActions, dispatch),
+    receiptActions: bindActionCreators(receiptActions, dispatch),
+    authActions: bindActionCreators(AuthActions, dispatch)
   };
 }
 

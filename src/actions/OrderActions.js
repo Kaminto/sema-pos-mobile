@@ -8,13 +8,23 @@ export const SET_ORDER_FLOW = 'SET_ORDER_FLOW';
 export const SET_PAYMENT = 'SET_PAYMENT';
 export const SET_DISCOUNTS = 'SET_DISCOUNTS';
 export const REMOVE_PRODUCT_DISCOUNT = 'REMOVE_PRODUCT_DISCOUNT';
+export const ADD_PRODUCT_DISCOUNT = 'ADD_PRODUCT_DISCOUNT';
+export const SET_PRODUCT_NOTES = 'SET_PRODUCT_NOTES';
 
 export function AddProductToOrder(product, quantity, price) {
-	// console.log("AddProductToOrder - action");
 	return dispatch => {
 		dispatch({
 			type: ADD_PRODUCT_TO_ORDER,
-			data: { product: product, quantity: quantity, unitPrice: price }
+			data: { product: product, quantity: quantity, unitPrice: price, finalAmount: Number(price) * Number(quantity), notes: ""  }
+		});
+	};
+}
+
+export function AddNotesToProduct(product, notes) {
+	return dispatch => {
+		dispatch({
+			type: SET_PRODUCT_NOTES,
+			data: { product, notes }
 		});
 	};
 }
@@ -48,6 +58,7 @@ export function SetOrderChannel(channel) {
 
 
 export function SetOrderDiscounts(isCustom, customDiscount, product, discount, totalPrice) {
+	this.AddProductDiscounts(isCustom, customDiscount, product, discount, totalPrice);
 	return dispatch => {
 		dispatch({
 			type: SET_DISCOUNTS,
@@ -55,6 +66,17 @@ export function SetOrderDiscounts(isCustom, customDiscount, product, discount, t
 		});
 	};
 }
+
+export function AddProductDiscounts(isCustom, customDiscount, product, discount, totalPrice) {
+	return dispatch => {
+		dispatch({
+			type: ADD_PRODUCT_DISCOUNT,
+			data: { isCustom, product, discount, totalPrice,  customDiscount  }
+		});
+	};
+}
+
+
 
 export function RemoveProductDiscountsFromOrder(product) {
 	 console.log("REMOVE_PRODUCT_DISCOUNT - action");

@@ -177,7 +177,7 @@ class OrderItems extends Component {
 								<Text style={[{ textAlign: 'center' }, styles.baseItem]}>Price</Text>
 							</View>
 							<View style={{ flex: 1, height: 50 }}>
-								<Text style={[styles.baseItem]}>{(this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)).toFixed(2)}</Text>
+								<Text style={[styles.baseItem]}>{this.getDiscountPrice((this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)), this.state.selectedItem)}</Text>
 							</View>
 						</View>
 
@@ -237,14 +237,7 @@ class OrderItems extends Component {
 
 						<View style={{ flex: 1, flexDirection: 'row' }}>
 							<View style={{ flex: 1, height: 50 }}>
-								<TextInput
-									style={{
-										backgroundColor: "#eee",
-										borderColor: "#bbb"
-									}}
-									underlineColorAndroid="transparent"
-									placeholder="Notes"
-								/>
+							{this.notesValue()}
 							</View>
 						</View>
 
@@ -281,6 +274,33 @@ class OrderItems extends Component {
 
 	}
 
+	notesValue() {
+		let notes = ''; 
+		console.log('selectedItem', this.state.selectedItem);
+		if (!this.state.selectedItem.hasOwnProperty('notes')) {
+			console.log('selectedItem', this.state.selectedItem);
+			return;
+		}	 
+
+		if (this.state.selectedItem.hasOwnProperty('notes')) {
+			console.log('selectedItem', this.state.selectedItem);
+			notes=this.state.selectedItem.notes;
+		}	 
+	 
+		return (		 
+			<TextInput
+			style={{
+				backgroundColor: "#eee",
+				borderColor: "#bbb"
+			}}
+			onChangeText={this.setNotes}
+			value={notes}
+			underlineColorAndroid="transparent"
+			placeholder="Notes"
+		/>
+		)
+	}
+
 	customDiscountValue() {
 
 		if (!this.state.selectedItem.hasOwnProperty('product')) {
@@ -313,7 +333,7 @@ class OrderItems extends Component {
 
 	modalOnClose() {
 		console.log('selectedDiscounts', this.state.selectedDiscounts);
-		console.log('itemPrice', (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)).toFixed(2));
+		console.log('itemPrice', (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)));
 		DiscountRealm.resetSelected();
 		this.setState(state => {
 			return {
@@ -355,7 +375,7 @@ class OrderItems extends Component {
 				</View>
 				<View style={[{ flex: 1 }]}>
 					<Text numberOfLines={1} style={[styles.baseItem]}>
-						{(item.quantity * this.getItemPrice(item.product)).toFixed(2)}</Text>
+						{this.getDiscountPrice((item.quantity * this.getItemPrice(item.product)), item)}</Text>
 				</View>
 			</View>
 		);
@@ -372,12 +392,12 @@ class OrderItems extends Component {
 			this.props.discountActions.setDiscounts(DiscountRealm.getDiscounts());
 			if (this.props.selectedDiscounts[productIndex].discount.length > 0 && this.state.selectedDiscounts.length === 0) {
 
-				this.props.orderActions.SetOrderDiscounts('Custom', searchText, this.state.selectedItem.product, this.props.selectedDiscounts[productIndex].discount, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)).toFixed(2));
+				this.props.orderActions.SetOrderDiscounts('Custom', searchText, this.state.selectedItem.product, this.props.selectedDiscounts[productIndex].discount, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)));
 
 
 			} else {
 
-				this.props.orderActions.SetOrderDiscounts('Custom', searchText, this.state.selectedItem.product, this.state.selectedDiscounts, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)).toFixed(2));
+				this.props.orderActions.SetOrderDiscounts('Custom', searchText, this.state.selectedItem.product, this.state.selectedDiscounts, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)));
 
 			}
 
@@ -385,6 +405,10 @@ class OrderItems extends Component {
 
 	};
 
+	setNotes = searchText => {
+		console.log(searchText);
+		this.props.orderActions.AddNotesToProduct(this.state.selectedItem.product, searchText);
+	};
 
 	discountRows = (item, index, separators) => {
 		const productIndex = this.props.selectedDiscounts.map(function (e) { return e.product.productId }).indexOf(this.state.selectedItem.product.productId);
@@ -423,7 +447,7 @@ class OrderItems extends Component {
 
 							if (isOn) {
 								const selectedDiscounts = item;
-								this.props.orderActions.SetOrderDiscounts('Not Custom', 0, this.state.selectedItem.product, selectedDiscounts, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)).toFixed(2));
+								this.props.orderActions.SetOrderDiscounts('Not Custom', 0, this.state.selectedItem.product, selectedDiscounts, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)));
 								this.setState({ selectedDiscounts });
 							}
 
@@ -509,6 +533,27 @@ class OrderItems extends Component {
 			}
 		}
 		return item.priceAmount;	// Just use product price
+	};
+
+	getDiscountPrice = (amountPerQuantity, item) => {
+		console.log('amountPerQuantity', amountPerQuantity);
+		console.log('item', item);
+		if (!item.hasOwnProperty('discount')) {
+			return amountPerQuantity;
+		}
+
+		if (Number(item.discount) === 0) {
+			return amountPerQuantity;
+		}
+
+		if (item.type === 'Percentage') {
+			return amountPerQuantity - item.discount;
+		}
+
+		if (item.type === 'Flat') {
+			return amountPerQuantity * (item.discount / 100);
+		}
+
 	};
 
 }

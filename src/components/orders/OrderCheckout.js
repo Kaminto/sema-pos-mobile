@@ -8,6 +8,8 @@ import Modal from 'react-native-modalbox';
 import * as CustomerBarActions from '../../actions/CustomerBarActions';
 import * as CustomerActions from '../../actions/CustomerActions';
 import * as PaymentTypesActions from "../../actions/PaymentTypesActions";
+import * as receiptActions from '../../actions/ReceiptActions';
+
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import i18n from "../../app/i18n";
@@ -24,6 +26,9 @@ import PaymentTypeRealm from '../../database/payment_types/payment_types.operati
 import SettingRealm from '../../database/settings/settings.operations';
 import CustomerRealm from '../../database/customers/customer.operations';
 import OrderRealm from '../../database/orders/orders.operations';
+
+import ReceiptPaymentTypeRealm from '../../database/reciept_payment_types/reciept_payment_types.operations';
+
 import * as Utilities from "../../services/Utilities";
 import ToggleSwitch from 'toggle-switch-react-native';
 const uuidv1 = require('uuid/v1');
@@ -566,19 +571,9 @@ class OrderCheckout extends Component {
 	}
 
 	calculateTotalDue() {
-		if (this.isPayoffOnly()) {
-			let paymentAmount = this.props.payment.cash;
-			if (this.props.payment.hasOwnProperty('mobileToDisplay')) {
-				paymentAmount = this.props.payment.mobile;
-			}
-			return this._roundToDecimal(
-				this.calculateAmountDue() - paymentAmount
-			);
-		} else {
-			return this._roundToDecimal(
-				this.calculateOrderDue() + this.calculateAmountDue()
-			);
-		}
+		return this._roundToDecimal(
+			this.calculateOrderDue() + this.calculateAmountDue()
+		);
 	}
 
 	getItemPrice = item => {
@@ -617,7 +612,7 @@ class OrderCheckout extends Component {
 
 	checkBoxChangeCredit = () => {
 		this.setState({ isCredit: !this.state.isCredit }, function () {
-			this.updatePayment(0, this.calculateOrderDue().toFixed(2));
+			this.updatePayment(0, this.calculateOrderDue());
 		});
 	};
 
@@ -668,7 +663,8 @@ class OrderCheckout extends Component {
 			return this.calculateAmountDue();
 		} else {
 			return this.props.products.reduce((total, item) => {
-				return total + item.quantity * this.getItemPrice(item.product);
+				return total + item.finalAmount;
+
 			}, 0);
 		}
 	}
@@ -689,24 +685,27 @@ class OrderCheckout extends Component {
 		console.log('this.props.selectedDiscounts', this.props.selectedDiscounts);
 		console.log('this.props.delivery', this.props.delivery);
 
-		// this.formatAndSaveSale();
-		// Alert.alert(
-		// 	'Notice',
-		// 	'Payment Made',
-		// 	[{
-		// 		text: 'OK',
-		// 		onPress: () => {
-		// 			this.closePaymentModal();
-		// 			this.props.orderActions.ClearOrder();
-		// 		}
-		// 	}],
-		// 	{ cancelable: false }
-		// );
+		this.formatAndSaveSale();
+		Alert.alert(
+			'Notice',
+			'Payment Made',
+			[{
+				text: 'OK',
+				onPress: () => {
+					this.closePaymentModal();
+					this.props.orderActions.ClearOrder();
+				}
+			}],
+			{ cancelable: false }
+		);
 	}
+
+
 
 	formatAndSaveSale = async () => {
 		let receipt = null;
 		let price_total = 0;
+		let totalAmount = 0;
 		console.log('payment', this.props.payment);
 
 		if (!this.isPayoffOnly()) {
@@ -718,13 +717,13 @@ class OrderCheckout extends Component {
 			console.log(receiptDate + " ---- " + uuidv1());
 
 			receipt = {
-				// id: receiptDate.toISOString(),
 				id: uuidv1(),
 				createdDate: receiptDate,
 				currency_code: this.props.products[0].product.priceCurrency,
 				customer_account_id: this.props.selectedCustomer.customerId,
 				isWalkIn: this.props.payment.isWalkIn,
 				amount_cash: this.props.payment.cash,
+				delivery: this.props.delivery,
 				amount_loan: this.props.payment.credit,
 				amountMobile: this.props.payment.mobile,
 				amount_bank: this.props.payment.bank,
@@ -750,15 +749,14 @@ class OrderCheckout extends Component {
 
 			receipt.products = await this.props.products.map(product => {
 				let receiptLineItem = {};
-				let tempValue =
-					this.getItemCogs(product.product) * product.quantity;
-				receiptLineItem.price_total =
-					this.getItemPrice(product.product) * product.quantity;
+				let tempValue = this.getItemCogs(product.product) * product.quantity;
+				receiptLineItem.price_total = this.getItemPrice(product.product) * product.quantity;
+				receiptLineItem.totalAmount = product.finalAmount;
 				receiptLineItem.quantity = product.quantity;
+				receiptLineItem.notes = product.notes;				
 				receiptLineItem.product_id = product.product.productId;
 				receiptLineItem.product = product.product;
-				receiptLineItem.cogs_total =
-					tempValue == 0 ? product.quantity : tempValue;
+				receiptLineItem.cogs_total = tempValue == 0 ? product.quantity : tempValue;
 				// The items below are used for reporting...
 				receiptLineItem.sku = product.product.sku;
 				receiptLineItem.description = product.product.description;
@@ -768,12 +766,14 @@ class OrderCheckout extends Component {
 				} else {
 					receiptLineItem.litersPerSku = 'N/A';
 				}
+				totalAmount += receiptLineItem.totalAmount;
 				price_total += receiptLineItem.price_total;
 				cogs_total += receiptLineItem.cogs_total;
 				receiptLineItem.active = 1;
 				return receiptLineItem;
 			});
 			receipt.total = price_total;
+			receipt.totalAmount = totalAmount;
 			receipt.cogs = cogs_total;
 			console.log(receipt);
 			console.log('receipt.receiptreceiptreceipt()');
@@ -824,8 +824,17 @@ class OrderCheckout extends Component {
 				});
 			});
 			receipt.customer_account = this.props.selectedCustomer;
+			console.log(this.props.selectedPaymentTypes.length);
+			if (this.props.selectedPaymentTypes.length > 0) {
+				ReceiptPaymentTypeRealm.createManyReceiptPaymentType(this.props.selectedPaymentTypes, receipt.id);
+				this.props.paymentTypesActions.setRecieptPaymentTypes(
+					ReceiptPaymentTypeRealm.getReceiptPaymentTypes()
+				);
+			}
 			OrderRealm.createOrder(receipt);
-
+			this.props.receiptActions.setReceipts(
+				OrderRealm.getAllOrder()
+			);
 			console.log('check1');
 			// Update dueAmount if required
 			if (receipt.amount_loan > 0) {
@@ -904,6 +913,7 @@ function mapDispatchToProps(dispatch) {
 	return {
 		orderActions: bindActionCreators(OrderActions, dispatch),
 		customerBarActions: bindActionCreators(CustomerBarActions, dispatch),
+		receiptActions: bindActionCreators(receiptActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
 		paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch)
 	};

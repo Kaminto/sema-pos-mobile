@@ -188,7 +188,6 @@ class Synchronization {
 							});
 
 							let settings = SettingRealm.getAllSetting();
-							console.log('siteid', settings.siteId);
 							const promiseOrders = OrderSync.synchronizeSales(settings.siteId).then(
 								saleSync => {
 									console.log(saleSync);

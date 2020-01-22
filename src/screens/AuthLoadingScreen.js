@@ -32,7 +32,7 @@ import DiscountRealm from '../database/discount/discount.operations';
 import Synchronization from '../services/Synchronization';
 
 import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
-
+import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_payment_types.operations';
 import Communications from '../services/Communications';
 import NetInfo from "@react-native-community/netinfo";
 
@@ -86,7 +86,7 @@ class AuthLoadingScreen extends React.Component {
 
     loadSyncedData() {
         this.posStorage.loadLocalData();
-       // this.posStorage.initialLocalDb();
+        // this.posStorage.initialLocalDb();
         this.props.customerActions.setCustomers(
             CustomerRealm.getAllCustomer()
         );
@@ -110,13 +110,17 @@ class AuthLoadingScreen extends React.Component {
         this.props.paymentTypesActions.setPaymentTypes(
             PaymentTypeRealm.getPaymentTypes()
         );
+        console.log('ReceiptPaymentTypeRealm.getReceiptPaymentTypes', ReceiptPaymentTypeRealm.getReceiptPaymentTypes());
+        this.props.paymentTypesActions.setRecieptPaymentTypes(
+            ReceiptPaymentTypeRealm.getReceiptPaymentTypes()
+        );
 
         console.log('getDiscounts', DiscountRealm.getDiscounts());
         this.props.discountActions.setDiscounts(
             DiscountRealm.getDiscounts()
         );
 
-        
+
 
         Synchronization.initialize(
             CustomerRealm.getLastCustomerSync(),
@@ -128,7 +132,7 @@ class AuthLoadingScreen extends React.Component {
         Synchronization.setConnected(this.props.network.isNWConnected);
     };
 
-    componentWillUnmount() {}
+    componentWillUnmount() { }
 
     render() {
         const animating = this.state.animating;
@@ -160,7 +164,7 @@ function mapDispatchToProps(dispatch) {
         productActions: bindActionCreators(ProductActions, dispatch),
         receiptActions: bindActionCreators(receiptActions, dispatch),
         discountActions: bindActionCreators(discountActions, dispatch),
-        paymentTypesActions: bindActionCreators(paymentTypesActions, dispatch),        
+        paymentTypesActions: bindActionCreators(paymentTypesActions, dispatch),
     };
 }
 

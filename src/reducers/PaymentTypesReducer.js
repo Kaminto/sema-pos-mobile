@@ -1,6 +1,6 @@
-import { SET_PAYMENT_TYPES, REMOVE_SELECTED_PAYMENT_TYPES, UPDATE_SELECTED_PAYMENT_TYPES, SET_DELIVERY, SET_SELECTED_PAYMENT_TYPES } from "../actions/PaymentTypesActions";
+import { SET_PAYMENT_TYPES, SET_RECIEPT_PAYMENT_TYPES, REMOVE_SELECTED_PAYMENT_TYPES, UPDATE_SELECTED_PAYMENT_TYPES, SET_DELIVERY, SET_SELECTED_PAYMENT_TYPES } from "../actions/PaymentTypesActions";
 
-let initialState = { paymentTypes: [], selectedPaymentTypes: [], delivery: 'delivery' };
+let initialState = { paymentTypes: [], selectedPaymentTypes: [], receiptsPaymentTypes: [], delivery: 'delivery' };
 
 const paymentTypesReducer = (state = initialState, action) => {
     let newState;
@@ -8,6 +8,10 @@ const paymentTypesReducer = (state = initialState, action) => {
         case SET_PAYMENT_TYPES:
             newState = { ...state };
             newState.paymentTypes = action.data.slice();
+            return newState;
+        case SET_RECIEPT_PAYMENT_TYPES:
+            newState = { ...state };
+            newState.receiptsPaymentTypes = action.data.slice();
             return newState;
         case SET_SELECTED_PAYMENT_TYPES:
             newState = { ...state };
@@ -20,8 +24,8 @@ const paymentTypesReducer = (state = initialState, action) => {
         case UPDATE_SELECTED_PAYMENT_TYPES:
             newState = { ...state };
             console.log('selectedPaymentType', action.data.selectedPaymentType);
-            console.log('index',  action.data.index);
-            console.log('data.index',  newState.selectedPaymentTypes[action.data.index]);
+            console.log('index', action.data.index);
+            console.log('data.index', newState.selectedPaymentTypes[action.data.index]);
             newState.selectedPaymentTypes[action.data.index] = action.data.selectedPaymentType;
             return newState;
         case REMOVE_SELECTED_PAYMENT_TYPES:
