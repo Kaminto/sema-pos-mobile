@@ -16,7 +16,7 @@ import ToggleSwitch from 'toggle-switch-react-native';
 import { Input } from 'react-native-elements';
 
 const { height, width } = Dimensions.get('window');
-const widthQuanityModal = 1000;
+const widthQuanityModal = '90%';
 const heightQuanityModal = 500;
 const inputTextWidth = 400;
 const marginInputItems = width / 2 - inputTextWidth / 2;

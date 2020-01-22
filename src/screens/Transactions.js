@@ -511,7 +511,7 @@ class Transactions extends Component {
 		<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
 			<View key={index} style={{ padding: 15 }}>
 
-				<Text style={{ fontSize: 17 }}>#{item.totalCount - index}</Text>
+				{/* <Text style={{ fontSize: 17 }}>#{item.totalCount - index}</Text> */}
 				<View style={styles.receiptStats}>
 					{!item.active && !item.syncAction === "update" && (
 						<Text style={styles.receiptStatusText}>
