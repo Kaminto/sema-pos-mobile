@@ -3,9 +3,14 @@ export const SET_SELECTED_PAYMENT_TYPES = 'SET_SELECTED_PAYMENT_TYPES';
 export const UPDATE_SELECTED_PAYMENT_TYPES = 'UPDATE_SELECTED_PAYMENT_TYPES';
 export const REMOVE_SELECTED_PAYMENT_TYPES = 'REMOVE_SELECTED_PAYMENT_TYPES';
 export const SET_DELIVERY = 'SET_DELIVERY';
+export const SET_RECIEPT_PAYMENT_TYPES = 'SET_RECIEPT_PAYMENT_TYPES';
 
 export function setPaymentTypes(paymentTypes) {
     return (dispatch) => { dispatch({ type: SET_PAYMENT_TYPES, data: paymentTypes }) };
+}
+
+export function setRecieptPaymentTypes(receiptsPaymentTypes) {
+    return (dispatch) => { dispatch({ type: SET_RECIEPT_PAYMENT_TYPES, data: receiptsPaymentTypes }) };
 }
 
 export function setSelectedPaymentTypes(selectedPaymentTypes) {

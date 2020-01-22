@@ -261,7 +261,9 @@ class OrderTotal extends Component {
 	}
 
 	getAmount = () => {
-		return this.props.products.reduce((total, item) => { return (total + item.quantity * this.getItemPrice(item.product)) }, 0);
+		return this.props.products.reduce((total, item) => { 
+				return total + item.finalAmount;
+		 }, 0);
 	};
 
 	getItemPrice = (product) => {

@@ -70,8 +70,6 @@ export const OrderItemsSchema = {
     }
 };
 
-
-
 export const OrderSchema = {
     name: 'Order',
     properties: {
@@ -91,6 +89,7 @@ export const OrderSchema = {
         customer_account_id: { type: 'string', optional: true },
         customer_type_id: { type: 'int', optional: true },
         delivery_id: { type: 'string', optional: true },
+        delivery: { type: 'string', optional: true },
         id: { type: 'string', optional: true },
         isLocal: { type: 'string', optional: true },
         is_sponsor_selected: { type: 'bool', optional: true },
@@ -102,6 +101,7 @@ export const OrderSchema = {
         sponsor_amount: { type: 'string', optional: true },
         sponsor_id: { type: 'string', optional: true },
         total: { type: 'int', optional: true },
+        totalAmount: { type: 'int', optional: true },
         user_id: { type: 'string', optional: true },
         uuid: { type: 'string', optional: true },
         receiptId: { type: 'string', optional: true },

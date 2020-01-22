@@ -71,16 +71,16 @@ class ReceiptPaymentTypeRealm {
 
     }
 
-    resetSelected(){
+    resetSelected() {
         try {
             realm.write(() => {
                 let receiptPaymentTypeObj = realm.objects('ReceiptPaymentType');
 
-                receiptPaymentTypeObj.forEach(element=>{
-                   // console.log('element',element);
+                receiptPaymentTypeObj.forEach(element => {
+                    // console.log('element',element);
                     element.isSelected = false;
                 })
-                
+
 
             })
 
@@ -90,7 +90,7 @@ class ReceiptPaymentTypeRealm {
 
     }
 
-    isSelected(receiptPaymentType,isSelected) {
+    isSelected(receiptPaymentType, isSelected) {
         console.log(isSelected);
         try {
             realm.write(() => {
@@ -149,12 +149,28 @@ class ReceiptPaymentTypeRealm {
         }
     }
 
-    createManyReceiptPaymentType(receiptPaymentTypes) {
+    createManyReceiptPaymentType(receiptPaymentTypes, receiptId) {
+        console.log('receiptPaymentTypes', receiptPaymentTypes);
+        console.log('receiptId', receiptId);
         try {
             realm.write(() => {
-                receiptPaymentTypes.forEach(obj => {
-                    realm.create('ReceiptPaymentType', { ...obj, amount: Number(obj.amount) });
-                });
+                if (receiptId) {
+                    receiptPaymentTypes.forEach(obj => {
+                        realm.create('ReceiptPaymentType', {
+                            receipt_id: receiptId ? receiptId : null,
+                            payment_type_id: obj.id,
+                            amount: obj.amount,
+                            syncAction: obj.syncAction ? obj.syncAction : 'CREATE',
+                            created_at: obj.created_at ? obj.created_at : null,
+                            updated_at: obj.updated_at ? obj.updated_at : null,
+                        });
+                    });
+                }
+                if (!receiptId) {
+                    receiptPaymentTypes.forEach(obj => {
+                        realm.create('ReceiptPaymentType', obj);
+                    });
+                }
             });
 
         } catch (e) {
