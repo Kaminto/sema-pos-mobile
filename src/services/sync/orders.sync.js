@@ -74,10 +74,12 @@ class OrderSync {
                                         cogsTotal: localOrder.receipt_line_items[i].cogs_total,
                                         description:  localOrder.receipt_line_items[i].description,
                                         litersPerSku:  localOrder.receipt_line_items[i].litersPerSku,
-                                        priceTotal:  localOrder.receipt_line_items[i].price_total,
+                                        priceTotal:  localOrder.receipt_line_items[i].totalAmount,
+                                        totalAmount: localOrder.receipt_line_items[i].totalAmount,
                                         productId:  localOrder.receipt_line_items[i].product_id,
                                         quantity: localOrder.receipt_line_items[i].quantity,
                                         sku:  localOrder.receipt_line_items[i].sku,
+                                        notes:  localOrder.receipt_line_items[i].notes
                                     })
                         
                         
@@ -91,10 +93,10 @@ class OrderSync {
                                         amountLoan: localOrder.amount_loan,
                                         amountMobile: localOrder.amount_mobile,
                                         isWalkIn: localOrder.isWalkIn,
+                                        delivery: localOrder.delivery,
                                         amount_bank: localOrder.amount_bank,
                                         amount_cheque: localOrder.amount_cheque,
                                         amountjibuCredit: localOrder.amountjibuCredit,
-
                                         cogs: localOrder.cogs,
                                         createdDate: localOrder.created_at,
                                         currencyCode: localOrder.currency_code,
@@ -106,7 +108,7 @@ class OrderSync {
                                         receiptId: localOrder.receiptId,
                                         salesChannelId: localOrder.sales_channel_id,
                                         siteId: localOrder.kiosk_id,
-                                        total: localOrder.total,
+                                        total: localOrder.totalAmount,
                                     }
                                 )
                                     .then((response) => {
@@ -118,7 +120,7 @@ class OrderSync {
                                     })
                                     .catch(error => {
                                         console.log(
-                                            'Synchronization:synchronizeInventory Create Inventory failed',error
+                                            'Synchronization: Create Order failed',error
                                         );
                                     });
                             })

@@ -40,7 +40,7 @@ export function formatCurrency(value) {
 			currency = ProductsRealm.getProducts()[0].priceCurrency;
 		}
 	}
-	value = parseFloat(value.toFixed(2));
+	value = parseFloat(value);
 
 	// Note: Because of the very large number of locales that exist in order to support all locales AND
 	// Adding currency info adds addtional text, it has been decided to format curency as a,ddd.00 format
