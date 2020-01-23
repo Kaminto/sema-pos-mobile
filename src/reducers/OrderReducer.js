@@ -38,11 +38,11 @@ const orderReducer = (state = initialState, action) => {
 
 					if (product.hasOwnProperty('discount')) {
 						if (product.type === 'Percentage') {
-							product.finalAmount = (product.quantity * product.unitPrice) - product.discount;
+							product.finalAmount = (product.quantity * product.unitPrice) - Number(product.discount);
 						}
 
 						if (product.type === 'Flat') {
-							product.finalAmount = (product.quantity * product.unitPrice) * product.discount / 100;
+							product.finalAmount = (product.quantity * product.unitPrice) * Number(product.discount) / 100;
 						}
 					}
 
@@ -108,6 +108,7 @@ const orderReducer = (state = initialState, action) => {
 				{
 					product: action.data.product,
 					discount: action.data.discount,
+					discountType: action.data.isCustom,
 					totalPrice: action.data.totalPrice,
 					customDiscount: action.data.customDiscount
 				});
@@ -132,7 +133,7 @@ const orderReducer = (state = initialState, action) => {
 					if (action.data.isCustom === 'Custom') {
 						product.discount = action.data.customDiscount;
 						product.type = 'Flat';
-						product.finalAmount = (product.quantity * product.unitPrice) - action.data.discount.customDiscount;
+						product.finalAmount = (product.quantity * product.unitPrice) - action.data.customDiscount;
 
 					}
 				}

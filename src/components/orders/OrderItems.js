@@ -237,7 +237,7 @@ class OrderItems extends Component {
 
 						<View style={{ flex: 1, flexDirection: 'row' }}>
 							<View style={{ flex: 1, height: 50 }}>
-							{this.notesValue()}
+								{this.notesValue()}
 							</View>
 						</View>
 
@@ -275,29 +275,29 @@ class OrderItems extends Component {
 	}
 
 	notesValue() {
-		let notes = ''; 
+		let notes = '';
 		console.log('selectedItem', this.state.selectedItem);
 		if (!this.state.selectedItem.hasOwnProperty('notes')) {
 			console.log('selectedItem', this.state.selectedItem);
 			return;
-		}	 
+		}
 
 		if (this.state.selectedItem.hasOwnProperty('notes')) {
 			console.log('selectedItem', this.state.selectedItem);
-			notes=this.state.selectedItem.notes;
-		}	 
-	 
-		return (		 
+			notes = this.state.selectedItem.notes;
+		}
+
+		return (
 			<TextInput
-			style={{
-				backgroundColor: "#eee",
-				borderColor: "#bbb"
-			}}
-			onChangeText={this.setNotes}
-			value={notes}
-			underlineColorAndroid="transparent"
-			placeholder="Notes"
-		/>
+				style={{
+					backgroundColor: "#eee",
+					borderColor: "#bbb"
+				}}
+				onChangeText={this.setNotes}
+				value={notes}
+				underlineColorAndroid="transparent"
+				placeholder="Notes"
+			/>
 		)
 	}
 
@@ -307,6 +307,8 @@ class OrderItems extends Component {
 			console.log('selectedItem', this.state.selectedItem);
 			return;
 		}
+		console.log('selectedDiscounts', this.props.selectedDiscounts);
+		console.log('selectedItem', this.state.selectedItem.product);
 
 		const productIndex = this.props.selectedDiscounts.map(function (e) { return e.product.productId }).indexOf(this.state.selectedItem.product.productId);
 		console.log('productIndex', productIndex);
@@ -323,7 +325,7 @@ class OrderItems extends Component {
 					borderColor: "#bbb"
 				}}
 				onChangeText={this.customDiscount}
-				value={(customValue).toString()}
+				value={(customValue)}
 				keyboardType="numeric"
 				underlineColorAndroid="transparent"
 				placeholder="Custom Discount"
@@ -383,6 +385,7 @@ class OrderItems extends Component {
 
 	customDiscount = searchText => {
 		console.log(searchText);
+		console.log(this.state.selectedDiscounts);
 		const productIndex = this.props.selectedDiscounts.map(function (e) { return e.product.productId }).indexOf(this.state.selectedItem.product.productId);
 		console.log('productIndex', productIndex);
 		if (productIndex >= 0) {
@@ -400,6 +403,9 @@ class OrderItems extends Component {
 				this.props.orderActions.SetOrderDiscounts('Custom', searchText, this.state.selectedItem.product, this.state.selectedDiscounts, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)));
 
 			}
+
+		} else {
+			this.props.orderActions.SetOrderDiscounts('Custom', searchText, this.state.selectedItem.product, this.state.selectedDiscounts, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)));
 
 		}
 
@@ -546,12 +552,12 @@ class OrderItems extends Component {
 			return amountPerQuantity;
 		}
 
-		if (item.type === 'Percentage') {
-			return amountPerQuantity - item.discount;
+		if (item.type === 'Flat') {
+			return amountPerQuantity - Number(item.discount);
 		}
 
-		if (item.type === 'Flat') {
-			return amountPerQuantity * (item.discount / 100);
+		if (item.type === 'Percentage') {
+			return amountPerQuantity * (Number(item.discount) / 100);
 		}
 
 	};
