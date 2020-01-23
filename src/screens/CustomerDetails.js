@@ -247,6 +247,7 @@ class CustomerDetails extends Component {
 									'topup-placeholder'
 								)}
 								label={i18n.t('topup-placeholder')}
+								value={this.state.topup}
 								onChangeText={this.onChangeTopup.bind(this)}
 							/>
 							<Button
@@ -363,11 +364,12 @@ class CustomerDetails extends Component {
 
 		CreditRealm.createCredit(
 			this.props.selectedCustomer.customerId,
-			this.state.topup,
-			this.state.topup
+			Number(this.state.topup),
+			Number(this.state.topup)
 		);
 		this.setState({ topup: "" });
 		console.log(this.state.topup);
+		console.log(CreditRealm.getAllCredit());
 		this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
 
 	}
