@@ -119,21 +119,13 @@ class OrderCheckout extends Component {
 		return (
 			<View style={styles.container}>
 				<View style={[{ flexDirection: 'row' }, this.getOpacity()]}>
-					<View style={{ flex: 0.5, justifyContent: 'center' }}>
+					<View style={{ flex: 1, justifyContent: 'center' }}>
 						<TouchableHighlight underlayColor='#c0c0c0'
 							onPress={() => this.onPay()}>
 							<Text style={[{ paddingTop: 20, paddingBottom: 20, textAlign: 'center' }, styles.buttonText]}>{i18n.t('pay')}</Text>
 						</TouchableHighlight>
 					</View>
-					<View style={{ flex: 0.5, justifyContent: 'center' }}>
-						<TouchableHighlight underlayColor='#c0c0c0'
-							onPress={() => this.onSaveOrder()}>
-							<Text style={[{ paddingTop: 20, paddingBottom: 20, textAlign: 'center' }, styles.buttonText]}>{i18n.t('save-order')}</Text>
-						</TouchableHighlight>
-					</View>
 				</View>
-
-
 				<Modal
 					style={[styles.modal, styles.modal3]}
 					coverScreen={true}
@@ -169,7 +161,69 @@ class OrderCheckout extends Component {
 								extraData={this.props.selectedPaymentTypes}
 							/>
 
-							<ToggleSwitch
+							<View style={{ flex: 1, flexDirection: 'row' }}>
+								<View style={{ flex: 1, height: 50 }}>
+									<Text style={[{ textAlign: 'center' }, styles.baseItem]}>Delivery Mode</Text>
+
+								</View>
+							</View>
+
+							<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
+								<CheckBox
+									title={'Delivery'}
+									checkedIcon={<Icon
+										name="md-checkbox"
+										size={20}
+										color="black"
+									/>}
+									uncheckedIcon={<Icon
+										name="md-square-outline"
+										size={20}
+										color="black"
+									/>}
+									checked={this.props.delivery === 'delivery'}
+									onPress={() => {
+										console.log('press');
+										this.setState({ isWalkIn: false });
+										if(this.props.delivery === 'delivery'){
+											this.props.paymentTypesActions.setDelivery('walkin');
+											return;
+										}
+										this.props.paymentTypesActions.setDelivery('delivery');
+									}}
+								/>
+
+
+								<CheckBox
+									title={'Walk In'}
+									checkedIcon={<Icon
+										name="md-checkbox"
+										size={20}
+										color="black"
+									/>}
+									uncheckedIcon={<Icon
+										name="md-square-outline"
+										size={20}
+										color="black"
+									/>}
+									checked={this.props.delivery === 'walkin'}
+									onPress={() => {
+										console.log('press');
+										this.setState({ isWalkIn: false });
+
+										if(this.props.delivery === 'walkin'){
+											this.props.paymentTypesActions.setDelivery('delivery');
+											return;
+										}
+
+										this.props.paymentTypesActions.setDelivery('walkin');
+									}}
+								/>
+
+							</View>
+
+
+							{/* <ToggleSwitch
 								isOn={this.props.delivery === 'delivery'}
 								onColor="green"
 								offColor="red"
@@ -190,7 +244,7 @@ class OrderCheckout extends Component {
 									}
 									console.log('delivery', this.props.delivery);
 								}}
-							/>
+							/> */}
 							{this.getSaleAmount()}
 							<PaymentDescription
 								title={`${i18n.t('previous-amount-due')}:`}
@@ -235,7 +289,16 @@ class OrderCheckout extends Component {
 		if (this.props.selectedPaymentTypes.length > 0) {
 			const itemIndex = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(item.id);
 			if (itemIndex >= 0) {
-				isSelectedAvailable = true
+				isSelectedAvailable = true;
+			}
+		}
+
+		if (this.props.selectedPaymentTypes.length === 0) {
+			console.log('--item--', item);
+			if (item.name === 'cash') {
+				PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
+				this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
+				isSelectedAvailable = true;
 			}
 		}
 
@@ -345,11 +408,10 @@ class OrderCheckout extends Component {
 
 	checkBoxType = (item) => {
 		console.log('selectedPaymentTypes', this.props.selectedPaymentTypes);
+
 		const itemIndex = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(item.id);
 		console.log(itemIndex);
 		if (itemIndex >= 0) {
-			//PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
-			//this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
 
 			let secondItemObj = this.props.selectedPaymentTypes.filter(obj => obj.id != item.id).map(function (e) { return e.id });
 			console.log('secondItemObj', secondItemObj);
@@ -363,6 +425,11 @@ class OrderCheckout extends Component {
 				this.props.paymentTypesActions.removeSelectedPaymentType(item, itemIndex);
 				this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
 				console.log(this.props.selectedPaymentTypes);
+			}
+
+			if (secondItemObj.length === 0) {
+				this.props.paymentTypesActions.removeSelectedPaymentType(item, itemIndex);
+				this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
 			}
 			return;
 		}
@@ -386,7 +453,6 @@ class OrderCheckout extends Component {
 		this.setState({
 			checkedType: { ...item, isSelected: item.isSelected === true ? false : true }
 		});
-
 
 
 		if (this.props.selectedPaymentTypes.length === 0) {
@@ -753,7 +819,7 @@ class OrderCheckout extends Component {
 				receiptLineItem.price_total = this.getItemPrice(product.product) * product.quantity;
 				receiptLineItem.totalAmount = product.finalAmount;
 				receiptLineItem.quantity = product.quantity;
-				receiptLineItem.notes = product.notes;				
+				receiptLineItem.notes = product.notes;
 				receiptLineItem.product_id = product.product.productId;
 				receiptLineItem.product = product.product;
 				receiptLineItem.cogs_total = tempValue == 0 ? product.quantity : tempValue;
@@ -957,6 +1023,14 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		color: 'black',
 		alignSelf: 'center'
+	},
+	baseItem: {
+		fontWeight: 'bold',
+		fontSize: 16,
+		color: 'black',
+		paddingTop: 4,
+		paddingBottom: 4,
+
 	},
 	modal: {
 		justifyContent: 'center',
