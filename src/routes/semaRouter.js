@@ -3,9 +3,15 @@ import { View, Image, TouchableOpacity, Text } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
+
 import CustomerList from '../screens/CustomerList';
 import CustomerEdit from '../screens/CustomerEdit';
 import CustomerDetails from '../screens/CustomerDetails';
+import CreditHistory from '../screens/CreditHistory';
+import DebitHistory from '../screens/DebitHistory';
+
+
 import Login from '../screens/Login';
 import AuthLoadingScreen from '../screens/AuthLoadingScreen';
 import Transactions from '../screens/Transactions';
@@ -44,6 +50,56 @@ class NavigationDrawerStructure extends Component {
         );
     }
 }
+
+const DebitHistoryStack = createStackNavigator({
+    DebitHistory: {
+        screen: DebitHistory
+    },
+},
+    {
+        headerMode: 'none',
+        initialRouteName: 'DebitHistory',
+    });
+
+
+const CreditHistoryStack = createStackNavigator({
+    CreditHistory: {
+        screen: CreditHistory
+    },
+},
+    {
+        headerMode: 'none',
+        initialRouteName: 'CreditHistory',
+    });
+
+const CustomerTransactionStack = createStackNavigator({
+    Transaction: {
+        screen: CustomerDetails
+    },
+},
+    {
+        headerMode: 'none',
+        initialRouteName: 'Transaction',
+    });
+
+
+
+const TabNavigator = createBottomTabNavigator({
+    Transaction: CustomerTransactionStack,
+    Credit: CreditHistoryStack,
+    Debit: DebitHistoryStack
+},
+    {
+        initialRouteName: 'Transaction',
+        headerMode: 'none',
+        tabBarOptions: {
+            activeTintColor: 'white',
+            inactiveTintColor: 'black',
+            style: {
+                backgroundColor: '#00549C',
+            },
+        },
+    });
 
 
 const OrderStack = createStackNavigator({
@@ -226,16 +282,16 @@ const ListCustomerStack = createStackNavigator({
                         {!navigation.getParam('isEdit') && (
                             <Text style={{
                                 fontWeight: 'bold',
-								fontSize: 18,
-								color: 'white'
+                                fontSize: 18,
+                                color: 'white'
                             }}>New Customer</Text>
                         )}
 
                         {navigation.getParam('isEdit') && (
                             <Text style={{
                                 fontWeight: 'bold',
-								fontSize: 18,
-								color: 'white'
+                                fontSize: 18,
+                                color: 'white'
                             }}>Edit Customer</Text>
                         )}
                     </View>
@@ -243,7 +299,7 @@ const ListCustomerStack = createStackNavigator({
         })
     },
     CustomerDetails: {
-        screen: CustomerDetails,
+        screen: TabNavigator,
         navigationOptions: ({ navigation }) => ({
             title: 'Customer Details',
             headerStyle: {
@@ -357,7 +413,7 @@ const JibuDrawerNavigation = createDrawerNavigator({
         navigationOptions: {
             drawerLabel: 'Sales Reports',
         },
-	},
+    },
 
     Inventory: {
         screen: InventoryStack,
@@ -372,18 +428,18 @@ const JibuDrawerNavigation = createDrawerNavigator({
         },
     },
 },
-{
-    contentOptions: {
-        activeTintColor: '#e91e63',
-    },
-    initialRouteName: 'ListCustomers',
-    contentComponent: CustomSidebarMenu,
-    drawerBackgroundColor: {
-        light: '#eee',
-        dark: 'rgba(40,40,40,1)',
-    },
-    drawerType: 'slide'
-});
+    {
+        contentOptions: {
+            activeTintColor: '#e91e63',
+        },
+        initialRouteName: 'ListCustomers',
+        contentComponent: CustomSidebarMenu,
+        drawerBackgroundColor: {
+            light: '#eee',
+            dark: 'rgba(40,40,40,1)',
+        },
+        drawerType: 'slide'
+    });
 
 const JibuRouter = createSwitchNavigator(
     {
