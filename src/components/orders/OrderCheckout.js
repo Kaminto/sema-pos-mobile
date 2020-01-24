@@ -530,6 +530,7 @@ class OrderCheckout extends Component {
 	}
 
 
+	
 
 	_roundToDecimal(value) {
 		return parseFloat(value.toFixed(2));

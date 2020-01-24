@@ -193,7 +193,8 @@ class CustomerDetails extends Component {
 	render() {
 		console.log('props -', this.props.topups);
 		console.log('TopUps', CreditRealm.getAllCredit());
-		console.log('getReceipts', PosStorage.getReceipts())
+		console.log('getReceipts', PosStorage.getReceipts());
+		console.log('comparePaymentCreditTypes',this.comparePaymentCreditTypes());
 		return (
 			<View style={{ flex: 1 }}>
 				<View style={{
@@ -203,7 +204,12 @@ class CustomerDetails extends Component {
 					alignItems: 'center'
 				}}>
 					<View style={[styles.leftToolbar]}>
-						<SelectedCustomerDetails selectedCustomer={this.props.selectedCustomer} />
+						<SelectedCustomerDetails
+						 creditSales={this.comparePaymentCreditTypes()}
+						navigation={this.props.navigation}
+						topupTotal={this.props.topupTotal}
+						selectedCustomer={this.props.selectedCustomer}
+						/>
 					</View>
 				</View>
 
@@ -212,6 +218,107 @@ class CustomerDetails extends Component {
 			</View>
 		);
 		return null;
+	}
+
+	comparePaymentTypeReceipts() {
+		let receiptsPaymentTypes = [...this.comparePaymentTypes()];
+		let customerReceipt = [...this.getCustomerRecieptData()];
+		console.log(receiptsPaymentTypes);
+		console.log(customerReceipt);
+		let finalCustomerReceiptsPaymentTypes = [];
+
+		for (let receiptsPaymentType of receiptsPaymentTypes) {
+			const rpIndex = customerReceipt.map(function (e) { return e.id }).indexOf(receiptsPaymentType.receipt_id);
+			console.log(rpIndex);
+			if (rpIndex >= 0) {
+				receiptsPaymentType.receipt = receiptsPaymentTypes[rpIndex];
+				finalCustomerReceiptsPaymentTypes.push(receiptsPaymentType);
+			}
+		}
+		return finalCustomerReceiptsPaymentTypes;
+	}
+
+	comparePaymentCreditTypes() {
+		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
+		let paymentTypes = [...this.props.paymentTypes];
+		let finalreceiptsPaymentTypes = [];
+		for (let receiptsPaymentType of receiptsPaymentTypes) {
+			const rpIndex = paymentTypes.map(function (e) { return e.id }).indexOf(receiptsPaymentType.payment_type_id);
+			if (rpIndex >= 0) {
+				if (paymentTypes[rpIndex].name === 'credit') {
+					receiptsPaymentType.name = paymentTypes[rpIndex].name;
+					finalreceiptsPaymentTypes.push(receiptsPaymentType);
+				}
+			}
+		}
+		return finalreceiptsPaymentTypes;
+	}
+
+
+	comparePaymentTypes() {
+		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
+		let paymentTypes = [...this.props.paymentTypes];
+
+		let finalreceiptsPaymentTypes = [];
+
+		for (let receiptsPaymentType of receiptsPaymentTypes) {
+			const rpIndex = paymentTypes.map(function (e) { return e.id }).indexOf(receiptsPaymentType.payment_type_id);
+			if (rpIndex >= 0) {
+				if (paymentTypes[rpIndex].name === 'loan') {
+					receiptsPaymentType.name = paymentTypes[rpIndex].name;
+					finalreceiptsPaymentTypes.push(receiptsPaymentType);
+				}
+			}
+		}
+		return finalreceiptsPaymentTypes;
+	}
+
+
+	getCustomerRecieptData() {
+		// Used for enumerating receipts
+		//console.log("here selectedCustomer", this.props.selectedCustomer);
+
+		if (this.props.receipts.length > 0) {
+			const totalCount = this.props.receipts.length;
+
+			let salesLogs = [...new Set(this.props.receipts)];
+			let remoteReceipts = salesLogs.map((receipt, index) => {
+				//console.log("customerAccount", receipt.customer_account);
+				return {
+					active: receipt.active,
+					id: receipt.id,
+					createdAt: receipt.created_at,
+					customerAccount: receipt.customer_account,
+					customer_account_id: receipt.customer_account_id,
+					receiptLineItems: receipt.receipt_line_items,
+					isLocal: receipt.isLocal || false,
+					key: receipt.isLocal ? receipt.key : null,
+					index,
+					updated: receipt.updated,
+					amountLoan: receipt.amount_loan,
+					totalCount,
+					currency: receipt.currency_code,
+					totalAmount: receipt.total
+				};
+			});
+
+			remoteReceipts.sort((a, b) => {
+				return moment
+					.tz(a.createdAt, moment.tz.guess())
+					.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+					? 1
+					: -1;
+			});
+
+			let siteId = 0;
+			if (SettingRealm.getAllSetting()) {
+				siteId = SettingRealm.getAllSetting().siteId;
+			}
+			return remoteReceipts.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
+		} else {
+			return [];
+		}
+
 	}
 
 	getTransactionDetail() {
@@ -249,8 +356,8 @@ class CustomerDetails extends Component {
 			);
 		}
 	}
- 
-  
+
+
 	prepareData() {
 		// Used for enumerating receipts
 		//console.log("here selectedCustomer", this.props.selectedCustomer);
@@ -303,7 +410,7 @@ class CustomerDetails extends Component {
 		}
 
 	}
-  
+
 
 	renderSeparator() {
 		return (
@@ -468,25 +575,40 @@ class SelectedCustomerDetails extends React.Component {
 	render() {
 		return (
 			<View style={styles.commandBarContainer}>
-				<View style={{ flexDirection: 'row', height: 40 }}>
-					<Text style={styles.selectedCustomerText}>
-						{this.getName()}
-					</Text>
-					<Text style={styles.selectedCustomerText}>
-						Credit Purchases:  {this.props.totalCredit}
-					</Text>
-				</View>
-				<View style={{ flexDirection: 'row', height: 40 }}>
-					<Text style={styles.selectedCustomerText}>
-						{this.getPhone()}
-					</Text>
-					<Text style={styles.selectedCustomerText}>
-						Credit Balance: {this.props.balanceCredit}
-					</Text>
-				</View>
+			<View style={{ flexDirection: 'row', height: 40 }}>
+				<Text style={styles.selectedCustomerText}>
+					{this.getName()}
+				</Text>
+				<Text style={styles.selectedCustomerText}>
+					Credit Purchases:  {this.getCreditPurchases()}
+				</Text>
+				<Text style={styles.selectedCustomerText}>
+					Loan:  {this.props.selectedCustomer.dueAmount}
+				</Text>
 			</View>
+			<View style={{ flexDirection: 'row', height: 40 }}>
+				<Text style={styles.selectedCustomerText}>
+					{this.getPhone()}
+				</Text>
+				<Text style={styles.selectedCustomerText}>
+					Credit Balance: {this.props.topupTotal - this.getCreditPurchases()}
+				</Text>
+
+				<TouchableHighlight
+					onPress={() => this.props.navigation.navigate('OrderView')}>
+					<Text style={styles.selectedCustomerText}>Make Sale</Text>
+				</TouchableHighlight>
+			</View>
+		</View>
 		);
 	}
+
+
+    getCreditPurchases() {
+        console.log(this.props.creditSales);
+        return this.props.creditSales.reduce((total, item) => { return (total + item.amount) }, 0)
+    }
+
 	getName() {
 		console.log('balanceCredit', this.props.balanceCredit);
 		if (this.props.selectedCustomer.hasOwnProperty('name')) {
@@ -671,9 +793,11 @@ function mapStateToProps(state, props) {
 		receipts: state.receiptReducer.receipts,
 		remoteReceipts: state.receiptReducer.remoteReceipts,
 		customers: state.customerReducer.customers,
+		receiptsPaymentTypes: state.paymentTypesReducer.receiptsPaymentTypes,
+        paymentTypes: state.paymentTypesReducer.paymentTypes,
 		products: state.productReducer.products,
-		topups: state.topupReducer.topups,		
-        topupTotal: state.topupReducer.total,
+		topups: state.topupReducer.topups,
+		topupTotal: state.topupReducer.total,
 	};
 }
 function mapDispatchToProps(dispatch) {

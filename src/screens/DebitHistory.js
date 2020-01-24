@@ -128,24 +128,7 @@ class DebitHistory extends Component {
         this.refs.modal6.close();
     };
 
-    addCredit = () => {
-
-        console.log(this.state.topup);
-        console.log(this.props.selectedCustomer);
-
-
-        CreditRealm.createCredit(
-            this.props.selectedCustomer.customerId,
-            Number(this.state.topup),
-            Number(this.state.topup)
-        );
-        this.setState({ topup: "" });
-        console.log(this.state.topup);
-        console.log(CreditRealm.getAllCredit());
-        this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
-
-    }
-
+   
 
     prepareData = () => {
         let data = [];
