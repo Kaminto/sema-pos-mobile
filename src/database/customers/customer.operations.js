@@ -30,8 +30,8 @@ class CustomerRealm {
 
     setLastCustomerSync(lastSyncTime) {
         realm.write(() => {
-        let syncDate = realm.objects('CustomerSyncDate');
-        syncDate[0].lastCustomerSync = lastSyncTime.toISOString()
+            let syncDate = realm.objects('CustomerSyncDate');
+            syncDate[0].lastCustomerSync = lastSyncTime.toISOString()
         })
     }
 
@@ -101,17 +101,17 @@ class CustomerRealm {
     updateCustomer(
         customer,
         phone,
-		name,
-		address,
-		salesChannelId,
-		customerTypeId,
-		frequency,
-		secondPhoneNumber
-        ) {
+        name,
+        address,
+        salesChannelId,
+        customerTypeId,
+        frequency,
+        secondPhoneNumber
+    ) {
         try {
             realm.write(() => {
                 let customerObj = realm.objects('Customer').filtered(`customerId = "${customer.customerId}"`);
-              
+
                 customerObj[0].name = name;
                 customerObj[0].phoneNumber = phone;
                 customerObj[0].address = address;
@@ -122,7 +122,7 @@ class CustomerRealm {
                 customerObj[0].frequency = frequency;
                 customerObj[0].secondPhoneNumber = secondPhoneNumber;
                 customerObj[0].dueAmount = customer.dueAmount;
-        
+
                 if (customer.reminder_date) {
                     customerObj[0].reminder_date = moment(customer.reminder_date).format(
                         'YYYY-MM-DD'
@@ -138,6 +138,25 @@ class CustomerRealm {
         }
 
     }
+
+    updateCustomerDueAmount(
+        customer,
+        dueAmount,
+    ) {
+        try {
+            realm.write(() => {
+                let customerObj = realm.objects('Customer').filtered(`customerId = "${customer.customerId}"`);
+                customerObj[0].updatedDate = new Date();
+                customerObj[0].syncAction = 'update';;
+                customerObj[0].dueAmount = dueAmount;
+            })
+
+        } catch (e) {
+            console.log("Error on creation", e);
+        }
+
+    }
+
 
     synched(customer) {
         try {
