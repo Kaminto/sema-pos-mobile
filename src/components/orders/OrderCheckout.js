@@ -9,6 +9,7 @@ import * as CustomerBarActions from '../../actions/CustomerBarActions';
 import * as CustomerActions from '../../actions/CustomerActions';
 import * as PaymentTypesActions from "../../actions/PaymentTypesActions";
 import * as receiptActions from '../../actions/ReceiptActions';
+import * as TopUpActions from '../../actions/TopUpActions';
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -186,15 +187,13 @@ class OrderCheckout extends Component {
 									onPress={() => {
 										console.log('press');
 										this.setState({ isWalkIn: false });
-										if(this.props.delivery === 'delivery'){
+										if (this.props.delivery === 'delivery') {
 											this.props.paymentTypesActions.setDelivery('walkin');
 											return;
 										}
 										this.props.paymentTypesActions.setDelivery('delivery');
 									}}
 								/>
-
-
 								<CheckBox
 									title={'Walk In'}
 									checkedIcon={<Icon
@@ -212,7 +211,7 @@ class OrderCheckout extends Component {
 										console.log('press');
 										this.setState({ isWalkIn: false });
 
-										if(this.props.delivery === 'walkin'){
+										if (this.props.delivery === 'walkin') {
 											this.props.paymentTypesActions.setDelivery('delivery');
 											return;
 										}
@@ -222,30 +221,6 @@ class OrderCheckout extends Component {
 								/>
 
 							</View>
-
-
-							{/* <ToggleSwitch
-								isOn={this.props.delivery === 'delivery'}
-								onColor="green"
-								offColor="red"
-								labelStyle={{ color: "black", fontWeight: "900" }}
-								label={this.props.delivery}
-								size="large"
-								onToggle={isOn => {
-									console.log('isOn', isOn);
-									console.log('delivery', this.props.delivery);
-									if (isOn) {
-										this.setState({ isWalkIn: false });
-										this.props.paymentTypesActions.setDelivery('delivery');
-									}
-
-									if (!isOn) {
-										this.setState({ isWalkIn: true });
-										this.props.paymentTypesActions.setDelivery('walkin');
-									}
-									console.log('delivery', this.props.delivery);
-								}}
-							/> */}
 							{this.getSaleAmount()}
 							<PaymentDescription
 								title={`${i18n.t('previous-amount-due')}:`}
@@ -300,7 +275,7 @@ class OrderCheckout extends Component {
 			console.log('--item--', item);
 			if (item.name === 'cash') {
 				PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
-				this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
+				this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(), isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
 				isSelectedAvailable = true;
 			}
 		}
@@ -460,10 +435,10 @@ class OrderCheckout extends Component {
 
 		if (this.props.selectedPaymentTypes.length === 0) {
 			PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
-			this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
+			this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(), isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
 		} else {
 			PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
-			this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, isSelected: item.isSelected === true ? false : true, amount: 0 });
+			this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(), isSelected: item.isSelected === true ? false : true, amount: 0 });
 		}
 
 
@@ -497,77 +472,9 @@ class OrderCheckout extends Component {
 		console.log('selectedPaymentTypes', this.props.selectedPaymentTypes);
 	};
 
-	updatePayment = (credit, textToDisplay) => {
-		let payment = {
-			cash: this.calculateOrderDue() - credit,
-			cashToDisplay: textToDisplay,
-			credit: credit,
-			mobile: 0,
-			jibuCredit: 0,
-			bank: 0,
-			cheque: 0,
-		};
-		if (this.state.isMobile) {
-			payment = {
-				mobile: this.calculateOrderDue() - credit,
-				mobileToDisplay: textToDisplay,
-				credit: credit,
-				jibuCredit: 0,
-				cash: 0,
-				bank: 0,
-				cheque: 0
-			};
-		}
-
-		if (this.state.isJibuCredit) {
-			payment = {
-				jibuCredit: this.calculateOrderDue() - credit,
-				jibuCreditToDisplay: textToDisplay,
-				credit: credit,
-				cash: 0,
-				mobile: 0,
-				bank: 0,
-				cheque: 0
-			};
-		}
-
-		if (this.state.isCheque) {
-			payment = {
-				cheque: this.calculateOrderDue() - credit,
-				chequeToDisplay: textToDisplay,
-				credit: credit,
-				jibuCredit: 0,
-				cash: 0,
-				mobile: 0,
-				bank: 0,
-			};
-		}
-
-		if (this.state.isBank) {
-			payment = {
-				bank: this.calculateOrderDue() - credit,
-				bankTranferToDisplay: textToDisplay,
-				credit: credit,
-				jibuCredit: 0,
-				cash: 0,
-				mobile: 0,
-				cheque: 0
-			};
-		}
-
-		console.log('payment', payment);
-		this.props.orderActions.SetPayment(payment);
-	};
 
 	modalOnClose() {
-		//console.log('selectedDiscounts', this.state.selectedDiscounts);
-		//	console.log('itemPrice', (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)).toFixed(2));
 		PaymentTypeRealm.resetSelected();
-		// this.setState(state => {
-		// 	return {
-		// 		selectedDiscounts: []
-		// 	};
-		// });
 		this.props.paymentTypesActions.setPaymentTypes(
 			PaymentTypeRealm.getPaymentTypes());
 	}
@@ -676,11 +583,6 @@ class OrderCheckout extends Component {
 		return null;
 	};
 
-	checkBoxChangeCredit = () => {
-		this.setState({ isCredit: !this.state.isCredit }, function () {
-			this.updatePayment(0, this.calculateOrderDue());
-		});
-	};
 
 	closeHandler = () => {
 		this.setState({ isCompleteOrderVisible: false });
@@ -880,15 +782,27 @@ class OrderCheckout extends Component {
 			console.log('formatAndSaveSale ' + err.message);
 		}
 		if (receipt != null) {
+			const creditIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
+			console.log('creditIndex', creditIndex);
+			if (creditIndex >= 0) {
+				if (Number(this.props.selectedPaymentTypes[creditIndex].amount) > Number(this.props.selectedCustomer.dueAmount)) {
+					Alert.alert(
+						i18n.t('credit-due-amount-title'),
+						i18n.t('credit-due-amount-text') +
+						this.props.selectedCustomer.dueAmount,
+						[
+							{
+								text: 'OK',
+								onPress: () => console.log('OK Pressed')
+							}
+						],
+						{ cancelable: false }
+					);
+					return;
+				}
+			}
 
-			console.log('receipt', receipt)
 
-			await PosStorage.addSale(receipt).then(saleKey => {
-				Events.trigger('NewSaleAdded', {
-					key: saleKey,
-					sale: receipt
-				});
-			});
 			receipt.customer_account = this.props.selectedCustomer;
 			console.log(this.props.selectedPaymentTypes.length);
 			if (this.props.selectedPaymentTypes.length > 0) {
@@ -901,50 +815,23 @@ class OrderCheckout extends Component {
 			this.props.receiptActions.setReceipts(
 				OrderRealm.getAllOrder()
 			);
-			console.log('check1');
-			// Update dueAmount if required
-			if (receipt.amount_loan > 0) {
-				this.props.selectedCustomer.dueAmount += receipt.amount_loan;
-				await CustomerRealm.updateCustomer(
+
+
+
+			const rpIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("loan");
+			console.log('rpIndex', rpIndex);
+
+			if (rpIndex >= 0) {
+				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) + Number(this.props.selectedPaymentTypes[rpIndex].amount);
+				CustomerRealm.updateCustomerDueAmount(
 					this.props.selectedCustomer,
-					this.props.selectedCustomer.phoneNumber,
-					this.props.selectedCustomer.name,
-					this.props.selectedCustomer.address,
-					this.props.selectedCustomer.salesChannelId,
-					this.props.selectedCustomer.customerTypeId,
-					this.props.selectedCustomer.frequency,
-					this.props.selectedCustomer.secondPhoneNumber
+					this.props.selectedCustomer.dueAmount
 				);
-				console.log('check2');
-			} else if (payoff > 0) {
-				this.props.selectedCustomer.dueAmount -= payoff;
-				await CustomerRealm.updateCustomer(
-					this.props.selectedCustomer,
-					this.props.selectedCustomer.phoneNumber,
-					this.props.selectedCustomer.name,
-					this.props.selectedCustomer.address,
-					this.props.selectedCustomer.salesChannelId,
-					this.props.selectedCustomer.customerTypeId,
-					this.props.selectedCustomer.frequency,
-					this.props.selectedCustomer.secondPhoneNumber
-				);
-				console.log('check3');
+				this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
 			}
-			console.log('check4');
+
 		} else {
-			if (payoff > 0) {
-				this.props.selectedCustomer.dueAmount -= payoff;
-				await CustomerRealm.updateCustomer(
-					this.props.selectedCustomer,
-					this.props.selectedCustomer.phoneNumber,
-					this.props.selectedCustomer.name,
-					this.props.selectedCustomer.address,
-					this.props.selectedCustomer.salesChannelId,
-					this.props.selectedCustomer.customerTypeId,
-					this.props.selectedCustomer.frequency,
-					this.props.selectedCustomer.secondPhoneNumber
-				);
-			}
+
 		}
 		return true;
 	};
@@ -971,7 +858,9 @@ function mapStateToProps(state, props) {
 		flow: state.orderReducer.flow,
 		channel: state.orderReducer.channel,
 		payment: state.orderReducer.payment,
-		selectedCustomer: state.customerReducer.selectedCustomer
+		selectedCustomer: state.customerReducer.selectedCustomer,
+		topups: state.topupReducer.topups,
+		topupTotal: state.topupReducer.total,
 	};
 }
 
@@ -981,7 +870,8 @@ function mapDispatchToProps(dispatch) {
 		customerBarActions: bindActionCreators(CustomerBarActions, dispatch),
 		receiptActions: bindActionCreators(receiptActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
-		paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch)
+		paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch),
+		topUpActions: bindActionCreators(TopUpActions, dispatch),
 	};
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OrderCheckout);

@@ -114,8 +114,6 @@ class OrderItems extends Component {
 						</View>
 					</View>
 
-
-
 					<ScrollView>
 						<View
 							style={{

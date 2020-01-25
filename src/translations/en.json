@@ -51,6 +51,9 @@
   "over-due-amount-title": "Over Due Amount",
   "over-due-amount-text": "The payoff amount is greater than the due amount. The due amount is : ",
 
+  "credit-due-amount-title": "Over Due Amount",
+  "credit-due-amount-text": "The credit amount is greater than the due amount. The due amount is : ",
+
   "product": "Product",
 
   "address": "Address",
