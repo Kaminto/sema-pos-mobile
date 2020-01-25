@@ -66,18 +66,18 @@ class ReceiptLineItem extends Component {
 				}}>
 				<Image
 					source={{ uri: this.getImage(this.props.item.product) }}
-					style={[styles.productImage, {flex:.1 }]}
+					style={[styles.productImage, { flex: .1 }]}
 				/>
-				<View style={{ justifyContent: 'space-around', flex:.6 }}>
+				<View style={{ justifyContent: 'space-around', flex: .6 }}>
 					<View style={styles.itemData}>
-						<Text style={[styles.label, {fontSize: 15}]}>{this.props.item.product.description}</Text>
+						<Text style={[styles.label, { fontSize: 15 }]}>{this.props.item.product.description}</Text>
 					</View>
 					<View style={styles.itemData}>
-						<Text style={[styles.label, {fontSize: 16}]}>{this.props.item.quantity} </Text>
+						<Text style={[styles.label, { fontSize: 16 }]}>{this.props.item.quantity} </Text>
 					</View>
 				</View>
-				<View style={[styles.itemData, {flex:.3}]}>
-				<Text style={[styles.label, {fontSize: 15, padding:10}]}>{this.props.item.currency_code.toUpperCase()} {this.props.item.price_total}</Text>
+				<View style={[styles.itemData, { flex: .3 }]}>
+					<Text style={[styles.label, { fontSize: 15, padding: 10 }]}>{this.props.item.currency_code.toUpperCase()} {this.props.item.price_total}</Text>
 				</View>
 			</View>
 		);
@@ -117,7 +117,7 @@ class ReceiptLineItem extends Component {
 			receiptLineItemIndex,
 			updatedFields
 		);
-		PosStorage.saveRemoteReceipts(this.props.remoteReceipts);
+		PosStorage.saveRemoteReceipts(this.props.receipts);
 		this.props.handleUpdate();
 	}
 
@@ -191,89 +191,134 @@ class CustomerDetails extends Component {
 
 
 	render() {
-
 		console.log('props -', this.props.topups);
 		console.log('TopUps', CreditRealm.getAllCredit());
-		console.log('getReceipts', PosStorage.getReceipts())
+		console.log('getReceipts', PosStorage.getReceipts());
+		console.log('comparePaymentCreditTypes',this.comparePaymentCreditTypes());
 		return (
 			<View style={{ flex: 1 }}>
 				<View style={{
 					flexDirection: 'row',
 					height: 100,
-					backgroundColor: '#0e73c9',
+					backgroundColor: '#00549C',
 					alignItems: 'center'
 				}}>
 					<View style={[styles.leftToolbar]}>
 						<SelectedCustomerDetails
-							selectedCustomer={this.props.selectedCustomer}
-							// totalCredit={this.totalCredit()}
-							// balanceCredit={this.balanceCredit()}
+						 creditSales={this.comparePaymentCreditTypes()}
+						navigation={this.props.navigation}
+						topupTotal={this.props.topupTotal}
+						selectedCustomer={this.props.selectedCustomer}
 						/>
 					</View>
 				</View>
 
 				{this.getTransactionDetail()}
 
-				<FloatingAction
-					actions={actions}
-					onPressItem={name => {
-						console.log(`selected button: ${name}`);
-						this.refs.modal6.open();
-					}}
-				/>
-
-				<Modal style={[styles.modal, styles.modal3]} coverScreen={true} position={"center"} ref={"modal6"} isDisabled={this.state.isDisabled}>
-					<View
-						style={{
-							justifyContent: 'flex-end',
-							flexDirection: 'row',
-							right: 100,
-							top: 10
-						}}>
-						{this.getCancelButton()}
-					</View>
-
-					<View
-						style={{
-							flex: 1,
-							marginTop: 0,
-							marginLeft: 100,
-							marginRight: 100
-						}}>
-
-						<View style={{ marginBottom: 10 }}>
-							<Input
-								placeholder={i18n.t(
-									'topup-placeholder'
-								)}
-								label={i18n.t('topup-placeholder')}
-								value={this.state.topup}
-								onChangeText={this.onChangeTopup.bind(this)}
-							/>
-							<Button
-								onPress={() => this.addCredit()}
-								buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10 }}
-								title={i18n.t('topup')} />
-						</View>
-
-
-						<View style={{ flex: 1, backgroundColor: '#fff' }}>
-							<FlatList
-								data={this.prepareTopUpData()}
-								renderItem={this.renderTopUps.bind(this)}
-								keyExtractor={(item, index) => item.id}
-								ItemSeparatorComponent={this.renderSeparator}
-								extraData={this.state.refresh}
-							/>
-						</View>
-
-
-					</View>
-				</Modal>
-
 			</View>
 		);
 		return null;
+	}
+
+	comparePaymentTypeReceipts() {
+		let receiptsPaymentTypes = [...this.comparePaymentTypes()];
+		let customerReceipt = [...this.getCustomerRecieptData()];
+		console.log(receiptsPaymentTypes);
+		console.log(customerReceipt);
+		let finalCustomerReceiptsPaymentTypes = [];
+
+		for (let receiptsPaymentType of receiptsPaymentTypes) {
+			const rpIndex = customerReceipt.map(function (e) { return e.id }).indexOf(receiptsPaymentType.receipt_id);
+			console.log(rpIndex);
+			if (rpIndex >= 0) {
+				receiptsPaymentType.receipt = receiptsPaymentTypes[rpIndex];
+				finalCustomerReceiptsPaymentTypes.push(receiptsPaymentType);
+			}
+		}
+		return finalCustomerReceiptsPaymentTypes;
+	}
+
+	comparePaymentCreditTypes() {
+		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
+		let paymentTypes = [...this.props.paymentTypes];
+		let finalreceiptsPaymentTypes = [];
+		for (let receiptsPaymentType of receiptsPaymentTypes) {
+			const rpIndex = paymentTypes.map(function (e) { return e.id }).indexOf(receiptsPaymentType.payment_type_id);
+			if (rpIndex >= 0) {
+				if (paymentTypes[rpIndex].name === 'credit') {
+					receiptsPaymentType.name = paymentTypes[rpIndex].name;
+					finalreceiptsPaymentTypes.push(receiptsPaymentType);
+				}
+			}
+		}
+		return finalreceiptsPaymentTypes;
+	}
+
+
+	comparePaymentTypes() {
+		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
+		let paymentTypes = [...this.props.paymentTypes];
+
+		let finalreceiptsPaymentTypes = [];
+
+		for (let receiptsPaymentType of receiptsPaymentTypes) {
+			const rpIndex = paymentTypes.map(function (e) { return e.id }).indexOf(receiptsPaymentType.payment_type_id);
+			if (rpIndex >= 0) {
+				if (paymentTypes[rpIndex].name === 'loan') {
+					receiptsPaymentType.name = paymentTypes[rpIndex].name;
+					finalreceiptsPaymentTypes.push(receiptsPaymentType);
+				}
+			}
+		}
+		return finalreceiptsPaymentTypes;
+	}
+
+
+	getCustomerRecieptData() {
+		// Used for enumerating receipts
+		//console.log("here selectedCustomer", this.props.selectedCustomer);
+
+		if (this.props.receipts.length > 0) {
+			const totalCount = this.props.receipts.length;
+
+			let salesLogs = [...new Set(this.props.receipts)];
+			let remoteReceipts = salesLogs.map((receipt, index) => {
+				//console.log("customerAccount", receipt.customer_account);
+				return {
+					active: receipt.active,
+					id: receipt.id,
+					createdAt: receipt.created_at,
+					customerAccount: receipt.customer_account,
+					customer_account_id: receipt.customer_account_id,
+					receiptLineItems: receipt.receipt_line_items,
+					isLocal: receipt.isLocal || false,
+					key: receipt.isLocal ? receipt.key : null,
+					index,
+					updated: receipt.updated,
+					amountLoan: receipt.amount_loan,
+					totalCount,
+					currency: receipt.currency_code,
+					totalAmount: receipt.total
+				};
+			});
+
+			remoteReceipts.sort((a, b) => {
+				return moment
+					.tz(a.createdAt, moment.tz.guess())
+					.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+					? 1
+					: -1;
+			});
+
+			let siteId = 0;
+			if (SettingRealm.getAllSetting()) {
+				siteId = SettingRealm.getAllSetting().siteId;
+			}
+			return remoteReceipts.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
+		} else {
+			return [];
+		}
+
 	}
 
 	getTransactionDetail() {
@@ -281,7 +326,7 @@ class CustomerDetails extends Component {
 			return (
 
 				<View style={{ flex: 1, flexDirection: 'row' }}>
-                    <View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 4, borderRightColor: '#CCC' }}>
+					<View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 4, borderRightColor: '#CCC' }}>
 						<FlatList
 							data={this.prepareData()}
 							renderItem={this.renderReceipt.bind(this)}
@@ -293,12 +338,12 @@ class CustomerDetails extends Component {
 
 					<View style={{ flex: 2, backgroundColor: '#fff' }}>
 						<ScrollView>
-						<TransactionDetail
-							    item={this.state.selected}
+							<TransactionDetail
+								item={this.state.selected}
 								products={this.props.products}
 								receiptActions={this.props.receiptActions}
-								remoteReceipts={this.props.remoteReceipts}
-			        	/>
+								remoteReceipts={this.props.receipts}
+							/>
 						</ScrollView>
 					</View>
 				</View>
@@ -306,72 +351,10 @@ class CustomerDetails extends Component {
 		} else {
 			return (
 				<View style={{ flex: 1, flexDirection: 'row' }}>
-					<Text style={{ fontSize: 20, fontWeight: 'bold', alignContent:"center", justifyContent:"center" }}>Record this customer's sales.</Text>
+					<Text style={{ fontSize: 20, fontWeight: 'bold', alignContent: "center", justifyContent: "center" }}>Record this customer's sales.</Text>
 				</View>
 			);
 		}
-	}
-
-	closePaymentModal = () => {
-		this.refs.modal6.close();
-	};
-
-	totalCredit = () => {
-		// if(this.props.topups) {
-			return this.props.topups.reduce((accumulator, currentValue) => {
-				return ({ topup: Number(accumulator.topup) + Number(currentValue.topup) });
-			}).topup;
-	//    } else {
-	// 	   return null;
-	//    }
-
-
-	}
-
-	balanceCredit = () => {
-		// if(this.props.topups) {
-		return this.props.topups.reduce((accumulator, currentValue) => {
-			return ({ balance: Number(accumulator.balance) + Number(currentValue.balance) });
-		}).balance;
-		// } else {
-		// 	return null;
-		// }
-	}
-
-	onChangeTopup = topup => {
-		console.log(topup);
-		this.setState({ topup });
-		//this.props.parent.forceUpdate();
-	};
-
-	getCancelButton() {
-		return (
-			<TouchableHighlight onPress={() => this.closePaymentModal()}>
-				<Icon
-					size={50}
-					name="md-close"
-					color="black"
-				/>
-			</TouchableHighlight>
-		);
-	}
-
-	addCredit = () => {
-
-		console.log(this.state.topup);
-		console.log(this.props.selectedCustomer);
-
-
-		CreditRealm.createCredit(
-			this.props.selectedCustomer.customerId,
-			Number(this.state.topup),
-			Number(this.state.topup)
-		);
-		this.setState({ topup: "" });
-		console.log(this.state.topup);
-		console.log(CreditRealm.getAllCredit());
-		this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
-
 	}
 
 
@@ -379,10 +362,10 @@ class CustomerDetails extends Component {
 		// Used for enumerating receipts
 		//console.log("here selectedCustomer", this.props.selectedCustomer);
 
-		if (this.props.remoteReceipts.length > 0) {
-			const totalCount = this.props.remoteReceipts.length;
+		if (this.props.receipts.length > 0) {
+			const totalCount = this.props.receipts.length;
 
-			let salesLogs = [...new Set(this.props.remoteReceipts)];
+			let salesLogs = [...new Set(this.props.receipts)];
 			let remoteReceipts = salesLogs.map((receipt, index) => {
 				console.log("customerAccount", receipt.customer_account);
 				return {
@@ -390,6 +373,7 @@ class CustomerDetails extends Component {
 					id: receipt.id,
 					createdAt: receipt.created_at,
 					customerAccount: receipt.customer_account,
+					customer_account_id: receipt.customer_account_id,
 					receiptLineItems: receipt.receipt_line_items,
 					isLocal: receipt.isLocal || false,
 					key: receipt.isLocal ? receipt.key : null,
@@ -398,7 +382,7 @@ class CustomerDetails extends Component {
 					amountLoan: receipt.amount_loan,
 					totalCount,
 					currency: receipt.currency_code,
-				    totalAmount: receipt.total
+					totalAmount: receipt.total
 				};
 			});
 
@@ -420,82 +404,13 @@ class CustomerDetails extends Component {
 			// ];
 			//console.log('remoteReceipts', remoteReceipts[0].customerAccount);
 			//console.log('remoteReceiptsno', remoteReceipts.filter(r => r.customerAccount.id === this.props.selectedCustomer.customerId));
-			return remoteReceipts.filter(r => r.customerAccount.id === this.props.selectedCustomer.customerId);
+			return remoteReceipts.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
 		} else {
 			return [];
 		}
 
 	}
 
-
-	prepareTopUpData() {
-		// Used for enumerating receipts
-		//console.log("here selectedCustomer", this.props.selectedCustomer);
-
-		if (this.props.topups.length > 0) {
-			const totalCount = this.props.topups.length;
-
-			let topupLogs = [...new Set(this.props.topups)];
-			let topups = topupLogs.map((topup, index) => {
-				return {
-					active: topup.active,
-					//id: topup.id,
-					createdAt: topup.createdDate,
-					topUpId: topup.topUpId,
-					customer_account_id: topup.customer_account_id,
-					total: topup.total,
-					topup: topup.topup,
-					balance: topup.balance,
-					totalCount
-				};
-			});
-
-			topups.sort((a, b) => {
-				return moment
-					.tz(a.createdAt, moment.tz.guess())
-					.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
-					? 1
-					: -1;
-			});
-
-			console.log('topups', topups);
-			return topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
-		} else {
-			return [];
-		}
-
-	}
-
-
-	renderTopUps({ item, index }) {
-
-		//	console.log("Item reciep", item);
-		//const receiptLineItems = item.receiptLineItems.map((lineItem, idx) => {
-		return (
-			<View
-				style={{
-					flex: 1,
-					flexDirection: 'row',
-					marginBottom: 10,
-				}}>
-
-				<View style={{ justifyContent: 'space-around' }}>
-					<View style={styles.itemData}>
-						<Text style={styles.label}>Total: </Text>
-						<Text>{item.topup}</Text>
-					</View>
-					<View style={styles.itemData}>
-						<Text style={styles.label}>Balance: </Text>
-						<Text>{item.balance}</Text>
-					</View>
-				</View>
-			</View>
-		);
-		//	});
-
-
-
-	}
 
 	renderSeparator() {
 		return (
@@ -580,44 +495,44 @@ class CustomerDetails extends Component {
 	renderReceipt({ item, index }) {
 
 		return (
-		<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
-			<View key={index} style={{ padding: 15 }}>
-				<Text style={{ fontSize: 17 }}>#{item.totalCount - index}</Text>
-				<View style={styles.receiptStats}>
-					{!item.active && (
-						<Text style={styles.receiptStatusText}>
-							{'Deleted'.toUpperCase()}
-						</Text>
-					)}
-					{item.isLocal || item.updated ? (
-						<View style={{ flexDirection: 'row' }}>
-							{!item.active && <Text> - </Text>}
-							<Text style={styles.receiptPendingText}>
-								{'Pending'.toLowerCase()}
+			<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
+				<View key={index} style={{ padding: 15 }}>
+					<Text style={{ fontSize: 17 }}>#{item.totalCount - index}</Text>
+					<View style={styles.receiptStats}>
+						{!item.active && (
+							<Text style={styles.receiptStatusText}>
+								{'Deleted'.toUpperCase()}
 							</Text>
-						</View>
-					) : (
+						)}
+						{item.isLocal || item.updated ? (
 							<View style={{ flexDirection: 'row' }}>
 								{!item.active && <Text> - </Text>}
-								<Text style={styles.receiptSyncedText}>
-									{'Synced'.toLowerCase()}
+								<Text style={styles.receiptPendingText}>
+									{'Pending'.toLowerCase()}
 								</Text>
 							</View>
-						)}
+						) : (
+								<View style={{ flexDirection: 'row' }}>
+									{!item.active && <Text> - </Text>}
+									<Text style={styles.receiptSyncedText}>
+										{'Synced'.toLowerCase()}
+									</Text>
+								</View>
+							)}
+					</View>
+					<View style={styles.itemData}>
+						<Text style={styles.label}>Date Created: </Text>
+						<Text>
+							{moment
+								.tz(item.createdAt, moment.tz.guess())
+								.format('YYYY-MM-DD HH:mm')}
+						</Text>
+					</View>
+					<View style={styles.itemData}>
+						<Text style={styles.label}>Customer Name: </Text>
+						<Text>{item.customerAccount.name}</Text>
+					</View>
 				</View>
-				<View style={styles.itemData}>
-					<Text style={styles.label}>Date Created: </Text>
-					<Text>
-						{moment
-							.tz(item.createdAt, moment.tz.guess())
-							.format('YYYY-MM-DD HH:mm')}
-					</Text>
-				</View>
-				<View style={styles.itemData}>
-					<Text style={styles.label}>Customer Name: </Text>
-					<Text>{item.customerAccount.name}</Text>
-				</View>
-			</View>
 			</TouchableNativeFeedback>
 		);
 	}
@@ -660,25 +575,40 @@ class SelectedCustomerDetails extends React.Component {
 	render() {
 		return (
 			<View style={styles.commandBarContainer}>
-				<View style={{ flexDirection: 'row', height: 40 }}>
-					<Text style={styles.selectedCustomerText}>
-						{this.getName()}
-					</Text>
-					<Text style={styles.selectedCustomerText}>
-						Credit Purchases:  {this.props.totalCredit}
-					</Text>
-				</View>
-				<View style={{ flexDirection: 'row', height: 40 }}>
-					<Text style={styles.selectedCustomerText}>
-					 {this.getPhone()}
-					</Text>
-					<Text style={styles.selectedCustomerText}>
-						Credit Balance: {this.props.balanceCredit}
-					</Text>
-				</View>
+			<View style={{ flexDirection: 'row', height: 40 }}>
+				<Text style={styles.selectedCustomerText}>
+					{this.getName()}
+				</Text>
+				<Text style={styles.selectedCustomerText}>
+					Credit Purchases:  {this.getCreditPurchases()}
+				</Text>
+				<Text style={styles.selectedCustomerText}>
+					Loan:  {this.props.selectedCustomer.dueAmount}
+				</Text>
 			</View>
+			<View style={{ flexDirection: 'row', height: 40 }}>
+				<Text style={styles.selectedCustomerText}>
+					{this.getPhone()}
+				</Text>
+				<Text style={styles.selectedCustomerText}>
+					Credit Balance: {this.props.topupTotal - this.getCreditPurchases()}
+				</Text>
+
+				<TouchableHighlight
+					onPress={() => this.props.navigation.navigate('OrderView')}>
+					<Text style={styles.selectedCustomerText}>Make Sale</Text>
+				</TouchableHighlight>
+			</View>
+		</View>
 		);
 	}
+
+
+    getCreditPurchases() {
+        console.log(this.props.creditSales);
+        return this.props.creditSales.reduce((total, item) => { return (total + item.amount) }, 0)
+    }
+
 	getName() {
 		console.log('balanceCredit', this.props.balanceCredit);
 		if (this.props.selectedCustomer.hasOwnProperty('name')) {
@@ -775,24 +705,24 @@ class TransactionDetail extends Component {
 	}
 
 	render() {
-			const receiptLineItems = this.props.item.receiptLineItems.map((lineItem, idx) => {
-					return (
-							<ReceiptLineItem
-								receiptActions={this.props.receiptActions}
-								remoteReceipts={this.props.remoteReceipts}
-								item={lineItem}
-								key={lineItem.id}
-								lineItemIndex={idx}
-								products={this.props.products}
-								handleUpdate={this.handleUpdate.bind(this)}
-								receiptIndex={this.props.item.index}
-							/>
-					);
-				});
+		const receiptLineItems = this.props.item.receiptLineItems.map((lineItem, idx) => {
+			return (
+				<ReceiptLineItem
+					receiptActions={this.props.receiptActions}
+					remoteReceipts={this.props.receipts}
+					item={lineItem}
+					key={lineItem.id}
+					lineItemIndex={idx}
+					products={this.props.products}
+					handleUpdate={this.handleUpdate.bind(this)}
+					receiptIndex={this.props.item.index}
+				/>
+			);
+		});
 
 		return (
 			<View style={{ padding: 15 }}>
-					<View style={styles.deleteButtonContainer}>
+				<View style={styles.deleteButtonContainer}>
 					<TouchableOpacity
 						onPress={this.onDeleteReceipt(this.props.item)}
 						style={[
@@ -802,55 +732,55 @@ class TransactionDetail extends Component {
 						<Text style={styles.receiptDeleteButtonText}>X</Text>
 					</TouchableOpacity>
 				</View>
-			<View style={styles.itemData}>
-				<Text style={styles.customername}>{this.props.item.customerAccount.name}</Text>
-			</View>
-			<View style={styles.itemData}>
-				<Text>
-					{moment
-						.tz(this.props.item.createdAt, moment.tz.guess())
-						.format('dddd Do MMMM YYYY')}
-				</Text>
-			</View>
-			<View>
-
-			</View>
-			<View style={styles.receiptStats}>
-				{!this.props.item.active && (
-					<Text style={styles.receiptStatusText}>
-						{'Deleted'.toUpperCase()}
+				<View style={styles.itemData}>
+					<Text style={styles.customername}>{this.props.item.customerAccount.name}</Text>
+				</View>
+				<View style={styles.itemData}>
+					<Text>
+						{moment
+							.tz(this.props.item.createdAt, moment.tz.guess())
+							.format('dddd Do MMMM YYYY')}
 					</Text>
-				)}
-				{this.props.item.isLocal || this.props.item.updated ? (
-					<View style={{ flexDirection: 'row' }}>
-						{!this.props.item.active && <Text> - </Text>}
-						<Text style={styles.receiptPendingText}>
-							{'Pending'.toLowerCase()}
+				</View>
+				<View>
+
+				</View>
+				<View style={styles.receiptStats}>
+					{!this.props.item.active && (
+						<Text style={styles.receiptStatusText}>
+							{'Deleted'.toUpperCase()}
 						</Text>
-					</View>
-				) : (
+					)}
+					{this.props.item.isLocal || this.props.item.updated ? (
 						<View style={{ flexDirection: 'row' }}>
 							{!this.props.item.active && <Text> - </Text>}
-							<Text style={styles.receiptSyncedText}>
-								{'Synced'.toLowerCase()}
+							<Text style={styles.receiptPendingText}>
+								{'Pending'.toLowerCase()}
 							</Text>
 						</View>
-					)}
-			</View>
+					) : (
+							<View style={{ flexDirection: 'row' }}>
+								{!this.props.item.active && <Text> - </Text>}
+								<Text style={styles.receiptSyncedText}>
+									{'Synced'.toLowerCase()}
+								</Text>
+							</View>
+						)}
+				</View>
 
-			<View>
-				<Text style={{ fontSize: 16, fontWeight: "bold" }}>PRODUCTS</Text>
-			</View>
+				<View>
+					<Text style={{ fontSize: 16, fontWeight: "bold" }}>PRODUCTS</Text>
+				</View>
 
-		    	{receiptLineItems}
+				{receiptLineItems}
 
-			<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
-			    <Text style={[styles.customername, { flex: .7, fontWeight: 'bold'}]}>TOTAL </Text>
-				<Text style={[styles.customername, { flex: .3, fontWeight: 'bold'}]}>
-			    	{this.props.item.currency.toUpperCase()} {this.props.item.totalAmount}
-				</Text>
+				<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
+					<Text style={[styles.customername, { flex: .7, fontWeight: 'bold' }]}>TOTAL </Text>
+					<Text style={[styles.customername, { flex: .3, fontWeight: 'bold' }]}>
+						{this.props.item.currency.toUpperCase()} {this.props.item.totalAmount}
+					</Text>
+				</View>
 			</View>
-		</View>
 		)
 	}
 
@@ -860,11 +790,14 @@ function mapStateToProps(state, props) {
 	return {
 		selectedCustomer: state.customerReducer.selectedCustomer,
 		settings: state.settingsReducer.settings,
-		localReceipts: state.receiptReducer.localReceipts,
+		receipts: state.receiptReducer.receipts,
 		remoteReceipts: state.receiptReducer.remoteReceipts,
 		customers: state.customerReducer.customers,
+		receiptsPaymentTypes: state.paymentTypesReducer.receiptsPaymentTypes,
+        paymentTypes: state.paymentTypesReducer.paymentTypes,
 		products: state.productReducer.products,
-		topups: state.topupReducer.topups
+		topups: state.topupReducer.topups,
+		topupTotal: state.topupReducer.total,
 	};
 }
 function mapDispatchToProps(dispatch) {
@@ -936,7 +869,7 @@ const styles = StyleSheet.create({
 	},
 	commandBarContainer: {
 		flex: 1,
-		backgroundColor: '#ABC1DE',
+		backgroundColor: '#0e73c9',
 		height: 80,
 		alignSelf: 'center',
 		marginLeft: 20,

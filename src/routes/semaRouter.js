@@ -194,7 +194,6 @@ const ListCustomerStack = createStackNavigator({
                             flex: 1
                         }}>
                         {navigation.getParam('isCustomerSelected') && (
-
                             <Icon
                                 name='md-create'
                                 size={25}
@@ -209,7 +208,6 @@ const ListCustomerStack = createStackNavigator({
                                     navigation.navigate('EditCustomer');
                                 }}
                             />
-
                         )}
                     </View>
 
