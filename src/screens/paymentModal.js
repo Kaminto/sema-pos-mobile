@@ -3,39 +3,38 @@ import { View, Alert, Text, TextInput, Button, FlatList, ScrollView, TouchableHi
 import { CheckBox } from 'react-native-elements';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import * as OrderActions from "../../actions/OrderActions";
+import * as OrderActions from "../actions/OrderActions";
 import Modal from 'react-native-modalbox';
-import * as CustomerBarActions from '../../actions/CustomerBarActions';
-import * as CustomerActions from '../../actions/CustomerActions';
-import * as PaymentTypesActions from "../../actions/PaymentTypesActions";
-import * as receiptActions from '../../actions/ReceiptActions';
-import * as TopUpActions from '../../actions/TopUpActions';
+import * as CustomerBarActions from '../actions/CustomerBarActions';
+import * as CustomerActions from '../actions/CustomerActions';
+import * as PaymentTypesActions from "../actions/PaymentTypesActions";
+import * as receiptActions from '../actions/ReceiptActions';
+import * as TopUpActions from '../actions/TopUpActions';
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import i18n from "../../app/i18n";
+import i18n from "../app/i18n";
 import Icon from 'react-native-vector-icons/Ionicons';
-import PosStorage from "../../database/PosStorage";
-import CustomerTypeRealm from '../../database/customer-types/customer-types.operations';
-import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
-import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
+import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
+import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
+import ProductMRPRealm from '../database/productmrp/productmrp.operations';
 
-import PaymentMethod from './order-checkout/payment-method';
-import PaymentDescription from './order-checkout/payment-description';
+import PaymentMethod from '../components/orders/order-checkout/payment-method';
+import PaymentDescription from '../components/orders/order-checkout/payment-description';
 
-import PaymentTypeRealm from '../../database/payment_types/payment_types.operations';
-import SettingRealm from '../../database/settings/settings.operations';
-import CustomerRealm from '../../database/customers/customer.operations';
-import OrderRealm from '../../database/orders/orders.operations';
+import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
+import SettingRealm from '../database/settings/settings.operations';
+import CustomerRealm from '../database/customers/customer.operations';
+import OrderRealm from '../database/orders/orders.operations';
 
-import ReceiptPaymentTypeRealm from '../../database/reciept_payment_types/reciept_payment_types.operations';
-import * as Utilities from "../../services/Utilities";
+import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_payment_types.operations';
+
+import * as Utilities from "../services/Utilities";
 import ToggleSwitch from 'toggle-switch-react-native';
-
 const uuidv1 = require('uuid/v1');
 import Events from "react-native-simple-events";
 const { height, width } = Dimensions.get('window');
-const widthQuanityModal = '90%';
+const widthQuanityModal = 1000;
 const heightQuanityModal = 500;
 const inputTextWidth = 400;
 const marginInputItems = width / 2 - inputTextWidth / 2;
@@ -44,7 +43,7 @@ const inputFontHeight = Math.round((24 * height) / 752);
 const marginTextInput = Math.round((5 * height) / 752);
 const marginSpacing = Math.round((20 * height) / 752);
 
-class OrderCheckout extends Component {
+class PaymentModal extends Component {
 
 	constructor(props) {
 		super(props);
@@ -119,24 +118,33 @@ class OrderCheckout extends Component {
 		console.log('this.props.delivery', this.props.delivery);
 		return (
 			<View style={styles.container}>
-				<View style={[{ flexDirection: 'row' }, this.getOpacity()]}>
+				{/* <View style={[{ flexDirection: 'row' }, this.getOpacity()]}>
 					<View style={{ flex: 1, justifyContent: 'center' }}>
 						<TouchableHighlight underlayColor='#c0c0c0'
 							onPress={() => this.onPay()}>
-							<Text style={[{ paddingTop: 10, paddingBottom: 10, textAlign: 'center' }, styles.buttonText]}>{i18n.t('pay')}</Text>
+							<Text style={[{ paddingTop: 20, paddingBottom: 20, textAlign: 'center' }, styles.buttonText]}>{i18n.t('pay')}</Text>
 						</TouchableHighlight>
 					</View>
-				</View>
+				</View> */}
 
-				<Modal
+				{/* <Modal
 					style={[styles.modal, styles.modal3]}
 					coverScreen={true}
 					position={"center"} ref={"modal6"}
 					onClosed={() => this.modalOnClose()}
-					isDisabled={this.state.isDisabled}>
+					isDisabled={this.state.isDisabled}> */}
 
 					<ScrollView>
-
+						<View
+							style={{
+								justifyContent: 'flex-end',
+								flexDirection: 'row',
+								right: 100,
+								top: 10
+							}}>
+							{this.getCancelButton()}
+						</View>
+						{this.getBackDateComponent()}
 						<View
 							style={{
 								flex: 1,
@@ -145,21 +153,6 @@ class OrderCheckout extends Component {
 								marginLeft: 100,
 								marginRight: 100
 							}}>
-							<View style={{ flex: 1, flexDirection: 'row' }}>
-								<View style={{ flex: 1, height: 50 }}>
-									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
-
-								</View>
-								<View
-							style={{
-								justifyContent: 'flex-end',
-								flexDirection: 'row',
-								right: 10,
-								top: 10
-							}}>
-							{this.getCancelButton()}
-						</View>
-							</View>
 
 							<FlatList
 								data={this.props.paymentTypes}
@@ -167,13 +160,11 @@ class OrderCheckout extends Component {
 									this.paymentTypesRow(item, index, separators)
 								)}
 								extraData={this.props.selectedPaymentTypes}
-								numColumns={2}
-								contentContainerStyle={styles.container}
 							/>
 
 							<View style={{ flex: 1, flexDirection: 'row' }}>
 								<View style={{ flex: 1, height: 50 }}>
-									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Delivery Mode</Text>
+									<Text style={[{ textAlign: 'center' }, styles.baseItem]}>Delivery Mode</Text>
 
 								</View>
 							</View>
@@ -242,8 +233,6 @@ class OrderCheckout extends Component {
 									this.calculateTotalDue()
 								)}
 							/>
-
-                            {this.getBackDateComponent()}
 							<View style={styles.completeOrder}>
 								<View style={{ justifyContent: 'center', height: 50 }}>
 									<TouchableHighlight
@@ -261,7 +250,8 @@ class OrderCheckout extends Component {
 							</View>
 						</View>
 					</ScrollView>
-				</Modal>
+
+				{/* </Modal> */}
 
 
 			</View>
@@ -295,9 +285,9 @@ class OrderCheckout extends Component {
 
 		return (
 			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
-				{/* <View style={{ flex: .2, height: 50 }}>
+				<View style={{ flex: 1, height: 50 }}>
 					<Text style={[{ marginLeft: 12 }, styles.baseItem]}>{item.applies_to}-{item.amount}</Text>
-				</View> */}
+				</View>
 				<View style={{ flex: 1, height: 50 }}>
 					<View style={styles.checkBoxRow}>
 						<View style={[{ flex: 1 }]}>
@@ -423,7 +413,7 @@ class OrderCheckout extends Component {
 		if (this.props.selectedPaymentTypes.length === 2) {
 			Alert.alert(
 				'Notice ',
-				`You cannot select more than two payment methods.`,
+				`Only one or two items should be selected`,
 				[{
 					text: 'OK', onPress: () => {
 						console.log('OK Pressed');
@@ -540,6 +530,9 @@ class OrderCheckout extends Component {
 		}
 	}
 
+
+
+
 	_roundToDecimal(value) {
 		return parseFloat(value.toFixed(2));
 	}
@@ -550,6 +543,7 @@ class OrderCheckout extends Component {
 			? true
 			: false;
 	}
+
 
 	calculateTotalDue() {
 		return this._roundToDecimal(
@@ -662,8 +656,6 @@ class OrderCheckout extends Component {
 		console.log('this.props.delivery', this.props.delivery);
 
 		this.formatAndSaveSale();
-
-		// TO DO .... Go to the main page.
 		Alert.alert(
 			'Notice',
 			'Payment Made',
@@ -885,7 +877,7 @@ function mapDispatchToProps(dispatch) {
 		topUpActions: bindActionCreators(TopUpActions, dispatch),
 	};
 }
-export default connect(mapStateToProps, mapDispatchToProps)(OrderCheckout);
+export default connect(mapStateToProps, mapDispatchToProps)(PaymentModal);
 
 
 const styles = StyleSheet.create({
@@ -931,7 +923,6 @@ const styles = StyleSheet.create({
 		color: 'black',
 		paddingTop: 4,
 		paddingBottom: 4,
-
 	},
 	modal: {
 		justifyContent: 'center',

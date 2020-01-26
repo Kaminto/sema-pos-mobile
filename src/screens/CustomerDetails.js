@@ -31,6 +31,9 @@ import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-eleme
 import * as reportActions from '../actions/ReportActions';
 import * as receiptActions from '../actions/ReceiptActions';
 
+
+import PaymentModal from './paymentModal';
+
 import i18n from '../app/i18n';
 import moment from 'moment-timezone';
 import { FloatingAction } from "react-native-floating-action";
@@ -194,7 +197,7 @@ class CustomerDetails extends Component {
 		console.log('props -', this.props.topups);
 		console.log('TopUps', CreditRealm.getAllCredit());
 		console.log('getReceipts', PosStorage.getReceipts());
-		console.log('comparePaymentCreditTypes',this.comparePaymentCreditTypes());
+		console.log('comparePaymentCreditTypes', this.comparePaymentCreditTypes());
 		return (
 			<View style={{ flex: 1 }}>
 				<View style={{
@@ -205,10 +208,10 @@ class CustomerDetails extends Component {
 				}}>
 					<View style={[styles.leftToolbar]}>
 						<SelectedCustomerDetails
-						 creditSales={this.comparePaymentCreditTypes()}
-						navigation={this.props.navigation}
-						topupTotal={this.props.topupTotal}
-						selectedCustomer={this.props.selectedCustomer}
+							creditSales={this.comparePaymentCreditTypes()}
+							navigation={this.props.navigation}
+							topupTotal={this.props.topupTotal}
+							selectedCustomer={this.props.selectedCustomer}
 						/>
 					</View>
 				</View>
@@ -572,42 +575,92 @@ class CustomerDetails extends Component {
 }
 
 class SelectedCustomerDetails extends React.Component {
+	constructor(props) {
+		super(props);
+		this.saleSuccess = false;
+		this.state = {
+			isQuantityVisible: false,
+			firstKey: true,
+			isOpen: false,
+			isWalkIn: true,
+			isDisabled: false,
+			swipeToClose: true,
+			sliderValue: 0.3,
+			paymentOptions: "",
+			selectedPaymentTypes: [],
+			selectedType: {},
+			checkedType: {},
+			textInputs: [],
+			isCompleteOrderVisible: false,
+			isDateTimePickerVisible: false,
+			receiptDate: new Date(),
+			canProceed: true,
+
+			isCash: true,
+			isLoan: false,
+			isMobile: false,
+			isCredit: false,
+			isJibuCredit: false,
+			isCheque: false,
+			isBank: false,
+
+			selectedPaymentType: "Cash",
+		};
+	}
+
 	render() {
 		return (
 			<View style={styles.commandBarContainer}>
-			<View style={{ flexDirection: 'row', height: 40 }}>
-				<Text style={styles.selectedCustomerText}>
-					{this.getName()}
-				</Text>
-				<Text style={styles.selectedCustomerText}>
-					Credit Purchases:  {this.getCreditPurchases()}
-				</Text>
-				<Text style={styles.selectedCustomerText}>
-					Loan:  {this.props.selectedCustomer.dueAmount}
-				</Text>
-			</View>
-			<View style={{ flexDirection: 'row', height: 40 }}>
-				<Text style={styles.selectedCustomerText}>
-					{this.getPhone()}
-				</Text>
-				<Text style={styles.selectedCustomerText}>
-					Credit Balance: {this.props.topupTotal - this.getCreditPurchases()}
-				</Text>
+				<View style={{ flexDirection: 'row', height: 40 }}>
+					<Text style={styles.selectedCustomerText}>
+						{this.getName()}
+					</Text>
+					<Text style={styles.selectedCustomerText}>
+						Credit Purchases:  {this.getCreditPurchases()}
+					</Text>
+					<Text style={styles.selectedCustomerText}>
+						Loan:  {this.props.selectedCustomer.dueAmount}
+					</Text>
+					<TouchableHighlight
+						style={styles.selectedCustomerText}
+						onPress={() => {
+							this.refs.modal6.open();
+						}}>
+						<Text >Loan Payment</Text>
+					</TouchableHighlight>
+				</View>
+				<View style={{ flexDirection: 'row', height: 40 }}>
+					<Text style={styles.selectedCustomerText}>
+						{this.getPhone()}
+					</Text>
+					<Text style={styles.selectedCustomerText}>
+						Credit Balance: {this.props.topupTotal - this.getCreditPurchases()}
+					</Text>
 
-				<TouchableHighlight
-					onPress={() => this.props.navigation.navigate('OrderView')}>
-					<Text style={styles.selectedCustomerText}>Make Sale</Text>
-				</TouchableHighlight>
+					<TouchableHighlight
+						style={styles.selectedCustomerText}
+						onPress={() => this.props.navigation.navigate('OrderView')}>
+						<Text >Make Sale</Text>
+					</TouchableHighlight>
+				</View>
+				<Modal
+					style={[styles.modal, styles.modal3]}
+					coverScreen={true}
+					position={"center"} ref={"modal6"}
+					onClosed={() => this.modalOnClose()}
+					isDisabled={this.state.isDisabled}>
+					<PaymentModal />
+				</Modal>
 			</View>
-		</View>
 		);
 	}
 
 
-    getCreditPurchases() {
-        console.log(this.props.creditSales);
-        return this.props.creditSales.reduce((total, item) => { return (total + item.amount) }, 0)
-    }
+
+	getCreditPurchases() {
+		console.log(this.props.creditSales);
+		return this.props.creditSales.reduce((total, item) => { return (total + item.amount) }, 0)
+	}
 
 	getName() {
 		console.log('balanceCredit', this.props.balanceCredit);
@@ -794,7 +847,7 @@ function mapStateToProps(state, props) {
 		remoteReceipts: state.receiptReducer.remoteReceipts,
 		customers: state.customerReducer.customers,
 		receiptsPaymentTypes: state.paymentTypesReducer.receiptsPaymentTypes,
-        paymentTypes: state.paymentTypesReducer.paymentTypes,
+		paymentTypes: state.paymentTypesReducer.paymentTypes,
 		products: state.productReducer.products,
 		topups: state.topupReducer.topups,
 		topupTotal: state.topupReducer.total,

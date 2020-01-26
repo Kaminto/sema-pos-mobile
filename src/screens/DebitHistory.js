@@ -128,7 +128,7 @@ class DebitHistory extends Component {
         this.refs.modal6.close();
     };
 
-   
+
 
     prepareData = () => {
         let data = [];
@@ -342,20 +342,23 @@ class SelectedCustomerDetails extends React.Component {
                         Credit Purchases:  {this.getCreditPurchases()}
                     </Text>
                     <Text style={styles.selectedCustomerText}>
-                        Loan:  {this.props.selectedCustomer.dueAmount}
+                        Loan: {this.props.selectedCustomer.dueAmount}
                     </Text>
                 </View>
                 <View style={{ flexDirection: 'row', height: 40 }}>
                     <Text style={styles.selectedCustomerText}>
                         {this.getPhone()}
                     </Text>
+
                     <Text style={styles.selectedCustomerText}>
                         Credit Balance: {this.props.topupTotal - this.getCreditPurchases()}
                     </Text>
 
                     <TouchableHighlight
-                        onPress={() => this.props.navigation.navigate('OrderView')}>
-                        <Text style={styles.selectedCustomerText}>Make Sale</Text>
+                        style={styles.selectedCustomerText}
+                        onPress={() => this.props.navigation.navigate('OrderView')}                        
+                    >
+                        <Text>Make Sale</Text>
                     </TouchableHighlight>
                 </View>
             </View>
