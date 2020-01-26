@@ -135,15 +135,7 @@ class OrderCheckout extends Component {
 					isDisabled={this.state.isDisabled}>
 
 					<ScrollView>
-						<View
-							style={{
-								justifyContent: 'flex-end',
-								flexDirection: 'row',
-								right: 100,
-								top: 10
-							}}>
-							{this.getCancelButton()}
-						</View>
+
 						<View
 							style={{
 								flex: 1,
@@ -152,6 +144,21 @@ class OrderCheckout extends Component {
 								marginLeft: 100,
 								marginRight: 100
 							}}>
+							<View style={{ flex: 1, flexDirection: 'row' }}>
+								<View style={{ flex: 1, height: 50 }}>
+									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
+
+								</View>
+								<View
+							style={{
+								justifyContent: 'flex-end',
+								flexDirection: 'row',
+								right: 10,
+								top: 10
+							}}>
+							{this.getCancelButton()}
+						</View>
+							</View>
 
 							<FlatList
 								data={this.props.paymentTypes}
@@ -165,7 +172,7 @@ class OrderCheckout extends Component {
 
 							<View style={{ flex: 1, flexDirection: 'row' }}>
 								<View style={{ flex: 1, height: 50 }}>
-									<Text style={[{ textAlign: 'center' }, styles.baseItem]}>Delivery Mode</Text>
+									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Delivery Mode</Text>
 
 								</View>
 							</View>
@@ -654,6 +661,8 @@ class OrderCheckout extends Component {
 		console.log('this.props.delivery', this.props.delivery);
 
 		this.formatAndSaveSale();
+
+		// TO DO .... Go to the main page.
 		Alert.alert(
 			'Notice',
 			'Payment Made',
