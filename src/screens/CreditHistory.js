@@ -401,8 +401,9 @@ class SelectedCustomerDetails extends React.Component {
                     </Text>
 
                     <TouchableHighlight
+                        style={styles.selectedCustomerText}
                         onPress={() => this.props.navigation.navigate('OrderView')}>
-                        <Text style={styles.selectedCustomerText}>Make Sale</Text>
+                        <Text >Make Sale</Text>
                     </TouchableHighlight>
                 </View>
             </View>
