@@ -53,8 +53,8 @@
 
   "credit-due-amount-title": "Over Due Amount",
   "credit-due-amount-text": "The credit amount is greater than the due amount. The due amount is : ",
- 
-  "product": "Product", 
+
+  "product": "Product",
 
   "address": "Address",
   "balance": "Balance",
@@ -126,6 +126,8 @@
   "production": "Production",
   "previous-meter": "Previous Meter",
   "current-meter": "Current Meter",
+  "opening-meter": "Opening Meter",
+  "closing-meter": "Closing Meter",
   "total-production": "Total Production",
   "wastage": "Wastage",
 

@@ -35,7 +35,7 @@ import ToggleSwitch from 'toggle-switch-react-native';
 const uuidv1 = require('uuid/v1');
 import Events from "react-native-simple-events";
 const { height, width } = Dimensions.get('window');
-const widthQuanityModal = 1000;
+const widthQuanityModal = '90%';
 const heightQuanityModal = 500;
 const inputTextWidth = 400;
 const marginInputItems = width / 2 - inputTextWidth / 2;
@@ -123,7 +123,7 @@ class OrderCheckout extends Component {
 					<View style={{ flex: 1, justifyContent: 'center' }}>
 						<TouchableHighlight underlayColor='#c0c0c0'
 							onPress={() => this.onPay()}>
-							<Text style={[{ paddingTop: 20, paddingBottom: 20, textAlign: 'center' }, styles.buttonText]}>{i18n.t('pay')}</Text>
+							<Text style={[{ paddingTop: 10, paddingBottom: 10, textAlign: 'center' }, styles.buttonText]}>{i18n.t('pay')}</Text>
 						</TouchableHighlight>
 					</View>
 				</View>
@@ -136,16 +136,7 @@ class OrderCheckout extends Component {
 					isDisabled={this.state.isDisabled}>
 
 					<ScrollView>
-						<View
-							style={{
-								justifyContent: 'flex-end',
-								flexDirection: 'row',
-								right: 100,
-								top: 10
-							}}>
-							{this.getCancelButton()}
-						</View>
-						{this.getBackDateComponent()}
+
 						<View
 							style={{
 								flex: 1,
@@ -154,6 +145,21 @@ class OrderCheckout extends Component {
 								marginLeft: 100,
 								marginRight: 100
 							}}>
+							<View style={{ flex: 1, flexDirection: 'row' }}>
+								<View style={{ flex: 1, height: 50 }}>
+									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
+
+								</View>
+								<View
+							style={{
+								justifyContent: 'flex-end',
+								flexDirection: 'row',
+								right: 10,
+								top: 10
+							}}>
+							{this.getCancelButton()}
+						</View>
+							</View>
 
 							<FlatList
 								data={this.props.paymentTypes}
@@ -161,11 +167,13 @@ class OrderCheckout extends Component {
 									this.paymentTypesRow(item, index, separators)
 								)}
 								extraData={this.props.selectedPaymentTypes}
+								numColumns={2}
+								contentContainerStyle={styles.container}
 							/>
 
 							<View style={{ flex: 1, flexDirection: 'row' }}>
 								<View style={{ flex: 1, height: 50 }}>
-									<Text style={[{ textAlign: 'center' }, styles.baseItem]}>Delivery Mode</Text>
+									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Delivery Mode</Text>
 
 								</View>
 							</View>
@@ -234,6 +242,8 @@ class OrderCheckout extends Component {
 									this.calculateTotalDue()
 								)}
 							/>
+
+                            {this.getBackDateComponent()}
 							<View style={styles.completeOrder}>
 								<View style={{ justifyContent: 'center', height: 50 }}>
 									<TouchableHighlight
@@ -285,9 +295,9 @@ class OrderCheckout extends Component {
 
 		return (
 			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
-				<View style={{ flex: 1, height: 50 }}>
+				{/* <View style={{ flex: .2, height: 50 }}>
 					<Text style={[{ marginLeft: 12 }, styles.baseItem]}>{item.applies_to}-{item.amount}</Text>
-				</View>
+				</View> */}
 				<View style={{ flex: 1, height: 50 }}>
 					<View style={styles.checkBoxRow}>
 						<View style={[{ flex: 1 }]}>
@@ -413,7 +423,7 @@ class OrderCheckout extends Component {
 		if (this.props.selectedPaymentTypes.length === 2) {
 			Alert.alert(
 				'Notice ',
-				`Only one or two items should be selected`,
+				`You cannot select more than two payment methods.`,
 				[{
 					text: 'OK', onPress: () => {
 						console.log('OK Pressed');
@@ -530,9 +540,6 @@ class OrderCheckout extends Component {
 		}
 	}
 
-
-
-
 	_roundToDecimal(value) {
 		return parseFloat(value.toFixed(2));
 	}
@@ -543,7 +550,6 @@ class OrderCheckout extends Component {
 			? true
 			: false;
 	}
-
 
 	calculateTotalDue() {
 		return this._roundToDecimal(
@@ -656,6 +662,8 @@ class OrderCheckout extends Component {
 		console.log('this.props.delivery', this.props.delivery);
 
 		this.formatAndSaveSale();
+
+		// TO DO .... Go to the main page.
 		Alert.alert(
 			'Notice',
 			'Payment Made',
