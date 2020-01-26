@@ -102,7 +102,7 @@ class OrderItems extends Component {
 					ref={"productModel"}
 					sDisabled={this.state.isDisabled}>
 
-						<View style={{ flex: 1, flexDirection: 'row', height: 30 }}>
+						<View style={[styles.headerBackground,{ flex: 1, flexDirection: 'row' }]}>
 								<View style={{ flex: .3 }}>
 									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Price</Text>
 								</View>
@@ -728,7 +728,8 @@ const styles = StyleSheet.create({
 		// width: 500
 		width: widthQuanityModal,
 		height: heightQuanityModal,
-		padding: 20
+		paddingRight: 20,
+		paddingLeft: 20
 	},
 
 	modal4: {

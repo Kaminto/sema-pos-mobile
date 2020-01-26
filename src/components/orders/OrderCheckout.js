@@ -241,23 +241,24 @@ class OrderCheckout extends Component {
 									this.calculateTotalDue()
 								)}
 							/>
-
+                         <View style={{ flex:1, flexDirection: 'row', marginTop: 10 }}>
                             {this.getBackDateComponent()}
-							<View style={styles.completeOrder}>
-								<View style={{ justifyContent: 'center', height: 50 }}>
+							<View style={[styles.completeOrder, {flex: .6}]}>
+								<View style={{ flex: 1, justifyContent: 'flex-end' }}>
 									<TouchableHighlight
 										underlayColor="#c0c0c0"
 										onPress={() => this.onCompleteOrder()}>
 										<Text
 											style={[
-												{ paddingTop: 20, paddingBottom: 20 },
-												styles.buttonText
+												styles.buttonText,
+												{padding: 10}
 											]}>
 											{i18n.t('make-payment')}
 										</Text>
 									</TouchableHighlight>
 								</View>
 							</View>
+						</View>
 						</View>
 					</ScrollView>
 				</Modal>
@@ -517,12 +518,14 @@ class OrderCheckout extends Component {
 			return (
 				<View
 					style={{
+						flex: .4,
 						marginTop: 10,
 						marginBottom: 10,
 						marginLeft: 100,
 						marginRight: 100
 					}}>
 					<Button
+						style={{ flex: 1 }}
 						title="Change Receipt Date"
 						onPress={this.showDateTimePicker}
 					/>
