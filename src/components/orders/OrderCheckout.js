@@ -151,14 +151,14 @@ class OrderCheckout extends Component {
 
 								</View>
 								<View
-							style={{
-								justifyContent: 'flex-end',
-								flexDirection: 'row',
-								right: 10,
-								top: 10
-							}}>
-							{this.getCancelButton()}
-						</View>
+									style={{
+										justifyContent: 'flex-end',
+										flexDirection: 'row',
+										right: 10,
+										top: 10
+									}}>
+									{this.getCancelButton()}
+								</View>
 							</View>
 
 							<FlatList
@@ -520,10 +520,7 @@ class OrderCheckout extends Component {
 				<View
 					style={{
 						flex: .4,
-						marginTop: 10,
-						marginBottom: 10,
-						marginLeft: 100,
-						marginRight: 100
+					    padding: 20
 					}}>
 					<Button
 						style={{ flex: 1 }}
@@ -680,8 +677,6 @@ class OrderCheckout extends Component {
 			{ cancelable: false }
 		);
 	}
-
-
 
 	formatAndSaveSale = async () => {
 		let receipt = null;
@@ -852,7 +847,7 @@ class OrderCheckout extends Component {
 	closePaymentModal = () => {
 		this.refs.modal6.close();
 	};
-	
+
 	getOpacity = () => {
 		if (this.props.products.length == 0 || this.props.flow.page != 'products') {
 			return { opacity: .3 };
@@ -947,7 +942,7 @@ const styles = StyleSheet.create({
 	},
 	completeOrder: {
 		backgroundColor: '#2858a7',
-		borderRadius: 30,
+		borderRadius: 10,
 		marginTop: '1%'
 	},
 

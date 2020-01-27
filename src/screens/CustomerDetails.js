@@ -853,6 +853,7 @@ function mapStateToProps(state, props) {
 		topupTotal: state.topupReducer.total,
 	};
 }
+
 function mapDispatchToProps(dispatch) {
 	return {
 		toolbarActions: bindActionCreators(ToolbarActions, dispatch),
