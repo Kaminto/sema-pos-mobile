@@ -15,9 +15,11 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import i18n from "../app/i18n";
 import Icon from 'react-native-vector-icons/Ionicons';
+import PosStorage from "../database/PosStorage";
 import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
 import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
 import ProductMRPRealm from '../database/productmrp/productmrp.operations';
+import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
 
 import PaymentMethod from '../components/orders/order-checkout/payment-method';
 import PaymentDescription from '../components/orders/order-checkout/payment-description';
@@ -28,13 +30,13 @@ import CustomerRealm from '../database/customers/customer.operations';
 import OrderRealm from '../database/orders/orders.operations';
 
 import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_payment_types.operations';
-
 import * as Utilities from "../services/Utilities";
 import ToggleSwitch from 'toggle-switch-react-native';
+
 const uuidv1 = require('uuid/v1');
 import Events from "react-native-simple-events";
 const { height, width } = Dimensions.get('window');
-const widthQuanityModal = 1000;
+const widthQuanityModal = '90%';
 const heightQuanityModal = 500;
 const inputTextWidth = 400;
 const marginInputItems = width / 2 - inputTextWidth / 2;
@@ -43,7 +45,7 @@ const inputFontHeight = Math.round((24 * height) / 752);
 const marginTextInput = Math.round((5 * height) / 752);
 const marginSpacing = Math.round((20 * height) / 752);
 
-class PaymentModal extends Component {
+class OrderCheckout extends Component {
 
 	constructor(props) {
 		super(props);
@@ -65,7 +67,6 @@ class PaymentModal extends Component {
 			isDateTimePickerVisible: false,
 			receiptDate: new Date(),
 			canProceed: true,
-
 			isCash: true,
 			isLoan: false,
 			isMobile: false,
@@ -73,7 +74,6 @@ class PaymentModal extends Component {
 			isJibuCredit: false,
 			isCheque: false,
 			isBank: false,
-
 			selectedPaymentType: "Cash",
 		};
 	}
@@ -118,141 +118,64 @@ class PaymentModal extends Component {
 		console.log('this.props.delivery', this.props.delivery);
 		return (
 			<View style={styles.container}>
-				{/* <View style={[{ flexDirection: 'row' }, this.getOpacity()]}>
-					<View style={{ flex: 1, justifyContent: 'center' }}>
-						<TouchableHighlight underlayColor='#c0c0c0'
-							onPress={() => this.onPay()}>
-							<Text style={[{ paddingTop: 20, paddingBottom: 20, textAlign: 'center' }, styles.buttonText]}>{i18n.t('pay')}</Text>
-						</TouchableHighlight>
-					</View>
-				</View> */}
 
-				{/* <Modal
-					style={[styles.modal, styles.modal3]}
-					coverScreen={true}
-					position={"center"} ref={"modal6"}
-					onClosed={() => this.modalOnClose()}
-					isDisabled={this.state.isDisabled}> */}
-
-					<ScrollView>
-						<View
-							style={{
-								justifyContent: 'flex-end',
-								flexDirection: 'row',
-								right: 100,
-								top: 10
-							}}>
-							{this.getCancelButton()}
+				<ScrollView>
+					<View
+						style={{
+							flex: 1,
+							marginTop: 0,
+							marginBottom: 50,
+							marginLeft: 100,
+							marginRight: 100
+						}}>
+						<View style={{ flex: 1, flexDirection: 'row' }}>
+							<View style={{ flex: 1, height: 50 }}>
+								<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
+							</View>
+							<View
+								style={{
+									justifyContent: 'flex-end',
+									flexDirection: 'row',
+									right: 10,
+									top: 10
+								}}>
+								{this.getCancelButton()}
+							</View>
 						</View>
+						<FlatList
+							data={this.props.paymentTypes}
+							renderItem={({ item, index, separators }) => (
+								this.paymentTypesRow(item, index, separators)
+							)}
+							extraData={this.props.selectedPaymentTypes}
+							numColumns={2}
+							contentContainerStyle={styles.container}
+						/>
+						
+						<PaymentDescription
+							title={`${i18n.t('previous-amount-due')}:`}
+							total={Utilities.formatCurrency(
+								this.calculateAmountDue()
+							)}
+						/>
 						{this.getBackDateComponent()}
-						<View
-							style={{
-								flex: 1,
-								marginTop: 0,
-								marginBottom: 50,
-								marginLeft: 100,
-								marginRight: 100
-							}}>
-
-							<FlatList
-								data={this.props.paymentTypes}
-								renderItem={({ item, index, separators }) => (
-									this.paymentTypesRow(item, index, separators)
-								)}
-								extraData={this.props.selectedPaymentTypes}
-							/>
-
-							<View style={{ flex: 1, flexDirection: 'row' }}>
-								<View style={{ flex: 1, height: 50 }}>
-									<Text style={[{ textAlign: 'center' }, styles.baseItem]}>Delivery Mode</Text>
-
-								</View>
-							</View>
-
-							<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
-								<CheckBox
-									title={'Delivery'}
-									checkedIcon={<Icon
-										name="md-checkbox"
-										size={20}
-										color="black"
-									/>}
-									uncheckedIcon={<Icon
-										name="md-square-outline"
-										size={20}
-										color="black"
-									/>}
-									checked={this.props.delivery === 'delivery'}
-									onPress={() => {
-										console.log('press');
-										this.setState({ isWalkIn: false });
-										if (this.props.delivery === 'delivery') {
-											this.props.paymentTypesActions.setDelivery('walkin');
-											return;
-										}
-										this.props.paymentTypesActions.setDelivery('delivery');
-									}}
-								/>
-								<CheckBox
-									title={'Walk In'}
-									checkedIcon={<Icon
-										name="md-checkbox"
-										size={20}
-										color="black"
-									/>}
-									uncheckedIcon={<Icon
-										name="md-square-outline"
-										size={20}
-										color="black"
-									/>}
-									checked={this.props.delivery === 'walkin'}
-									onPress={() => {
-										console.log('press');
-										this.setState({ isWalkIn: false });
-
-										if (this.props.delivery === 'walkin') {
-											this.props.paymentTypesActions.setDelivery('delivery');
-											return;
-										}
-
-										this.props.paymentTypesActions.setDelivery('walkin');
-									}}
-								/>
-
-							</View>
-							{this.getSaleAmount()}
-							<PaymentDescription
-								title={`${i18n.t('previous-amount-due')}:`}
-								total={Utilities.formatCurrency(
-									this.calculateAmountDue()
-								)}
-							/>
-							<PaymentDescription
-								title={`${i18n.t('total-amount-due')}:`}
-								total={Utilities.formatCurrency(
-									this.calculateTotalDue()
-								)}
-							/>
-							<View style={styles.completeOrder}>
-								<View style={{ justifyContent: 'center', height: 50 }}>
-									<TouchableHighlight
-										underlayColor="#c0c0c0"
-										onPress={() => this.onCompleteOrder()}>
-										<Text
-											style={[
-												{ paddingTop: 20, paddingBottom: 20 },
-												styles.buttonText
-											]}>
-											{i18n.t('make-payment')}
-										</Text>
-									</TouchableHighlight>
-								</View>
+						<View style={styles.completeOrder}>
+							<View style={{ justifyContent: 'center', height: 50 }}>
+								<TouchableHighlight
+									underlayColor="#c0c0c0"
+									onPress={() => this.clearLoan()}>
+									<Text
+										style={[
+											{ paddingTop: 20, paddingBottom: 20 },
+											styles.buttonText
+										]}>
+										{i18n.t('clear-loan')}
+									</Text>
+								</TouchableHighlight>
 							</View>
 						</View>
-					</ScrollView>
-
-				{/* </Modal> */}
-
+					</View>
+				</ScrollView>
 
 			</View>
 
@@ -278,43 +201,41 @@ class PaymentModal extends Component {
 			}
 		}
 
-		console.log('isSelectedAvailable', isSelectedAvailable);
-		console.log('description', item.description);
-		console.log('isSelected', item.isSelected);
-		console.log('item.isSelected || isSelectedAvailable', item.isSelected || isSelectedAvailable);
-
-		return (
-			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
-				<View style={{ flex: 1, height: 50 }}>
-					<Text style={[{ marginLeft: 12 }, styles.baseItem]}>{item.applies_to}-{item.amount}</Text>
-				</View>
-				<View style={{ flex: 1, height: 50 }}>
-					<View style={styles.checkBoxRow}>
-						<View style={[{ flex: 1 }]}>
-							<CheckBox
-								title={item.description}
-								checkedIcon={<Icon
-									name="md-checkbox"
-									size={20}
-									color="black"
-								/>}
-								uncheckedIcon={<Icon
-									name="md-square-outline"
-									size={20}
-									color="black"
-								/>}
-								checked={item.isSelected || isSelectedAvailable}
-								onPress={() => {
-									console.log('press');
-									this.checkBoxType(item);
-								}}
-							/>
+		if(item.name != "loan"){
+			return (
+				<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
+					{/* <View style={{ flex: .2, height: 50 }}>
+						<Text style={[{ marginLeft: 12 }, styles.baseItem]}>{item.applies_to}-{item.amount}</Text>
+					</View> */}
+					<View style={{ flex: 1, height: 50 }}>
+						<View style={styles.checkBoxRow}>
+							<View style={[{ flex: 1 }]}>
+								<CheckBox
+									title={item.description}
+									checkedIcon={<Icon
+										name="md-checkbox"
+										size={20}
+										color="black"
+									/>}
+									uncheckedIcon={<Icon
+										name="md-square-outline"
+										size={20}
+										color="black"
+									/>}
+									checked={item.isSelected || isSelectedAvailable}
+									onPress={() => {
+										console.log('press');
+										this.checkBoxType(item);
+									}}
+								/>
+							</View>
+							<View style={[{ flex: 1 }]}>{this.showTextInput(item)}</View>
 						</View>
-						<View style={[{ flex: 1 }]}>{this.showTextInput(item)}</View>
 					</View>
 				</View>
-			</View>
-		);
+			);
+		}
+		
 	};
 
 	showTextInput(item) {
@@ -413,7 +334,7 @@ class PaymentModal extends Component {
 		if (this.props.selectedPaymentTypes.length === 2) {
 			Alert.alert(
 				'Notice ',
-				`Only one or two items should be selected`,
+				`You cannot select more than two payment methods.`,
 				[{
 					text: 'OK', onPress: () => {
 						console.log('OK Pressed');
@@ -477,20 +398,6 @@ class PaymentModal extends Component {
 			PaymentTypeRealm.getPaymentTypes());
 	}
 
-
-	getSaleAmount() {
-		if (!this.isPayoffOnly()) {
-			return (
-				<PaymentDescription
-					title={`${i18n.t('sale-amount-due')}: `}
-					total={Utilities.formatCurrency(this.calculateOrderDue())}
-				/>
-			);
-		} else {
-			return null;
-		}
-	}
-
 	getCancelButton() {
 		return (
 			<TouchableHighlight onPress={() => this.closePaymentModal()}>
@@ -530,9 +437,6 @@ class PaymentModal extends Component {
 		}
 	}
 
-
-
-
 	_roundToDecimal(value) {
 		return parseFloat(value.toFixed(2));
 	}
@@ -545,11 +449,6 @@ class PaymentModal extends Component {
 	}
 
 
-	calculateTotalDue() {
-		return this._roundToDecimal(
-			this.calculateOrderDue() + this.calculateAmountDue()
-		);
-	}
 
 	getItemPrice = item => {
 		let productMrp = this._getItemMrp(item);
@@ -621,12 +520,6 @@ class PaymentModal extends Component {
 		return product.priceAmount;	// Just use product price
 	};
 
-	onPay = () => {
-		console.log("onPay");
-		this.refs.modal6.open();
-	};
-
-
 	calculateOrderDue() {
 		if (this.isPayoffOnly()) {
 			// If this is a loan payoff then the loan payment is negative the loan amount due
@@ -634,7 +527,6 @@ class PaymentModal extends Component {
 		} else {
 			return this.props.products.reduce((total, item) => {
 				return total + item.finalAmount;
-
 			}, 0);
 		}
 	}
@@ -643,19 +535,24 @@ class PaymentModal extends Component {
 		return this.props.selectedCustomer.dueAmount;
 	}
 
+	calculateTotalDue() {
+		return this._roundToDecimal(
+			this.calculateOrderDue() + this.calculateAmountDue()
+		);
+	}
+
 	isPayoffOnly() {
 		return this.props.products.length === 0;
 	}
 
-	onCompleteOrder = () => {
-
+	clearLoan = () => {
 		console.log(this.isPayoffOnly());
-
 		console.log('SelectedPaymentTypes', this.props.selectedPaymentTypes);
 		console.log('this.props.selectedDiscounts', this.props.selectedDiscounts);
 		console.log('this.props.delivery', this.props.delivery);
-
 		this.formatAndSaveSale();
+
+		// TO DO .... Go to the main page.
 		Alert.alert(
 			'Notice',
 			'Payment Made',
@@ -668,9 +565,7 @@ class PaymentModal extends Component {
 			}],
 			{ cancelable: false }
 		);
-	}
-
-
+	};
 
 	formatAndSaveSale = async () => {
 		let receipt = null;
@@ -804,21 +699,18 @@ class PaymentModal extends Component {
 				}
 			}
 
-
 			receipt.customer_account = this.props.selectedCustomer;
 			console.log(this.props.selectedPaymentTypes.length);
 			if (this.props.selectedPaymentTypes.length > 0) {
-				ReceiptPaymentTypeRealm.createManyReceiptPaymentType(this.props.selectedPaymentTypes, receipt.id);
+				CustomerDebtRealm.createManyCustomerDebt(this.props.selectedPaymentTypes, this.props.selectedCustomer.customerId);
 				this.props.paymentTypesActions.setRecieptPaymentTypes(
 					ReceiptPaymentTypeRealm.getReceiptPaymentTypes()
 				);
 			}
-			OrderRealm.createOrder(receipt);
-			this.props.receiptActions.setReceipts(
-				OrderRealm.getAllOrder()
-			);
-
-
+			// OrderRealm.createOrder(receipt);
+			// this.props.receiptActions.setReceipts(
+			// 	OrderRealm.getAllOrder()
+			// );
 
 			const rpIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("loan");
 			console.log('rpIndex', rpIndex);
@@ -841,7 +733,7 @@ class PaymentModal extends Component {
 	closePaymentModal = () => {
 		this.refs.modal6.close();
 	};
-	
+
 	getOpacity = () => {
 		if (this.props.products.length == 0 || this.props.flow.page != 'products') {
 			return { opacity: .3 };
@@ -877,14 +769,14 @@ function mapDispatchToProps(dispatch) {
 		topUpActions: bindActionCreators(TopUpActions, dispatch),
 	};
 }
-export default connect(mapStateToProps, mapDispatchToProps)(PaymentModal);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderCheckout);
 
 
 const styles = StyleSheet.create({
 
 	container: {
 		flex: 1,
-		backgroundColor: "#2858a7",
+		backgroundColor: "#fcfcfc",
 
 	},
 	checkBoxRow: {
@@ -923,6 +815,7 @@ const styles = StyleSheet.create({
 		color: 'black',
 		paddingTop: 4,
 		paddingBottom: 4,
+
 	},
 	modal: {
 		justifyContent: 'center',

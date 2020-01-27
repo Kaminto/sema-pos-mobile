@@ -15,6 +15,7 @@ import topupReducer from "./TopUpReducer";
 import inventoryReducer from "./InventoryReducer";
 import discountReducer from "./DiscountReducer";
 import paymentTypesReducer from './PaymentTypesReducer';
+import customerDebtReducer from './CustomerReducer';
 
 // Combine all the reducers
 const RootReducer = combineReducers({
@@ -32,7 +33,8 @@ const RootReducer = combineReducers({
 	topupReducer,
 	inventoryReducer,
 	discountReducer,
-	paymentTypesReducer
+	paymentTypesReducer,
+	customerDebtReducer
 });
 
 export default RootReducer;

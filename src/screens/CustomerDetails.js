@@ -595,21 +595,13 @@ class SelectedCustomerDetails extends React.Component {
 			isDateTimePickerVisible: false,
 			receiptDate: new Date(),
 			canProceed: true,
-
-			isCash: true,
-			isLoan: false,
-			isMobile: false,
-			isCredit: false,
-			isJibuCredit: false,
-			isCheque: false,
-			isBank: false,
-
 			selectedPaymentType: "Cash",
 		};
 	}
 
 	render() {
 		return (
+			<>
 			<View style={styles.commandBarContainer}>
 				<View style={{ flexDirection: 'row', height: 40 }}>
 					<Text style={styles.selectedCustomerText}>
@@ -636,26 +628,33 @@ class SelectedCustomerDetails extends React.Component {
 					<Text style={styles.selectedCustomerText}>
 						Credit Balance: {this.props.topupTotal - this.getCreditPurchases()}
 					</Text>
-
 					<TouchableHighlight
 						style={styles.selectedCustomerText}
 						onPress={() => this.props.navigation.navigate('OrderView')}>
 						<Text >Make Sale</Text>
 					</TouchableHighlight>
 				</View>
-				<Modal
-					style={[styles.modal, styles.modal3]}
-					coverScreen={true}
-					position={"center"} ref={"modal6"}
-					onClosed={() => this.modalOnClose()}
-					isDisabled={this.state.isDisabled}>
-					<PaymentModal />
-				</Modal>
 			</View>
+
+			<View  style={styles.modalPayment}>
+			<Modal
+				style={[styles.modal, styles.modal3]}
+				coverScreen={true}
+				position={"center"} ref={"modal6"}
+				onClosed={() => this.modalOnClose()}
+				isDisabled={this.state.isDisabled}>
+				<PaymentModal />
+			</Modal>
+			</View>			
+			</>
 		);
 	}
 
-
+	modalOnClose() {
+		// PaymentTypeRealm.resetSelected();
+		// this.props.paymentTypesActions.setPaymentTypes(
+		// 	PaymentTypeRealm.getPaymentTypes());
+	}
 
 	getCreditPurchases() {
 		console.log(this.props.creditSales);
@@ -927,6 +926,9 @@ const styles = StyleSheet.create({
 		alignSelf: 'center',
 		marginLeft: 20,
 		marginRight: 20
+	},
+	modalPayment: {
+		backgroundColor: 'white',
 	},
 	modal3: {
 		width: 1000,
