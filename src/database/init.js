@@ -9,6 +9,7 @@ import { CustomerTypesSchema } from './customer-types/customer-types.model';
 import { SettingsSchema, TokenExpirySchema } from './settings/settings.model';
 import { CustomerObjSchema, ProductObjSchema, OrderItemsSchema, OrderSchema } from './orders/orders.model';
 import { DiscountSchema } from './discount/discount.model';
+import { CustomerDebtSchema } from './customer_debt/customer_debt.model';
 
 import { PaymentTypeSchema } from './payment_types/payment_type.model';
 import { ReceiptPaymentTypeSchema } from './reciept_payment_types/reciept_payment_types.model';
@@ -46,9 +47,10 @@ export default realm = new Realm({
         OrderSchema,
         DiscountSchema,
         PaymentTypeSchema,
-        ReceiptPaymentTypeSchema
+        ReceiptPaymentTypeSchema,
+        CustomerDebtSchema
     ],
-    schemaVersion: 66,
+    schemaVersion: 67,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
         console.log('newRealm', newRealm)
