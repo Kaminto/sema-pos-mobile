@@ -116,7 +116,6 @@ class OrderCheckout extends Component {
 		console.log('PaymentTypes', this.props.paymentTypes);
 		console.log('selectedDebtPaymentTypes', this.props.selectedDebtPaymentTypes);
 		console.log('this.state.checkedType', this.state.checkedType);
-		console.log('this.props.delivery', this.props.delivery);
 		return (
 			<View style={styles.container}>
 
@@ -399,11 +398,6 @@ class OrderCheckout extends Component {
 	};
 
 
-	modalOnClose() {
-		PaymentTypeRealm.resetSelected();
-		this.props.paymentTypesActions.setPaymentTypes(
-			PaymentTypeRealm.getPaymentTypes());
-	}
 
 	clearLoan = () => {
 		console.log(this.isPayoffOnly());
@@ -419,7 +413,7 @@ class OrderCheckout extends Component {
 			[{
 				text: 'OK',
 				onPress: () => {
-					// this.closePaymentModal();
+					this.props.modalOnClose();
 					// this.props.orderActions.ClearOrder();
 				}
 			}],
@@ -644,31 +638,9 @@ class OrderCheckout extends Component {
 		return this.props.products.length === 0;
 	}
 
-	onCompleteOrder = () => {
-
-		console.log(this.isPayoffOnly());
-		console.log('selectedDebtPaymentTypes', this.props.selectedDebtPaymentTypes);
-		console.log('this.props.selectedDiscounts', this.props.selectedDiscounts);
-		console.log('this.props.delivery', this.props.delivery);
-
-		this.formatAndSaveSale();
-
-		// TO DO .... Go to the main page.
-		Alert.alert(
-			'Notice',
-			'Payment Made',
-			[{
-				text: 'OK',
-				onPress: () => {
-					this.props.orderActions.ClearOrder();
-				}
-			}],
-			{ cancelable: false }
-		);
-	}
 
 	closePaymentModal = () => {
-		this.refs.modal6.close();
+		this.props.closePaymentModal();
 	};
 
 	getOpacity = () => {
@@ -686,6 +658,7 @@ function mapStateToProps(state, props) {
 		paymentTypes: state.paymentTypesReducer.paymentTypes,
 		delivery: state.paymentTypesReducer.delivery,
 		selectedPaymentTypes: state.paymentTypesReducer.selectedPaymentTypes,
+		selectedDebtPaymentTypes: state.paymentTypesReducer.selectedDebtPaymentTypes,
 		selectedDiscounts: state.orderReducer.discounts,
 		flow: state.orderReducer.flow,
 		channel: state.orderReducer.channel,

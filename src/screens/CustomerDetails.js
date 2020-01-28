@@ -642,7 +642,10 @@ class SelectedCustomerDetails extends React.Component {
 				position={"center"} ref={"modal6"}
 				onClosed={() => this.modalOnClose()}
 				isDisabled={this.state.isDisabled}>
-				<PaymentModal />
+				<PaymentModal 
+				modalOnClose={this.modalOnClose}
+				closePaymentModal={this.closePaymentModal}
+				 />
 			</Modal>
 			</View>			
 			</>
@@ -650,10 +653,15 @@ class SelectedCustomerDetails extends React.Component {
 	}
 
 	modalOnClose() {
+		console.log('Modal closed here')
 		PaymentTypeRealm.resetSelected();
 		this.props.paymentTypesActions.setPaymentTypes(
 			PaymentTypeRealm.getPaymentTypes());
 	}
+
+	closePaymentModal = () => {
+		this.refs.modal6.close();
+	};
 
 	getCreditPurchases() {
 		console.log(this.props.creditSales);
