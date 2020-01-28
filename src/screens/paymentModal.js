@@ -45,38 +45,16 @@ const inputFontHeight = Math.round((24 * height) / 752);
 const marginTextInput = Math.round((5 * height) / 752);
 const marginSpacing = Math.round((20 * height) / 752);
 
-class OrderCheckout extends Component {
+class PaymentModal extends Component {
 
 	constructor(props) {
-		super(props);
-		this.saleSuccess = false;
-		this.state = {
-			isQuantityVisible: false,
-			firstKey: true,
-			isOpen: false,
-			isWalkIn: true,
-			isDisabled: false,
-			swipeToClose: true,
-			sliderValue: 0.3,
-			paymentOptions: "",
+		super(props); 
+		this.state = {      
 			selectedPaymentTypes: [],
 			selectedType: {},
-			checkedType: {},
-			textInputs: [],
-			isCompleteOrderVisible: false,
+			checkedType: {}, 
 			isDateTimePickerVisible: false,
-			receiptDate: new Date(),
-			canProceed: true,
-
-			isCash: true,
-			isLoan: false,
-			isMobile: false,
-			isCredit: false,
-			isJibuCredit: false,
-			isCheque: false,
-			isBank: false,
-
-			selectedPaymentType: "Cash",
+			receiptDate: new Date(),  
 		};
 	}
 
@@ -118,8 +96,6 @@ class OrderCheckout extends Component {
 		console.log('this.state.checkedType', this.state.checkedType);
 		return (
 			<View style={styles.container}>
-
-
 				<ScrollView>
 					<View
 						style={{
@@ -256,40 +232,7 @@ class OrderCheckout extends Component {
 							onChangeText={(textValue) => {
 								console.log('textValue', textValue);
 								console.log('selectedType', this.state.selectedType);
-								if (Number(textValue) > Number(this.calculateOrderDue())) {
-									Alert.alert(
-										'Notice. ',
-										`Amount can not be greater that ${this.calculateOrderDue()}`,
-										[{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-										{ cancelable: false }
-									);
-									return;
-								}
-
-								if (this.props.selectedDebtPaymentTypes.length >= 0) {
-									const itemIndex2 = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
-									let secondItemObj = this.props.selectedDebtPaymentTypes.filter(obj => obj.id != this.state.selectedType.id).map(function (e) { return e.id });
-									console.log('secondItemObj', secondItemObj);
-
-									if (itemIndex2 >= 0) {
-										this.props.selectedDebtPaymentTypes[itemIndex].amount = Number(textValue);
-										this.props.paymentTypesActions.updateSelectedDebtPaymentType({ ...this.props.selectedDebtPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
-										this.setState({
-											selectedType: { ...this.props.selectedDebtPaymentTypes[itemIndex2], amount: Number(textValue) }
-										});
-									}
-
-									if (secondItemObj.length > 0) {
-										const seconditemIndex2 = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(secondItemObj[0]);
-										console.log('seconditemIndex2', seconditemIndex2);
-										this.props.selectedDebtPaymentTypes[seconditemIndex2].amount = Number(this.calculateOrderDue()) - Number(textValue);
-										this.props.paymentTypesActions.updateSelectedDebtPaymentType({ ...this.props.selectedDebtPaymentTypes[seconditemIndex2], amount: Number(this.calculateOrderDue()) - Number(textValue) }, seconditemIndex2);
-									}
-								}
-								console.log('selectedDebtPaymentTypes', this.props.selectedDebtPaymentTypes);
-
-								this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
-
+								this.valuePaymentChange(textValue);
 							}
 							}
 							onFocus={(text) => {
@@ -376,52 +319,43 @@ class OrderCheckout extends Component {
 	valuePaymentChange = textValue => {
 		console.log('textValue', textValue);
 		console.log('selectedType', this.state.selectedType);
+		if (Number(textValue) > Number(this.calculateOrderDue())) {
+			Alert.alert(
+				'Notice. ',
+				`Amount can not be greater that ${this.calculateOrderDue()}`,
+				[{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+				{ cancelable: false }
+			);
+			return;
+		}
 
 		if (this.props.selectedDebtPaymentTypes.length >= 0) {
+			const itemIndex2 = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
+			let secondItemObj = this.props.selectedDebtPaymentTypes.filter(obj => obj.id != this.state.selectedType.id).map(function (e) { return e.id });
+			console.log('secondItemObj', secondItemObj);
 
-			if (this.props.selectedDebtPaymentTypes.length === 0) {
-				const itemIndex = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
-				if (itemIndex >= 0) {
-					this.props.paymentTypesActions.updateSelectedDebtPaymentType({ ...this.props.selectedDebtPaymentTypes[itemIndex], amount: Number(textValue) }, itemIndex);
-				}
+			if (itemIndex2 >= 0) {
+				this.props.selectedDebtPaymentTypes[itemIndex].amount = Number(textValue);
+				this.props.paymentTypesActions.updateSelectedDebtPaymentType({ ...this.props.selectedDebtPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
+				this.setState({
+					selectedType: { ...this.props.selectedDebtPaymentTypes[itemIndex2], amount: Number(textValue) }
+				});
 			}
 
-			if (this.props.selectedDebtPaymentTypes.length > 0) {
-				const itemIndex = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
-				if (itemIndex >= 0) {
-					this.props.paymentTypesActions.updateSelectedDebtPaymentType({ ...this.props.selectedDebtPaymentTypes[itemIndex], amount: Number(textValue) }, itemIndex);
-				}
+			if (secondItemObj.length > 0) {
+				const seconditemIndex2 = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(secondItemObj[0]);
+				console.log('seconditemIndex2', seconditemIndex2);
+				this.props.selectedDebtPaymentTypes[seconditemIndex2].amount = Number(this.calculateOrderDue()) - Number(textValue);
+				this.props.paymentTypesActions.updateSelectedDebtPaymentType({ ...this.props.selectedDebtPaymentTypes[seconditemIndex2], amount: Number(this.calculateOrderDue()) - Number(textValue) }, seconditemIndex2);
 			}
-
 		}
 		console.log('selectedDebtPaymentTypes', this.props.selectedDebtPaymentTypes);
+
+		this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
+
 	};
-
-
 
 	clearLoan = () => {
-		console.log(this.isPayoffOnly());
-		console.log('SelectedPaymentTypes', this.props.selectedDebtPaymentTypes);
-		console.log('this.props.selectedDiscounts', this.props.selectedDiscounts);
-
-		this.formatAndSaveSale();
-
-		// TO DO .... Go to the main page.
-		Alert.alert(
-			'Notice',
-			'Payment Made',
-			[{
-				text: 'OK',
-				onPress: () => {
-					this.props.modalOnClose();
-					// this.props.orderActions.ClearOrder();
-				}
-			}],
-			{ cancelable: false }
-		);
-	};
-
-	formatAndSaveSale = async () => {
 
 		const creditIndex = this.props.selectedDebtPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
 		console.log('creditIndex', creditIndex);
@@ -467,24 +401,23 @@ class OrderCheckout extends Component {
 				this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
 			}
 
+			Alert.alert(
+				'Notice',
+				'Payment Made',
+				[{
+					text: 'OK',
+					onPress: () => {
+						this.closePaymentModal();
+					}
+				}],
+				{ cancelable: false }
+			);
+
 		}
 
 		return true;
 	};
 
-
-	getSaleAmount() {
-		if (!this.isPayoffOnly()) {
-			return (
-				<PaymentDescription
-					title={`${i18n.t('sale-amount-due')}: `}
-					total={Utilities.formatCurrency(this.calculateOrderDue())}
-				/>
-			);
-		} else {
-			return null;
-		}
-	}
 
 	getCancelButton() {
 		return (
@@ -525,97 +458,6 @@ class OrderCheckout extends Component {
 		}
 	}
 
-	_roundToDecimal(value) {
-		return parseFloat(value.toFixed(2));
-	}
-
-	_isAnonymousCustomer(customer) {
-		return CustomerTypeRealm.getCustomerTypeByName('anonymous').id ==
-			customer.customerTypeId
-			? true
-			: false;
-	}
-
-	calculateTotalDue() {
-		return this._roundToDecimal(
-			this.calculateOrderDue() + this.calculateAmountDue()
-		);
-	}
-
-	getItemPrice = item => {
-		let productMrp = this._getItemMrp(item);
-		if (productMrp) {
-			return productMrp.priceAmount;
-		}
-		return item.priceAmount; // Just use product price
-	};
-
-	getItemCogs = item => {
-		let productMrp = this._getItemMrp(item);
-		if (productMrp) {
-			return productMrp.cogsAmount;
-		}
-		return item.cogsAmount; // Just use product price
-	};
-
-	_getItemMrp = item => {
-		let salesChannel = SalesChannelRealm.getSalesChannelFromName(
-			this.props.channel.salesChannel
-		);
-		if (salesChannel) {
-			let productMrp = ProductMRPRealm.getFilteredProductMRP()[
-				ProductMRPRealm.getProductMrpKeyFromIds(
-					item.productId,
-					salesChannel.id
-				)
-			];
-			if (productMrp) {
-				return productMrp;
-			}
-		}
-		return null;
-	};
-
-
-	closeHandler = () => {
-		this.setState({ isCompleteOrderVisible: false });
-		if (this.saleSuccess) {
-			this.props.customerBarActions.ShowHideCustomers(1);
-			this.props.customerActions.CustomerSelected({});
-		} else {
-			Alert.alert(
-				'Invalid payment amount. ',
-				'The amount paid cannot exceed to cost of goods and customer amount due',
-				[{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-				{ cancelable: false }
-			);
-		}
-	};
-
-	getTotalOrders = () => {
-		console.log("getTotalOrders");
-		return this.props.products.reduce((total, item) => { return (total + item.quantity) }, 0);
-	};
-
-	getAmount = () => {
-		return this.props.products.reduce((total, item) => { return (total + item.quantity * this.getItemPrice(item.product)) }, 0);
-	};
-
-	getItemPrice = (product) => {
-		let salesChannel = SalesChannelRealm.getSalesChannelFromName(this.props.channel.salesChannel);
-		if (salesChannel) {
-			let productMrp = ProductMRPRealm.getFilteredProductMRP()[ProductMRPRealm.getProductMrpKeyFromIds(product.productId, salesChannel.id)];
-			if (productMrp) {
-				return productMrp.priceAmount;
-			}
-		}
-		return product.priceAmount;	// Just use product price
-	};
-
-	onPay = () => {
-		console.log("onPay");
-		this.refs.modal6.open();
-	};
 
 
 	calculateOrderDue() {
@@ -638,18 +480,10 @@ class OrderCheckout extends Component {
 		return this.props.products.length === 0;
 	}
 
-
 	closePaymentModal = () => {
 		this.props.closePaymentModal();
 	};
 
-	getOpacity = () => {
-		if (this.props.products.length == 0 || this.props.flow.page != 'products') {
-			return { opacity: .3 };
-		} else {
-			return { opacity: 1 };
-		}
-	}
 }
 
 function mapStateToProps(state, props) {
@@ -679,7 +513,7 @@ function mapDispatchToProps(dispatch) {
 		topUpActions: bindActionCreators(TopUpActions, dispatch),
 	};
 }
-export default connect(mapStateToProps, mapDispatchToProps)(OrderCheckout);
+export default connect(mapStateToProps, mapDispatchToProps)(PaymentModal);
 
 
 const styles = StyleSheet.create({
