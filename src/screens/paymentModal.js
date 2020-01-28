@@ -151,14 +151,14 @@ class OrderCheckout extends Component {
 							numColumns={2}
 							contentContainerStyle={styles.container}
 						/>
-						
+
 						<PaymentDescription
 							title={`${i18n.t('previous-amount-due')}:`}
 							total={Utilities.formatCurrency(
 								this.calculateAmountDue()
 							)}
 						/>
-						{this.getBackDateComponent()}
+						{/* {this.getBackDateComponent()} */}
 						<View style={styles.completeOrder}>
 							<View style={{ justifyContent: 'center', height: 50 }}>
 								<TouchableHighlight
@@ -235,7 +235,7 @@ class OrderCheckout extends Component {
 				</View>
 			);
 		}
-		
+
 	};
 
 	showTextInput(item) {
@@ -447,8 +447,6 @@ class OrderCheckout extends Component {
 			? true
 			: false;
 	}
-
-
 
 	getItemPrice = item => {
 		let productMrp = this._getItemMrp(item);

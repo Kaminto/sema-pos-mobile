@@ -103,7 +103,14 @@ class OrderItems extends Component {
 					sDisabled={this.state.isDisabled}>
 
 					<ScrollView>
-					<View style={[styles.headerBackground,{ flex: 1, flexDirection: 'row', padding: 10, margin: 0 }]}>
+					<View
+							style={{
+								height: 5,
+								backgroundColor: '#036',
+								width: '100%'
+							}}
+						/>
+					<View style={[styles.headerBackground,{ flex: 1, flexDirection: 'row', paddingLeft: 20, margin: 0 }]}>
 								<View style={{ flex: .3 }}>
 									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Price</Text>
 								</View>

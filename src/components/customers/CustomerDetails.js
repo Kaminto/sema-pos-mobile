@@ -254,9 +254,6 @@ class CustomerDetails extends Component {
 		return remoteReceipts.filter(r => r.customerAccount.id === this.props.selectedCustomer.customerId);
 	}
 
- 
-
-
 	renderSeparator() {
 		return (
 			<View
@@ -411,7 +408,6 @@ class CustomerDetails extends Component {
 	}
 
 
-
 	showHeader = () => {
 		console.log('Displaying header');
 		return (
@@ -454,7 +450,6 @@ class CustomerDetails extends Component {
 			});
 		}, 10);
 	}
-
 
 }
 

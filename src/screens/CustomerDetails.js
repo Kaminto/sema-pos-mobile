@@ -603,16 +603,30 @@ class SelectedCustomerDetails extends React.Component {
 		return (
 			<>
 			<View style={styles.commandBarContainer}>
-				<View style={{ flexDirection: 'row', height: 40 }}>
+				<View style={{ flexDirection: 'column', flex: 1 }}>
 					<Text style={styles.selectedCustomerText}>
 						{this.getName()}
 					</Text>
+
 					<Text style={styles.selectedCustomerText}>
-						Credit Purchases:  {this.getCreditPurchases()}
+						{this.getPhone()}
+					</Text>
+					<Text style={styles.selectedCustomerText}>
+						{this.getCustomerType()}
+					</Text>
+				</View>
+				<View style={{ flexDirection: 'column', flex: 1 }}>
+					{/* <Text style={styles.selectedCustomerText}>
+					{this.getCreditPurchases()} Credit Purchases
+					</Text> */}
+					<Text style={styles.selectedCustomerText}>
+						Credit Balance: {this.props.topupTotal - this.getCreditPurchases()}
 					</Text>
 					<Text style={styles.selectedCustomerText}>
 						Loan:  {this.props.selectedCustomer.dueAmount}
 					</Text>
+					</View>
+				<View style={{ flexDirection: 'column', flex: 1 }}>
 					<TouchableHighlight
 						style={styles.selectedCustomerText}
 						onPress={() => {
@@ -620,14 +634,6 @@ class SelectedCustomerDetails extends React.Component {
 						}}>
 						<Text >Loan Payment</Text>
 					</TouchableHighlight>
-				</View>
-				<View style={{ flexDirection: 'row', height: 40 }}>
-					<Text style={styles.selectedCustomerText}>
-						{this.getPhone()}
-					</Text>
-					<Text style={styles.selectedCustomerText}>
-						Credit Balance: {this.props.topupTotal - this.getCreditPurchases()}
-					</Text>
 					<TouchableHighlight
 						style={styles.selectedCustomerText}
 						onPress={() => this.props.navigation.navigate('OrderView')}>
@@ -637,15 +643,15 @@ class SelectedCustomerDetails extends React.Component {
 			</View>
 
 			<View  style={styles.modalPayment}>
-			<Modal
-				style={[styles.modal, styles.modal3]}
-				coverScreen={true}
-				position={"center"} ref={"modal6"}
-				onClosed={() => this.modalOnClose()}
-				isDisabled={this.state.isDisabled}>
-				<PaymentModal />
-			</Modal>
-			</View>			
+				<Modal
+					style={[styles.modal, styles.modal3]}
+					coverScreen={true}
+					position={"center"} ref={"modal6"}
+					onClosed={() => this.modalOnClose()}
+					isDisabled={this.state.isDisabled}>
+					<PaymentModal />
+				</Modal>
+			</View>
 			</>
 		);
 	}
@@ -670,9 +676,18 @@ class SelectedCustomerDetails extends React.Component {
 		}
 
 	}
+
 	getPhone() {
 		if (this.props.selectedCustomer.hasOwnProperty('phoneNumber')) {
 			return this.props.selectedCustomer.phoneNumber;
+		} else {
+			return '';
+		}
+	}
+
+	getCustomerType() {
+		if (this.props.selectedCustomer.hasOwnProperty('customertype')) {
+			return this.props.selectedCustomer.customerType;
 		} else {
 			return '';
 		}
@@ -922,7 +937,8 @@ const styles = StyleSheet.create({
 	},
 	commandBarContainer: {
 		flex: 1,
-		backgroundColor: '#0e73c9',
+		flexDirection: 'row',
+		backgroundColor: '#fff',
 		height: 80,
 		alignSelf: 'center',
 		marginLeft: 20,
@@ -940,8 +956,9 @@ const styles = StyleSheet.create({
 	},
 	selectedCustomerText: {
 		marginLeft: 10,
-		alignSelf: 'center',
+		alignSelf: 'flex-start',
 		flex: 0.5,
+		fontSize: 18,
 		color: 'black'
 	},
 	inputText: {
