@@ -3,7 +3,7 @@ import { View, Image, TouchableOpacity, Text } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
+import { createBottomTabNavigator, createMaterialTopTabNavigator } from 'react-navigation-tabs';
 
 import CustomerList from '../screens/CustomerList';
 import CustomerEdit from '../screens/CustomerEdit';
@@ -84,19 +84,24 @@ const CustomerTransactionStack = createStackNavigator({
 
 
 
-const TabNavigator = createBottomTabNavigator({
+// const TabNavigator = createBottomTabNavigator({
+const TabNavigator = createMaterialTopTabNavigator({
     Transaction: CustomerTransactionStack,
     Credit: CreditHistoryStack,
     Debit: DebitHistoryStack
 },
     {
         initialRouteName: 'Transaction',
-        headerMode: 'none',
+		headerMode: 'none',
+
+		swipeEnabled: true,
+		animationEnabled: true,
         tabBarOptions: {
             activeTintColor: 'white',
             inactiveTintColor: 'black',
             style: {
-                backgroundColor: '#00549C',
+				backgroundColor: '#00549C',
+				fontSize: 24
             },
         },
     });
@@ -301,7 +306,8 @@ const ListCustomerStack = createStackNavigator({
         navigationOptions: ({ navigation }) => ({
             title: 'Customer Details',
             headerStyle: {
-                backgroundColor: '#00549C',
+				backgroundColor: '#00549C',
+				fontSize: 24
             },
             headerTintColor: '#fff',
         })

@@ -160,7 +160,7 @@ class OrderCheckout extends Component {
 								this.calculateAmountDue()
 							)}
 						/>
-						{this.getBackDateComponent()}
+						{/* {this.getBackDateComponent()} */}
 						<View style={styles.completeOrder}>
 							<View style={{ justifyContent: 'center', height: 50 }}>
 								<TouchableHighlight

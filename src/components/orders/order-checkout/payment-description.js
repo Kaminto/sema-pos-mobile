@@ -85,6 +85,14 @@ const styles = StyleSheet.create({
 		color: 'black',
 		alignSelf: 'center'
 	},
+
+	totalTitle: {
+		textTransform: 'uppercase'
+	},
+
+	totalValue: {
+		fontSize: 20
+	},
 	buttonText: {
 		fontWeight: 'bold',
 		fontSize: 30,

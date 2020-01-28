@@ -102,7 +102,15 @@ class OrderItems extends Component {
 					ref={"productModel"}
 					sDisabled={this.state.isDisabled}>
 
-						<View style={{ flex: 1, flexDirection: 'row', height: 30 }}>
+					<ScrollView>
+					<View
+							style={{
+								height: 5,
+								backgroundColor: '#036',
+								width: '100%'
+							}}
+						/>
+					<View style={[styles.headerBackground,{ flex: 1, flexDirection: 'row', paddingLeft: 20, margin: 0 }]}>
 								<View style={{ flex: .3 }}>
 									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Price</Text>
 								</View>
@@ -121,18 +129,17 @@ class OrderItems extends Component {
 									{this.getCancelButton()}
 								</View>
 
+
 						</View>
-
-						<View
-								style={{
-									height: 2,
-									marginBottom: 10,
-									backgroundColor: '#ddd',
-									width: '100%'
-								}}
-							/>
-
-					<ScrollView>
+					<View
+							style={{
+								height: 1,
+								backgroundColor: '#ddd',
+								marginBottom: 10,
+								width: '100%'
+							}}
+						/>
+						<View style={{ flex: 1,  paddingRight: 20, paddingLeft: 20 }}>
 						<View style={{ flex: 1, flexDirection: 'row' }}>
 								<View style={{ flex: 1 }}>
 									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>QUANTITY</Text>
@@ -143,7 +150,7 @@ class OrderItems extends Component {
 							width: "100%",
 							flexDirection: 'row',
 							alignItems: 'stretch',
-							padding: 10
+
 						}}>
 							<View style={{ flex: .2, height: 50 }}>
 								<TouchableHighlight style={{ flex: .2 }}
@@ -242,6 +249,7 @@ class OrderItems extends Component {
 								width: '100%'
 							}}
 						/>
+						</View>
 
 					</ScrollView>
 
@@ -728,7 +736,6 @@ const styles = StyleSheet.create({
 		// width: 500
 		width: widthQuanityModal,
 		height: heightQuanityModal,
-		padding: 20
 	},
 
 	modal4: {

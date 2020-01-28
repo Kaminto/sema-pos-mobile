@@ -146,19 +146,19 @@ class OrderCheckout extends Component {
 								marginRight: 100
 							}}>
 							<View style={{ flex: 1, flexDirection: 'row' }}>
-								<View style={{ flex: 1, height: 50 }}>
+								<View style={{ flex: 1 }}>
 									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
 
 								</View>
 								<View
-							style={{
-								justifyContent: 'flex-end',
-								flexDirection: 'row',
-								right: 10,
-								top: 10
-							}}>
-							{this.getCancelButton()}
-						</View>
+									style={{
+										justifyContent: 'flex-end',
+										flexDirection: 'row',
+										right: 10,
+										top: 10
+									}}>
+									{this.getCancelButton()}
+								</View>
 							</View>
 
 							<FlatList
@@ -172,7 +172,7 @@ class OrderCheckout extends Component {
 							/>
 
 							<View style={{ flex: 1, flexDirection: 'row' }}>
-								<View style={{ flex: 1, height: 50 }}>
+								<View style={{ flex: 1 }}>
 									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Delivery Mode</Text>
 
 								</View>
@@ -230,6 +230,7 @@ class OrderCheckout extends Component {
 
 							</View>
 							{this.getSaleAmount()}
+
 							<PaymentDescription
 								title={`${i18n.t('previous-amount-due')}:`}
 								total={Utilities.formatCurrency(
@@ -242,23 +243,23 @@ class OrderCheckout extends Component {
 									this.calculateTotalDue()
 								)}
 							/>
-
+                         <View style={{ flex:1, flexDirection: 'row', marginTop: 10 }}>
                             {this.getBackDateComponent()}
-							<View style={styles.completeOrder}>
-								<View style={{ justifyContent: 'center', height: 50 }}>
+							<View style={ {flex: .6 , justifyContent: 'flex-end'}}>
+								{/* <View style={{ flex: 1 }}> */}
 									<TouchableHighlight
 										underlayColor="#c0c0c0"
 										onPress={() => this.onCompleteOrder()}>
 										<Text
 											style={[
-												{ paddingTop: 20, paddingBottom: 20 },
 												styles.buttonText
 											]}>
 											{i18n.t('make-payment')}
 										</Text>
 									</TouchableHighlight>
-								</View>
+								{/* </View> */}
 							</View>
+						</View>
 						</View>
 					</ScrollView>
 				</Modal>
@@ -518,12 +519,11 @@ class OrderCheckout extends Component {
 			return (
 				<View
 					style={{
-						marginTop: 10,
-						marginBottom: 10,
-						marginLeft: 100,
-						marginRight: 100
+						flex: .4,
+					    padding: 20
 					}}>
 					<Button
+						style={{ flex: 1 }}
 						title="Change Receipt Date"
 						onPress={this.showDateTimePicker}
 					/>
@@ -672,13 +672,12 @@ class OrderCheckout extends Component {
 				onPress: () => {
 					this.closePaymentModal();
 					this.props.orderActions.ClearOrder();
+					// this.props.navigation.navigate('ListCustomers')
 				}
 			}],
 			{ cancelable: false }
 		);
 	}
-
-
 
 	formatAndSaveSale = async () => {
 		let receipt = null;
@@ -849,7 +848,7 @@ class OrderCheckout extends Component {
 	closePaymentModal = () => {
 		this.refs.modal6.close();
 	};
-	
+
 	getOpacity = () => {
 		if (this.props.products.length == 0 || this.props.flow.page != 'products') {
 			return { opacity: .3 };
@@ -914,10 +913,13 @@ const styles = StyleSheet.create({
 		alignSelf: 'center'
 	},
 	buttonText: {
+		backgroundColor: '#2858a7',
 		fontWeight: 'bold',
-		fontSize: 30,
+		fontSize: 24,
 		alignSelf: 'center',
-		color: 'white'
+		padding: 10,
+		color: 'white',
+		borderRadius: 5
 	},
 	summaryText: {
 		fontWeight: 'bold',
@@ -942,10 +944,11 @@ const styles = StyleSheet.create({
 		height: 230,
 		backgroundColor: "#3B5998"
 	},
+
 	completeOrder: {
 		backgroundColor: '#2858a7',
-		borderRadius: 30,
-		marginTop: '1%'
+		borderRadius: 10,
+		// marginTop: '1%'
 	},
 
 	modal3: {
