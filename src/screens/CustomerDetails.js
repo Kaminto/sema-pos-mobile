@@ -25,6 +25,10 @@ import PosStorage from '../database/PosStorage';
 import CreditRealm from '../database/credit/credit.operations';
 import CustomerRealm from '../database/customers/customer.operations';
 import SettingRealm from '../database/settings/settings.operations';
+
+import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
+import * as PaymentTypesActions from "../actions/PaymentTypesActions";
+
 import * as CustomerActions from '../actions/CustomerActions';
 import * as TopUpActions from '../actions/TopUpActions';
 import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
@@ -208,6 +212,7 @@ class CustomerDetails extends Component {
 				}}>
 					<View style={[styles.leftToolbar]}>
 						<SelectedCustomerDetails
+							paymentTypesActions={this.props.paymentTypesActions}
 							creditSales={this.comparePaymentCreditTypes()}
 							navigation={this.props.navigation}
 							topupTotal={this.props.topupTotal}
@@ -370,7 +375,6 @@ class CustomerDetails extends Component {
 
 			let salesLogs = [...new Set(this.props.receipts)];
 			let remoteReceipts = salesLogs.map((receipt, index) => {
-				console.log("customerAccount", receipt.customer_account);
 				return {
 					active: receipt.active,
 					id: receipt.id,
@@ -402,11 +406,6 @@ class CustomerDetails extends Component {
 				siteId = SettingRealm.getAllSetting().siteId;
 			}
 
-			// return [
-			// 	...remoteReceipts.filter(r => r.customerAccount.kiosk_id === siteId)
-			// ];
-			//console.log('remoteReceipts', remoteReceipts[0].customerAccount);
-			//console.log('remoteReceiptsno', remoteReceipts.filter(r => r.customerAccount.id === this.props.selectedCustomer.customerId));
 			return remoteReceipts.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
 		} else {
 			return [];
@@ -651,9 +650,9 @@ class SelectedCustomerDetails extends React.Component {
 	}
 
 	modalOnClose() {
-		// PaymentTypeRealm.resetSelected();
-		// this.props.paymentTypesActions.setPaymentTypes(
-		// 	PaymentTypeRealm.getPaymentTypes());
+		PaymentTypeRealm.resetSelected();
+		this.props.paymentTypesActions.setPaymentTypes(
+			PaymentTypeRealm.getPaymentTypes());
 	}
 
 	getCreditPurchases() {
@@ -858,6 +857,7 @@ function mapDispatchToProps(dispatch) {
 		topUpActions: bindActionCreators(TopUpActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
 		reportActions: bindActionCreators(reportActions, dispatch),
+		paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch),
 		receiptActions: bindActionCreators(receiptActions, dispatch)
 	};
 }
