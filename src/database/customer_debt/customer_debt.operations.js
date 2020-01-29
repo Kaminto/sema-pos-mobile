@@ -145,10 +145,10 @@ class CustomerDebtRealm {
                     customerDebts.forEach(obj => {
                         realm.create('CustomerDebt', {
                             customer_account_id: customer_account_id ? customer_account_id : null,
-                            customerDebtId: obj.customerDebtId,
-                            due_amount: obj.due_amount,
+                            customerDebtId: uuidv1(),
+                            due_amount: obj.amount,
                             syncAction: obj.syncAction ? obj.syncAction : 'CREATE',
-                            created_at: obj.created_at ? obj.created_at : null,
+                            created_at: new Date(),
                             updated_at: obj.updated_at ? obj.updated_at : null,
                         });
                     });

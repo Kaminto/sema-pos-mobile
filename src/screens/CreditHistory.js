@@ -32,7 +32,7 @@ import SalesChannelRealm from '../database/sales-channels/sales-channels.operati
 import Events from 'react-native-simple-events';
 import i18n from '../app/i18n';
 import Modal from 'react-native-modalbox';
-
+import SelectedCustomerDetails from './CustomerDetailSubHeader';
 class CreditHistory extends Component {
     constructor(props) {
         super(props);
@@ -57,15 +57,6 @@ class CreditHistory extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         return true;
 	}
-
-	// static navigationOptions = {
-	// 	// headerTitle instead of title
-	// 	headerTitle: () =>   <SelectedCustomerDetails
-	// 	creditSales={this.comparePaymentTypes()}
-	// 	navigation={this.props.navigation}
-	// 	topupTotal={this.props.topupTotal}
-	// 	selectedCustomer={this.props.selectedCustomer} />,
-	//   };
 
     render() {
         console.log(this.props.receiptsPaymentTypes);
@@ -381,73 +372,6 @@ class CreditHistory extends Component {
     };
 }
 
-class SelectedCustomerDetails extends React.Component {
-    render() {
-        console.log(this.props.creditSales)
-        return (
-			<View style={styles.commandBarContainer}>
-			<View style={{ flexDirection: 'column', flex: 1 }}>
-				<Text style={styles.selectedCustomerText}>
-					{this.getName()}
-				</Text>
-
-				<Text style={styles.selectedCustomerText}>
-					{this.getPhone()}
-				</Text>
-				{/* <Text style={styles.selectedCustomerText}>
-					{this.getCustomerType()}
-				</Text> */}
-			</View>
-			<View style={{ flexDirection: 'column', flex: 1 }}>
-				{/* <Text style={styles.selectedCustomerText}>
-				{this.getCreditPurchases()} Credit Purchases
-				</Text> */}
-				<Text style={styles.selectedCustomerText}>
-					Credit Balance: {this.props.topupTotal - this.getCreditPurchases()}
-				</Text>
-				<Text style={styles.selectedCustomerText}>
-					Loan:  {this.props.selectedCustomer.dueAmount}
-				</Text>
-				</View>
-			<View style={{ flexDirection: 'column', flex: 1 }}>
-				<TouchableHighlight
-					style={styles.selectedCustomerText}
-					onPress={() => {
-						this.refs.modal6.open();
-					}}>
-					<Text >Loan Payment</Text>
-				</TouchableHighlight>
-				<TouchableHighlight
-					style={styles.selectedCustomerText}
-					onPress={() => this.props.navigation.navigate('OrderView')}>
-					<Text >Make Sale</Text>
-				</TouchableHighlight>
-			</View>
-		</View>
-        );
-    }
-
-    getCreditPurchases() {
-        console.log(this.props.creditSales);
-        return this.props.creditSales.reduce((total, item) => { return (total + item.amount) }, 0)
-    }
-
-    getName() {
-        if (this.props.selectedCustomer.hasOwnProperty('name')) {
-            return this.props.selectedCustomer.name;
-        } else {
-            return '';
-        }
-
-    }
-    getPhone() {
-        if (this.props.selectedCustomer.hasOwnProperty('phoneNumber')) {
-            return this.props.selectedCustomer.phoneNumber;
-        } else {
-            return '';
-        }
-    }
-}
 
 function mapStateToProps(state, props) {
     return {

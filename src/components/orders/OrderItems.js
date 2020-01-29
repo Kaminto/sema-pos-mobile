@@ -42,41 +42,10 @@ class OrderItems extends Component {
 		};
 	}
 
-	onClose() {
-		console.log('Modal just closed');
-	}
-
-	onOpen() {
-		console.log('Modal just opened');
-	}
-
-	onClosingState(state) {
-		console.log('the open/close of the swipeToClose just changed');
-	}
-
-	renderList() {
-		var list = [];
-
-		for (var i = 0; i < 50; i++) {
-			list.push(<Text style={styles.text} key={i}>Elem {i}</Text>);
-		}
-
-		return list;
-	}
-
-
-	onChangeQuantity = text => {
-		this.setState({
-			address: text
-		});
-	};
-
 
 	render() {
 
 		const state = this.state;
-		console.log('discounts', this.props.discounts);
-		console.log('selectedDiscounts', this.state.selectedDiscounts);
 		return (
 			<View style={styles.container}>
 				<FlatList
@@ -103,35 +72,37 @@ class OrderItems extends Component {
 					sDisabled={this.state.isDisabled}>
 
 					<ScrollView>
-					<View
+						<View
 							style={{
 								height: 5,
 								backgroundColor: '#036',
 								width: '100%'
 							}}
 						/>
-					<View style={[styles.headerBackground,{ flex: 1, flexDirection: 'row', paddingLeft: 20, margin: 0 }]}>
-								<View style={{ flex: .3 }}>
-									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Price</Text>
-								</View>
-								<View style={{ flex: .6 }}>
-									<Text style={[{ textAlign: 'center'}, styles.baseItem]}>
-										{this.getDiscountPrice((this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)), this.state.selectedItem)}</Text>
-								</View>
-								<View
-									style={{
-										flex: .1,
-										justifyContent: 'flex-end',
-										flexDirection: 'row',
-										right: 0,
-										top: 0
-									}}>
-									{this.getCancelButton()}
-								</View>
+						<View style={[styles.headerBackground, { flex: 1, flexDirection: 'row', paddingLeft: 20, margin: 0 }]}>
+							<View style={{ flex: .3 }}>
+								{this.getProductDescripion()}
+
+
+							</View>
+							<View style={{ flex: .6 }}>
+								<Text style={[{ textAlign: 'center' }, styles.baseItem]}>
+									{this.getDiscountPrice((this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)), this.state.selectedItem)}</Text>
+							</View>
+							<View
+								style={{
+									flex: .1,
+									justifyContent: 'flex-end',
+									flexDirection: 'row',
+									right: 0,
+									top: 0
+								}}>
+								{this.getCancelButton()}
+							</View>
 
 
 						</View>
-					<View
+						<View
 							style={{
 								height: 1,
 								backgroundColor: '#ddd',
@@ -139,116 +110,112 @@ class OrderItems extends Component {
 								width: '100%'
 							}}
 						/>
-						<View style={{ flex: 1,  paddingRight: 20, paddingLeft: 20 }}>
-						<View style={{ flex: 1, flexDirection: 'row' }}>
+						<View style={{ flex: 1, paddingRight: 20, paddingLeft: 20 }}>
+							<View style={{ flex: 1, flexDirection: 'row' }}>
 								<View style={{ flex: 1 }}>
 									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>QUANTITY</Text>
 								</View>
-						</View>
-						<View style={{
-							flex: 1,
-							width: "100%",
-							flexDirection: 'row',
-							alignItems: 'stretch',
-
-						}}>
-							<View style={{ flex: .2, height: 50 }}>
-								<TouchableHighlight style={{ flex: .2 }}
-									onPress={() => this.counterChangedHandler('inc')}>
-									<Icon
-										size={50}
-										style={[{ textAlign: 'left' }, styles.leftMargin]}
-										name="md-remove-circle-outline"
-										color="black"
-									/>
-								</TouchableHighlight>
 							</View>
-							<View style={{ flex: .6, height: 50, textAlign: 'center' }} >
-								{this.qtyValue()}
+							<View style={{
+								flex: 1,
+								width: "100%",
+								flexDirection: 'row',
+								alignItems: 'stretch',
+
+							}}>
+								<View style={{ flex: .2, height: 50 }}>
+									<TouchableHighlight style={{ flex: .2 }}
+										onPress={() => this.counterChangedHandler('inc')}>
+										<Icon
+											size={50}
+											style={[{ textAlign: 'left' }, styles.leftMargin]}
+											name="md-remove-circle-outline"
+											color="black"
+										/>
+									</TouchableHighlight>
+								</View>
+								<View style={{ flex: .6, height: 50, textAlign: 'center' }} >
+									{this.qtyValue()}
+								</View>
+								<View style={{ flex: .2, height: 50 }}>
+									<TouchableHighlight style={{ flex: 1 }}
+										onPress={() => this.counterChangedHandler('inc')}>
+										<Icon
+											size={50}
+											style={[{ textAlign: 'center' }, styles.leftMargin]}
+											name="md-add-circle-outline"
+											color="black"
+										/>
+									</TouchableHighlight>
+								</View>
 							</View>
-							<View style={{ flex: .2, height: 50 }}>
-								<TouchableHighlight style={{ flex: 1 }}
-									onPress={() => this.counterChangedHandler('inc')}>
-									<Icon
-										size={50}
-										style={[{ textAlign: 'center' }, styles.leftMargin]}
-										name="md-add-circle-outline"
-										color="black"
-									/>
-								</TouchableHighlight>
-							</View>
-						</View>
 
-						<View
-							style={{
-								height: 1,
-								backgroundColor: '#ddd',
-								marginBottom: 10,
-								width: '100%'
-							}}
-						/>
-
-
-					<View style={{ flex: 1, flexDirection: 'row' }}>
-							<View style={{ flex: 1 }}>
-								<Text style={[{ textAlign: 'left' }, styles.baseItem]}>NOTES</Text>
-							</View>
-						</View>
-
-						<View style={{ flex: 1, flexDirection: 'row' }}>
-							<View style={{ flex: 1, height: 50 }}>
-								{this.notesValue()}
-							</View>
-						</View>
-
-						<View
-							style={{
-								height: 1,
-								backgroundColor: '#ddd',
-								marginBottom: 10,
-								width: '100%'
-							}}
-						/>
-
-						<View style={{ flex: 1, flexDirection: 'row' }}>
-							<View style={{ flex: 1, height: 50 }}>
-								<TouchableHighlight onPress={() => {
-									console.log(this.state.selectedDiscounts);
-								}}>
-									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>DISCOUNTS</Text>
-								</TouchableHighlight>
-							</View>
-						</View>
-
-
-						<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
-							<FlatList
-								data={this.props.discounts}
-								extraData={this.state.selectedDiscounts}
-								renderItem={({ item, index, separators }) => (
-									this.discountRows(item, index, separators)
-								)}
+							<View
+								style={{
+									height: 1,
+									backgroundColor: '#ddd',
+									marginBottom: 10,
+									width: '100%'
+								}}
 							/>
-						</View>
 
-						<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
-							<View style={{ flex: 1, height: 50 }}>
-								<Text style={[{
-									marginLeft: 12,
-								}, styles.baseItem]}>Custom</Text>
-							</View>
-							<View style={{ flex: 1, height: 50 }}>
-								{this.customDiscountValue()}
-							</View>
-						</View>
 
-						<View
-							style={{
-								height: 1,
-								backgroundColor: '#ddd',
-								width: '100%'
-							}}
-						/>
+							<View style={{ flex: 1, flexDirection: 'row' }}>
+								<View style={{ flex: 1 }}>
+									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>NOTES</Text>
+								</View>
+							</View>
+
+							<View style={{ flex: 1, flexDirection: 'row' }}>
+								<View style={{ flex: 1, height: 50 }}>
+									{this.notesValue()}
+								</View>
+							</View>
+
+							<View
+								style={{
+									height: 1,
+									backgroundColor: '#ddd',
+									marginBottom: 10,
+									width: '100%'
+								}}
+							/>
+
+							<View style={{ flex: 1, flexDirection: 'row' }}>
+								<View style={{ flex: 1, height: 50 }}>
+									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>DISCOUNTS</Text>
+								</View>
+							</View>
+
+
+							<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
+								<FlatList
+									data={this.props.discounts}
+									extraData={this.state.selectedDiscounts}
+									renderItem={({ item, index, separators }) => (
+										this.discountRows(item, index, separators)
+									)}
+								/>
+							</View>
+
+							<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
+								<View style={{ flex: 1, height: 50 }}>
+									<Text style={[{
+										marginLeft: 12,
+									}, styles.baseItem]}>Custom</Text>
+								</View>
+								<View style={{ flex: 1, height: 50 }}>
+									{this.customDiscountValue()}
+								</View>
+							</View>
+
+							<View
+								style={{
+									height: 1,
+									backgroundColor: '#ddd',
+									width: '100%'
+								}}
+							/>
 						</View>
 
 					</ScrollView>
@@ -281,12 +248,10 @@ class OrderItems extends Component {
 		let qty = '';
 
 		if (!this.state.selectedItem.hasOwnProperty('quantity')) {
-			console.log('selectedItem', this.state.selectedItem);
 			return;
 		}
 
 		if (this.state.selectedItem.hasOwnProperty('quantity')) {
-			console.log('selectedItem', this.state.selectedItem);
 			qty = this.state.selectedItem.quantity.toString();
 		}
 
@@ -306,15 +271,12 @@ class OrderItems extends Component {
 	}
 
 	notesValue() {
-		let notes = '';
-		console.log('selectedItem', this.state.selectedItem);
+		let notes = '';		
 		if (!this.state.selectedItem.hasOwnProperty('notes')) {
-			console.log('selectedItem', this.state.selectedItem);
 			return;
 		}
 
 		if (this.state.selectedItem.hasOwnProperty('notes')) {
-			console.log('selectedItem', this.state.selectedItem);
 			notes = this.state.selectedItem.notes;
 		}
 
@@ -331,23 +293,28 @@ class OrderItems extends Component {
 		)
 	}
 
+
+	getProductDescripion() {
+		if (this.state.selectedItem.hasOwnProperty('product')) {
+			return (
+			<Text style={[{ textAlign: 'left' }, styles.baseItem]}>{this.state.selectedItem.product.description}</Text>
+			)
+		}
+	}
+
 	customDiscountValue() {
 
 		if (!this.state.selectedItem.hasOwnProperty('product')) {
-			console.log('selectedItem', this.state.selectedItem);
 			return;
 		}
-		console.log('selectedDiscounts', this.props.selectedDiscounts);
-		console.log('selectedItem', this.state.selectedItem.product);
 
 		const productIndex = this.props.selectedDiscounts.map(function (e) { return e.product.productId }).indexOf(this.state.selectedItem.product.productId);
-		console.log('productIndex', productIndex);
+		
 
 		let customValue = 0;
 		if (productIndex >= 0) {
 			customValue = this.props.selectedDiscounts[productIndex].customDiscount;
 		}
-		console.log('customValue', customValue);
 		return (
 			<TextInput
 				style={{
@@ -363,8 +330,6 @@ class OrderItems extends Component {
 	}
 
 	modalOnClose() {
-		console.log('selectedDiscounts', this.state.selectedDiscounts);
-		console.log('itemPrice', (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)));
 		DiscountRealm.resetSelected();
 		this.setState(state => {
 			return {
@@ -386,7 +351,6 @@ class OrderItems extends Component {
 	}
 
 	onPressItem = (item) => {
-		console.log('item', item)
 		this.setState({ isQuantityVisible: true });
 		this.setState({ selectedItem: item });
 		this.setState({ accumulator: item.quantity });
@@ -413,13 +377,9 @@ class OrderItems extends Component {
 	};
 
 	customDiscount = searchText => {
-		console.log(searchText);
-		console.log(this.state.selectedDiscounts);
 		const productIndex = this.props.selectedDiscounts.map(function (e) { return e.product.productId }).indexOf(this.state.selectedItem.product.productId);
-		console.log('productIndex', productIndex);
+	
 		if (productIndex >= 0) {
-			console.log('this.props.selectedDiscounts[productIndex]', this.props.selectedDiscounts[productIndex]);
-			console.log('selectedDiscounts', this.state.selectedDiscounts);
 			DiscountRealm.isSelected(this.state.selectedDiscounts, false);
 			this.props.discountActions.setDiscounts(DiscountRealm.getDiscounts());
 			if (this.props.selectedDiscounts[productIndex].discount.length > 0 && this.state.selectedDiscounts.length === 0) {
@@ -441,19 +401,16 @@ class OrderItems extends Component {
 	};
 
 	setNotes = searchText => {
-		console.log(searchText);
 		this.props.orderActions.AddNotesToProduct(this.state.selectedItem.product, searchText);
 	};
 
 	discountRows = (item, index, separators) => {
 		const productIndex = this.props.selectedDiscounts.map(function (e) { return e.product.productId }).indexOf(this.state.selectedItem.product.productId);
-		console.log('productIndex', productIndex);
-
+		
 		let isDiscountAvailable = false;
 		if (productIndex >= 0) {
 			isDiscountAvailable = this.props.selectedDiscounts[productIndex].discount.id === item.id;
 		}
-		console.log('isDiscountAvailable', isDiscountAvailable);
 
 		return (
 			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
@@ -470,9 +427,6 @@ class OrderItems extends Component {
 						onToggle={isOn => {
 							DiscountRealm.isSelected(item, isOn === true ? true : false);
 
-							console.log('this.state.selectedDiscounts.hasOwnProperty', this.state.selectedDiscounts.hasOwnProperty('id'));
-							console.log('selectedDiscounts', this.state.selectedDiscounts);
-							console.log('isOn', isOn);
 
 							if (this.state.selectedDiscounts.hasOwnProperty('id')) {
 								DiscountRealm.isSelected(this.state.selectedDiscounts, false);
@@ -490,7 +444,6 @@ class OrderItems extends Component {
 								this.props.orderActions.RemoveProductDiscountsFromOrder(this.state.selectedItem.product);
 								this.setState({ selectedDiscounts: {} });
 							}
-							console.log('selectedDiscounts', this.state.selectedDiscounts);
 						}}
 					/>
 
@@ -559,8 +512,6 @@ class OrderItems extends Component {
 	};
 
 	getDiscountPrice = (amountPerQuantity, item) => {
-		console.log('amountPerQuantity', amountPerQuantity);
-		console.log('item', item);
 		if (!item.hasOwnProperty('discount')) {
 			return amountPerQuantity;
 		}

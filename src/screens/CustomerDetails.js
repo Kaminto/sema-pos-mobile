@@ -25,6 +25,10 @@ import PosStorage from '../database/PosStorage';
 import CreditRealm from '../database/credit/credit.operations';
 import CustomerRealm from '../database/customers/customer.operations';
 import SettingRealm from '../database/settings/settings.operations';
+
+import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
+import * as PaymentTypesActions from "../actions/PaymentTypesActions";
+
 import * as CustomerActions from '../actions/CustomerActions';
 import * as TopUpActions from '../actions/TopUpActions';
 import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
@@ -33,6 +37,7 @@ import * as receiptActions from '../actions/ReceiptActions';
 
 
 import PaymentModal from './paymentModal';
+import SelectedCustomerDetails from './CustomerDetailSubHeader';
 
 import i18n from '../app/i18n';
 import moment from 'moment-timezone';
@@ -208,6 +213,7 @@ class CustomerDetails extends Component {
 				}}>
 					<View style={[styles.leftToolbar]}>
 						<SelectedCustomerDetails
+							paymentTypesActions={this.props.paymentTypesActions}
 							creditSales={this.comparePaymentCreditTypes()}
 							navigation={this.props.navigation}
 							topupTotal={this.props.topupTotal}
@@ -215,9 +221,7 @@ class CustomerDetails extends Component {
 						/>
 					</View>
 				</View>
-
 				{this.getTransactionDetail()}
-
 			</View>
 		);
 		return null;
@@ -370,7 +374,6 @@ class CustomerDetails extends Component {
 
 			let salesLogs = [...new Set(this.props.receipts)];
 			let remoteReceipts = salesLogs.map((receipt, index) => {
-				console.log("customerAccount", receipt.customer_account);
 				return {
 					active: receipt.active,
 					id: receipt.id,
@@ -402,11 +405,6 @@ class CustomerDetails extends Component {
 				siteId = SettingRealm.getAllSetting().siteId;
 			}
 
-			// return [
-			// 	...remoteReceipts.filter(r => r.customerAccount.kiosk_id === siteId)
-			// ];
-			//console.log('remoteReceipts', remoteReceipts[0].customerAccount);
-			//console.log('remoteReceiptsno', remoteReceipts.filter(r => r.customerAccount.id === this.props.selectedCustomer.customerId));
 			return remoteReceipts.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
 		} else {
 			return [];
@@ -574,125 +572,6 @@ class CustomerDetails extends Component {
 
 }
 
-class SelectedCustomerDetails extends React.Component {
-	constructor(props) {
-		super(props);
-		this.saleSuccess = false;
-		this.state = {
-			isQuantityVisible: false,
-			firstKey: true,
-			isOpen: false,
-			isWalkIn: true,
-			isDisabled: false,
-			swipeToClose: true,
-			sliderValue: 0.3,
-			paymentOptions: "",
-			selectedPaymentTypes: [],
-			selectedType: {},
-			checkedType: {},
-			textInputs: [],
-			isCompleteOrderVisible: false,
-			isDateTimePickerVisible: false,
-			receiptDate: new Date(),
-			canProceed: true,
-			selectedPaymentType: "Cash",
-		};
-	}
-
-	render() {
-		return (
-			<>
-			<View style={styles.commandBarContainer}>
-				<View style={{ flexDirection: 'column', flex: 1 }}>
-					<Text style={styles.selectedCustomerText}>
-						{this.getName()}
-					</Text>
-
-					<Text style={styles.selectedCustomerText}>
-						{this.getPhone()}
-					</Text>
-					<Text style={styles.selectedCustomerText}>
-						{this.getCustomerType()}
-					</Text>
-				</View>
-				<View style={{ flexDirection: 'column', flex: 1 }}>
-					{/* <Text style={styles.selectedCustomerText}>
-					{this.getCreditPurchases()} Credit Purchases
-					</Text> */}
-					<Text style={styles.selectedCustomerText}>
-						Credit Balance: {this.props.topupTotal - this.getCreditPurchases()}
-					</Text>
-					<Text style={styles.selectedCustomerText}>
-						Loan:  {this.props.selectedCustomer.dueAmount}
-					</Text>
-					</View>
-				<View style={{ flexDirection: 'column', flex: 1 }}>
-					<TouchableHighlight
-						style={styles.selectedCustomerText}
-						onPress={() => {
-							this.refs.modal6.open();
-						}}>
-						<Text >Loan Payment</Text>
-					</TouchableHighlight>
-					<TouchableHighlight
-						style={styles.selectedCustomerText}
-						onPress={() => this.props.navigation.navigate('OrderView')}>
-						<Text >Make Sale</Text>
-					</TouchableHighlight>
-				</View>
-			</View>
-
-			<View  style={styles.modalPayment}>
-				<Modal
-					style={[styles.modal, styles.modal3]}
-					coverScreen={true}
-					position={"center"} ref={"modal6"}
-					onClosed={() => this.modalOnClose()}
-					isDisabled={this.state.isDisabled}>
-					<PaymentModal />
-				</Modal>
-			</View>
-			</>
-		);
-	}
-
-	modalOnClose() {
-		// PaymentTypeRealm.resetSelected();
-		// this.props.paymentTypesActions.setPaymentTypes(
-		// 	PaymentTypeRealm.getPaymentTypes());
-	}
-
-	getCreditPurchases() {
-		console.log(this.props.creditSales);
-		return this.props.creditSales.reduce((total, item) => { return (total + item.amount) }, 0)
-	}
-
-	getName() {
-		console.log('balanceCredit', this.props.balanceCredit);
-		if (this.props.selectedCustomer.hasOwnProperty('name')) {
-			return this.props.selectedCustomer.name;
-		} else {
-			return '';
-		}
-
-	}
-
-	getPhone() {
-		if (this.props.selectedCustomer.hasOwnProperty('phoneNumber')) {
-			return this.props.selectedCustomer.phoneNumber;
-		} else {
-			return '';
-		}
-	}
-
-	getCustomerType() {
-		if (this.props.selectedCustomer.hasOwnProperty('customertype')) {
-			return this.props.selectedCustomer.customerType;
-		} else {
-			return '';
-		}
-	}
-}
 
 class TransactionDetail extends Component {
 	constructor(props) {
@@ -874,6 +753,7 @@ function mapDispatchToProps(dispatch) {
 		topUpActions: bindActionCreators(TopUpActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
 		reportActions: bindActionCreators(reportActions, dispatch),
+		paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch),
 		receiptActions: bindActionCreators(receiptActions, dispatch)
 	};
 }
