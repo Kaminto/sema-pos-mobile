@@ -112,11 +112,6 @@ class OrderCheckout extends Component {
 
 	render() {
 		const state = this.state;
-
-		console.log('PaymentTypes', this.props.paymentTypes);
-		console.log('SelectedPaymentTypes', this.props.selectedPaymentTypes);
-		console.log('this.state.checkedType', this.state.checkedType);
-		console.log('this.props.delivery', this.props.delivery);
 		return (
 			<View style={styles.container}>
 				<View style={[{ flexDirection: 'row' }, this.getOpacity()]}>
@@ -193,7 +188,6 @@ class OrderCheckout extends Component {
 									/>}
 									checked={this.props.delivery === 'delivery'}
 									onPress={() => {
-										console.log('press');
 										this.setState({ isWalkIn: false });
 										if (this.props.delivery === 'delivery') {
 											this.props.paymentTypesActions.setDelivery('walkin');
@@ -216,7 +210,6 @@ class OrderCheckout extends Component {
 									/>}
 									checked={this.props.delivery === 'walkin'}
 									onPress={() => {
-										console.log('press');
 										this.setState({ isWalkIn: false });
 
 										if (this.props.delivery === 'walkin') {
@@ -281,18 +274,12 @@ class OrderCheckout extends Component {
 		}
 
 		if (this.props.selectedPaymentTypes.length === 0) {
-			console.log('--item--', item);
 			if (item.name === 'cash') {
 				PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
 				this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(), isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
 				isSelectedAvailable = true;
 			}
 		}
-
-		console.log('isSelectedAvailable', isSelectedAvailable);
-		console.log('description', item.description);
-		console.log('isSelected', item.isSelected);
-		console.log('item.isSelected || isSelectedAvailable', item.isSelected || isSelectedAvailable);
 
 		return (
 			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
@@ -316,7 +303,6 @@ class OrderCheckout extends Component {
 								/>}
 								checked={item.isSelected || isSelectedAvailable}
 								onPress={() => {
-									console.log('press');
 									this.checkBoxType(item);
 								}}
 							/>
@@ -337,13 +323,11 @@ class OrderCheckout extends Component {
 						<TextInput
 							underlineColorAndroid="transparent"
 							onChangeText={(textValue) => {
-								console.log('textValue', textValue);
-								console.log('selectedType', this.state.selectedType);
 								if (Number(textValue) > Number(this.calculateOrderDue())) {
 									Alert.alert(
 										'Notice. ',
 										`Amount can not be greater that ${this.calculateOrderDue()}`,
-										[{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+										[{ text: 'OK', onPress: () => {} }],
 										{ cancelable: false }
 									);
 									return;
@@ -352,9 +336,7 @@ class OrderCheckout extends Component {
 								if (this.props.selectedPaymentTypes.length >= 0) {
 									const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
 									let secondItemObj = this.props.selectedPaymentTypes.filter(obj => obj.id != this.state.selectedType.id).map(function (e) { return e.id });
-									console.log('secondItemObj', secondItemObj);
-
-
+									
 									if (itemIndex2 >= 0) {
 										this.props.selectedPaymentTypes[itemIndex].amount = Number(textValue);
 										this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
@@ -365,19 +347,16 @@ class OrderCheckout extends Component {
 
 									if (secondItemObj.length > 0) {
 										const seconditemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(secondItemObj[0]);
-										console.log('seconditemIndex2', seconditemIndex2);
 										this.props.selectedPaymentTypes[seconditemIndex2].amount = Number(this.calculateOrderDue()) - Number(textValue);
 										this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[seconditemIndex2], amount: Number(this.calculateOrderDue()) - Number(textValue) }, seconditemIndex2);
 									}
 								}
-								console.log('selectedPaymentTypes', this.props.selectedPaymentTypes);
-
+								
 								this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
 
 							}
 							}
 							onFocus={(text) => {
-								console.log(item)
 								this.setState({
 									selectedType: item
 								});
@@ -394,24 +373,18 @@ class OrderCheckout extends Component {
 	}
 
 	checkBoxType = (item) => {
-		console.log('selectedPaymentTypes', this.props.selectedPaymentTypes);
-
 		const itemIndex = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(item.id);
-		console.log(itemIndex);
 		if (itemIndex >= 0) {
 
 			let secondItemObj = this.props.selectedPaymentTypes.filter(obj => obj.id != item.id).map(function (e) { return e.id });
-			console.log('secondItemObj', secondItemObj);
-
+		
 			if (secondItemObj.length > 0) {
 				const seconditemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(secondItemObj[0]);
-				console.log('seconditemIndex2', seconditemIndex2);
 				this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[seconditemIndex2], amount: Number(this.calculateOrderDue()) }, seconditemIndex2);
 
 				PaymentTypeRealm.isSelected(item, false);
 				this.props.paymentTypesActions.removeSelectedPaymentType(item, itemIndex);
 				this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
-				console.log(this.props.selectedPaymentTypes);
 			}
 
 			if (secondItemObj.length === 0) {
@@ -427,7 +400,6 @@ class OrderCheckout extends Component {
 				`You cannot select more than two payment methods.`,
 				[{
 					text: 'OK', onPress: () => {
-						console.log('OK Pressed');
 						this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
 					}
 				}],
@@ -452,14 +424,9 @@ class OrderCheckout extends Component {
 
 
 		this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
-		console.log(this.props.selectedPaymentTypes);
-		console.log('getPaymentTypes', PaymentTypeRealm.getPaymentTypes());
-		//this.showTextInput(item);
 	};
 
 	valuePaymentChange = textValue => {
-		console.log('textValue', textValue);
-		console.log('selectedType', this.state.selectedType);
 
 		if (this.props.selectedPaymentTypes.length >= 0) {
 
@@ -478,7 +445,6 @@ class OrderCheckout extends Component {
 			}
 
 		}
-		console.log('selectedPaymentTypes', this.props.selectedPaymentTypes);
 	};
 
 
@@ -601,14 +567,13 @@ class OrderCheckout extends Component {
 			Alert.alert(
 				'Invalid payment amount. ',
 				'The amount paid cannot exceed to cost of goods and customer amount due',
-				[{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+				[{ text: 'OK', onPress: () =>{}}],
 				{ cancelable: false }
 			);
 		}
 	};
 
 	getTotalOrders = () => {
-		console.log("getTotalOrders");
 		return this.props.products.reduce((total, item) => { return (total + item.quantity) }, 0);
 	};
 
@@ -628,7 +593,6 @@ class OrderCheckout extends Component {
 	};
 
 	onPay = () => {
-		console.log("onPay");
 		this.refs.modal6.open();
 	};
 
@@ -653,37 +617,11 @@ class OrderCheckout extends Component {
 		return this.props.products.length === 0;
 	}
 
+
 	onCompleteOrder = () => {
-
-		console.log(this.isPayoffOnly());
-
-		console.log('SelectedPaymentTypes', this.props.selectedPaymentTypes);
-		console.log('this.props.selectedDiscounts', this.props.selectedDiscounts);
-		console.log('this.props.delivery', this.props.delivery);
-
-		this.formatAndSaveSale();
-
-		// TO DO .... Go to the main page.
-		Alert.alert(
-			'Notice',
-			'Payment Made',
-			[{
-				text: 'OK',
-				onPress: () => {
-					this.closePaymentModal();
-					this.props.orderActions.ClearOrder();
-					// this.props.navigation.navigate('ListCustomers')
-				}
-			}],
-			{ cancelable: false }
-		);
-	}
-
-	formatAndSaveSale = async () => {
 		let receipt = null;
 		let price_total = 0;
 		let totalAmount = 0;
-		console.log('payment', this.props.payment);
 
 		if (!this.isPayoffOnly()) {
 			// Assumes that there is at least one product
@@ -691,7 +629,6 @@ class OrderCheckout extends Component {
 				? this.state.receiptDate
 				: new Date(Date.now());
 
-			console.log(receiptDate + " ---- " + uuidv1());
 
 			receipt = {
 				id: uuidv1(),
@@ -721,10 +658,9 @@ class OrderCheckout extends Component {
 				if (SettingRealm.getAllSetting())
 					receipt.siteId = SettingRealm.getAllSetting().siteId;
 			}
-			console.log(SettingRealm.getAllSetting());
 			let cogs_total = 0;
 
-			receipt.products = await this.props.products.map(product => {
+			receipt.products =  this.props.products.map(product => {
 				let receiptLineItem = {};
 				let tempValue = this.getItemCogs(product.product) * product.quantity;
 				receiptLineItem.price_total = this.getItemPrice(product.product) * product.quantity;
@@ -752,8 +688,6 @@ class OrderCheckout extends Component {
 			receipt.total = price_total;
 			receipt.totalAmount = totalAmount;
 			receipt.cogs = cogs_total;
-			console.log(receipt);
-			console.log('receipt.receiptreceiptreceipt()');
 		}
 		// Check loan payoff
 		let payoff = 0;
@@ -775,7 +709,7 @@ class OrderCheckout extends Component {
 						[
 							{
 								text: 'OK',
-								onPress: () => console.log('OK Pressed')
+								onPress: () => {}
 							}
 						],
 						{ cancelable: false }
@@ -788,11 +722,11 @@ class OrderCheckout extends Component {
 				payoff = 0;
 			}
 		} catch (err) {
-			console.log('formatAndSaveSale ' + err.message);
+			
 		}
 		if (receipt != null) {
 			const creditIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
-			console.log('creditIndex', creditIndex);
+			
 			if (creditIndex >= 0) {
 				if (Number(this.props.selectedPaymentTypes[creditIndex].amount) > Number(this.props.selectedCustomer.dueAmount)) {
 					Alert.alert(
@@ -802,7 +736,7 @@ class OrderCheckout extends Component {
 						[
 							{
 								text: 'OK',
-								onPress: () => console.log('OK Pressed')
+								onPress: () => {}
 							}
 						],
 						{ cancelable: false }
@@ -813,7 +747,6 @@ class OrderCheckout extends Component {
 
 
 			receipt.customer_account = this.props.selectedCustomer;
-			console.log(this.props.selectedPaymentTypes.length);
 			if (this.props.selectedPaymentTypes.length > 0) {
 				ReceiptPaymentTypeRealm.createManyReceiptPaymentType(this.props.selectedPaymentTypes, receipt.id);
 				this.props.paymentTypesActions.setRecieptPaymentTypes(
@@ -828,7 +761,7 @@ class OrderCheckout extends Component {
 
 
 			const rpIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("loan");
-			console.log('rpIndex', rpIndex);
+			
 
 			if (rpIndex >= 0) {
 				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) + Number(this.props.selectedPaymentTypes[rpIndex].amount);
@@ -838,6 +771,18 @@ class OrderCheckout extends Component {
 				);
 				this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
 			}
+
+			Alert.alert(
+				'Notice',
+				'Payment Made',
+				[{
+					text: 'OK',
+					onPress: () => {
+						this.closePaymentModal();
+					}
+				}],
+				{ cancelable: false }
+			);
 
 		} else {
 

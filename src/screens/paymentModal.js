@@ -232,7 +232,7 @@ class PaymentModal extends Component {
 							onChangeText={(textValue) => {
 								console.log('textValue', textValue);
 								console.log('selectedType', this.state.selectedType);
-								this.valuePaymentChange(textValue);
+								this.valuePaymentChange(textValue,itemIndex);
 							}
 							}
 							onFocus={(text) => {
@@ -316,7 +316,7 @@ class PaymentModal extends Component {
 		//this.showTextInput(item);
 	};
 
-	valuePaymentChange = textValue => {
+	valuePaymentChange = (textValue, itemIndex) => {
 		console.log('textValue', textValue);
 		console.log('selectedType', this.state.selectedType);
 		if (Number(textValue) > Number(this.calculateOrderDue())) {

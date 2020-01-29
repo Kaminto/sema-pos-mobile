@@ -102,7 +102,7 @@ class ReceiptLineItem extends Component {
 			receiptLineItemIndex,
 			updatedFields
 		);
-		PosStorage.saveRemoteReceipts(this.props.remoteReceipts);
+		PosStorage.saveRemoteReceipts(this.props.receipts);
 		this.props.handleUpdate();
 	}
 
@@ -212,7 +212,7 @@ class TransactionDetail extends Component {
 				return (
 						<ReceiptLineItem
 							receiptActions={this.props.receiptActions}
-							remoteReceipts={this.props.remoteReceipts}
+							receipts={this.props.receipts}
 							receipts={this.props.receipts}
 							item={lineItem}
 							key={lineItem.id}
@@ -358,7 +358,7 @@ class Transactions extends Component {
 							    item={this.state.selected}
 								products={this.props.products}
 								receiptActions={this.props.receiptActions}
-								remoteReceipts={this.props.remoteReceipts}
+								receipts={this.props.receipts}
 							/>
 						</ScrollView>
 					</View>
@@ -387,12 +387,12 @@ class Transactions extends Component {
 
 	prepareData() {
 		// Used for enumerating receipts
-		const totalCount = this.props.remoteReceipts.length;
+		const totalCount = this.props.receipts.length;
 		//const totalCount = this.props.receipts.length;
 		console.log('this.props.receipts', this.props.receipts);
 
 		let salesLogs = [...new Set(this.props.receipts)];
-		let remoteReceipts = this.props.receipts.map((receipt, index) => {
+		let receipts = this.props.receipts.map((receipt, index) => {
 			return {
 				active: receipt.active,
 				id: receipt.id,
@@ -410,7 +410,7 @@ class Transactions extends Component {
 			};
 		});
 
-		remoteReceipts.sort((a, b) => {
+		receipts.sort((a, b) => {
 			return moment
 				.tz(a.createdAt, moment.tz.guess())
 				.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
@@ -422,8 +422,7 @@ class Transactions extends Component {
 		if (SettingRealm.getAllSetting()) {
 			siteId = SettingRealm.getAllSetting().siteId;
 		}
-		// return remoteReceipts;
-		return [...remoteReceipts];
+		return [...receipts];
 	}
 
 	renderSeparator() {
