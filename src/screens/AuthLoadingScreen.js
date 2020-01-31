@@ -95,7 +95,7 @@ class AuthLoadingScreen extends React.Component {
         );
         this.props.topUpActions.setTopups(
             CreditRealm.getAllCredit()
-        );      
+        );     
        
 
         this.props.inventoryActions.setInventory(

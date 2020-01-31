@@ -117,6 +117,7 @@ class InventoryReport extends Component {
 		console.log(PosStorage.getInventory());
 		console.log(InventroyRealm.getAllInventory());
 
+
 			return (
 				<View style={{ flex: 1 }}>
 					<View style={{ flex: .1, flexDirection: 'row' }}>
@@ -259,7 +260,7 @@ class InventoryReport extends Component {
 
 	getRow = (item) => {
 		console.log("InventoryReport - getRow");
-		//console.log("InventoryReport - getRow", item);
+		console.log("InventoryReport - getRow", item);
 		return (
 			<View style={[{ flex: 1, flexDirection: 'row', alignItems: 'center' }, styles.rowBackground]}>
 				<View style={[{ flex: 1 }]}>

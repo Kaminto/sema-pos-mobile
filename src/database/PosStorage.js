@@ -1706,6 +1706,7 @@ class PosStorage {
 	getInventoryItem(inventoryDate) {
 		return new Promise(resolve => {
 			let key = this._getInventoryItemKey(inventoryDate);
+			console.log('key',key);
 			if (key != null) {
 				this.getKey(key)
 					.then(item => {
