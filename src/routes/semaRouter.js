@@ -10,6 +10,7 @@ import CustomerEdit from '../screens/CustomerEdit';
 import CustomerDetails from '../screens/CustomerDetails';
 import CreditHistory from '../screens/CreditHistory';
 import DebitHistory from '../screens/DebitHistory';
+import SelectedCustomer from '../screens/CustomerDetailSubHeader';
 
 
 import Login from '../screens/Login';
@@ -79,21 +80,19 @@ const CustomerTransactionStack = createStackNavigator({
 },
     {
         headerMode: 'none',
-        initialRouteName: 'Transaction',
+		initialRouteName: 'Transaction',
+		// navigationOptions: { headerTitle: 'Header title' },
     });
 
-
-
-// const TabNavigator = createBottomTabNavigator({
-const TabNavigator = createMaterialTopTabNavigator({
+const TabNavigator = createBottomTabNavigator({
+// const TabNavigator = createMaterialTopTabNavigator({
     Transaction: CustomerTransactionStack,
-    Credit: CreditHistoryStack,
-    Debit: DebitHistoryStack
+    Credit: CreditHistoryStack
+    // ,Debit: DebitHistoryStack
 },
     {
         initialRouteName: 'Transaction',
-		headerMode: 'none',
-
+		headerMode: 'screen',
 		swipeEnabled: true,
 		animationEnabled: true,
         tabBarOptions: {
@@ -102,8 +101,13 @@ const TabNavigator = createMaterialTopTabNavigator({
             style: {
 				backgroundColor: '#00549C',
 				fontSize: 24
-            },
-        },
+			},
+			labelStyle: {
+				fontSize: 18,
+				textTransform: 'uppercase'
+			  },
+		},
+		// navigationOptions: { headerTitle: 'Header title' },
     });
 
 
@@ -385,7 +389,6 @@ const ReminderStack = createStackNavigator({
         }),
     },
 });
-
 
 
 const LoginStack = createStackNavigator({

@@ -131,7 +131,7 @@ class TransactionDetail extends Component {
 		super(props);
 
 		this.state = {
-			refresh: false,
+			refresh: false
 		};
 	}
 
@@ -348,7 +348,7 @@ class Transactions extends Component {
 							renderItem={this.renderReceipt.bind(this)}
 							keyExtractor={(item, index) => item.id}
 							ItemSeparatorComponent={this.renderSeparator}
-							extraData={this.state.refresh}
+							extraData={this.state}
 						/>
 					</View>
 
@@ -422,6 +422,10 @@ class Transactions extends Component {
 		if (SettingRealm.getAllSetting()) {
 			siteId = SettingRealm.getAllSetting().siteId;
 		}
+
+		// this.setState({
+		// 	refresh: !this.state.refresh
+		// })
 		return [...receipts];
 	}
 

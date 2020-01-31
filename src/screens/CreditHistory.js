@@ -5,14 +5,7 @@ import {
     FlatList,
     TouchableHighlight,
     StyleSheet,
-    UIManager,
-    Alert
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import PropTypes from 'prop-types';
-
-import { FloatingAction } from "react-native-floating-action";
-
 
 import * as CustomerActions from '../actions/CustomerActions';
 import * as ToolbarActions from '../actions/ToolBarActions';
@@ -21,17 +14,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import moment from 'moment-timezone';
-import ModalDropdown from 'react-native-modal-dropdown';
 import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
-import CustomerRealm from '../database/customers/customer.operations';
 import CreditRealm from '../database/credit/credit.operations';
 import SettingRealm from '../database/settings/settings.operations';
-import OrderRealm from '../database/orders/orders.operations';
-import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
-import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
-import Events from 'react-native-simple-events';
 import i18n from '../app/i18n';
-import Modal from 'react-native-modalbox';
 import SelectedCustomerDetails from './CustomerDetailSubHeader';
 class CreditHistory extends Component {
     constructor(props) {
@@ -59,29 +45,17 @@ class CreditHistory extends Component {
 	}
 
     render() {
-        console.log(this.props.receiptsPaymentTypes);
-        console.log(this.props.paymentTypes);
-        console.log(this.comparePaymentTypes());
-        console.log(this.comparePaymentTypeReceipts());
-        console.log(this.getCustomerRecieptData());
         return (
-            <View style={{ backgroundColor: '#fff', width: '100%', height: '100%' }}>
-                <View style={{
-                    flexDirection: 'row',
-                    height: 100,
-                    backgroundColor: '#00549C',
-                    alignItems: 'center'
-                }}>
-                    <View style={[styles.leftToolbar]}>
+            <View style={{ backgroundColor: '#00549C', flex: 1 }}>
                         <SelectedCustomerDetails
                             creditSales={this.comparePaymentTypes()}
                             navigation={this.props.navigation}
                             topupTotal={this.props.topupTotal}
                             selectedCustomer={this.props.selectedCustomer} />
-                    </View>
-                </View>
 
-                <View style={{ marginBottom: 10 }}>
+			<View style={{ flexDirection: 'row', flex: 1,
+			marginTop: 130, paddingTop: 50, backgroundColor: '#FFF', overflow: 'visible' }}>
+                <View style={{ marginBottom: 10, flex:.3, padding: 10 }}>
                     <Input
                         placeholder={i18n.t(
                             'topup-placeholder'
@@ -95,6 +69,7 @@ class CreditHistory extends Component {
                         buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10 }}
                         title={i18n.t('topup')} />
                 </View>
+				<View style={{ flex:.7 }}>
                 <FlatList
                     ref={ref => {
                         this.flatListRef = ref;
@@ -113,13 +88,15 @@ class CreditHistory extends Component {
                     keyExtractor={item => item.customerId}
                     initialNumToRender={50}
                 />
-                <FloatingAction
+                {/* <FloatingAction
                     onOpen={name => {
                         console.log(this.props);
                         this.refs.modal6.open();
                     }}
-                />
+                /> */}
+				</View>
             </View>
+			</View>
         );
     }
 
@@ -149,7 +126,6 @@ class CreditHistory extends Component {
 
         console.log(this.state.topup);
         console.log(this.props.selectedCustomer);
-
 
         CreditRealm.createCredit(
             this.props.selectedCustomer.customerId,
@@ -209,29 +185,31 @@ class CreditHistory extends Component {
                 style={[
                     this.getRowBackground(index, isSelected),
                     {
-                        flex: 1,
+						flex: 1,
+						padding: 5,
                         flexDirection: 'row',
                         height: 50,
                         alignItems: 'center'
                     }
                 ]}>
-                <View style={{ flex: 2 }}>
+				<View style={{ flex: 1 }}>
+                    <Text style={[styles.baseItem]}>
+                        {moment
+                            .tz(item.created_at, moment.tz.guess())
+                            .format('MMMM Do YYYY')}
+                    </Text>
+                </View>
+                <View style={{ flex: 1 }}>
                     <Text style={[styles.baseItem, styles.leftMargin]}>
                         {item.topup}
                     </Text>
                 </View>
-                <View style={{ flex: 1.5 }}>
+                <View style={{ flex: 1 }}>
                     <Text style={[styles.baseItem]}>
                         {item.balance}
                     </Text>
                 </View>
-                <View style={{ flex: 2 }}>
-                    <Text style={[styles.baseItem]}>
-                        {moment
-                            .tz(item.created_at, moment.tz.guess())
-                            .format('YYYY-MM-DD HH:mm')}
-                    </Text>
-                </View>
+
             </View>
         );
     };
@@ -244,29 +222,30 @@ class CreditHistory extends Component {
                     {
                         flex: 1,
                         flexDirection: 'row',
-                        height: 50,
+						height: 50,
+						padding: 10,
                         alignItems: 'center'
                     },
                     styles.headerBackground
                 ]}>
-                <View style={[{ flex: 2 }]}>
-                    <Text style={[styles.headerItem, styles.leftMargin]}>
+				<View style={[{ flex: 1 }]}>
+                    <Text style={[styles.headerItem]}>Date</Text>
+                </View>
+
+                <View style={[{ flex: 1 }]}>
+                    <Text style={[styles.headerItem]}>
                         Amount
                     </Text>
                 </View>
-                <View style={[{ flex: 1.5 }]}>
+                <View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem]}>
                         Balance
                     </Text>
                 </View>
-                <View style={[{ flex: 1 }]}>
-                    <Text style={[styles.headerItem]}>Created</Text>
-                </View>
+
             </View>
         );
     };
-
-
 
     onPressItem = item => {
         console.log('_onPressItem', item);
@@ -414,20 +393,6 @@ const styles = StyleSheet.create({
     },
     headerBackground: {
         backgroundColor: '#ABC1DE'
-    },
-    leftToolbar: {
-        flexDirection: 'row',
-        flex: 1,
-        alignItems: 'center'
-    },
-    commandBarContainer: {
-        flex: 1,
-        backgroundColor: '#fff',
-        height: 80,
-		alignSelf: 'flex-start',
-		flexDirection: 'row',
-        marginLeft: 20,
-        marginRight: 20
     },
     selectedCustomerText: {
         marginLeft: 10,

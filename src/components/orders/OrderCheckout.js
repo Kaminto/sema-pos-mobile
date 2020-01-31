@@ -140,7 +140,7 @@ class OrderCheckout extends Component {
 								marginLeft: 100,
 								marginRight: 100
 							}}>
-							<View style={{ flex: 1, flexDirection: 'row' }}>
+							<View style={{ flex: 1, flexDirection: 'row', paddingBottom: 10 }}>
 								<View style={{ flex: 1 }}>
 									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
 
@@ -173,7 +173,7 @@ class OrderCheckout extends Component {
 								</View>
 							</View>
 
-							<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
+							<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center', paddingBottom: 10 }}>
 								<CheckBox
 									title={'Delivery'}
 									checkedIcon={<Icon
@@ -239,7 +239,7 @@ class OrderCheckout extends Component {
                          <View style={{ flex:1, flexDirection: 'row', marginTop: 10 }}>
                             {this.getBackDateComponent()}
 							<View style={ {flex: .6 , justifyContent: 'flex-end'}}>
-								{/* <View style={{ flex: 1 }}> */}
+								<View style={{ flex: 1 }}>
 									<TouchableHighlight
 										underlayColor="#c0c0c0"
 										onPress={() => this.onCompleteOrder()}>
@@ -250,7 +250,7 @@ class OrderCheckout extends Component {
 											{i18n.t('make-payment')}
 										</Text>
 									</TouchableHighlight>
-								{/* </View> */}
+								</View>
 							</View>
 						</View>
 						</View>
@@ -336,7 +336,7 @@ class OrderCheckout extends Component {
 								if (this.props.selectedPaymentTypes.length >= 0) {
 									const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
 									let secondItemObj = this.props.selectedPaymentTypes.filter(obj => obj.id != this.state.selectedType.id).map(function (e) { return e.id });
-									
+
 									if (itemIndex2 >= 0) {
 										this.props.selectedPaymentTypes[itemIndex].amount = Number(textValue);
 										this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
@@ -351,7 +351,7 @@ class OrderCheckout extends Component {
 										this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[seconditemIndex2], amount: Number(this.calculateOrderDue()) - Number(textValue) }, seconditemIndex2);
 									}
 								}
-								
+
 								this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
 
 							}
@@ -377,7 +377,7 @@ class OrderCheckout extends Component {
 		if (itemIndex >= 0) {
 
 			let secondItemObj = this.props.selectedPaymentTypes.filter(obj => obj.id != item.id).map(function (e) { return e.id });
-		
+
 			if (secondItemObj.length > 0) {
 				const seconditemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(secondItemObj[0]);
 				this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[seconditemIndex2], amount: Number(this.calculateOrderDue()) }, seconditemIndex2);
@@ -722,11 +722,11 @@ class OrderCheckout extends Component {
 				payoff = 0;
 			}
 		} catch (err) {
-			
+
 		}
 		if (receipt != null) {
 			const creditIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
-			
+
 			if (creditIndex >= 0) {
 				if (Number(this.props.selectedPaymentTypes[creditIndex].amount) > Number(this.props.selectedCustomer.dueAmount)) {
 					Alert.alert(
@@ -761,7 +761,7 @@ class OrderCheckout extends Component {
 
 
 			const rpIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("loan");
-			
+
 
 			if (rpIndex >= 0) {
 				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) + Number(this.props.selectedPaymentTypes[rpIndex].amount);
@@ -892,8 +892,8 @@ const styles = StyleSheet.create({
 
 	completeOrder: {
 		backgroundColor: '#2858a7',
-		borderRadius: 10,
-		// marginTop: '1%'
+		borderRadius: 30,
+		marginTop: '1%'
 	},
 
 	modal3: {

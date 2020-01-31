@@ -12,8 +12,6 @@ import {
 	ScrollView,
 	TouchableNativeFeedback
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -35,28 +33,10 @@ import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-eleme
 import * as reportActions from '../actions/ReportActions';
 import * as receiptActions from '../actions/ReceiptActions';
 
-
-import PaymentModal from './paymentModal';
 import SelectedCustomerDetails from './CustomerDetailSubHeader';
 
 import i18n from '../app/i18n';
 import moment from 'moment-timezone';
-import { FloatingAction } from "react-native-floating-action";
-import Icon from 'react-native-vector-icons/Ionicons';
-import Modal from 'react-native-modalbox';
-import { isEmptyObj } from '../services/Utilities';
-const actions = [
-	{
-		text: "Top Up",
-		name: "topup",
-		icon: <Icon
-			name='md-wallet'
-			size={24}
-			color='black'
-		/>,
-		position: 1
-	},
-];
 
 class ReceiptLineItem extends Component {
 	constructor(props) {
@@ -199,19 +179,10 @@ class CustomerDetails extends Component {
 
 
 	render() {
-		console.log('props -', this.props.topups);
-		console.log('TopUps', CreditRealm.getAllCredit());
-		console.log('getReceipts', PosStorage.getReceipts());
-		console.log('comparePaymentCreditTypes', this.comparePaymentCreditTypes());
 		return (
-			<View style={{ flex: 1 }}>
-				<View style={{
-					flexDirection: 'row',
-					height: 100,
-					backgroundColor: '#00549C',
-					alignItems: 'center'
-				}}>
-					<View style={[styles.leftToolbar]}>
+			<View style={{ flex: 1, backgroundColor: '#00549C' }}>
+
+				 	{/* <View style={[styles.leftToolbar]}> */}
 						<SelectedCustomerDetails
 							paymentTypesActions={this.props.paymentTypesActions}
 							creditSales={this.comparePaymentCreditTypes()}
@@ -219,8 +190,8 @@ class CustomerDetails extends Component {
 							topupTotal={this.props.topupTotal}
 							selectedCustomer={this.props.selectedCustomer}
 						/>
-					</View>
-				</View>
+				{/* </View> */}
+
 				{this.getTransactionDetail()}
 			</View>
 		);
@@ -332,7 +303,7 @@ class CustomerDetails extends Component {
 		if (this.state.selected) {
 			return (
 
-				<View style={{ flex: 1, flexDirection: 'row' }}>
+				<View style={{ flex: 1, flexDirection: 'row',  overflow: 'visible', marginTop: 100, paddingTop: 50 }}>
 					<View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 4, borderRightColor: '#CCC' }}>
 						<FlatList
 							data={this.prepareData()}
@@ -363,7 +334,6 @@ class CustomerDetails extends Component {
 			);
 		}
 	}
-
 
 	prepareData() {
 		// Used for enumerating receipts
@@ -497,43 +467,48 @@ class CustomerDetails extends Component {
 
 		return (
 			<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
-				<View key={index} style={{ padding: 15 }}>
-					<Text style={{ fontSize: 17 }}>#{item.totalCount - index}</Text>
-					<View style={styles.receiptStats}>
-						{!item.active && (
-							<Text style={styles.receiptStatusText}>
-								{'Deleted'.toUpperCase()}
-							</Text>
-						)}
-						{item.isLocal || item.updated ? (
-							<View style={{ flexDirection: 'row' }}>
-								{!item.active && <Text> - </Text>}
-								<Text style={styles.receiptPendingText}>
-									{'Pending'.toLowerCase()}
-								</Text>
-							</View>
-						) : (
-								<View style={{ flexDirection: 'row' }}>
-									{!item.active && <Text> - </Text>}
-									<Text style={styles.receiptSyncedText}>
-										{'Synced'.toLowerCase()}
-									</Text>
-								</View>
-							)}
-					</View>
-					<View style={styles.itemData}>
-						<Text style={styles.label}>Date Created: </Text>
-						<Text>
-							{moment
-								.tz(item.createdAt, moment.tz.guess())
-								.format('YYYY-MM-DD HH:mm')}
+			<View key={index} style={{ padding: 15 }}>
+
+			{/* <Text style={{ fontSize: 17 }}>#{item.totalCount - index}</Text> */}
+			<View style={styles.receiptStats}>
+				{!item.active && !item.syncAction === "update" && (
+					<Text style={styles.receiptStatusText}>
+						{'Deleted'.toUpperCase()}
+					</Text>
+				)}
+				{item.isLocal || item.updated ? (
+					<View style={{ flexDirection: 'row' }}>
+						{!item.active && <Text> - </Text>}
+						<Text style={styles.receiptPendingText}>
+							{'Pending'.toLowerCase()}
 						</Text>
 					</View>
-					<View style={styles.itemData}>
-						<Text style={styles.label}>Customer Name: </Text>
-						<Text>{item.customerAccount.name}</Text>
-					</View>
-				</View>
+				) : (
+						<View style={{ flexDirection: 'row' }}>
+							{!item.active && <Text> - </Text>}
+							<Text style={styles.receiptSyncedText}>
+								{'Synced'.toLowerCase()}
+							</Text>
+						</View>
+					)}
+			</View>
+			{/* <View style={styles.itemData}>
+				<Text style={styles.label}># {item.id}</Text>
+			</View> */}
+			<Text style={styles.customername}>
+			{item.currency.toUpperCase()} {item.totalAmount}
+			</Text>
+			<View style={styles.label}>
+				<Text>
+					{moment
+						.tz(item.createdAt, moment.tz.guess())
+						.format('dddd Do MMMM YYYY')}
+				</Text>
+			</View>
+			<View style={styles.itemData}>
+				<Text style={styles.customername}>{item.customerAccount.name}</Text>
+			</View>
+			</View>
 			</TouchableNativeFeedback>
 		);
 	}
@@ -571,7 +546,6 @@ class CustomerDetails extends Component {
 	};
 
 }
-
 
 class TransactionDetail extends Component {
 	constructor(props) {
@@ -764,10 +738,6 @@ export default connect(
 )(CustomerDetails);
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#fff'
-	},
 	headerText: {
 		fontSize: 24,
 		color: 'black',
@@ -794,16 +764,6 @@ const styles = StyleSheet.create({
 		borderColor: '#2858a7',
 		backgroundColor: 'white'
 	},
-	leftToolbar: {
-		flexDirection: 'row',
-		flex: 1,
-		alignItems: 'center'
-	},
-	rightToolbar: {
-		flexDirection: 'row-reverse',
-		flex: 0.34,
-		alignItems: 'center'
-	},
 	buttonText: {
 		fontWeight: 'bold',
 		fontSize: 28,
@@ -814,15 +774,6 @@ const styles = StyleSheet.create({
 	completeOrder: {
 		backgroundColor: '#2858a7',
 		borderRadius: 30,
-	},
-	commandBarContainer: {
-		flex: 1,
-		flexDirection: 'row',
-		backgroundColor: '#fff',
-		height: 80,
-		alignSelf: 'center',
-		marginLeft: 20,
-		marginRight: 20
 	},
 	modalPayment: {
 		backgroundColor: 'white',
