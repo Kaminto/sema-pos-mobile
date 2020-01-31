@@ -111,6 +111,7 @@ class OrderCheckout extends Component {
 	};
 
 	render() {
+		console.log('props', this.props);
 		const state = this.state;
 		return (
 			<View style={styles.container}>
@@ -779,6 +780,7 @@ class OrderCheckout extends Component {
 					text: 'OK',
 					onPress: () => {
 						this.closePaymentModal();
+						this.props.navigation.navigate("ListCustomers");
 					}
 				}],
 				{ cancelable: false }
@@ -791,7 +793,7 @@ class OrderCheckout extends Component {
 	};
 
 	closePaymentModal = () => {
-		this.refs.modal6.close();
+		this.refs.modal6.close();		
 	};
 
 	getOpacity = () => {

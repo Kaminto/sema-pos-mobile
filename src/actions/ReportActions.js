@@ -59,50 +59,51 @@ const getSalesData = (beginDate, endDate) => {
 				.tz(new Date(receipt.created_at), moment.tz.guess())
 				.isBetween(beginDate, endDate)
 		);
-
+		console.log('filteredReceipts', filteredReceipts);
 		const allReceiptLineItems = filteredReceipts.reduce(
 			(lineItems, receipt) => {
+				console.log('receipt', receipt);
 				// We only show data for active receipts
-				if (!receipt.active) return lineItems;
+				//if (!receipt.active) return lineItems;
 
-				if (!receipt.isLocal) {
-					receipt.receipt_line_items = receipt.receipt_line_items.map(
-						item => {
-							console.log('item', item)
-							item.product = {
-								active: item.product.active,
-								categoryId: item.product.category_id,
-								cogsAmount: item.product.cogs_amount,
-								wastageName: item.product.wastage_name,
-								description: item.product.description,
-								maximumQuantity: item.product.maximum_quantity,
-								minimumQuantity: item.product.minimum_quantity,
-								name: item.product.name,
-								priceAmount: item.product.price_amount,
-								priceCurrency: item.product.price_currency,
-								sku: item.product.sku,
-								unitMeasure: item.product.unit_measure,
-								unitPerProduct: item.product.unit_per_product
-							};
+				//if (!receipt.isLocal) {
+				receipt.receipt_line_items = receipt.receipt_line_items.map(
+					item => {
+						console.log('item', item)
+						item.product = {
+							active: item.product.active,
+							categoryId: item.product.category_id,
+							cogsAmount: item.product.cogs_amount,
+							wastageName: item.product.wastageName,
+							description: item.product.description,
+							maximumQuantity: item.product.maximum_quantity,
+							minimumQuantity: item.product.minimum_quantity,
+							name: item.product.name,
+							priceAmount: item.product.price_amount,
+							priceCurrency: item.product.price_currency,
+							sku: item.product.sku,
+							unitMeasure: item.product.unit_measure,
+							unitPerProduct: item.product.unit_per_product
+						};
 
-							return item;
-						}
-					);
-				} else {
-					// Get rid of the image property from the product of pending receipt line items
-					// too heavy to carry around. We're not using it here anyway
-					receipt.receipt_line_items.forEach(item => {
-						delete item.product.base64encodedImage;
-					});
-				}
-
+						return item;
+					}
+				);
+				// } else {
+				// 	// Get rid of the image property from the product of pending receipt line items
+				// 	// too heavy to carry around. We're not using it here anyway
+				// 	receipt.receipt_line_items.forEach(item => {
+				// 		delete item.product.base64encodedImage;
+				// 	});
+				// }
+				console.log('receipt', receipt);
 				lineItems.push(...receipt.receipt_line_items);
 
 				return lineItems;
 			},
 			[]
 		);
-
+		console.log('allReceiptLineItems', allReceiptLineItems);
 		if (!allReceiptLineItems.length) {
 			return resolve({ totalLiters: 0, totalSales: 0, salesItems: [] });
 		}
@@ -240,6 +241,7 @@ const getInventoryData = (beginDate, endDate, products) => {
 
 const createInventory = (salesData, inventorySettings, products) => {
 	let salesAndProducts = { ...salesData };
+	console.log('salesAndProducts', salesAndProducts);
 	salesAndProducts.salesItems = salesData.salesItems.slice();
 	let emptyProducts = [];
 	for (const prod of products) {
@@ -321,10 +323,19 @@ const groupBy = key => array =>
 	}, {});
 
 const getInventoryItem = (beginDate, products) => {
+	console.log('beginDate', beginDate);
+	console.log('products', products);
+
 	return new Promise(resolve => {
 		const promiseToday = PosStorage.getInventoryItem(beginDate);
+		//const promiseToday = OrderRealm.getOrdersByDate(beginDate);
+		//const loggedReceipts2 = OrderRealm.getOrdersByDate(beginDate);
+
 		const yesterday = new Date(beginDate.getTime() - 24 * 60 * 60 * 1000);
+		//const promiseYesterday = OrderRealm.getOrdersByDate(yesterday);
 		const promiseYesterday = PosStorage.getInventoryItem(yesterday);
+		console.log('promiseToday', promiseToday);
+		console.log('promiseYesterday', promiseYesterday);
 		Promise.all([promiseToday, promiseYesterday]).then(inventoryResults => {
 			console.log('inventoryResults', inventoryResults);
 			if (inventoryResults[0] != null) {
@@ -483,25 +494,25 @@ export const initializeInventoryData = () => {
 // 	return filteredReminders;
 // };
 
-export function getRemindersReport(date){
-    console.log("Getting Reminder Reports ");
+export function getRemindersReport(date) {
+	console.log("Getting Reminder Reports ");
 
-        return (dispatch) => {
-    	    getRemindersAction().then((remindersdata) => {
+	return (dispatch) => {
+		getRemindersAction().then((remindersdata) => {
 
-		console.log("REMINDERS LENGTH"+  remindersdata.length);
+			console.log("REMINDERS LENGTH" + remindersdata.length);
 
-		console.log("COMEON WORK"+  remindersdata.length);
-		console.table(remindersdata);
-	    	let rem = filterReminders(remindersdata,date);
-	    	console.log("PREPARED REMINDERS=>"+ rem);
-	    		dispatch({type:REMINDER_REPORT, data:{reminderdata:rem}});
-	    }).catch((error)=>{
-	    	console.log(error);
-	    	    	dispatch({type:REMINDER_REPORT, data:{reminderdata:[]}});
-	    });
-   	    //let reminderz  = getRemindersAction(date);
-	    //dispatch({type:REMINDER_REPORT, data:{reminderdata:reminderz}});
+			console.log("COMEON WORK" + remindersdata.length);
+			console.table(remindersdata);
+			let rem = filterReminders(remindersdata, date);
+			console.log("PREPARED REMINDERS=>" + rem);
+			dispatch({ type: REMINDER_REPORT, data: { reminderdata: rem } });
+		}).catch((error) => {
+			console.log(error);
+			dispatch({ type: REMINDER_REPORT, data: { reminderdata: [] } });
+		});
+		//let reminderz  = getRemindersAction(date);
+		//dispatch({type:REMINDER_REPORT, data:{reminderdata:reminderz}});
 	};
 
 
@@ -512,24 +523,24 @@ export function getRemindersReport(date){
 
 
 const getRemindersAction = () => {
-    //console.log("GETTING REMINDERS FOR =>"+date);
-    return new Promise(async (resolve,reject)=>{
-    	let reminders = PosStorage.getRemindersPos();
-    	resolve(reminders);
-    });
-    //let reminders = PosStorage.getRemindersPos();
-    // let filterReminders = reminders.filter(reminder =>{ reminder.reminder_date == moment(date).add('days',1).format("YYYY-MM-DD");});
-    // return reminders;
+	//console.log("GETTING REMINDERS FOR =>"+date);
+	return new Promise(async (resolve, reject) => {
+		let reminders = PosStorage.getRemindersPos();
+		resolve(reminders);
+	});
+	//let reminders = PosStorage.getRemindersPos();
+	// let filterReminders = reminders.filter(reminder =>{ reminder.reminder_date == moment(date).add('days',1).format("YYYY-MM-DD");});
+	// return reminders;
 };
 
-const filterReminders = (reminders,date)=>{
-    console.log("This is in FILTERS"+Object.keys(reminders));
-    let filteredReminders = reminders.filter(reminder =>{
-	return reminder.reminder_date == moment(date).add(1,'days').format("YYYY-MM-DD");
-    });
+const filterReminders = (reminders, date) => {
+	console.log("This is in FILTERS" + Object.keys(reminders));
+	let filteredReminders = reminders.filter(reminder => {
+		return reminder.reminder_date == moment(date).add(1, 'days').format("YYYY-MM-DD");
+	});
 
-    console.table(filteredReminders);
-    return filteredReminders;
+	console.table(filteredReminders);
+	return filteredReminders;
 };
 
 
