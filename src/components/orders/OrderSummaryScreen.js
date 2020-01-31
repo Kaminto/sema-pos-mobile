@@ -12,7 +12,7 @@ export default class OrderSummaryScreen extends Component {
 				<OrderSummary/>
 				<OrderTotal/>
 				<OrderItems/>
-				<OrderCheckout/>
+				<OrderCheckout navigation={this.props.navigation}/>
 			</View>
 		);
 	}

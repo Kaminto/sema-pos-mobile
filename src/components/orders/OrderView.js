@@ -15,6 +15,7 @@ class OrderView extends Component {
 	}
 
 	render() {
+		console.log('this.props', this.props);
 		return this.displayView();
 	}
 
@@ -39,7 +40,8 @@ class OrderView extends Component {
 			<View style={styles.orderView}>
 				{this.getProductScreen()}
 				{this.getPaymentScreen()}
-				<OrderSummaryScreen />
+				<OrderSummaryScreen
+				 navigation={this.props.navigation} />
 			</View>
 		);
 	}

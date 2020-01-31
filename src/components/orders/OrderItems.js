@@ -29,7 +29,6 @@ class OrderItems extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			isQuantityVisible: false,
 			selectedItem: {},
 			accumulator: 0,
 			selectedDiscounts: {},
@@ -124,11 +123,11 @@ class OrderItems extends Component {
 
 							}}>
 								<View style={{ flex: .2, height: 50 }}>
-									<TouchableHighlight style={{ flex: .2 }}
-										onPress={() => this.counterChangedHandler('inc')}>
+									<TouchableHighlight style={{ flex: 1 }}
+										onPress={() => this.counterChangedHandler('dec')}>
 										<Icon
 											size={50}
-											style={[{ textAlign: 'left' }, styles.leftMargin]}
+											style={[{ textAlign: 'center' }, styles.leftMargin]}
 											name="md-remove-circle-outline"
 											color="black"
 										/>
@@ -227,9 +226,6 @@ class OrderItems extends Component {
 		);
 	}
 
-	closeHandler = () => {
-		this.setState({ isQuantityVisible: false });
-	};
 
 	getCancelButton() {
 		return (
@@ -351,7 +347,6 @@ class OrderItems extends Component {
 	}
 
 	onPressItem = (item) => {
-		this.setState({ isQuantityVisible: true });
 		this.setState({ selectedItem: item });
 		this.setState({ accumulator: item.quantity });
 		this.setState({ firstKey: true });
@@ -469,11 +464,12 @@ class OrderItems extends Component {
 		);
 	};
 
-	counterChangedHandler = (action, value) => {
-		this.setState({ isQuantityVisible: false });
+	counterChangedHandler = (action) => {
+		console.log('action', action);
 		let unitPrice = this.getItemPrice(this.state.selectedItem.product);
 		switch (action) {
 			case 'inc':
+				console.log('here inc', action);
 				if (this.state.accumulator === 0) {
 					this.refs.productModel.close();
 					this.props.orderActions.RemoveProductFromOrder(this.state.selectedItem.product, unitPrice);
@@ -484,6 +480,7 @@ class OrderItems extends Component {
 				}
 				break;
 			case 'dec':
+				console.log('here dec', action);
 				if (this.state.accumulator === 0) {
 					this.refs.productModel.close();
 					this.props.orderActions.RemoveProductFromOrder(this.state.selectedItem.product, unitPrice);

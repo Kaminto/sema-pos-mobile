@@ -28,7 +28,6 @@ class SalesReport extends Component {
 	render() {
 			return (
 				<View style={{ flex: 1 }}>
-
 					<View style={{
 						flex: .2,
 						backgroundColor: 'white',
@@ -38,7 +37,6 @@ class SalesReport extends Component {
 					}}>
 						<View style={{ flex: 1, flexDirection: 'row' }}>
 						   <DateFilter/>
-
 							<View style={{ flex: .7, height: 90, borderRadius: 10, flexDirection: 'row', marginTop: 10, backgroundColor: '#2462a0', overflow: 'hidden', color: '#fff' }}>
 								<View style={{ height: 90, flex: .5, color: '#fff' }} >
 									<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-liters').toUpperCase()}</Text>
@@ -65,11 +63,10 @@ class SalesReport extends Component {
 							initialNumToRender={50}
 						/>
 					</View>
-
 				</View>
-
 		);
 	}
+
 	getSalesData() {
 		let sales = [];
 		let temp = [];

@@ -45,6 +45,41 @@ class OrderRealm {
         return this.order = formattedArray;
     }
 
+    getOrdersByDate(date) {
+        console.log(date);
+        console.log(moment(date).format(
+            'YYYY-MM-DD'
+        ));
+        return new Promise(resolve => {
+
+
+            try {
+                let orderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('Order'))));
+                console.log(orderObj);
+                let orderObj2 = orderObj.map(
+                    item => {
+                        return {
+                            ...item, created_at: moment(item.created_at).format(
+                                'YYYY-MM-DD'
+                            )
+                        }
+                    });
+                console.log(orderObj2);
+                // return orderObj2;
+                // return orderObj2.filter(r => r.created_at === moment(date).format(
+                //     'YYYY-MM-DD'
+                // ));
+                resolve(orderObj2.filter(r => r.created_at === moment(date).format(
+                    'YYYY-MM-DD'
+                )));
+            } catch (e) {
+                console.log("Error on creation", e);
+                resolve(e);
+            }
+
+        });
+    }
+
     getOrderItems() {
         return this.order = Object.values(JSON.parse(JSON.stringify(realm.objects('OrderItems'))));
     }
@@ -228,11 +263,11 @@ class OrderRealm {
         try {
             realm.write(() => {
                 orders.forEach(obj => {
-                    obj.amount_cash=Number(obj.amount_cash);
-                    obj.amount_loan=Number(obj.amount_loan);
-                    obj.amount_mobile=Number(obj.amount_mobile);
-                    obj.cogs=Number(obj.cogs);
-                    obj.total=Number(obj.total);
+                    obj.amount_cash = Number(obj.amount_cash);
+                    obj.amount_loan = Number(obj.amount_loan);
+                    obj.amount_mobile = Number(obj.amount_mobile);
+                    obj.cogs = Number(obj.cogs);
+                    obj.total = Number(obj.total);
                     obj.customer_account = JSON.stringify(obj.customer_account);
                     obj.receipt_line_items = JSON.stringify(obj.receipt_line_items);
                     console.log('obj-obj', obj)
