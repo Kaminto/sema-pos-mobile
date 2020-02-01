@@ -3,6 +3,7 @@ export const CUSTOMERS_LOADED = 'CUSTOMERS_LOADED';
 export const CUSTOMERS_SET = 'CUSTOMERS_SET';
 export const CUSTOMERS_SEARCH = 'CUSTOMERS_SEARCH';
 export const CUSTOMER_EDIT = 'CUSTOMER_EDIT';
+export const CUSTOMERS_CHANNEL_SEARCH = 'CUSTOMERS_CHANNEL_SEARCH';
 
 
 export function CustomerSelected(customer) {
@@ -25,6 +26,13 @@ export function SearchCustomers(searchString) {
 
 	return (dispatch) => { dispatch({ type: CUSTOMERS_SEARCH, data: searchString }) };
 }
+
+export function SearchCustomersChannel(channelFilterString) {
+	// console.log("SearchCustomers - action. Search is " + searchString);
+
+	return (dispatch) => { dispatch({ type: CUSTOMERS_CHANNEL_SEARCH, data: channelFilterString }) };
+}
+
 
 export function setCustomerEditStatus(status) {
 	console.log(status);

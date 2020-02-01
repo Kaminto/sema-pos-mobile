@@ -39,19 +39,23 @@ class CustomerList extends Component {
             refresh: false,
             // selectedCustomer: null,
             searchString: '',
+            channelFilterString: '',
+            language: '',
             hasScrolled: false
         };
     }
     componentDidMount() {
         this.props.navigation.setParams({ isCustomerSelected: false });
+        this.props.navigation.setParams({ language: 'all' });
         this.props.navigation.setParams({ customerName: "" });
         this.props.navigation.setParams({ searchCustomer: this.searchCustomer });
+        this.props.navigation.setParams({ checkfilter: this.checkfilter });
         this.props.navigation.setParams({ onDelete: this.onDelete });
         this.props.navigation.setParams({ checkSelectedCustomer: this.checkSelectedCustomer });
         this.props.navigation.setParams({ editCustomer: this.editCustomer });
 
         this.props.customerActions.CustomerSelected({});
-		this.props.customerActions.setCustomerEditStatus(false); 
+        this.props.customerActions.setCustomerEditStatus(false);
 
         console.log(
             'CustomerList:componentDidMount - filter: ' + this.props.searchString
@@ -67,6 +71,13 @@ class CustomerList extends Component {
         console.log(searchText)
         this.props.customerActions.SearchCustomers(searchText);
     };
+
+    checkfilter = (searchText) => {
+        console.log(searchText)
+        this.props.navigation.setParams({ language: searchText });
+        this.props.customerActions.SearchCustomersChannel(searchText);
+    };
+
 
     onDelete = () => {
         if (
@@ -138,7 +149,6 @@ class CustomerList extends Component {
         //this.props.navigation.navigate('AddCustomerStack');
     }
 
-
     componentWillUnmount() {
         Events.rm('ScrollCustomerTo', 'customerId1');
     }
@@ -164,7 +174,7 @@ class CustomerList extends Component {
         //console.log(this.props);
         //OrderRealm.truncate();
         console.log('Order Order', OrderRealm.getAllOrder())
-		console.log('OrderItems OrderItems', OrderRealm.getOrderItems())
+        console.log('OrderItems OrderItems', OrderRealm.getOrderItems())
         return (
             <View style={{ backgroundColor: '#fff', width: '100%', height: '100%' }}>
                 <FlatList
@@ -211,27 +221,25 @@ class CustomerList extends Component {
         return data;
     };
 
+
     filterItems = data => {
-        let filteredItems = data.filter(item => {
-
-            // If there is a search string
-            if (this.state.searchString.length > 0) {
-                const filterString = this.state.searchString.toLowerCase();
-                const name = item.name.toLowerCase();
-                const names = name.split(' ');
-
+        let filter = {
+            salesChannel: this.props.channelFilterString.length > 0 ? this.props.channelFilterString : "",
+            name: this.props.searchString.length > 0 ? this.props.searchString : ""
+        };
+        data = data.map(item => {
+            return { ...item, salesChannel: this.getCustomerSalesChannel(item).toLowerCase() }
+        });
+        
+        let filteredItems = data.filter(function (item) {
+            for (var key in filter) {
                 if (
-                    name.startsWith(filterString) ||
-                    (names.length > 1 &&
-                        names[names.length - 1].startsWith(filterString)) ||
-                    item.phoneNumber.startsWith(filterString)
-                ) {
-                    return true;
-                } else {
+                    item[key].toString() === undefined ||
+                    item[key].toString().toLowerCase().startsWith(filter[key].toString().toLowerCase()) !=
+                    filter[key].toString().toLowerCase().startsWith(filter[key].toString().toLowerCase())
+                )
                     return false;
-                }
             }
-
             return true;
         });
         return filteredItems;
@@ -460,13 +468,19 @@ class CustomerList extends Component {
 
 class SearchWatcher extends React.Component {
     render() {
+
         return this.searchEvent();
     }
 
     // TODO: Use states instead of setTimeout
     searchEvent() {
         console.log('SearchWatcher');
+
         let that = this;
+        console.log(that.props.parent.props.channelFilterString);
+        console.log(that.props.parent.state.channelFilterString);
+        console.log(that.props.parent.props.searchString);
+        console.log(that.props.parent.state.searchString);
         setTimeout(() => {
             if (
                 that.props.parent.props.searchString !==
@@ -486,7 +500,8 @@ function mapStateToProps(state, props) {
     return {
         selectedCustomer: state.customerReducer.selectedCustomer,
         customers: state.customerReducer.customers,
-        searchString: state.customerReducer.searchString
+        searchString: state.customerReducer.searchString,
+        channelFilterString: state.customerReducer.channelFilterString,
     };
 }
 

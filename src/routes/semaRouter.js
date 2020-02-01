@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, TouchableOpacity, Text } from 'react-native';
+import { View, Image, TouchableOpacity, Text, Picker } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -92,9 +92,10 @@ const TabNavigator = createBottomTabNavigator({
 },
     {
         initialRouteName: 'Transaction',
-		headerMode: 'screen',
-		swipeEnabled: true,
-		animationEnabled: true,
+        headerMode: 'none',
+
+        swipeEnabled: true,
+        animationEnabled: true,
         tabBarOptions: {
             activeTintColor: 'white',
             inactiveTintColor: 'black',
@@ -253,6 +254,24 @@ const ListCustomerStack = createStackNavigator({
 
                         />
                     </View>
+
+                    <View
+                        style={{
+                            marginTop: 12,
+                            flex: 1
+                        }}>
+                          <Picker
+                                selectedValue={navigation.getParam('language')}
+                                style={{ height: 50, width: 100 }}
+                                onValueChange={navigation.getParam('checkfilter')}>
+                                <Picker.Item label="All" value="all" />
+                                <Picker.Item label="Direct" value="direct" />
+                                <Picker.Item label="Reseller" value="reseller" />
+                                <Picker.Item label="Water Club" value="water club" />
+                            </Picker>
+
+                    </View>
+
                 </View>
 
             ),
@@ -310,8 +329,8 @@ const ListCustomerStack = createStackNavigator({
         navigationOptions: ({ navigation }) => ({
             title: 'Customer Details',
             headerStyle: {
-				backgroundColor: '#00549C',
-				fontSize: 24
+                backgroundColor: '#00549C',
+                fontSize: 24
             },
             headerTintColor: '#fff',
         })
