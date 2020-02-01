@@ -780,7 +780,7 @@ class OrderCheckout extends Component {
 					text: 'OK',
 					onPress: () => {
 						this.closePaymentModal();
-						this.props.navigation.navigate("ListCustomers");
+						this.props.navigation.navigate("CustomerList");
 					}
 				}],
 				{ cancelable: false }
