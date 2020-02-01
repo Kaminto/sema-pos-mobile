@@ -5,33 +5,17 @@ import {
     FlatList,
     TouchableHighlight,
     StyleSheet,
-    UIManager,
-    Alert
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import PropTypes from 'prop-types';
 
-import { FloatingAction } from "react-native-floating-action";
 import moment from 'moment-timezone';
-import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as ToolbarActions from '../actions/ToolBarActions';
 import * as TopUpActions from '../actions/TopUpActions';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import ModalDropdown from 'react-native-modal-dropdown';
 
-import CustomerRealm from '../database/customers/customer.operations';
-import CreditRealm from '../database/credit/credit.operations';
 import SettingRealm from '../database/settings/settings.operations';
-import OrderRealm from '../database/orders/orders.operations';
-import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
-import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
-
-import Events from 'react-native-simple-events';
-import i18n from '../app/i18n';
-import Modal from 'react-native-modalbox';
 import SelectedCustomerDetails from './CustomerDetailSubHeader';
 
 class DebitHistory extends Component {
