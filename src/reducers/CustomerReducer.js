@@ -1,8 +1,8 @@
 
-import { CUSTOMER_SELECTED, CUSTOMERS_SET, CUSTOMERS_SEARCH, CUSTOMER_EDIT } from "../actions/CustomerActions";
+import { CUSTOMER_SELECTED, CUSTOMERS_SET, CUSTOMERS_SEARCH, CUSTOMER_EDIT, CUSTOMERS_CHANNEL_SEARCH } from "../actions/CustomerActions";
 import PosStorage from "../database/PosStorage";
 
-let initialState = { selectedCustomer: {}, customers: [], searchString: "", isEdit: false };
+let initialState = { selectedCustomer: {}, customers: [], searchString: "", channelFilterString: "", isEdit: false };
 
 const customerReducer = (state = initialState, action) => {
 	let newState;
@@ -19,6 +19,10 @@ const customerReducer = (state = initialState, action) => {
 			newState = { ...state };
 			newState.searchString = action.data;
 			return newState;
+		case CUSTOMERS_CHANNEL_SEARCH:
+			newState = { ...state };
+			newState.channelFilterString = action.data;
+			return newState;			
 		case CUSTOMER_EDIT:
 			newState = { ...state };
 			newState.isEdit = action.data;
