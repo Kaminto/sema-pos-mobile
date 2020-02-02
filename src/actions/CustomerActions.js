@@ -4,6 +4,7 @@ export const CUSTOMERS_SET = 'CUSTOMERS_SET';
 export const CUSTOMERS_SEARCH = 'CUSTOMERS_SEARCH';
 export const CUSTOMER_EDIT = 'CUSTOMER_EDIT';
 export const CUSTOMERS_CHANNEL_SEARCH = 'CUSTOMERS_CHANNEL_SEARCH';
+export const CUSTOMERS_TYPE_SEARCH = 'CUSTOMERS_TYPE_SEARCH';
 
 
 export function CustomerSelected(customer) {
@@ -32,6 +33,13 @@ export function SearchCustomersChannel(channelFilterString) {
 
 	return (dispatch) => { dispatch({ type: CUSTOMERS_CHANNEL_SEARCH, data: channelFilterString }) };
 }
+
+export function SearchCustomerTypes(customerTypeFilter) {
+	// console.log("SearchCustomers - action. Search is " + searchString);
+
+	return (dispatch) => { dispatch({ type: CUSTOMERS_TYPE_SEARCH, data: customerTypeFilter }) };
+}
+
 
 
 export function setCustomerEditStatus(status) {
