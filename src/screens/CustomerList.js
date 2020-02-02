@@ -53,7 +53,7 @@ class CustomerList extends Component {
         this.props.navigation.setParams({ customerName: "" });
         this.props.navigation.setParams({ searchCustomer: this.searchCustomer });
         this.props.navigation.setParams({ checkfilter: this.checkfilter });
-        this.props.navigation.setParams({ checkCustomerTypefilter: this.checkCustomerTypefilter });        
+        this.props.navigation.setParams({ checkCustomerTypefilter: this.checkCustomerTypefilter });
         this.props.navigation.setParams({ onDelete: this.onDelete });
         this.props.navigation.setParams({ checkSelectedCustomer: this.checkSelectedCustomer });
         this.props.navigation.setParams({ editCustomer: this.editCustomer });
@@ -247,7 +247,7 @@ class CustomerList extends Component {
                 customerType: this.getCustomerTypes(item).toLowerCase()
             }
         });
-        
+
         console.log('filter', filter)
         console.log('filteredItems', data)
         let filteredItems = data.filter(function (item) {
@@ -513,7 +513,7 @@ class SearchWatcher extends React.Component {
 
         console.log(that.props.parent.props.customerTypeFilter);
         console.log(that.props.parent.state.customerTypeFilter);
-        
+
         console.log(that.props.parent.props.searchString);
         console.log(that.props.parent.state.searchString);
         setTimeout(() => {

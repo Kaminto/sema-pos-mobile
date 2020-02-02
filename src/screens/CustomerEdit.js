@@ -2,17 +2,11 @@ import React, { Component } from 'react';
 import {
 	View,
 	Text,
-	TouchableHighlight,
-	TextInput,
 	StyleSheet,
-	Modal,
-	Image,
-	Picker
+	Modal
 } from 'react-native';
-import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
+import { Card, Button, Input} from 'react-native-elements';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import PropTypes from 'prop-types';
-
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -202,7 +196,7 @@ class CustomerEdit extends Component {
 			value: null,
 			color: '#333',
 		};
-		
+
 		return (
 			<View style={{ flex: 1, backgroundColor: '#f1f1f1', justifyContent: 'center' }}>
 				<KeyboardAwareScrollView
@@ -311,6 +305,12 @@ class CustomerEdit extends Component {
 									    style={pickerSelectStyles}
 									/>
 									</View><View style={{ flex: .5 }}> */}
+							<Input
+								placeholder="Sales Channel"
+								value="3"
+								input
+
+							/>
 							<RNPickerSelect
 								value={this.state.customerType}
 								onValueChange={(value) => {
@@ -792,13 +792,6 @@ class CustomerEdit extends Component {
 		);
 	}
 }
-
-// CustomerEdit.propTypes = {
-// 	isEdit: PropTypes.bool.isRequired,
-// 	toolbarActions: PropTypes.object.isRequired,
-// 	customerActions: PropTypes.object.isRequired,
-// 	settings: PropTypes.object.isRequired
-// };
 
 function mapStateToProps(state, props) {
 	return {
