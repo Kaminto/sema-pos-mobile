@@ -5,7 +5,7 @@ export const CUSTOMERS_SEARCH = 'CUSTOMERS_SEARCH';
 export const CUSTOMER_EDIT = 'CUSTOMER_EDIT';
 export const CUSTOMERS_CHANNEL_SEARCH = 'CUSTOMERS_CHANNEL_SEARCH';
 export const CUSTOMERS_TYPE_SEARCH = 'CUSTOMERS_TYPE_SEARCH';
-
+export const CUSTOMERS_PAYMENT_TYPE_SEARCH = 'CUSTOMERS_PAYMENT_TYPE_SEARCH';
 
 export function CustomerSelected(customer) {
 	console.log("CustomerSelected - action", customer);
@@ -40,6 +40,9 @@ export function SearchCustomerTypes(customerTypeFilter) {
 	return (dispatch) => { dispatch({ type: CUSTOMERS_TYPE_SEARCH, data: customerTypeFilter }) };
 }
 
+export function SearchPaymentType(paymentTypeFilter) {
+	return (dispatch) => { dispatch({ type: CUSTOMERS_PAYMENT_TYPE_SEARCH, data: paymentTypeFilter }) };
+}
 
 
 export function setCustomerEditStatus(status) {
