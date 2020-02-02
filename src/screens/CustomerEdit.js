@@ -76,7 +76,7 @@ class CustomerEdit extends Component {
 		this.customerTypesOptions = this.customerTypes.map(customerType => {
 			var rObj = {};
 			rObj.label = customerType.displayName;
-			rObj.value = customerType.id;
+			rObj.value = customerType.id + ' ' + customerType.salesChannelId;
 			return rObj;
 		});
 
@@ -202,15 +202,7 @@ class CustomerEdit extends Component {
 			value: null,
 			color: '#333',
 		};
-
-		const splaceholder = {
-			label: 'Sales Channel',
-			value: null,
-			color: '#333',
-		};
-
-		console.log(this.props);
-		console.log(this.state);
+		
 		return (
 			<View style={{ flex: 1, backgroundColor: '#f1f1f1', justifyContent: 'center' }}>
 				<KeyboardAwareScrollView
