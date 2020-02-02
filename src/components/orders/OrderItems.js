@@ -259,6 +259,7 @@ class OrderItems extends Component {
 					fontSize: 24
 				}}
 				keyboardType="number-pad"
+				onChangeText={this.changeQuantity}
 				value={qty}
 				underlineColorAndroid="transparent"
 				placeholder="Quantity"
@@ -267,7 +268,7 @@ class OrderItems extends Component {
 	}
 
 	notesValue() {
-		let notes = '';		
+		let notes = '';
 		if (!this.state.selectedItem.hasOwnProperty('notes')) {
 			return;
 		}
@@ -293,7 +294,7 @@ class OrderItems extends Component {
 	getProductDescripion() {
 		if (this.state.selectedItem.hasOwnProperty('product')) {
 			return (
-			<Text style={[{ textAlign: 'left' }, styles.baseItem]}>{this.state.selectedItem.product.description}</Text>
+				<Text style={[{ textAlign: 'left' }, styles.baseItem]}>{this.state.selectedItem.product.description}</Text>
 			)
 		}
 	}
@@ -305,7 +306,7 @@ class OrderItems extends Component {
 		}
 
 		const productIndex = this.props.selectedDiscounts.map(function (e) { return e.product.productId }).indexOf(this.state.selectedItem.product.productId);
-		
+
 
 		let customValue = 0;
 		if (productIndex >= 0) {
@@ -373,7 +374,7 @@ class OrderItems extends Component {
 
 	customDiscount = searchText => {
 		const productIndex = this.props.selectedDiscounts.map(function (e) { return e.product.productId }).indexOf(this.state.selectedItem.product.productId);
-	
+
 		if (productIndex >= 0) {
 			DiscountRealm.isSelected(this.state.selectedDiscounts, false);
 			this.props.discountActions.setDiscounts(DiscountRealm.getDiscounts());
@@ -399,9 +400,35 @@ class OrderItems extends Component {
 		this.props.orderActions.AddNotesToProduct(this.state.selectedItem.product, searchText);
 	};
 
+	changeQuantity = value => {
+		console.log('value', value);
+		console.log('quantity', this.state.selectedItem);
+		let unitPrice = this.getItemPrice(this.state.selectedItem.product);
+		if (Number(value) > Number(this.state.selectedItem.quantity)) {
+			this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, Number(value), unitPrice);
+			this.setState({
+				accumulator: Number(value)
+			})
+		}
+
+		if (Number(value) < Number(this.state.selectedItem.quantity)) {
+			this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, Number(this.state.selectedItem.quantity) - Number(value), unitPrice);
+
+			this.setState({
+				accumulator: Number(this.state.selectedItem.quantity) - Number(value)
+			})
+		}
+
+		if (Number(value) === 0) {
+			this.props.orderActions.RemoveProductFromOrder(this.state.selectedItem.product, unitPrice);
+
+		}
+
+	};
+
 	discountRows = (item, index, separators) => {
 		const productIndex = this.props.selectedDiscounts.map(function (e) { return e.product.productId }).indexOf(this.state.selectedItem.product.productId);
-		
+
 		let isDiscountAvailable = false;
 		if (productIndex >= 0) {
 			isDiscountAvailable = this.props.selectedDiscounts[productIndex].discount.id === item.id;
@@ -474,9 +501,14 @@ class OrderItems extends Component {
 					this.refs.productModel.close();
 					this.props.orderActions.RemoveProductFromOrder(this.state.selectedItem.product, unitPrice);
 				} else {
-					this.setState((prevState) => { return { accumulator: prevState.accumulator + 1 } })
+					this.setState((prevState) => {
+						this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, prevState.accumulator + 1, unitPrice);
+						return {
+							accumulator: prevState.accumulator + 1
+						}
+					})
 
-					this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, this.state.accumulator, unitPrice);
+					//this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, this.state.accumulator, unitPrice);
 				}
 				break;
 			case 'dec':
@@ -485,9 +517,12 @@ class OrderItems extends Component {
 					this.refs.productModel.close();
 					this.props.orderActions.RemoveProductFromOrder(this.state.selectedItem.product, unitPrice);
 				} else {
-					this.setState((prevState) => { return { accumulator: prevState.accumulator - 1 } })
+					this.setState((prevState) => {
+						this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, prevState.accumulator - 1, unitPrice);
+						return { accumulator: prevState.accumulator - 1 }
+					})
 
-					this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, this.state.accumulator, unitPrice);
+					//this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, this.state.accumulator, unitPrice);
 				}
 				break;
 		}
