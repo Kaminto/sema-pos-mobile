@@ -1,8 +1,8 @@
 
-import { CUSTOMER_SELECTED, CUSTOMERS_SET, CUSTOMERS_SEARCH, CUSTOMERS_TYPE_SEARCH, CUSTOMER_EDIT, CUSTOMERS_CHANNEL_SEARCH } from "../actions/CustomerActions";
+import { CUSTOMER_SELECTED, CUSTOMERS_PAYMENT_TYPE_SEARCH, CUSTOMERS_SET, CUSTOMERS_SEARCH, CUSTOMERS_TYPE_SEARCH, CUSTOMER_EDIT, CUSTOMERS_CHANNEL_SEARCH } from "../actions/CustomerActions";
 import PosStorage from "../database/PosStorage";
 
-let initialState = { selectedCustomer: {}, customers: [], searchString: "", customerTypeFilter: "", channelFilterString: "", isEdit: false };
+let initialState = { selectedCustomer: {}, customers: [], searchString: "", paymentTypeFilter: "", customerTypeFilter: "", channelFilterString: "", isEdit: false };
 
 const customerReducer = (state = initialState, action) => {
 	let newState;
@@ -22,11 +22,15 @@ const customerReducer = (state = initialState, action) => {
 		case CUSTOMERS_CHANNEL_SEARCH:
 			newState = { ...state };
 			newState.channelFilterString = action.data;
-			return newState;		
+			return newState;
 		case CUSTOMERS_TYPE_SEARCH:
 			newState = { ...state };
 			newState.customerTypeFilter = action.data;
-			return newState;			
+			return newState;
+		case CUSTOMERS_PAYMENT_TYPE_SEARCH:
+			newState = { ...state };
+			newState.paymentTypeFilter = action.data;
+			return newState;
 		case CUSTOMER_EDIT:
 			newState = { ...state };
 			newState.isEdit = action.data;
