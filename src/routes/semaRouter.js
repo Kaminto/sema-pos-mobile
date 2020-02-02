@@ -261,7 +261,7 @@ const ListCustomerStack = createStackNavigator({
                             flex: 1
                         }}>
                           <Picker
-                                selectedValue={navigation.getParam('language')}
+                                selectedValue={navigation.getParam('salesChannelValue')}
                                 style={{ height: 50, width: 100 }}
                                 onValueChange={navigation.getParam('checkfilter')}>
                                 <Picker.Item label="All" value="all" />
@@ -270,6 +270,25 @@ const ListCustomerStack = createStackNavigator({
                                 <Picker.Item label="Water Club" value="water club" />
                             </Picker>
 
+                    </View>
+
+                    <View
+                        style={{
+                            marginTop: 12,
+                            flex: 1
+                        }}>
+                          <Picker
+                                selectedValue={navigation.getParam('customerTypeValue')}
+                                style={{ height: 50, width: 100 }}
+                                onValueChange={navigation.getParam('checkCustomerTypefilter')}>
+                                <Picker.Item label="All" value="all" />
+                                <Picker.Item label="Business" value="Business" />
+                                <Picker.Item label="Household" value="Household" />
+                                <Picker.Item label="Retailer" value="Retailer" />
+                                <Picker.Item label="Outlet Franchise" value="Outlet Franchise" />
+                                <Picker.Item label="Anonymous" value="Anonymous" />
+                            </Picker>
+                        
                     </View>
 
                 </View>
@@ -363,6 +382,54 @@ const TransactionStack = createStackNavigator({
                 backgroundColor: '#00549C',
             },
             headerTintColor: '#fff',
+            headerRight: (
+                <View
+                    style={{
+                        flexDirection: 'row',
+                    }}>
+                  
+          
+                
+
+                    <View
+                        style={{
+                            marginTop: 12,
+                            flex: 1
+                        }}>
+                          <Picker
+                                selectedValue={navigation.getParam('salesChannelValue')}
+                                style={{ height: 50, width: 100 }}
+                                onValueChange={navigation.getParam('checkfilter')}>
+                                <Picker.Item label="All" value="all" />
+                                <Picker.Item label="Direct" value="direct" />
+                                <Picker.Item label="Reseller" value="reseller" />
+                                <Picker.Item label="Water Club" value="water club" />
+                            </Picker>
+                        
+                    </View>
+
+                    <View
+                        style={{
+                            marginTop: 12,
+                            flex: 1
+                        }}>
+                          <Picker
+                                selectedValue={navigation.getParam('customerTypeValue')}
+                                style={{ height: 50, width: 100 }}
+                                onValueChange={navigation.getParam('checkCustomerTypefilter')}>
+                                <Picker.Item label="All" value="all" />
+                                <Picker.Item label="Business" value="Business" />
+                                <Picker.Item label="Household" value="Household" />
+                                <Picker.Item label="Retailer" value="Retailer" />
+                                <Picker.Item label="Outlet Franchise" value="Outlet Franchise" />
+                                <Picker.Item label="Anonymous" value="Anonymous" />
+                            </Picker>
+                        
+                    </View>
+
+                </View>
+
+            ),
         }),
     },
 });

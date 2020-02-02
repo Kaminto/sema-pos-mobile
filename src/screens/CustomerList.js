@@ -39,17 +39,21 @@ class CustomerList extends Component {
             refresh: false,
             // selectedCustomer: null,
             searchString: '',
+            customerTypeFilter: '',
             channelFilterString: '',
-            language: '',
+            salesChannelValue: '',
+            customerTypeValue: '',
             hasScrolled: false
         };
     }
     componentDidMount() {
         this.props.navigation.setParams({ isCustomerSelected: false });
-        this.props.navigation.setParams({ language: 'all' });
+        this.props.navigation.setParams({ salesChannelValue: 'all' });
+        this.props.navigation.setParams({ customerTypeValue: 'all' });
         this.props.navigation.setParams({ customerName: "" });
         this.props.navigation.setParams({ searchCustomer: this.searchCustomer });
         this.props.navigation.setParams({ checkfilter: this.checkfilter });
+        this.props.navigation.setParams({ checkCustomerTypefilter: this.checkCustomerTypefilter });        
         this.props.navigation.setParams({ onDelete: this.onDelete });
         this.props.navigation.setParams({ checkSelectedCustomer: this.checkSelectedCustomer });
         this.props.navigation.setParams({ editCustomer: this.editCustomer });
@@ -74,8 +78,14 @@ class CustomerList extends Component {
 
     checkfilter = (searchText) => {
         console.log(searchText)
-        this.props.navigation.setParams({ language: searchText });
+        this.props.navigation.setParams({ salesChannelValue: searchText });
         this.props.customerActions.SearchCustomersChannel(searchText);
+    };
+
+    checkCustomerTypefilter = (searchText) => {
+        console.log(searchText)
+        this.props.navigation.setParams({ customerTypeValue: searchText });
+        this.props.customerActions.SearchCustomerTypes(searchText);
     };
 
 
@@ -214,6 +224,8 @@ class CustomerList extends Component {
 
     prepareData = () => {
         this.salesChannels = SalesChannelRealm.getSalesChannelsForDisplay();
+        this.customerTypes = CustomerTypeRealm.getCustomerTypes();
+        console.log('this.customerTypes',this.customerTypes);
         let data = [];
         if (this.props.customers.length > 0) {
             data = this.filterItems(this.props.customers);
@@ -224,13 +236,20 @@ class CustomerList extends Component {
 
     filterItems = data => {
         let filter = {
-            salesChannel: this.props.channelFilterString.length > 0 ? this.props.channelFilterString : "",
-            name: this.props.searchString.length > 0 ? this.props.searchString : ""
+            salesChannel: this.props.channelFilterString.length > 0 ? this.props.channelFilterString === 'all' ? "" : this.props.channelFilterString : "",
+            name: this.props.searchString.length > 0 ? this.props.searchString : "",
+            customerType: this.props.customerTypeFilter.length > 0 ? this.props.customerTypeFilter === 'all' ? "" : this.props.customerTypeFilter : "",
         };
         data = data.map(item => {
-            return { ...item, salesChannel: this.getCustomerSalesChannel(item).toLowerCase() }
+            return {
+                ...item,
+                salesChannel: this.getCustomerSalesChannel(item).toLowerCase(),
+                customerType: this.getCustomerTypes(item).toLowerCase()
+            }
         });
         
+        console.log('filter', filter)
+        console.log('filteredItems', data)
         let filteredItems = data.filter(function (item) {
             for (var key in filter) {
                 if (
@@ -307,6 +326,18 @@ class CustomerList extends Component {
             for (let i = 0; i < this.salesChannels.length; i++) {
                 if (this.salesChannels[i].id === item.salesChannelId) {
                     return this.salesChannels[i].displayName;
+                }
+            }
+        } catch (error) {
+            return 'Walk-up';
+        }
+    }
+
+    getCustomerTypes(item) {
+        try {
+            for (let i = 0; i < this.customerTypes.length; i++) {
+                if (this.customerTypes[i].id === item.customerTypeId) {
+                    return this.customerTypes[i].name;
                 }
             }
         } catch (error) {
@@ -479,6 +510,10 @@ class SearchWatcher extends React.Component {
         let that = this;
         console.log(that.props.parent.props.channelFilterString);
         console.log(that.props.parent.state.channelFilterString);
+
+        console.log(that.props.parent.props.customerTypeFilter);
+        console.log(that.props.parent.state.customerTypeFilter);
+        
         console.log(that.props.parent.props.searchString);
         console.log(that.props.parent.state.searchString);
         setTimeout(() => {
@@ -502,6 +537,7 @@ function mapStateToProps(state, props) {
         customers: state.customerReducer.customers,
         searchString: state.customerReducer.searchString,
         channelFilterString: state.customerReducer.channelFilterString,
+        customerTypeFilter: state.customerReducer.customerTypeFilter,
     };
 }
 

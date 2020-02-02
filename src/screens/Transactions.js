@@ -390,7 +390,10 @@ class Transactions extends Component {
 		const totalCount = this.props.receipts.length;
 		//const totalCount = this.props.receipts.length;
 		console.log('this.props.receipts', this.props.receipts);
-
+		console.log(this.props.receiptsPaymentTypes);
+		console.log(this.props.paymentTypes);
+		console.log(this.comparePaymentTypes());
+		console.log(this.comparePaymentTypeReceipts());
 		let salesLogs = [...new Set(this.props.receipts)];
 		let receipts = this.props.receipts.map((receipt, index) => {
 			return {
@@ -428,6 +431,48 @@ class Transactions extends Component {
 		// })
 		return [...receipts];
 	}
+
+	comparePaymentTypeReceipts() {
+        let receiptsPaymentTypes = [...this.comparePaymentTypes()];
+        let customerReceipts = [...this.props.receipts];
+        console.log(receiptsPaymentTypes);
+        console.log(customerReceipts);
+        let finalCustomerReceiptsPaymentTypes = [];
+
+        for (let customerReceipt of customerReceipts) {
+            
+			let paymentTypes = [];
+			for (let receiptsPaymentType of receiptsPaymentTypes) {
+				console.log(receiptsPaymentType.receipt_id === customerReceipt.receiptId);
+				if(receiptsPaymentType.receipt_id === customerReceipt.receiptId){
+					console.log(receiptsPaymentType);
+					paymentTypes.push(receiptsPaymentType);
+				}
+			
+			}
+			customerReceipt.paymentTypes = paymentTypes;
+			finalCustomerReceiptsPaymentTypes.push(customerReceipt);
+
+        }
+        return finalCustomerReceiptsPaymentTypes;
+    }
+
+	comparePaymentTypes() {
+        let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
+        let paymentTypes = [...this.props.paymentTypes];
+
+        let finalreceiptsPaymentTypes = [];
+
+        for (let receiptsPaymentType of receiptsPaymentTypes) {
+            const rpIndex = paymentTypes.map(function (e) { return e.id }).indexOf(receiptsPaymentType.payment_type_id);
+            if (rpIndex >= 0) {
+                    receiptsPaymentType.name = paymentTypes[rpIndex].name;
+                    finalreceiptsPaymentTypes.push(receiptsPaymentType);
+                
+            }
+        }
+        return finalreceiptsPaymentTypes;
+    }
 
 	renderSeparator() {
 		return (
@@ -598,6 +643,8 @@ function mapStateToProps(state, props) {
 		localReceipts: state.receiptReducer.localReceipts,
 		remoteReceipts: state.receiptReducer.remoteReceipts,
 		receipts: state.receiptReducer.receipts,
+		receiptsPaymentTypes: state.paymentTypesReducer.receiptsPaymentTypes,
+        paymentTypes: state.paymentTypesReducer.paymentTypes,
 		customers: state.customerReducer.customers,
 		products: state.productReducer.products
 	};
