@@ -54,7 +54,7 @@ class ReceiptPaymentTypeRealm {
     updateReceiptPaymentType(receiptPaymentType) {
         try {
             realm.write(() => {
-                let receiptPaymentTypeObj = realm.objects('ReceiptPaymentType').filtered(`id = "${receiptPaymentType.id}"`);
+                let receiptPaymentTypeObj = realm.objects('ReceiptPaymentType').filtered(`receipt_payment_type_id = "${receiptPaymentType.receipt_payment_type_id}"`);
                 receiptPaymentTypeObj[0].id = receiptPaymentType.id;
                 receiptPaymentTypeObj[0].name = receiptPaymentType.name;
                 receiptPaymentTypeObj[0].active = receiptPaymentType.active;
@@ -126,7 +126,7 @@ class ReceiptPaymentTypeRealm {
         try {
             realm.write(() => {
                 let receiptPaymentTypes = realm.objects('ReceiptPaymentType');
-                let deleteReceiptPaymentType = receiptPaymentTypes.filtered(`id = "${receiptPaymentType.id}"`);
+                let deleteReceiptPaymentType = receiptPaymentTypes.filtered(`receipt_payment_type_id = "${receiptPaymentType.receipt_payment_type_id}"`);
                 realm.delete(deleteReceiptPaymentType);
             })
 
@@ -139,7 +139,7 @@ class ReceiptPaymentTypeRealm {
         try {
             realm.write(() => {
                 realm.write(() => {
-                    let receiptPaymentTypeObj = realm.objects('ReceiptPaymentType').filtered(`id = "${receiptPaymentType.id}"`);
+                    let receiptPaymentTypeObj = realm.objects('ReceiptPaymentType').filtered(`receipt_payment_type_id = "${receiptPaymentType.receipt_payment_type_id}"`);
                     receiptPaymentTypeObj[0].syncAction = 'delete';
                 })
             })
@@ -159,6 +159,38 @@ class ReceiptPaymentTypeRealm {
                         realm.create('ReceiptPaymentType', {
                             receipt_id: receiptId ? receiptId : null,
                             payment_type_id: obj.id,
+                            receipt_payment_type_id: uuidv1(),
+                            amount: obj.amount,
+                            syncAction: obj.syncAction ? obj.syncAction : 'CREATE',
+                            created_at: obj.created_at ? obj.created_at : null,
+                            updated_at: obj.updated_at ? obj.updated_at : null,
+                        });
+                    });
+                }
+                if (!receiptId) {
+                    receiptPaymentTypes.forEach(obj => {
+                        realm.create('ReceiptPaymentType', obj);
+                    });
+                }
+            });
+
+        } catch (e) {
+            console.log("Error on creation", e);
+        }
+
+    }
+
+       createManyReceiptPaymentType(receiptPaymentTypes, receiptId) {
+        console.log('receiptPaymentTypes', receiptPaymentTypes);
+        console.log('receiptId', receiptId);
+        try {
+            realm.write(() => {
+                if (receiptId) {
+                    receiptPaymentTypes.forEach(obj => {
+                        realm.create('ReceiptPaymentType', {
+                            receipt_id: receiptId ? receiptId : null,
+                            payment_type_id: obj.id,
+                            receipt_payment_type_id: uuidv1(),
                             amount: obj.amount,
                             syncAction: obj.syncAction ? obj.syncAction : 'CREATE',
                             created_at: obj.created_at ? obj.created_at : null,
