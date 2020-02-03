@@ -18,10 +18,13 @@ import OrderSync from './sync/orders.sync';
 import DiscountSync from './sync/discounts.sync';
 import PaymentTypeSync from './sync/payment-type.sync';
 
+import RecieptPaymentTypesSync from './sync/reciept-payment-types.sync';
+import CustomerDebtsSync from './sync/customer-debt.sync';
+
 class Synchronization {
 
 
-	constructor() {		
+	constructor() {
 	}
 
 	initialize(lastCustomerSync, lastProductSync, lastSalesSync, lastCreditSync, lastInventorySync) {
@@ -137,7 +140,7 @@ class Synchronization {
 						const promiseSalesChannels = SalesChannelSync.synchronizeSalesChannels();
 						const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes();
 						const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes();
-						
+
 						Promise.all([
 							promiseSalesChannels,
 							promiseCustomerTypes,
@@ -147,6 +150,23 @@ class Synchronization {
 								'synchronize - SalesChannels and Customer Types: ',
 								values
 							);
+
+							const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts().then(
+								customerDebtSync => {
+									console.log("customerDebtSync", customerDebtSync);
+									// syncResult.customers = customerSync;
+									// return customerSync;
+								}
+							);
+
+							const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes().then(
+								recieptPaymentTypesSync => {
+									console.log("recieptPaymentTypesSync", recieptPaymentTypesSync);
+									// syncResult.customers = customerSync;
+									// return customerSync;
+								}
+							);
+
 							const promiseCustomers = CustomerSync.synchronizeCustomers().then(
 								customerSync => {
 									syncResult.customers = customerSync;
@@ -194,7 +214,7 @@ class Synchronization {
 									syncResult.sales = saleSync;
 									return saleSync;
 								}
-							);	
+							);
 
 							const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId).then(
 								discountSync => {
@@ -202,7 +222,7 @@ class Synchronization {
 									syncResult.discounts = discountSync;
 									return discountSync;
 								}
-							);	
+							);
 
 							// const promiseSales = this.synchronizeSales().then(
 							// 	saleSync => {
@@ -224,7 +244,7 @@ class Synchronization {
 								promiseCustomers,
 								promiseTopUps,
 								promiseInventory,
-								promiseProducts,								
+								promiseProducts,
 								promiseProductMrps,
 								promiseOrders
 								// promiseSales,
@@ -321,8 +341,8 @@ class Synchronization {
 		});
 	}
 
- 
- 
+
+
 	async synchronizeReceipts() {
 		let settings = SettingRealm.getAllSetting();
 		let remoteReceipts = await PosStorage.loadRemoteReceipts();
@@ -358,8 +378,8 @@ class Synchronization {
 			// so we're sending their IDs too.
 			// Sending only remote receipts and local receipts that have been updated.
 			.filter(receipt => receipt.updated || !receipt.isLocal);
-console.log('remoteReceipts', remoteReceipts);
-console.log('receiptIds', receiptIds);
+		console.log('remoteReceipts', remoteReceipts);
+		console.log('receiptIds', receiptIds);
 		return Communications.sendLoggedReceipts(
 			settings.siteId,
 			remoteReceipts,
@@ -415,7 +435,7 @@ console.log('receiptIds', receiptIds);
 			}
 		);
 	}
-	 	
+
 
 	_refreshToken() {
 		// Check if token exists or has expired
@@ -467,6 +487,6 @@ console.log('receiptIds', receiptIds);
 		});
 	}
 
-	
+
 }
 export default new Synchronization();
