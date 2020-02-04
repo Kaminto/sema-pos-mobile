@@ -176,7 +176,8 @@ class CustomerList extends Component {
     });
 
     shouldComponentUpdate(nextProps, nextState) {
-        console.log('onScrollCustomerTo');
+		console.log('onScrollCustomerTo');
+		// this.props.navigation.setParams({ 'title': 'Customers' });
         return true;
     }
 
