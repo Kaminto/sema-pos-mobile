@@ -1,19 +1,19 @@
-import ReceiptPaymentTypeRealm from '../../database/reciept_payment_types/reciept_payment_types.operations';
-import RecieptPaymentTypesApi from '../api/reciept-payment-types.api';
+import CustomerDebtRealm from '../../database/customer_debt/customer_debt.operations';
+import CustomerDebtApi from '../api/customer-debt.api';
 import * as _ from 'lodash';
 
-class RecieptPaymentTypesSync {
+class CustomerDebtsSync {
 
-    synchronizeRecieptPaymentTypes(lastRecieptPaymentTypesSync) {
+    synchronizeCustomerDebts(lastCustomerDebtsSync) {
         return new Promise(resolve => {
-            RecieptPaymentTypesApi.getReceiptPaymentTypes(new Date(lastRecieptPaymentTypesSync))
+            CustomerDebtApi.getCustomerDebts(new Date(lastCustomerDebtsSync))
                 .then(result => {
-                    let initlocalRecieptPaymentTypes = ReceiptPaymentTypeRealm.getReceiptPaymentTypes();
-                    let localRecieptPaymentTypes = [...initlocalRecieptPaymentTypes];
-                    let remoteRecieptPaymentTypes = [...result];
+                    let initlocalCustomerDebts = CustomerDebtRealm.getCustomerDebts();
+                    let localCustomerDebts = [...initlocalCustomerDebts];
+                    let remoteCustomerDebts = [...result];
 
-                    if (initlocalRecieptPaymentTypes.length === 0) {
-                        ReceiptPaymentTypeRealm.createManyReceiptPaymentType(result, null);
+                    if (initlocalCustomerDebts.length === 0) {
+                        CustomerDebtRealm.createManyCustomerDebt(result, null);
                     }
 
                     let onlyLocally = [];
@@ -22,50 +22,50 @@ class RecieptPaymentTypesSync {
                     let inRemote = [];
                     let bothLocalRemote = {};
 
-                    if (initlocalRecieptPaymentTypes.length > 0) {
+                    if (initlocalCustomerDebts.length > 0) {
 
-                        console.log('initlocalRecieptPaymentTypes', initlocalRecieptPaymentTypes);
-                        console.log('localRecieptPaymentTypes', localRecieptPaymentTypes);
-                        console.log('remoteRecieptPaymentTypes', remoteRecieptPaymentTypes);
-                        initlocalRecieptPaymentTypes.forEach(localRecieptPaymentType => {
-                            let filteredObj = remoteRecieptPaymentTypes.filter(obj => obj.receipt_payment_type_id === localRecieptPaymentType.receipt_payment_type_id)
+                        console.log('initlocalCustomerDebts', initlocalCustomerDebts);
+                        console.log('localCustomerDebts', localCustomerDebts);
+                        console.log('remoteCustomerDebts', remoteCustomerDebts);
+                        initlocalCustomerDebts.forEach(localCustomerDebt => {
+                            let filteredObj = remoteCustomerDebts.filter(obj => obj.receipt_payment_type_id === localCustomerDebt.receipt_payment_type_id)
                             console.log('filteredObj', filteredObj);
                             if (filteredObj.length > 0) {
-                                const remoteIndex = remoteRecieptPaymentTypes.map(function (e) { return e.receipt_payment_type_id }).indexOf(filteredObj[0].receipt_payment_type_id);
-                                const localIndex = localRecieptPaymentTypes.map(function (e) { return e.receipt_payment_type_id }).indexOf(filteredObj[0].receipt_payment_type_id);
+                                const remoteIndex = remoteCustomerDebts.map(function (e) { return e.receipt_payment_type_id }).indexOf(filteredObj[0].receipt_payment_type_id);
+                                const localIndex = localCustomerDebts.map(function (e) { return e.receipt_payment_type_id }).indexOf(filteredObj[0].receipt_payment_type_id);
                                 console.log('remoteIndex', remoteIndex);
                                 console.log('localIndex', localIndex);
-                                remoteRecieptPaymentTypes.splice(remoteIndex, 1);
-                                localRecieptPaymentTypes.splice(localIndex, 1);
+                                remoteCustomerDebts.splice(remoteIndex, 1);
+                                localCustomerDebts.splice(localIndex, 1);
 
-                                inLocal.push(localRecieptPaymentType);
+                                inLocal.push(localCustomerDebt);
                                 inRemote.push(filteredObj[0]);
                             }
 
                             if (filteredObj.length === 0) {
-                                onlyLocally.push(localRecieptPaymentType);
-                                const localIndex = localRecieptPaymentTypes.map(function (e) { return e.receipt_payment_type_id }).indexOf(localRecieptPaymentType.receipt_payment_type_id);
+                                onlyLocally.push(localCustomerDebt);
+                                const localIndex = localCustomerDebts.map(function (e) { return e.receipt_payment_type_id }).indexOf(localCustomerDebt.receipt_payment_type_id);
                                 console.log('localIndex', localIndex);
-                                localRecieptPaymentTypes.splice(localIndex, 1);
+                                localCustomerDebts.splice(localIndex, 1);
                             }
                         });
 
-                        onlyRemote.push(...remoteRecieptPaymentTypes);
+                        onlyRemote.push(...remoteCustomerDebts);
                         bothLocalRemote.inLocal = inLocal;
                         bothLocalRemote.inRemote = inRemote;
 
 
                         if (onlyRemote.length > 0) {
-                            ReceiptPaymentTypeRealm.createManyReceiptPaymentType(onlyRemote,null)
+                            CustomerDebtRealm.createCustomerDebt(onlyRemote,null)
                         }
 
                         if (onlyLocally.length > 0) {
-                            onlyLocally.forEach(localRecieptPaymentType => {
-                                RecieptPaymentTypesApi.createReceiptPaymentType(
-                                    localRecieptPaymentType
+                            onlyLocally.forEach(localCustomerDebt => {
+                                CustomerDebtApi.createCustomerDebt(
+                                    localCustomerDebt
                                 )
                                     .then((response) => {
-                                        ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
+                                        CustomerDebtRealm.synched(localCustomerDebt);
                                         console.log(
                                             'Synchronization:synced to remote - ' +
                                             response
@@ -80,19 +80,19 @@ class RecieptPaymentTypesSync {
                         }
 
                         if (inLocal.length > 0 && inRemote.length > 0) {
-                            inLocal.forEach(localRecieptPaymentType => {
+                            inLocal.forEach(localCustomerDebt => {
 
-                                if (localRecieptPaymentType.active === true && localRecieptPaymentType.syncAction === 'delete') {
-                                    RecieptPaymentTypesApi.deleteReceiptPaymentType(
-                                        localRecieptPaymentType
+                                if (localCustomerDebt.active === true && localCustomerDebt.syncAction === 'delete') {
+                                    CustomerDebtApi.deleteCustomerDebt(
+                                        localCustomerDebt
                                     )
                                         .then((response) => {
                                             console.log(
                                                 'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
                                                 response
                                             );
-                                            ReceiptPaymentTypeRealm.hardDeleteCredit(
-                                                localRecieptPaymentType
+                                            CustomerDebtRealm.hardDeleteCustomerDebt(
+                                                localCustomerDebt
                                             );
                                         })
                                         .catch(error => {
@@ -103,9 +103,9 @@ class RecieptPaymentTypesSync {
                                         });
                                 }
 
-                                if (localRecieptPaymentType.active === true && localRecieptPaymentType.syncAction === 'update') {
-                                    RecieptPaymentTypesApi.updateReceiptPaymentType(
-                                        localRecieptPaymentType
+                                if (localCustomerDebt.active === true && localCustomerDebt.syncAction === 'update') {
+                                    CustomerDebtApi.updateCustomerDebt(
+                                        localCustomerDebt
                                     )
                                         .then((response) => {
                                             console.log(
@@ -120,12 +120,12 @@ class RecieptPaymentTypesSync {
                                             );
                                         });
 
-                                } else if (localRecieptPaymentType.active === false && localRecieptPaymentType.syncAction === 'update') {
-                                    RecieptPaymentTypesApi.createReceiptPaymentType(
-                                        localRecieptPaymentType
+                                } else if (localCustomerDebt.active === false && localCustomerDebt.syncAction === 'update') {
+                                    CustomerDebtApi.createCustomerDebt(
+                                        localCustomerDebt
                                     )
                                         .then((response) => {
-                                            ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
+                                            CustomerDebtRealm.synched(localCustomerDebt);
                                             console.log(
                                                 'Synchronization:synced to remote - ' +
                                                 response
@@ -144,13 +144,13 @@ class RecieptPaymentTypesSync {
                         console.log('onlyLocally', onlyLocally);
                         console.log('bothLocalRemote', bothLocalRemote);
 
-                        console.log('localRecieptPaymentTypes2', localRecieptPaymentTypes);
-                        console.log('remoteRecieptPaymentTypes2', remoteRecieptPaymentTypes);
+                        console.log('localCustomerDebts2', localCustomerDebts);
+                        console.log('remoteCustomerDebts2', remoteCustomerDebts);
 
                     }
                     resolve({
                         error: null,
-                        localRecieptPaymentType: onlyLocally.length,
+                        localCustomerDebt: onlyLocally.length,
                         result: onlyRemote.length
                     });
 
@@ -161,7 +161,7 @@ class RecieptPaymentTypesSync {
                     );
                     resolve({
                         error: error,
-                        localRecieptPaymentType: 0,
+                        localCustomerDebt: 0,
                         result: 0
                     });
                 });
@@ -169,4 +169,4 @@ class RecieptPaymentTypesSync {
     }
 
 }
-export default new RecieptPaymentTypesSync();
+export default new CustomerDebtsSync();

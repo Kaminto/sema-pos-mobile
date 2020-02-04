@@ -8,6 +8,10 @@ import CustomerTypeApi from './api/customer-types.api';
 import OrderApi from './api/order.api';
 import DiscountApi from './api/discounts.api';
 
+import RecieptPaymentTypesApi from './api/reciept-payment-types.api';
+import CustomerDebtApi from './api/customer-debt.api';
+import PaymentTypesApi from './api/payment-types.api';
+
 
 class Communications {
 	constructor() {
@@ -101,6 +105,30 @@ class Communications {
 			token,
 			siteId
 		); 
+		CustomerDebtApi.initialize(
+			url,
+			site,
+			user,
+			password,
+			token,
+			siteId
+		); 
+		PaymentTypesApi.initialize(
+			url,
+			site,
+			user,
+			password,
+			token,
+			siteId
+		); 
+		RecieptPaymentTypesApi.initialize(
+			url,
+			site,
+			user,
+			password,
+			token,
+			siteId
+		); 
 
 	}
 
@@ -115,6 +143,9 @@ class Communications {
 		SalesChannelApi.setToken(token);
 		OrderApi.setToken(token);
 		DiscountApi.setToken(token);
+		CustomerDebtApi.setToken(token);
+		PaymentTypesApi.setToken(token);
+		RecieptPaymentTypesApi.setToken(token);
 
 	}
 	setSiteId(siteId) {
@@ -128,6 +159,9 @@ class Communications {
 		SalesChannelApi.setSiteId(siteId);
 		OrderApi.setSiteId(siteId);
 		DiscountApi.setSiteId(siteId);
+		CustomerDebtApi.setSiteId(siteId);
+		PaymentTypesApi.setSiteId(siteId);
+		RecieptPaymentTypesApi.setSiteId(siteId);
 	}
 
 	login() {

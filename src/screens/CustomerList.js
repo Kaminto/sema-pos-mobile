@@ -248,8 +248,6 @@ class CustomerList extends Component {
             }
         });
 
-        console.log('filter', filter)
-        console.log('filteredItems', data)
         let filteredItems = data.filter(function (item) {
             for (var key in filter) {
                 if (
