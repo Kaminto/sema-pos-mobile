@@ -180,7 +180,7 @@ class CustomerDetails extends Component {
 
 	render() {
 		return (
-			<View style={{ flex: 1, backgroundColor: '#00549C' }}>
+			<View style={{ flex: 1, backgroundColor: '#fff', flexDirection: 'column' }}>
 
 				 	{/* <View style={[styles.leftToolbar]}> */}
 						<SelectedCustomerDetails
@@ -303,8 +303,8 @@ class CustomerDetails extends Component {
 		if (this.state.selected) {
 			return (
 
-				<View style={{ flex: 1, flexDirection: 'row',  overflow: 'visible', marginTop: 100, paddingTop: 50 }}>
-					<View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 4, borderRightColor: '#CCC' }}>
+				<View style={{ flex: .75, flexDirection: 'row', paddingTop: 20, width: '80%', alignSelf:'center'}}>
+					<View style={{ flex: .3, backgroundColor: '#f1f1f1', borderRightWidth: 4, borderRightColor: '#CCC' }}>
 						<FlatList
 							data={this.prepareData()}
 							renderItem={this.renderReceipt.bind(this)}
@@ -314,7 +314,7 @@ class CustomerDetails extends Component {
 						/>
 					</View>
 
-					<View style={{ flex: 2, backgroundColor: '#fff' }}>
+					<View style={{ flex: .7, backgroundColor: '#fff' }}>
 						<ScrollView>
 							<TransactionDetail
 								item={this.state.selected}
@@ -328,8 +328,8 @@ class CustomerDetails extends Component {
 			);
 		} else {
 			return (
-				<View style={{ flex: 1, flexDirection: 'row' }}>
-					<Text style={{ fontSize: 20, fontWeight: 'bold', alignContent: "center", justifyContent: "center" }}>Record this customer's sales.</Text>
+				<View style={{ flex: .75, flexDirection: 'row', width: '90%', alignSelf:'center' }}>
+					<Text style={{ fontSize: 20, fontWeight: 'bold', alignSelf: "center", justifyContent: "center" }}>Record this customer's sales.</Text>
 				</View>
 			);
 		}
@@ -468,36 +468,6 @@ class CustomerDetails extends Component {
 		return (
 			<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
 			<View key={index} style={{ padding: 15 }}>
-
-			{/* <Text style={{ fontSize: 17 }}>#{item.totalCount - index}</Text> */}
-			<View style={styles.receiptStats}>
-				{!item.active && !item.syncAction === "update" && (
-					<Text style={styles.receiptStatusText}>
-						{'Deleted'.toUpperCase()}
-					</Text>
-				)}
-				{item.isLocal || item.updated ? (
-					<View style={{ flexDirection: 'row' }}>
-						{!item.active && <Text> - </Text>}
-						<Text style={styles.receiptPendingText}>
-							{'Pending'.toLowerCase()}
-						</Text>
-					</View>
-				) : (
-						<View style={{ flexDirection: 'row' }}>
-							{!item.active && <Text> - </Text>}
-							<Text style={styles.receiptSyncedText}>
-								{'Synced'.toLowerCase()}
-							</Text>
-						</View>
-					)}
-			</View>
-			{/* <View style={styles.itemData}>
-				<Text style={styles.label}># {item.id}</Text>
-			</View> */}
-			<Text style={styles.customername}>
-			{item.currency.toUpperCase()} {item.totalAmount}
-			</Text>
 			<View style={styles.label}>
 				<Text>
 					{moment
@@ -505,6 +475,9 @@ class CustomerDetails extends Component {
 						.format('dddd Do MMMM YYYY')}
 				</Text>
 			</View>
+			<Text style={styles.customername}>
+			{item.currency.toUpperCase()} {item.totalAmount}
+			</Text>
 			<View style={styles.itemData}>
 				<Text style={styles.customername}>{item.customerAccount.name}</Text>
 			</View>

@@ -55,7 +55,7 @@ class SelectedCustomerDetails extends React.Component {
 		return (
 			<>
 			<View style={styles.commandBarContainer}>
-				<View style={{ flexDirection: 'column', flex: 1 }}>
+				<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
 					<Text style={styles.selectedCustomerText}>
 						{this.getName()}
 					</Text>
@@ -63,35 +63,38 @@ class SelectedCustomerDetails extends React.Component {
 					<Text style={styles.selectedCustomerText}>
 						{this.getPhone()}
 					</Text>
-					<Text style={styles.selectedCustomerText}>
+					{/* <Text style={styles.selectedCustomerText}>
 						{this.getCustomerType()}
-					</Text>
+					</Text> */}
 				</View>
-				<View style={{ flexDirection: 'column', flex: 1 }}>
+				<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
 					{/* <Text style={styles.selectedCustomerText}>
 					{this.getCreditPurchases()} Credit Purchases
 					</Text> */}
 					<Text style={styles.selectedCustomerText}>
 						Credit Balance: {this.props.topupTotal - this.getCreditPurchases()}
 					</Text>
+					<View style={styles.completeOrder}>
+						<TouchableHighlight
+							onPress={() => this.props.navigation.navigate('OrderView')}>
+							<Text style={styles.buttonText}>Make Sale</Text>
+						</TouchableHighlight>
+						</View>
+					</View>
+			    	<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
 					<Text style={styles.selectedCustomerText}>
 						Loan:  {this.props.selectedCustomer.dueAmount}
 					</Text>
+						<View style={styles.completeOrder}>
+							<TouchableHighlight
+								onPress={() => {
+									this.refs.modal6.open();
+								}}>
+								<Text style={styles.buttonText}>Loan Payment</Text>
+							</TouchableHighlight>
+							</View>
+
 					</View>
-				<View style={{ flexDirection: 'column', flex: 1 }}>
-					<TouchableHighlight
-						style={styles.selectedCustomerText}
-						onPress={() => {
-							this.refs.modal6.open();
-						}}>
-						<Text >Loan Payment</Text>
-					</TouchableHighlight>
-					<TouchableHighlight
-						style={styles.selectedCustomerText}
-						onPress={() => this.props.navigation.navigate('OrderView')}>
-						<Text >Make Sale</Text>
-					</TouchableHighlight>
-				</View>
 			</View>
 
 			<View  style={styles.modalPayment}>
@@ -188,34 +191,32 @@ export default connect(
 const styles = StyleSheet.create({
 
 	buttonText: {
+		backgroundColor: '#2858a7',
 		fontWeight: 'bold',
-		fontSize: 28,
+		fontSize: 18,
 		color: 'white',
-		textAlign: 'center',
-		width: 300
+
 	},
 
 	commandBarContainer: {
-		flex: 1,
+		flex: .25,
 		flexDirection: 'row',
-		backgroundColor: '#fff',
-		height: 150,
-		top: 20,
-		left: '10%',
-		right: '10%',
-		position: 'absolute',
+		backgroundColor: '#f1f1f1',
+		top: 10,
+		height: 70,
 		elevation: 10,
 		alignSelf: 'center',
 		width: '80%',
 		justifyContent: 'center',
-        alignItems: 'center'
+		color: 'white',
+		paddingBottom: 20
 	},
 	modalPayment: {
 		backgroundColor: 'white',
 	},
 	modal3: {
-		width: 1000,
-		height: 500,
+		width: '70%',
+		height: 400,
 	},
 	modal: {
 		justifyContent: 'center',
@@ -227,5 +228,13 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		color: 'black'
 	},
+	completeOrder: {
+		backgroundColor: '#2858a7',
+		borderRadius: 5,
+		flex: .4,
+		margin: '1%',
+		padding: 10,
+		width: 200
+	}
 
 });

@@ -27,13 +27,8 @@ import OrderRealm from '../database/orders/orders.operations';
 
 import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_payment_types.operations';
 import * as Utilities from "../services/Utilities";
-import ToggleSwitch from 'toggle-switch-react-native';
-
-const uuidv1 = require('uuid/v1');
-import Events from "react-native-simple-events";
-const { height, width } = Dimensions.get('window');
-const widthQuanityModal = '70%';
-const heightQuanityModal = 500;
+const widthQuanityModal = '100%';
+const heightQuanityModal = 400;
 const inputTextWidth = 400;
 
 class PaymentModal extends Component {
@@ -81,20 +76,14 @@ class PaymentModal extends Component {
 
 	render() {
 		const state = this.state;
-
-		console.log('PaymentTypes', this.props.paymentTypes);
-		console.log('selectedDebtPaymentTypes', this.props.selectedDebtPaymentTypes);
-		console.log('this.state.checkedType', this.state.checkedType);
 		return (
-			<View style={styles.modal3}>
+			// <View style={styles.modal3}>
 				<ScrollView>
 					<View
 						style={{
 							flex: 1,
 							marginTop: 0,
-							marginBottom: 50,
-							marginLeft: 100,
-							marginRight: 100
+							padding: 10
 						}}>
 						<View style={{ flex: 1, flexDirection: 'row' }}>
 							<View style={{ flex: 1, height: 50 }}>
@@ -105,7 +94,7 @@ class PaymentModal extends Component {
 								style={{
 									justifyContent: 'flex-end',
 									flexDirection: 'row',
-									right: 10,
+									right: 0,
 									top: 10
 								}}>
 								{this.getCancelButton()}
@@ -117,7 +106,7 @@ class PaymentModal extends Component {
 								this.paymentTypesRow(item, index, separators)
 							)}
 							extraData={this.props.selectedDebtPaymentTypes}
-							numColumns={2}
+							// numColumns={2}
 							contentContainerStyle={styles.container}
 						/>
 
@@ -147,7 +136,7 @@ class PaymentModal extends Component {
 				</ScrollView>
 
 
-			</View>
+			// </View>
 
 		);
 	}
@@ -502,13 +491,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(PaymentModal);
 
 
 const styles = StyleSheet.create({
-
-	container: {
-		flex: 1,
-		backgroundColor: "#FFF",
-		width: '70%',
-		height: 400
-	},
 	checkBoxRow: {
 		flex: 1,
 		flexDirection: 'row',
@@ -547,24 +529,16 @@ const styles = StyleSheet.create({
 		paddingBottom: 4,
 
 	},
-	modal: {
-		justifyContent: 'center',
-		// alignItems: 'center'
-	},
 
-	modal2: {
-		height: 230,
-		backgroundColor: "#3B5998"
-	},
 	completeOrder: {
 		backgroundColor: '#2858a7',
-		borderRadius: 30,
-		marginTop: '1%'
+		borderRadius: 5,
+		marginTop: '1%',
+		bottom: 0
 	},
 
 	modal3: {
-		// height: 300,
-		// width: 500
+
 		width: widthQuanityModal,
 		height: heightQuanityModal,
 	},

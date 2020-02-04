@@ -17,7 +17,7 @@ import { Input } from 'react-native-elements';
 
 const { height, width } = Dimensions.get('window');
 const widthQuanityModal = '70%';
-const heightQuanityModal = 500;
+const heightQuanityModal = 400;
 const inputTextWidth = 400;
 const marginInputItems = width / 2 - inputTextWidth / 2;
 
@@ -199,9 +199,9 @@ class OrderItems extends Component {
 
 							<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
 								<View style={{ flex: 1, height: 50 }}>
-									<Text style={[{
-										marginLeft: 12,
-									}, styles.baseItem]}>Custom</Text>
+									<Text style={[styles.baseItem, {
+										marginLeft: 12, padding: 10
+									}]}>Custom</Text>
 								</View>
 								<View style={{ flex: 1, height: 50 }}>
 									{this.customDiscountValue()}
@@ -259,7 +259,7 @@ class OrderItems extends Component {
 					fontSize: 24
 				}}
 				keyboardType="number-pad"
-				onChangeText={this.changeQuantity}
+				onChangeText={(text) => this.changeQuantity}
 				value={qty}
 				underlineColorAndroid="transparent"
 				placeholder="Quantity"

@@ -15,11 +15,7 @@ const { height, width } = Dimensions.get('window');
 const widthQuanityModal = 1000;
 const heightQuanityModal = 500;
 const inputTextWidth = 400;
-const marginInputItems = width / 2 - inputTextWidth / 2;
 
-const inputFontHeight = Math.round((24 * height) / 752);
-const marginTextInput = Math.round((5 * height) / 752);
-const marginSpacing = Math.round((20 * height) / 752);
 
 
 class PaymentDescription extends Component {
@@ -81,17 +77,19 @@ const styles = StyleSheet.create({
 	totalText: {
 		marginTop: 10,
 		fontWeight: 'bold',
-		fontSize: 18,
+		fontSize: 16,
 		color: 'black',
 		alignSelf: 'center'
 	},
 
 	totalTitle: {
-		textTransform: 'uppercase'
+		textTransform: 'uppercase',
+		fontWeight: 'bold'
 	},
 
 	totalValue: {
-		fontSize: 20
+		fontSize: 16,
+		fontWeight: 'bold',
 	},
 	buttonText: {
 		fontWeight: 'bold',

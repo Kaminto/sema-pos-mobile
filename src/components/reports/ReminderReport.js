@@ -64,28 +64,12 @@ class RemindersReport extends Component {
 	    }
 	}
 
-      // prepareReminderCustomersData = (reminders)=>{
-      // 	      let aggregatedCustomers = [];
-      // 	      for(var i=0;i< reminders.length;i++){
-      // 	      if(aggregatedCustomers.length === 0){
-      // 	      		aggregatedCustomers[i]= reminders[i]
-      // 	      }else if(reminders[i].customer_id == reminders[i+1].customer_id){
-      // 		  aggregatedCustomers[i].product_name = `${aggregatedCustomers[i].product_name + ', '} + ${reminders[i+1].product_name}`
-      // 	      }else{
-      // 		    continue;
-      // 	      }
-
-      // 	      }
-      // 	 return aggregatdCustomers;
-
-      // 	};
-
 
     showHeader = () => {
 
 	return (
 		<View>
-		<CustomerBar />
+		{/* <CustomerBar /> */}
 		<DateFilter />
 			<View style={[{flex: 1, flexDirection: 'row', height:50, alignItems:'center'},styles.headerBackground]}>
 				<View style={ [{flex: 2}]}>
@@ -133,7 +117,7 @@ class RemindersReport extends Component {
 			console.log("Selected item is " + item.customerId);
 			isSelected = true;
 		}
-		if( true ) {
+		// if( true ) {
 			return (
 				<View style={[this.getRowBackground(index, isSelected), {flex: 1, flexDirection: 'row', height:100, alignItems:'center'}]}>
 					<View style={{flex: 2}}>
@@ -151,9 +135,9 @@ class RemindersReport extends Component {
 					</View>
 				</View>
 			);
-		}else{
-			return (<View/>);
-		}
+		// }else{
+		// 	return (<View/>);
+		// }
 	};
 
 	getRowBackground = (index, isSelected) =>{
@@ -221,8 +205,8 @@ class RemindersReport extends Component {
 
 function mapStateToProps(state, props) {
 	return {
-		reportType: state.reportReducer.reportType,
-		reminderData: state.reportReducer.reminderData,
+			reportType: state.reportReducer.reportType,
+			reminderData: state.reportReducer.reminderData,
 	    	selectedCustomer: state.customerReducer.selectedCustomer,
 	    	orderProducts : state.orderReducer.products,
 	    	showView: state.customerBarReducer.showView,

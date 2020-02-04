@@ -46,21 +46,42 @@ class CreditHistory extends Component {
 
     render() {
         return (
-            <View style={{ backgroundColor: '#00549C', flex: 1 }}>
+            <View style={{ backgroundColor: '#fff', flex: 1 }}>
                         <SelectedCustomerDetails
                             creditSales={this.comparePaymentTypes()}
                             navigation={this.props.navigation}
                             topupTotal={this.props.topupTotal}
                             selectedCustomer={this.props.selectedCustomer} />
 
-			<View style={{ flexDirection: 'row', flex: 1,
-			marginTop: 130, paddingTop: 50, backgroundColor: '#FFF', overflow: 'visible' }}>
-                <View style={{ marginBottom: 10, flex:.3, padding: 10 }}>
+			<View style={{ flexDirection: 'row', paddingTop: 20, flex: .75, width: '80%', alignSelf:'center', backgroundColor: '#FFF' }}>
+
+				<View style={{ flex:.6 }}>
+					<FlatList
+						ref={ref => {
+							this.flatListRef = ref;
+						}}
+						data={this.prepareTopUpData()}
+						ListHeaderComponent={this.showHeader}
+						extraData={this.state.refresh}
+						renderItem={({ item, index, separators }) => (
+							<TouchableHighlight
+								onPress={() => this.onPressItem(item)}
+								onShowUnderlay={separators.highlight}
+								onHideUnderlay={separators.unhighlight}>
+								{this.getRow(item, index, separators)}
+							</TouchableHighlight>
+						)}
+						keyExtractor={item => item.customerId}
+						initialNumToRender={50}
+					/>
+				</View>
+				<View style={{ flex:.4 }}>
+					<Card title={i18n.t('topup-placeholder')}>
                     <Input
                         placeholder={i18n.t(
                             'topup-placeholder'
                         )}
-                        label={i18n.t('topup-placeholder')}
+                        // label={i18n.t('topup-placeholder')}
                         value={this.state.topup}
                         onChangeText={this.onChangeTopup}
                     />
@@ -68,33 +89,8 @@ class CreditHistory extends Component {
                         onPress={() => this.addCredit()}
                         buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10 }}
                         title={i18n.t('topup')} />
+						</Card>
                 </View>
-				<View style={{ flex:.7 }}>
-                <FlatList
-                    ref={ref => {
-                        this.flatListRef = ref;
-                    }}
-                    data={this.prepareTopUpData()}
-                    ListHeaderComponent={this.showHeader}
-                    extraData={this.state.refresh}
-                    renderItem={({ item, index, separators }) => (
-                        <TouchableHighlight
-                            onPress={() => this.onPressItem(item)}
-                            onShowUnderlay={separators.highlight}
-                            onHideUnderlay={separators.unhighlight}>
-                            {this.getRow(item, index, separators)}
-                        </TouchableHighlight>
-                    )}
-                    keyExtractor={item => item.customerId}
-                    initialNumToRender={50}
-                />
-                {/* <FloatingAction
-                    onOpen={name => {
-                        console.log(this.props);
-                        this.refs.modal6.open();
-                    }}
-                /> */}
-				</View>
             </View>
 			</View>
         );
@@ -196,7 +192,7 @@ class CreditHistory extends Component {
                     <Text style={[styles.baseItem]}>
                         {moment
                             .tz(item.created_at, moment.tz.guess())
-                            .format('MMMM Do YYYY')}
+                            .format('MMM Do YYYY')}
                     </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -382,7 +378,8 @@ export default connect(
 
 const styles = StyleSheet.create({
     baseItem: {
-        fontSize: 18
+		fontSize: 18,
+		alignContent: 'flex-end'
     },
     leftMargin: {
         left: 10
