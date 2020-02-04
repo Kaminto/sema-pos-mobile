@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import { View, Alert, Text, TextInput, Button, FlatList, ScrollView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
-import { CheckBox } from 'react-native-elements';
+import { CheckBox, Card } from 'react-native-elements';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as OrderActions from "../../actions/OrderActions";
@@ -15,7 +15,6 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import i18n from "../../app/i18n";
 import Icon from 'react-native-vector-icons/Ionicons';
-import PosStorage from "../../database/PosStorage";
 import CustomerTypeRealm from '../../database/customer-types/customer-types.operations';
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
@@ -33,16 +32,10 @@ import * as Utilities from "../../services/Utilities";
 import ToggleSwitch from 'toggle-switch-react-native';
 
 const uuidv1 = require('uuid/v1');
-import Events from "react-native-simple-events";
-const { height, width } = Dimensions.get('window');
-const widthQuanityModal = '90%';
-const heightQuanityModal = 500;
-const inputTextWidth = 400;
-const marginInputItems = width / 2 - inputTextWidth / 2;
 
-const inputFontHeight = Math.round((24 * height) / 752);
-const marginTextInput = Math.round((5 * height) / 752);
-const marginSpacing = Math.round((20 * height) / 752);
+const widthQuanityModal = '70%';
+const heightQuanityModal = 540;
+const inputTextWidth = 400;
 
 class OrderCheckout extends Component {
 
@@ -119,7 +112,9 @@ class OrderCheckout extends Component {
 					<View style={{ flex: 1, justifyContent: 'center' }}>
 						<TouchableHighlight underlayColor='#c0c0c0'
 							onPress={() => this.onPay()}>
-							<Text style={[{ paddingTop: 10, paddingBottom: 10, textAlign: 'center' }, styles.buttonText]}>{i18n.t('pay')}</Text>
+							<Text
+							style={[{ paddingTop: 10, paddingBottom: 10, textAlign: 'center' },
+							 styles.buttonText]}>{i18n.t('pay')}</Text>
 						</TouchableHighlight>
 					</View>
 				</View>
@@ -132,29 +127,27 @@ class OrderCheckout extends Component {
 					isDisabled={this.state.isDisabled}>
 
 					<ScrollView>
-
+						<View style={{ flex: 1, padding: 0, margin: 0 }}>
+							<View
+								style={{
+									justifyContent: 'flex-end',
+									flexDirection: 'row',
+									right: 10,
+									top: 0
+								}}>
+								{this.getCancelButton()}
+							</View>
 						<View
 							style={{
 								flex: 1,
 								marginTop: 0,
-								marginBottom: 50,
-								marginLeft: 100,
-								marginRight: 100
+								marginLeft: 20,
+								marginRight: 20
 							}}>
-							<View style={{ flex: 1, flexDirection: 'row' }}>
-								<View style={{ flex: 1 }}>
-									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
 
-								</View>
-								<View
-									style={{
-										justifyContent: 'flex-end',
-										flexDirection: 'row',
-										right: 10,
-										top: 10
-									}}>
-									{this.getCancelButton()}
-								</View>
+
+							<View style={{ flex: 1, flexDirection: 'row' }}>
+									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
 							</View>
 
 							<FlatList
@@ -167,6 +160,25 @@ class OrderCheckout extends Component {
 								contentContainerStyle={styles.container}
 							/>
 
+							<Card
+							 containerStyle={{ backgroundColor: '#ABC1DE'}}
+							  title={this.getSaleAmount()}>
+								<View style={{ flex: 1, flexDirection: 'row' }}>
+									<PaymentDescription
+										title={`${i18n.t('previous-amount-due')}:`}
+										total={Utilities.formatCurrency(
+											this.calculateAmountDue()
+										)}
+									/>
+									<PaymentDescription
+										title={`${i18n.t('total-amount-due')}:`}
+										total={Utilities.formatCurrency(
+											this.calculateTotalDue()
+										)}
+									/>
+									</View>
+							</Card>
+
 							<View style={{ flex: 1, flexDirection: 'row' }}>
 								<View style={{ flex: 1 }}>
 									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Delivery Mode</Text>
@@ -174,7 +186,7 @@ class OrderCheckout extends Component {
 								</View>
 							</View>
 
-							<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
+							<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center', paddingBottom: 10 }}>
 								<CheckBox
 									title={'Delivery'}
 									checkedIcon={<Icon
@@ -223,37 +235,25 @@ class OrderCheckout extends Component {
 								/>
 
 							</View>
-							{this.getSaleAmount()}
-
-							<PaymentDescription
-								title={`${i18n.t('previous-amount-due')}:`}
-								total={Utilities.formatCurrency(
-									this.calculateAmountDue()
-								)}
-							/>
-							<PaymentDescription
-								title={`${i18n.t('total-amount-due')}:`}
-								total={Utilities.formatCurrency(
-									this.calculateTotalDue()
-								)}
-							/>
-                         <View style={{ flex:1, flexDirection: 'row', marginTop: 10 }}>
-                            {this.getBackDateComponent()}
-							<View style={ {flex: .6 , justifyContent: 'flex-end'}}>
-								{/* <View style={{ flex: 1 }}> */}
+							<View style={{ flex: 1, flexDirection: 'row' }}>
+							<Text style={ [styles.baseItem, { fontSize: 16, paddingTop: 15, textAlign: 'left' }]}>Are you recording an old sale?</Text>{this.getBackDateComponent()}
+							</View>
+							</View>
+							<View style={styles.completeOrderBtn}>
+								<View style={{ justifyContent: 'center' }}>
 									<TouchableHighlight
 										underlayColor="#c0c0c0"
 										onPress={() => this.onCompleteOrder()}>
 										<Text
 											style={[
+												{ paddingTop: 10 , paddingBottom: 20},
 												styles.buttonText
 											]}>
-											{i18n.t('make-payment')}
+											{i18n.t('complete-sale')}
 										</Text>
 									</TouchableHighlight>
-								{/* </View> */}
+								</View>
 							</View>
-						</View>
 						</View>
 					</ScrollView>
 				</Modal>
@@ -284,9 +284,6 @@ class OrderCheckout extends Component {
 
 		return (
 			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
-				{/* <View style={{ flex: .2, height: 50 }}>
-					<Text style={[{ marginLeft: 12 }, styles.baseItem]}>{item.applies_to}-{item.amount}</Text>
-				</View> */}
 				<View style={{ flex: 1, height: 50 }}>
 					<View style={styles.checkBoxRow}>
 						<View style={[{ flex: 1 }]}>
@@ -337,7 +334,7 @@ class OrderCheckout extends Component {
 								if (this.props.selectedPaymentTypes.length >= 0) {
 									const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
 									let secondItemObj = this.props.selectedPaymentTypes.filter(obj => obj.id != this.state.selectedType.id).map(function (e) { return e.id });
-									
+
 									if (itemIndex2 >= 0) {
 										this.props.selectedPaymentTypes[itemIndex].amount = Number(textValue);
 										this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
@@ -352,7 +349,7 @@ class OrderCheckout extends Component {
 										this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[seconditemIndex2], amount: Number(this.calculateOrderDue()) - Number(textValue) }, seconditemIndex2);
 									}
 								}
-								
+
 								this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
 
 							}
@@ -378,7 +375,7 @@ class OrderCheckout extends Component {
 		if (itemIndex >= 0) {
 
 			let secondItemObj = this.props.selectedPaymentTypes.filter(obj => obj.id != item.id).map(function (e) { return e.id });
-		
+
 			if (secondItemObj.length > 0) {
 				const seconditemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(secondItemObj[0]);
 				this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[seconditemIndex2], amount: Number(this.calculateOrderDue()) }, seconditemIndex2);
@@ -448,18 +445,17 @@ class OrderCheckout extends Component {
 		}
 	};
 
-
 	modalOnClose() {
 		PaymentTypeRealm.resetSelected();
 		this.props.paymentTypesActions.setPaymentTypes(
 			PaymentTypeRealm.getPaymentTypes());
 	}
 
-
 	getSaleAmount() {
 		if (!this.isPayoffOnly()) {
 			return (
 				<PaymentDescription
+				styles={{ fontWeight: 'bold' }}
 					title={`${i18n.t('sale-amount-due')}: `}
 					total={Utilities.formatCurrency(this.calculateOrderDue())}
 				/>
@@ -473,7 +469,7 @@ class OrderCheckout extends Component {
 		return (
 			<TouchableHighlight onPress={() => this.closePaymentModal()}>
 				<Icon
-					size={50}
+					size={40}
 					name="md-close"
 					color="black"
 				/>
@@ -486,8 +482,7 @@ class OrderCheckout extends Component {
 			return (
 				<View
 					style={{
-						flex: .4,
-					    padding: 20
+					    padding: 10
 					}}>
 					<Button
 						style={{ flex: 1 }}
@@ -723,11 +718,11 @@ class OrderCheckout extends Component {
 				payoff = 0;
 			}
 		} catch (err) {
-			
+
 		}
 		if (receipt != null) {
 			const creditIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
-			
+
 			if (creditIndex >= 0) {
 				if (Number(this.props.selectedPaymentTypes[creditIndex].amount) > Number(this.props.selectedCustomer.dueAmount)) {
 					Alert.alert(
@@ -762,7 +757,7 @@ class OrderCheckout extends Component {
 
 
 			const rpIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("loan");
-			
+
 
 			if (rpIndex >= 0) {
 				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) + Number(this.props.selectedPaymentTypes[rpIndex].amount);
@@ -793,7 +788,7 @@ class OrderCheckout extends Component {
 	};
 
 	closePaymentModal = () => {
-		this.refs.modal6.close();		
+		this.refs.modal6.close();
 	};
 
 	getOpacity = () => {
@@ -859,14 +854,12 @@ const styles = StyleSheet.create({
 		color: 'black',
 		alignSelf: 'center'
 	},
+
 	buttonText: {
-		backgroundColor: '#2858a7',
 		fontWeight: 'bold',
-		fontSize: 24,
+		fontSize: 30,
 		alignSelf: 'center',
-		padding: 10,
-		color: 'white',
-		borderRadius: 5
+		color: 'white'
 	},
 	summaryText: {
 		fontWeight: 'bold',
@@ -895,12 +888,16 @@ const styles = StyleSheet.create({
 	completeOrder: {
 		backgroundColor: '#2858a7',
 		borderRadius: 10,
-		// marginTop: '1%'
+		marginTop: '1%'
+	},
+
+	completeOrderBtn: {
+		backgroundColor: '#2858a7',
+		bottom: 0,
+		marginBottom: 0
 	},
 
 	modal3: {
-		// height: 300,
-		// width: 500
 		width: widthQuanityModal,
 		height: heightQuanityModal,
 	},

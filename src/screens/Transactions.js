@@ -110,8 +110,6 @@ class ReceiptLineItem extends Component {
 		const productImage =
 			item.base64encodedImage ||
 			this.props.products.reduce((image, product) => {
-				console.log('product', product);
-				console.log('item', item);
 				if (product.productId === item.product_id)
 					return product.base64encodedImage;
 				return image;
@@ -131,7 +129,7 @@ class TransactionDetail extends Component {
 		super(props);
 
 		this.state = {
-			refresh: false,
+			refresh: false
 		};
 	}
 
@@ -212,8 +210,7 @@ class TransactionDetail extends Component {
 				return (
 					<ReceiptLineItem
 						receiptActions={this.props.receiptActions}
-						receipts={this.props.receipts}
-						receipts={this.props.receipts}
+						remoteReceipts={this.props.receipts}
 						item={lineItem}
 						key={lineItem.id}
 						lineItemIndex={idx}
@@ -358,7 +355,7 @@ class Transactions extends Component {
 							renderItem={this.renderReceipt.bind(this)}
 							keyExtractor={(item, index) => item.id}
 							ItemSeparatorComponent={this.renderSeparator}
-							extraData={this.state.refresh}
+							extraData={this.state}
 						/>
 					</View>
 
@@ -368,7 +365,9 @@ class Transactions extends Component {
 								item={this.state.selected}
 								products={this.props.products}
 								receiptActions={this.props.receiptActions}
-								receipts={this.props.receipts}
+								// receipts={this.props.receipts}
+								remoteReceipts={this.props.receipts}
+								paymenttypes={this.props.receiptsPaymentTypes}
 							/>
 						</ScrollView>
 					</View>
@@ -377,7 +376,8 @@ class Transactions extends Component {
 		} else {
 			return (
 				<View style={{ flex: 1, flexDirection: 'row' }}>
-					<Text style={{ fontSize: 20, fontWeight: 'bold', alignContent: "center", justifyContent: "center" }}>Record this customers sales.</Text>
+					<Text style={{ fontSize: 20, fontWeight: 'bold', alignSelf: "center", alignContent: "center" }}>Record customers sales.</Text>
+
 				</View>
 			);
 		}
@@ -588,36 +588,6 @@ class Transactions extends Component {
 		return (
 			<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
 				<View key={index} style={{ padding: 15 }}>
-
-					{/* <Text style={{ fontSize: 17 }}>#{item.totalCount - index}</Text> */}
-					<View style={styles.receiptStats}>
-						{!item.active && !item.syncAction === "update" && (
-							<Text style={styles.receiptStatusText}>
-								{'Deleted'.toUpperCase()}
-							</Text>
-						)}
-						{item.isLocal || item.updated ? (
-							<View style={{ flexDirection: 'row' }}>
-								{!item.active && <Text> - </Text>}
-								<Text style={styles.receiptPendingText}>
-									{'Pending'.toLowerCase()}
-								</Text>
-							</View>
-						) : (
-								<View style={{ flexDirection: 'row' }}>
-									{!item.active && <Text> - </Text>}
-									<Text style={styles.receiptSyncedText}>
-										{'Synced'.toLowerCase()}
-									</Text>
-								</View>
-							)}
-					</View>
-					{/* <View style={styles.itemData}>
-					<Text style={styles.label}># {item.id}</Text>
-				</View> */}
-					<Text style={styles.customername}>
-						{item.currency.toUpperCase()} {item.totalAmount}
-					</Text>
 					<View style={styles.label}>
 						<Text>
 							{moment
@@ -628,6 +598,9 @@ class Transactions extends Component {
 					<View style={styles.itemData}>
 						<Text style={styles.customername}>{item.customerAccount.name}</Text>
 					</View>
+					<Text style={styles.customername}>
+						{item.currency.toUpperCase()} {item.totalAmount}
+					</Text>
 				</View>
 			</TouchableNativeFeedback>
 		);

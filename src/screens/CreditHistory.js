@@ -5,14 +5,7 @@ import {
     FlatList,
     TouchableHighlight,
     StyleSheet,
-    UIManager,
-    Alert
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import PropTypes from 'prop-types';
-
-import { FloatingAction } from "react-native-floating-action";
-
 
 import * as CustomerActions from '../actions/CustomerActions';
 import * as ToolbarActions from '../actions/ToolBarActions';
@@ -21,17 +14,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import moment from 'moment-timezone';
-import ModalDropdown from 'react-native-modal-dropdown';
 import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
-import CustomerRealm from '../database/customers/customer.operations';
 import CreditRealm from '../database/credit/credit.operations';
 import SettingRealm from '../database/settings/settings.operations';
-import OrderRealm from '../database/orders/orders.operations';
-import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
-import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
-import Events from 'react-native-simple-events';
 import i18n from '../app/i18n';
-import Modal from 'react-native-modalbox';
 import SelectedCustomerDetails from './CustomerDetailSubHeader';
 class CreditHistory extends Component {
     constructor(props) {
@@ -59,34 +45,43 @@ class CreditHistory extends Component {
 	}
 
     render() {
-        console.log(this.props.receiptsPaymentTypes);
-        console.log(this.props.paymentTypes);
-        console.log(this.comparePaymentTypes());
-        console.log(this.comparePaymentTypeReceipts());
-        console.log(this.getCustomerRecieptData());
         return (
-            <View style={{ backgroundColor: '#fff', width: '100%', height: '100%' }}>
-                <View style={{
-                    flexDirection: 'row',
-                    height: 100,
-                    backgroundColor: '#00549C',
-                    alignItems: 'center'
-                }}>
-                    <View style={[styles.leftToolbar]}>
+            <View style={{ backgroundColor: '#fff', flex: 1 }}>
                         <SelectedCustomerDetails
                             creditSales={this.comparePaymentTypes()}
                             navigation={this.props.navigation}
                             topupTotal={this.props.topupTotal}
                             selectedCustomer={this.props.selectedCustomer} />
-                    </View>
-                </View>
 
-                <View style={{ marginBottom: 10 }}>
+			<View style={{ flexDirection: 'row', paddingTop: 20, flex: .75, width: '80%', alignSelf:'center', backgroundColor: '#FFF' }}>
+
+				<View style={{ flex:.6 }}>
+					<FlatList
+						ref={ref => {
+							this.flatListRef = ref;
+						}}
+						data={this.prepareTopUpData()}
+						ListHeaderComponent={this.showHeader}
+						extraData={this.state.refresh}
+						renderItem={({ item, index, separators }) => (
+							<TouchableHighlight
+								onPress={() => this.onPressItem(item)}
+								onShowUnderlay={separators.highlight}
+								onHideUnderlay={separators.unhighlight}>
+								{this.getRow(item, index, separators)}
+							</TouchableHighlight>
+						)}
+						keyExtractor={item => item.customerId}
+						initialNumToRender={50}
+					/>
+				</View>
+				<View style={{ flex:.4 }}>
+					<Card title={i18n.t('topup-placeholder')}>
                     <Input
                         placeholder={i18n.t(
                             'topup-placeholder'
                         )}
-                        label={i18n.t('topup-placeholder')}
+                        // label={i18n.t('topup-placeholder')}
                         value={this.state.topup}
                         onChangeText={this.onChangeTopup}
                     />
@@ -94,32 +89,10 @@ class CreditHistory extends Component {
                         onPress={() => this.addCredit()}
                         buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10 }}
                         title={i18n.t('topup')} />
+						</Card>
                 </View>
-                <FlatList
-                    ref={ref => {
-                        this.flatListRef = ref;
-                    }}
-                    data={this.prepareTopUpData()}
-                    ListHeaderComponent={this.showHeader}
-                    extraData={this.state.refresh}
-                    renderItem={({ item, index, separators }) => (
-                        <TouchableHighlight
-                            onPress={() => this.onPressItem(item)}
-                            onShowUnderlay={separators.highlight}
-                            onHideUnderlay={separators.unhighlight}>
-                            {this.getRow(item, index, separators)}
-                        </TouchableHighlight>
-                    )}
-                    keyExtractor={item => item.customerId}
-                    initialNumToRender={50}
-                />
-                <FloatingAction
-                    onOpen={name => {
-                        console.log(this.props);
-                        this.refs.modal6.open();
-                    }}
-                />
             </View>
+			</View>
         );
     }
 
@@ -149,7 +122,6 @@ class CreditHistory extends Component {
 
         console.log(this.state.topup);
         console.log(this.props.selectedCustomer);
-
 
         CreditRealm.createCredit(
             this.props.selectedCustomer.customerId,
@@ -209,29 +181,31 @@ class CreditHistory extends Component {
                 style={[
                     this.getRowBackground(index, isSelected),
                     {
-                        flex: 1,
+						flex: 1,
+						padding: 5,
                         flexDirection: 'row',
                         height: 50,
                         alignItems: 'center'
                     }
                 ]}>
-                <View style={{ flex: 2 }}>
+				<View style={{ flex: 1 }}>
+                    <Text style={[styles.baseItem]}>
+                        {moment
+                            .tz(item.created_at, moment.tz.guess())
+                            .format('MMM Do YYYY')}
+                    </Text>
+                </View>
+                <View style={{ flex: 1 }}>
                     <Text style={[styles.baseItem, styles.leftMargin]}>
                         {item.topup}
                     </Text>
                 </View>
-                <View style={{ flex: 1.5 }}>
+                <View style={{ flex: 1 }}>
                     <Text style={[styles.baseItem]}>
                         {item.balance}
                     </Text>
                 </View>
-                <View style={{ flex: 2 }}>
-                    <Text style={[styles.baseItem]}>
-                        {moment
-                            .tz(item.created_at, moment.tz.guess())
-                            .format('YYYY-MM-DD HH:mm')}
-                    </Text>
-                </View>
+
             </View>
         );
     };
@@ -244,29 +218,30 @@ class CreditHistory extends Component {
                     {
                         flex: 1,
                         flexDirection: 'row',
-                        height: 50,
+						height: 50,
+						padding: 10,
                         alignItems: 'center'
                     },
                     styles.headerBackground
                 ]}>
-                <View style={[{ flex: 2 }]}>
-                    <Text style={[styles.headerItem, styles.leftMargin]}>
+				<View style={[{ flex: 1 }]}>
+                    <Text style={[styles.headerItem]}>Date</Text>
+                </View>
+
+                <View style={[{ flex: 1 }]}>
+                    <Text style={[styles.headerItem]}>
                         Amount
                     </Text>
                 </View>
-                <View style={[{ flex: 1.5 }]}>
+                <View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem]}>
                         Balance
                     </Text>
                 </View>
-                <View style={[{ flex: 1 }]}>
-                    <Text style={[styles.headerItem]}>Created</Text>
-                </View>
+
             </View>
         );
     };
-
-
 
     onPressItem = item => {
         console.log('_onPressItem', item);
@@ -403,7 +378,8 @@ export default connect(
 
 const styles = StyleSheet.create({
     baseItem: {
-        fontSize: 18
+		fontSize: 18,
+		alignContent: 'flex-end'
     },
     leftMargin: {
         left: 10
@@ -414,20 +390,6 @@ const styles = StyleSheet.create({
     },
     headerBackground: {
         backgroundColor: '#ABC1DE'
-    },
-    leftToolbar: {
-        flexDirection: 'row',
-        flex: 1,
-        alignItems: 'center'
-    },
-    commandBarContainer: {
-        flex: 1,
-        backgroundColor: '#fff',
-        height: 80,
-		alignSelf: 'flex-start',
-		flexDirection: 'row',
-        marginLeft: 20,
-        marginRight: 20
     },
     selectedCustomerText: {
         marginLeft: 10,

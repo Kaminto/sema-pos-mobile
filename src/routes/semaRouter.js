@@ -9,8 +9,6 @@ import CustomerList from '../screens/CustomerList';
 import CustomerEdit from '../screens/CustomerEdit';
 import CustomerDetails from '../screens/CustomerDetails';
 import CreditHistory from '../screens/CreditHistory';
-import DebitHistory from '../screens/DebitHistory';
-
 
 import Login from '../screens/Login';
 import AuthLoadingScreen from '../screens/AuthLoadingScreen';
@@ -23,16 +21,18 @@ import RemindersReport from '../components/reports/ReminderReport';
 
 import SalesReport from '../components/reports/SalesReport';
 
-import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
+import {Input} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomSidebarMenu from './CustomSidebarMenu';
+import { Tooltip } from 'react-native-elements';
 
 import i18n from '../app/i18n';
 
 class NavigationDrawerStructure extends Component {
     toggleDrawer = () => {
         this.props.navigationProps.toggleDrawer();
-    };
+	};
+
     render() {
         return (
             <View style={{ flexDirection: 'row' }}>
@@ -42,7 +42,7 @@ class NavigationDrawerStructure extends Component {
                         size={25}
                         color="white"
                         style={{
-                            width: 25, height: 25, marginLeft: 5
+                            width: 25, height: 25, marginLeft: 10
                         }}
                     />
                 </TouchableOpacity>
@@ -50,17 +50,6 @@ class NavigationDrawerStructure extends Component {
         );
     }
 }
-
-const DebitHistoryStack = createStackNavigator({
-    DebitHistory: {
-        screen: DebitHistory
-    },
-},
-    {
-        headerMode: 'none',
-        initialRouteName: 'DebitHistory',
-    });
-
 
 const CreditHistoryStack = createStackNavigator({
     CreditHistory: {
@@ -79,16 +68,15 @@ const CustomerTransactionStack = createStackNavigator({
 },
     {
         headerMode: 'none',
-        initialRouteName: 'Transaction',
+		initialRouteName: 'Transaction',
+		// navigationOptions: { headerTitle: 'Header title' },
     });
 
-
-
-// const TabNavigator = createBottomTabNavigator({
-const TabNavigator = createMaterialTopTabNavigator({
+const TabNavigator = createBottomTabNavigator({
+// const TabNavigator = createMaterialTopTabNavigator({
     Transaction: CustomerTransactionStack,
-    Credit: CreditHistoryStack,
-    Debit: DebitHistoryStack
+    Credit: CreditHistoryStack
+    // ,Debit: DebitHistoryStack
 },
     {
         initialRouteName: 'Transaction',
@@ -98,12 +86,18 @@ const TabNavigator = createMaterialTopTabNavigator({
         animationEnabled: true,
         tabBarOptions: {
             activeTintColor: 'white',
-            inactiveTintColor: 'black',
+            inactiveTintColor: '#CCC',
             style: {
-                backgroundColor: '#00549C',
-                fontSize: 24
-            },
-        },
+				backgroundColor: '#00549C',
+				fontSize: 24,
+				padding: 10
+			},
+			labelStyle: {
+				fontSize: 18,
+				textTransform: 'uppercase'
+			  },
+		},
+		// navigationOptions: { headerTitle: 'Header title' },
     });
 
 
@@ -125,7 +119,7 @@ const ListCustomerStack = createStackNavigator({
     CustomerList: {
         screen: CustomerList,
         navigationOptions: ({ navigation }) => ({
-            title: 'Customers',
+            title: navigation.getParam('title', 'Customers'),
             headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
             headerStyle: {
                 backgroundColor: '#00549C',
@@ -136,20 +130,6 @@ const ListCustomerStack = createStackNavigator({
                     style={{
                         flexDirection: 'row',
                     }}>
-                    <View
-                        style={{
-                            marginTop: 12,
-                            flex: 1
-                        }}>
-                        {navigation.getParam('isCustomerSelected') && (
-                            <Text style={{
-                                marginRight: 20,
-                                fontWeight: 'bold',
-                                fontSize: 18,
-                                color: 'white'
-                            }} >{navigation.getParam('customerName')}</Text>
-                        )}
-                    </View>
 
                     <View
                         style={{
@@ -157,9 +137,9 @@ const ListCustomerStack = createStackNavigator({
                             flex: 1
                         }}>
                         {navigation.getParam('isCustomerSelected') && (
-                            <Icon
+							<Icon
                                 name='md-trash'
-                                size={25}
+                                size={30}
                                 color="white"
                                 style={{
                                     marginRight: 20,
@@ -178,7 +158,7 @@ const ListCustomerStack = createStackNavigator({
 
                             <Icon
                                 name='md-information-circle-outline'
-                                size={25}
+                                size={30}
                                 color="white"
                                 style={{
                                     marginRight: 20,
@@ -201,7 +181,7 @@ const ListCustomerStack = createStackNavigator({
                         {navigation.getParam('isCustomerSelected') && (
                             <Icon
                                 name='md-create'
-                                size={25}
+                                size={30}
                                 color="white"
                                 style={{
                                     marginRight: 20,
@@ -224,7 +204,7 @@ const ListCustomerStack = createStackNavigator({
                         {navigation.getParam('isCustomerSelected') && (
                             <Icon
                                 name='md-water'
-                                size={25}
+                                size={30}
                                 color="white"
                                 style={{
                                     marginRight: 20,
@@ -239,14 +219,13 @@ const ListCustomerStack = createStackNavigator({
 
                         )}
                     </View>
-            
+
                     <View>
                         <Input
                             onChangeText={navigation.getParam('searchCustomer')}
                             placeholder={i18n.t('search-placeholder')}
                             placeholderTextColor='white'
                             style={{ flex: 1 }}
-
                         />
                     </View>
 
@@ -256,35 +235,39 @@ const ListCustomerStack = createStackNavigator({
                             flex: 1
                         }}>
                           <Picker
+								mode="dropdown"
+								placeholder="Start Year"
                                 selectedValue={navigation.getParam('salesChannelValue')}
-                                style={{ height: 50, width: 100 }}
+                                style={{ height: 50, width: 150, color: 'white', alignContent: 'flex-end' }}
                                 onValueChange={navigation.getParam('checkfilter')}>
-                                <Picker.Item label="All" value="all" />
+                                <Picker.Item label="All Channels" value="all" />
                                 <Picker.Item label="Direct" value="direct" />
                                 <Picker.Item label="Reseller" value="reseller" />
-                                <Picker.Item label="Water Club" value="water club" />
+                                {/* <Picker.Item label="Water Club" value="water club" /> */}
                             </Picker>
-                        
+
                     </View>
 
-                    <View
+                    {/* <View
                         style={{
                             marginTop: 12,
                             flex: 1
                         }}>
                           <Picker
+						  		mode="dropdown"
                                 selectedValue={navigation.getParam('customerTypeValue')}
-                                style={{ height: 50, width: 100 }}
-                                onValueChange={navigation.getParam('checkCustomerTypefilter')}>
-                                <Picker.Item label="All" value="all" />
+                                style={{ height: 50, width: 130, color: 'white' }}
+								onValueChange={navigation.getParam('checkCustomerTypefilter')}>
+
+                                <Picker.Item label="All Customer Types" value="all" />
                                 <Picker.Item label="Business" value="Business" />
                                 <Picker.Item label="Household" value="Household" />
                                 <Picker.Item label="Retailer" value="Retailer" />
                                 <Picker.Item label="Outlet Franchise" value="Outlet Franchise" />
                                 <Picker.Item label="Anonymous" value="Anonymous" />
                             </Picker>
-                        
-                    </View>
+
+                    </View> */}
 
                 </View>
 
@@ -311,7 +294,8 @@ const ListCustomerStack = createStackNavigator({
                     }}>
                         <Icon name='md-arrow-back' style={{
                             marginRight: 25,
-                            marginLeft: 15,
+							marginLeft: 15,
+							color: 'white',
                             fontWeight: 'bold',
                         }} size={20} onPress={() => { navigation.goBack() }} />
                     </View>
@@ -381,24 +365,25 @@ const TransactionStack = createStackNavigator({
                 <View
                     style={{
                         flexDirection: 'row',
-                    }}>      
+                    }}>
                     <View
                         style={{
                             marginTop: 12,
                             flex: 1
                         }}>
                           <Picker
+						        mode="dropdown"
                                 selectedValue={navigation.getParam('paymentTypeValue')}
-                                style={{ height: 50, width: 100 }}
+                                style={{ height: 50, width: 190, color: 'white', alignContent: 'flex-end' }}
                                 onValueChange={navigation.getParam('checkPaymentTypefilter')}>
-                                <Picker.Item label="All" value="all" />
+                                <Picker.Item label="All Payment Types" value="all" />
                                 <Picker.Item label="Cash" value="cash" />
                                 <Picker.Item label="Mobile" value="mobile" />
                                 <Picker.Item label="Loan" value="loan" />
                                 <Picker.Item label="Cheque" value="cheque" />
                                 <Picker.Item label="Bank" value="bank" />
                                 <Picker.Item label="Credit" value="credit" />
-                            </Picker>                        
+                            </Picker>
                     </View>
                 </View>
             ),
@@ -447,7 +432,6 @@ const ReminderStack = createStackNavigator({
         }),
     },
 });
-
 
 
 const LoginStack = createStackNavigator({

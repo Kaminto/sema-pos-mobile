@@ -3,60 +3,29 @@ import {
 	View,
 	Text,
 	StyleSheet,
-	FlatList,
-	Image,
-	TouchableOpacity,
 	TouchableHighlight,
-	Alert,
-	ToastAndroid,
-	ScrollView,
-	TouchableNativeFeedback
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Events from 'react-native-simple-events';
 
 import * as ToolbarActions from '../actions/ToolBarActions';
-import ModalDropdown from 'react-native-modal-dropdown';
-import PosStorage from '../database/PosStorage';
-import CreditRealm from '../database/credit/credit.operations';
-import CustomerRealm from '../database/customers/customer.operations';
-import SettingRealm from '../database/settings/settings.operations';
+
 
 import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
 
 import * as CustomerActions from '../actions/CustomerActions';
 import * as TopUpActions from '../actions/TopUpActions';
-import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
 import * as reportActions from '../actions/ReportActions';
 import * as receiptActions from '../actions/ReceiptActions';
 
 
 import PaymentModal from './paymentModal';
 
-import i18n from '../app/i18n';
-import moment from 'moment-timezone';
-import { FloatingAction } from "react-native-floating-action";
 import Icon from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modalbox';
-import { isEmptyObj } from '../services/Utilities';
-const actions = [
-	{
-		text: "Top Up",
-		name: "topup",
-		icon: <Icon
-			name='md-wallet'
-			size={24}
-			color='black'
-		/>,
-		position: 1
-	},
-];
- 
+
 class SelectedCustomerDetails extends React.Component {
 	constructor(props) {
 		super(props);
@@ -86,7 +55,7 @@ class SelectedCustomerDetails extends React.Component {
 		return (
 			<>
 			<View style={styles.commandBarContainer}>
-				<View style={{ flexDirection: 'column', flex: 1 }}>
+				<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
 					<Text style={styles.selectedCustomerText}>
 						{this.getName()}
 					</Text>
@@ -94,35 +63,38 @@ class SelectedCustomerDetails extends React.Component {
 					<Text style={styles.selectedCustomerText}>
 						{this.getPhone()}
 					</Text>
-					<Text style={styles.selectedCustomerText}>
+					{/* <Text style={styles.selectedCustomerText}>
 						{this.getCustomerType()}
-					</Text>
+					</Text> */}
 				</View>
-				<View style={{ flexDirection: 'column', flex: 1 }}>
+				<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
 					{/* <Text style={styles.selectedCustomerText}>
 					{this.getCreditPurchases()} Credit Purchases
 					</Text> */}
 					<Text style={styles.selectedCustomerText}>
 						Credit Balance: {this.props.topupTotal - this.getCreditPurchases()}
 					</Text>
+					<View style={styles.completeOrder}>
+						<TouchableHighlight
+							onPress={() => this.props.navigation.navigate('OrderView')}>
+							<Text style={styles.buttonText}>Make Sale</Text>
+						</TouchableHighlight>
+						</View>
+					</View>
+			    	<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
 					<Text style={styles.selectedCustomerText}>
 						Loan:  {this.props.selectedCustomer.dueAmount}
 					</Text>
+						<View style={styles.completeOrder}>
+							<TouchableHighlight
+								onPress={() => {
+									this.refs.modal6.open();
+								}}>
+								<Text style={styles.buttonText}>Loan Payment</Text>
+							</TouchableHighlight>
+							</View>
+
 					</View>
-				<View style={{ flexDirection: 'column', flex: 1 }}>
-					<TouchableHighlight
-						style={styles.selectedCustomerText}
-						onPress={() => {
-							this.refs.modal6.open();
-						}}>
-						<Text >Loan Payment</Text>
-					</TouchableHighlight>
-					<TouchableHighlight
-						style={styles.selectedCustomerText}
-						onPress={() => this.props.navigation.navigate('OrderView')}>
-						<Text >Make Sale</Text>
-					</TouchableHighlight>
-				</View>
 			</View>
 
 			<View  style={styles.modalPayment}>
@@ -132,12 +104,12 @@ class SelectedCustomerDetails extends React.Component {
 				position={"center"} ref={"modal6"}
 				onClosed={() => this.modalOnClose()}
 				isDisabled={this.state.isDisabled}>
-				<PaymentModal 
+				<PaymentModal
 				modalOnClose={this.modalOnClose}
 				closePaymentModal={this.closePaymentModal}
 				 />
 			</Modal>
-			</View>			
+			</View>
 			</>
 		);
 	}
@@ -184,7 +156,7 @@ class SelectedCustomerDetails extends React.Component {
 		}
 	}
 }
- 
+
 function mapStateToProps(state, props) {
 	return {
 		selectedCustomer: state.customerReducer.selectedCustomer,
@@ -217,72 +189,34 @@ export default connect(
 )(SelectedCustomerDetails);
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#fff'
-	},
-	headerText: {
-		fontSize: 24,
-		color: 'black',
-		marginLeft: 100
-	},
-	leftMargin: {
-		left: 10
-	},
-	headerItem: {
-		fontWeight: 'bold',
-		fontSize: 18
-	},
-	headerBackground: {
-		backgroundColor: '#ABC1DE'
-	},
-	submit: {
-		backgroundColor: '#2858a7',
-		borderRadius: 20,
-		marginTop: '1%'
-	},
-	inputContainer: {
-		borderWidth: 2,
-		borderRadius: 10,
-		borderColor: '#2858a7',
-		backgroundColor: 'white'
-	},
-	leftToolbar: {
-		flexDirection: 'row',
-		flex: 1,
-		alignItems: 'center'
-	},
-	rightToolbar: {
-		flexDirection: 'row-reverse',
-		flex: 0.34,
-		alignItems: 'center'
-	},
+
 	buttonText: {
-		fontWeight: 'bold',
-		fontSize: 28,
-		color: 'white',
-		textAlign: 'center',
-		width: 300
-	},
-	completeOrder: {
 		backgroundColor: '#2858a7',
-		borderRadius: 30,
+		fontWeight: 'bold',
+		fontSize: 18,
+		color: 'white',
+
 	},
+
 	commandBarContainer: {
-		flex: 1,
+		flex: .25,
 		flexDirection: 'row',
-		backgroundColor: '#fff',
-		height: 80,
+		backgroundColor: '#f1f1f1',
+		top: 10,
+		height: 70,
+		elevation: 10,
 		alignSelf: 'center',
-		marginLeft: 20,
-		marginRight: 20
+		width: '80%',
+		justifyContent: 'center',
+		color: 'white',
+		paddingBottom: 20
 	},
 	modalPayment: {
 		backgroundColor: 'white',
 	},
 	modal3: {
-		width: 1000,
-		height: 500,
+		width: '70%',
+		height: 400,
 	},
 	modal: {
 		justifyContent: 'center',
@@ -294,96 +228,13 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		color: 'black'
 	},
-	inputText: {
-		fontSize: 24,
-		alignSelf: 'center',
-		backgroundColor: 'white',
-		width: 400,
-		margin: 5
-	},
-	phoneInputText: {
-		fontSize: 24,
-		alignSelf: 'center',
-		backgroundColor: 'white',
-		width: 195,
-		margin: 5,
-		paddingRight: 5
-	},
-	dropdownText: {
-		fontSize: 24
-	},
-	receiptPendingText: {
-		color: 'orange'
-	},
-
-	receiptSyncedText: {
-		color: 'green'
-	},
-
-	receiptStats: {
-		flex: 1,
-		flexDirection: 'row'
-	},
-
-	container: {
-		flex: 1,
-		backgroundColor: '#fff'
-	},
-
-	receiptStatusText: {
-		color: 'red',
-		fontWeight: 'bold'
-	},
-
-	deleteButtonContainer: {
-		width: 40,
-		height: 40,
-		alignSelf: 'flex-end',
-		justifyContent: 'center',
-		alignItems: 'center',
-		position: 'absolute',
-		zIndex: 1,
-		top: 15,
-		right: 15
-	},
-
-	receiptDeleteButton: {
-		width: '100%',
-		height: '100%',
-		justifyContent: 'center',
-		alignItems: 'center'
-	},
-
-	receiptDeleteButtonText: {
-		fontSize: 25,
-		color: '#fff',
-		fontWeight: 'bold'
-	},
-
-	productImage: {
-		width: 80,
-		height: 80,
-		marginRight: 5,
-		marginLeft: 20,
-		borderWidth: 5,
-		borderColor: '#eee'
-	},
-
-	label: {
-		color: '#111'
-	},
-
-	itemData: {
-		flexDirection: 'row'
-	},
-	updating: {
-		height: 100,
-		width: 500,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#ABC1DE',
-		borderColor: '#2858a7',
-		borderWidth: 5,
-		borderRadius: 10
+	completeOrder: {
+		backgroundColor: '#2858a7',
+		borderRadius: 5,
+		flex: .4,
+		margin: '1%',
+		padding: 10,
+		width: 200
 	}
+
 });

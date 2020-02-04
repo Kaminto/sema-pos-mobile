@@ -22,9 +22,6 @@ let initialState = {
 };
 
 const receiptReducer = (state = initialState, action) => {
-    // console.log("receiptReducer: " + action.type, action.data);
-    // console.log(action.data);
-
     let newState;
 
     switch (action.type) {

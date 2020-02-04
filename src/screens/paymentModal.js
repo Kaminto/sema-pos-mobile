@@ -15,10 +15,6 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import i18n from "../app/i18n";
 import Icon from 'react-native-vector-icons/Ionicons';
-import PosStorage from "../database/PosStorage";
-import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
-import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
-import ProductMRPRealm from '../database/productmrp/productmrp.operations';
 import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
 
 import PaymentMethod from '../components/orders/order-checkout/payment-method';
@@ -31,30 +27,20 @@ import OrderRealm from '../database/orders/orders.operations';
 
 import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_payment_types.operations';
 import * as Utilities from "../services/Utilities";
-import ToggleSwitch from 'toggle-switch-react-native';
-
-const uuidv1 = require('uuid/v1');
-import Events from "react-native-simple-events";
-const { height, width } = Dimensions.get('window');
-const widthQuanityModal = '90%';
-const heightQuanityModal = 500;
+const widthQuanityModal = '100%';
+const heightQuanityModal = 400;
 const inputTextWidth = 400;
-const marginInputItems = width / 2 - inputTextWidth / 2;
-
-const inputFontHeight = Math.round((24 * height) / 752);
-const marginTextInput = Math.round((5 * height) / 752);
-const marginSpacing = Math.round((20 * height) / 752);
 
 class PaymentModal extends Component {
 
 	constructor(props) {
-		super(props); 
-		this.state = {      
+		super(props);
+		this.state = {
 			selectedPaymentTypes: [],
 			selectedType: {},
-			checkedType: {}, 
+			checkedType: {},
 			isDateTimePickerVisible: false,
-			receiptDate: new Date(),  
+			receiptDate: new Date(),
 		};
 	}
 
@@ -90,20 +76,14 @@ class PaymentModal extends Component {
 
 	render() {
 		const state = this.state;
-
-		console.log('PaymentTypes', this.props.paymentTypes);
-		console.log('selectedDebtPaymentTypes', this.props.selectedDebtPaymentTypes);
-		console.log('this.state.checkedType', this.state.checkedType);
 		return (
-			<View style={styles.container}>
+			// <View style={styles.modal3}>
 				<ScrollView>
 					<View
 						style={{
 							flex: 1,
 							marginTop: 0,
-							marginBottom: 50,
-							marginLeft: 100,
-							marginRight: 100
+							padding: 10
 						}}>
 						<View style={{ flex: 1, flexDirection: 'row' }}>
 							<View style={{ flex: 1, height: 50 }}>
@@ -114,7 +94,7 @@ class PaymentModal extends Component {
 								style={{
 									justifyContent: 'flex-end',
 									flexDirection: 'row',
-									right: 10,
+									right: 0,
 									top: 10
 								}}>
 								{this.getCancelButton()}
@@ -126,7 +106,7 @@ class PaymentModal extends Component {
 								this.paymentTypesRow(item, index, separators)
 							)}
 							extraData={this.props.selectedDebtPaymentTypes}
-							numColumns={2}
+							// numColumns={2}
 							contentContainerStyle={styles.container}
 						/>
 
@@ -156,7 +136,7 @@ class PaymentModal extends Component {
 				</ScrollView>
 
 
-			</View>
+			// </View>
 
 		);
 	}
@@ -187,9 +167,6 @@ class PaymentModal extends Component {
 		if (item.name != "loan") {
 			return (
 				<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
-					{/* <View style={{ flex: .2, height: 50 }}>
-					<Text style={[{ marginLeft: 12 }, styles.baseItem]}>{item.applies_to}-{item.amount}</Text>
-				</View> */}
 					<View style={{ flex: 1, height: 50 }}>
 						<View style={styles.checkBoxRow}>
 							<View style={[{ flex: 1 }]}>
@@ -418,7 +395,6 @@ class PaymentModal extends Component {
 		return true;
 	};
 
-
 	getCancelButton() {
 		return (
 			<TouchableHighlight onPress={() => this.closePaymentModal()}>
@@ -457,8 +433,6 @@ class PaymentModal extends Component {
 			return null;
 		}
 	}
-
-
 
 	calculateOrderDue() {
 		if (this.isPayoffOnly()) {
@@ -517,12 +491,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(PaymentModal);
 
 
 const styles = StyleSheet.create({
-
-	container: {
-		flex: 1,
-		backgroundColor: "#2858a7",
-
-	},
 	checkBoxRow: {
 		flex: 1,
 		flexDirection: 'row',
@@ -561,24 +529,16 @@ const styles = StyleSheet.create({
 		paddingBottom: 4,
 
 	},
-	modal: {
-		justifyContent: 'center',
-		// alignItems: 'center'
-	},
 
-	modal2: {
-		height: 230,
-		backgroundColor: "#3B5998"
-	},
 	completeOrder: {
 		backgroundColor: '#2858a7',
-		borderRadius: 30,
-		marginTop: '1%'
+		borderRadius: 5,
+		marginTop: '1%',
+		bottom: 0
 	},
 
 	modal3: {
-		// height: 300,
-		// width: 500
+
 		width: widthQuanityModal,
 		height: heightQuanityModal,
 	},

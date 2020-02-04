@@ -50,10 +50,10 @@ class CustomerList extends Component {
         this.props.navigation.setParams({ isCustomerSelected: false });
         this.props.navigation.setParams({ salesChannelValue: 'all' });
         this.props.navigation.setParams({ customerTypeValue: 'all' });
-        this.props.navigation.setParams({ customerName: "" });
+		this.props.navigation.setParams({ customerName: "" });
         this.props.navigation.setParams({ searchCustomer: this.searchCustomer });
         this.props.navigation.setParams({ checkfilter: this.checkfilter });
-        this.props.navigation.setParams({ checkCustomerTypefilter: this.checkCustomerTypefilter });        
+        this.props.navigation.setParams({ checkCustomerTypefilter: this.checkCustomerTypefilter });
         this.props.navigation.setParams({ onDelete: this.onDelete });
         this.props.navigation.setParams({ checkSelectedCustomer: this.checkSelectedCustomer });
         this.props.navigation.setParams({ editCustomer: this.editCustomer });
@@ -69,7 +69,7 @@ class CustomerList extends Component {
             'customerId1',
             this.onScrollCustomerTo.bind(this)
         );
-    }
+	}
 
     searchCustomer = (searchText) => {
         console.log(searchText)
@@ -176,7 +176,8 @@ class CustomerList extends Component {
     });
 
     shouldComponentUpdate(nextProps, nextState) {
-        console.log('onScrollCustomerTo');
+		console.log('onScrollCustomerTo');
+		// this.props.navigation.setParams({ 'title': 'Customers' });
         return true;
     }
 
@@ -247,7 +248,7 @@ class CustomerList extends Component {
                 customerType: this.getCustomerTypes(item).toLowerCase()
             }
         });
-        
+
         let filteredItems = data.filter(function (item) {
             for (var key in filter) {
                 if (
@@ -440,7 +441,8 @@ class CustomerList extends Component {
         this.setState({ refresh: !this.state.refresh });
         this.props.customerActions.setCustomerEditStatus(true);
         this.props.navigation.setParams({ isCustomerSelected: true });
-        this.props.navigation.setParams({ customerName: item.name });
+		this.props.navigation.setParams({ customerName: item.name });
+		this.props.navigation.setParams({ 'title': item.name });
         Events.trigger('onOrder', { customer: item });
     };
 
@@ -506,14 +508,7 @@ class SearchWatcher extends React.Component {
         console.log('SearchWatcher');
 
         let that = this;
-        console.log(that.props.parent.props.channelFilterString);
-        console.log(that.props.parent.state.channelFilterString);
 
-        console.log(that.props.parent.props.customerTypeFilter);
-        console.log(that.props.parent.state.customerTypeFilter);
-        
-        console.log(that.props.parent.props.searchString);
-        console.log(that.props.parent.state.searchString);
         setTimeout(() => {
             if (
                 that.props.parent.props.searchString !==

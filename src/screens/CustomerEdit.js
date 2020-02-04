@@ -2,23 +2,17 @@ import React, { Component } from 'react';
 import {
 	View,
 	Text,
-	TouchableHighlight,
-	TextInput,
 	StyleSheet,
-	Modal,
-	Image,
-	Picker
+	Modal
 } from 'react-native';
-import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
+import { Card, Button, Input} from 'react-native-elements';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import PropTypes from 'prop-types';
-
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Events from 'react-native-simple-events';
 
-import Icon from 'react-native-vector-icons/Ionicons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import RNPickerSelect from 'react-native-picker-select';
 
 import * as ToolbarActions from '../actions/ToolBarActions';
@@ -51,22 +45,22 @@ class CustomerEdit extends Component {
 		this.secondPhoneNumber = React.createRef();
 		this.name = React.createRef();
 		this.address = React.createRef();
-		this.customerChannel = React.createRef();
+		// this.customerChannel = React.createRef();
 		this.customerType = React.createRef();
 		this.frequency = React.createRef();
 
-		this.salesChannels = SalesChannelRealm.getSalesChannelsForDisplay();
-		this.channelOptions = this.salesChannels.map(channel => {
-			console.log(channel);
-			return channel.displayName;
-		});
+		// this.salesChannels = SalesChannelRealm.getSalesChannelsForDisplay();
+		// this.channelOptions = this.salesChannels.map(channel => {
+		// 	console.log(channel);
+		// 	return channel.displayName;
+		// });
 
-		this.salesChannelOptions = this.salesChannels.map(channel => {
-			var rObj = {};
-			rObj.label = channel.displayName;
-			rObj.value = channel.id;
-			return rObj;
-		});
+		// this.salesChannelOptions = this.salesChannels.map(channel => {
+		// 	var rObj = {};
+		// 	rObj.label = channel.displayName;
+		// 	rObj.value = channel.id;
+		// 	return rObj;
+		// });
 
 		this.customerTypes = CustomerTypeRealm.getCustomerTypesForDisplay(this.saleschannelid);
 		this.customerTypeOptions = this.customerTypes.map(customerType => {
@@ -77,6 +71,7 @@ class CustomerEdit extends Component {
 			var rObj = {};
 			rObj.label = customerType.displayName;
 			rObj.value = customerType.id;
+			rObj.key = customerType.salesChannelId;
 			return rObj;
 		});
 
@@ -105,60 +100,6 @@ class CustomerEdit extends Component {
 	onEdit() {
 		let salesChannelId = this.state.customerChannel > 0 ? this.state.customerChannel : -1;
 		let customerTypeId = this.state.customerType > 0 ? this.state.customerType : -1;
-		console.log(this.state);
-		console.log(this.props.isEdit);
-		// if (
-		// 	this._textIsEmpty(this.phone.current.state.propertyText) ||
-		// 	!this.isValidPhoneNumber(this.phone.current.state.propertyText)
-		// ) {
-		// 	this.phone.current.refs.customerNumber.focus();
-		// 	return;
-		// }
-
-		// if (
-		// 	!this._textIsEmpty(
-		// 		this.secondPhoneNumber.current.state.propertyText
-		// 	) &&
-		// 	!this.isValidPhoneNumber(
-		// 		this.secondPhoneNumber.current.state.propertyText
-		// 	)
-		// ) {
-		// 	this.secondPhoneNumber.current.refs.secondPhoneNumber.focus();
-		// 	return;
-		// }
-
-		// if (this._textIsEmpty(this.name.current.state.propertyText)) {
-		// 	this.name.current.refs.customerName.focus();
-		// 	return;
-		// }
-
-		// if (this._textIsEmpty(this.address.current.state.propertyText)) {
-		// 	this.address.current.refs.customerAddress.focus();
-		// 	return;
-		// }
-
-		// if (this.customerChannel.current.state.selectedIndex === -1) {
-		// 	this.customerChannel.current.show();
-		// 	return;
-		// }
-
-		// if (this._textIsEmpty(this.frequency.current.state.propertyText)) {
-		// 	this.frequency.current.refs.customerFrequency.focus();
-		// 	return;
-		// } else {
-		// 	salesChannelId = this.salesChannels[
-		// 		this.customerChannel.current.state.selectedIndex
-		// 	].id;
-		// }
-
-		// if (this.customerType.current.state.selectedIndex === -1) {
-		// 	this.customerType.current.show();
-		// 	return;
-		// } else {
-		// 	customerTypeId = this.customerTypes[
-		// 		this.customerType.current.state.selectedIndex
-		// 	].id;
-		// }
 		if (this.props.isEdit) {
 			this.setReminderIfExists(this.props.selectedCustomer);
 
@@ -171,7 +112,7 @@ class CustomerEdit extends Component {
 				customerTypeId,
 				this.state.reference,
 				this.state.secondPhoneNumber
-			)
+			);
 			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
 			this.props.customerActions.CustomerSelected({});
 			this.setState({ isEditInProgress: true });
@@ -198,19 +139,11 @@ class CustomerEdit extends Component {
 
 	render() {
 		const cplaceholder = {
-			label: 'Customer Type',
+			label: 'Choose a Customer Type',
 			value: null,
 			color: '#333',
 		};
 
-		const splaceholder = {
-			label: 'Sales Channel',
-			value: null,
-			color: '#333',
-		};
-
-		console.log(this.props);
-		console.log(this.state);
 		return (
 			<View style={{ flex: 1, backgroundColor: '#f1f1f1', justifyContent: 'center' }}>
 				<KeyboardAwareScrollView
@@ -232,7 +165,7 @@ class CustomerEdit extends Component {
 								value={this.state.name}
 								inputContainerStyle={[styles.inputText]}
 								leftIcon={
-									<Icon
+									<Ionicons
 										name='md-person'
 										size={24}
 										color='black'
@@ -249,7 +182,7 @@ class CustomerEdit extends Component {
 									inputContainerStyle={[styles.inputText]}
 									containerStyle={{ flex: .5 }}
 									leftIcon={
-										<Icon
+										<Ionicons
 											name='md-contact'
 											size={24}
 											color='black'
@@ -266,7 +199,7 @@ class CustomerEdit extends Component {
 									inputContainerStyle={[styles.inputText]}
 									containerStyle={{ flex: .5 }}
 									leftIcon={
-										<Icon
+										<Ionicons
 											name='md-contact'
 											size={24}
 											color='black'
@@ -284,7 +217,7 @@ class CustomerEdit extends Component {
 								// label={i18n.t('address')}
 								inputContainerStyle={[styles.inputText]}
 								leftIcon={
-									<Icon
+									<Ionicons
 										name='md-map'
 										size={24}
 										color='black'
@@ -300,36 +233,35 @@ class CustomerEdit extends Component {
 								onChangeText={this.onChangeReference.bind(this)}
 								inputContainerStyle={[styles.inputText]}
 								leftIcon={
-									<Icon
+									<Ionicons
 										name='md-alarm'
 										size={24}
 										color='black'
 									/>
 								}
 							/>
-							{/* <View style={{ flex: 1, flexDirection: 'row' }}>
-						<View style={{ flex: .5 }}>
+
 							<RNPickerSelect
-										onValueChange={(value) => {
-											this.setState({ customerChannel: value });
-										}}
-										value={this.state.customerChannel}
-										placeholder={splaceholder}
-										items={this.salesChannelOptions}
-									    style={pickerSelectStyles}
-									/>
-									</View><View style={{ flex: .5 }}> */}
-							<RNPickerSelect
-								value={this.state.customerType}
-								onValueChange={(value) => {
-									this.setState({ customerType: value });
-								}}
 								placeholder={cplaceholder}
 								items={this.customerTypesOptions}
-								style={pickerSelectStyles}
+								onValueChange={(value, itemKey) => {
+									this.setState({ customerType: value });
+									this.setState({ customerChannel: this.customerTypesOptions[itemKey].key });
+								}}
+								value={this.state.customerType}
+								useNativeAndroidPickerStyle={false}
+								style={{
+									...pickerSelectStyles,
+									iconContainer: {
+									  top: 20,
+									  left: 30,
+									  color: "black"
+									},
+								  }}
+								Icon={() => {
+									return <Ionicons name="md-ribbon" size={24} />;
+								  }}
 							/>
-							{/* </View> */}
-							{/* </View> */}
 
 							<Button
 								onPress={() => this.onEdit()}
@@ -379,7 +311,6 @@ class CustomerEdit extends Component {
 		}
 
 	}
-
 
 	getName(me) {
 		console.log(me.props);
@@ -801,13 +732,6 @@ class CustomerEdit extends Component {
 	}
 }
 
-// CustomerEdit.propTypes = {
-// 	isEdit: PropTypes.bool.isRequired,
-// 	toolbarActions: PropTypes.object.isRequired,
-// 	customerActions: PropTypes.object.isRequired,
-// 	settings: PropTypes.object.isRequired
-// };
-
 function mapStateToProps(state, props) {
 	return {
 		selectedCustomer: state.customerReducer.selectedCustomer,
@@ -834,11 +758,13 @@ const pickerSelectStyles = StyleSheet.create({
 		borderRadius: 8,
 		borderColor: '#f1f1f1',
 		backgroundColor: '#f1f1f1',
+		color: 'black',
 		alignItems: 'center',
 		marginTop: 5,
 		marginBottom: 10,
 		marginLeft: 20,
 		marginRight: 20,
+		paddingLeft: 30,
 		paddingRight: 30 // to ensure the text is never behind the icon
 	},
 });
