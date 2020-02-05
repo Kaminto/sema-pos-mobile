@@ -117,6 +117,7 @@ class SelectedCustomerDetails extends React.Component {
 	modalOnClose() {
 		console.log('Modal closed here')
 		PaymentTypeRealm.resetSelected();
+		this.props.paymentTypesActions.resetSelectedDebt();
 		this.props.paymentTypesActions.setPaymentTypes(
 			PaymentTypeRealm.getPaymentTypes());
 	}
@@ -168,7 +169,6 @@ function mapStateToProps(state, props) {
 		paymentTypes: state.paymentTypesReducer.paymentTypes,
 		products: state.productReducer.products,
 		topups: state.topupReducer.topups,
-		topupTotal: state.topupReducer.total,
 	};
 }
 

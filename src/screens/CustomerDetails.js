@@ -185,9 +185,9 @@ class CustomerDetails extends Component {
 				 	{/* <View style={[styles.leftToolbar]}> */}
 						<SelectedCustomerDetails
 							paymentTypesActions={this.props.paymentTypesActions}
-							creditSales={this.comparePaymentCreditTypes()}
+							creditSales={this.customerCreditPaymentTypeReceipts()}
 							navigation={this.props.navigation}
-							topupTotal={this.props.topupTotal}
+							topupTotal={this.totalTopUp()}
 							selectedCustomer={this.props.selectedCustomer}
 						/>
 				{/* </View> */}
@@ -198,8 +198,47 @@ class CustomerDetails extends Component {
 		return null;
 	}
 
-	comparePaymentTypeReceipts() {
-		let receiptsPaymentTypes = [...this.comparePaymentTypes()];
+	totalTopUp() {
+        return this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
+    }
+
+    prepareTopUpData() {
+
+        if (this.props.topups.length > 0) {
+            const totalCount = this.props.topups.length;
+            let topupLogs = [...new Set(this.props.topups)];
+            let topups = topupLogs.map((topup, index) => {
+                return {
+                    active: topup.active,
+                    //id: topup.id,
+                    createdAt: topup.createdDate,
+                    topUpId: topup.topUpId,
+                    customer_account_id: topup.customer_account_id,
+                    total: topup.total,
+                    topup: topup.topup,
+                    balance: topup.balance,
+                    totalCount
+                };
+            });
+
+            topups.sort((a, b) => {
+                return moment
+                    .tz(a.createdAt, moment.tz.guess())
+                    .isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+                    ? 1
+                    : -1;
+            });
+
+            console.log('topups', topups);
+            return topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
+        } else {
+            return [];
+        }
+
+    }
+
+	customerCreditPaymentTypeReceipts() {
+		let receiptsPaymentTypes = [...this.compareCreditPaymentTypes()];
 		let customerReceipt = [...this.getCustomerRecieptData()];
 		console.log(receiptsPaymentTypes);
 		console.log(customerReceipt);
@@ -216,7 +255,7 @@ class CustomerDetails extends Component {
 		return finalCustomerReceiptsPaymentTypes;
 	}
 
-	comparePaymentCreditTypes() {
+	compareCreditPaymentTypes() {
 		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
 		let paymentTypes = [...this.props.paymentTypes];
 		let finalreceiptsPaymentTypes = [];
@@ -233,7 +272,7 @@ class CustomerDetails extends Component {
 	}
 
 
-	comparePaymentTypes() {
+	compareLoanPaymentTypes() {
 		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
 		let paymentTypes = [...this.props.paymentTypes];
 

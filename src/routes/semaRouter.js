@@ -139,11 +139,14 @@ const ListCustomerStack = createStackNavigator({
                             marginTop: 12,
                             flex: 1
                         }}>
-                        {navigation.getParam('isCustomerSelected') && (
-
-							<FontAwesome
-							    style={{marginRight: 20, fontSize: 30, color: 'white'}}
-							    icon={SolidIcons.balanceScale}
+                        {navigation.getParam('isCustomerSelected') && navigation.getParam('isDueAmount') > 0 && (
+                            <Icon
+                                name='md-cash'
+                                size={30}
+                                color="white"
+                                style={{
+                                    marginRight: 20,
+                                }}
                                 onPress={navigation.getParam('clearLoan')}
                             />
                         )}

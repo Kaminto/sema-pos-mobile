@@ -51,8 +51,8 @@
   "over-due-amount-title": "Over Due Amount",
   "over-due-amount-text": "The payoff amount is greater than the due amount. The due amount is : ",
 
-  "credit-due-amount-title": "Over Due Amount",
-  "credit-due-amount-text": "The credit amount is greater than the due amount. The due amount is : ",
+  "credit-due-amount-title": "Credit Amount",
+  "credit-due-amount-text": "The Credit amount is greater than the due amount. The due amount is : ",
 
   "product": "Product",
 
@@ -96,6 +96,7 @@
   "sale-amount-due": "Sale Amount Due",
   "previous-amount-due": "Outstanding Debt",
   "total-amount-due": "Total Amount Due",
+  "available-credit": "Available Credit",
   "complete-sale": "Complete Sale",
   "processing-order": "Processing order...",
 

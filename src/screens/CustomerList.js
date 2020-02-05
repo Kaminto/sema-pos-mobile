@@ -51,6 +51,7 @@ class CustomerList extends Component {
     }
     componentDidMount() {
         this.props.navigation.setParams({ isCustomerSelected: false });
+        this.props.navigation.setParams({ isDueAmount: 0 });
         this.props.navigation.setParams({ salesChannelValue: 'all' });
         this.props.navigation.setParams({ customerTypeValue: 'all' });
         this.props.navigation.setParams({ customerName: "" });
@@ -95,6 +96,7 @@ class CustomerList extends Component {
     modalOnClose() {
         console.log('Modal closed here')
         PaymentTypeRealm.resetSelected();
+        this.props.paymentTypesActions.resetSelectedDebt();
         this.props.paymentTypesActions.setPaymentTypes(
             PaymentTypeRealm.getPaymentTypes());
     }
@@ -134,6 +136,7 @@ class CustomerList extends Component {
                                 ); // Delete from storage
                                 this.props.customerActions.CustomerSelected({}); // Clear selected customer
                                 this.props.navigation.setParams({ isCustomerSelected: false });
+                                this.props.navigation.setParams({ isDueAmount: 0 });
                                 this.props.navigation.setParams({ customerName: "" });
                                 this.props.customerActions.setCustomers(
                                     CustomerRealm.getAllCustomer()
@@ -154,6 +157,7 @@ class CustomerList extends Component {
                             console.log('OK Pressed');
                             this.props.customerActions.CustomerSelected({}); // Clear selected customer
                             this.props.navigation.setParams({ isCustomerSelected: false });
+                            this.props.navigation.setParams({ isDueAmount: 0 });
                             this.props.navigation.setParams({ customerName: "" });
                         }
                     }],
@@ -231,6 +235,7 @@ class CustomerList extends Component {
                         this.props.customerActions.CustomerSelected({});
                         this.props.customerActions.setCustomerEditStatus(false);
                         this.props.navigation.setParams({ isCustomerSelected: false });
+                        this.props.navigation.setParams({ isDueAmount: 0 });
                         this.props.navigation.setParams({ customerName: '' });
                         this.props.navigation.navigate('EditCustomer');
                     }}
@@ -477,6 +482,7 @@ class CustomerList extends Component {
         this.setState({ refresh: !this.state.refresh });
         this.props.customerActions.setCustomerEditStatus(true);
         this.props.navigation.setParams({ isCustomerSelected: true });
+        this.props.navigation.setParams({ isDueAmount: item.dueAmount });
         this.props.navigation.setParams({ customerName: item.name });
         this.props.navigation.setParams({ 'title': item.name });
         Events.trigger('onOrder', { customer: item });

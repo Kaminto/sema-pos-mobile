@@ -27,7 +27,7 @@ class OrderView extends Component {
 	componentWillUnmount() {
 		Events.rm('ProductsUpdated', 'productsUpdate2');
 		Events.rm('ProductMrpsUpdated', 'productMrpsUpdate1');
-		this.props.customerActions.CustomerSelected({});
+		//this.props.customerActions.CustomerSelected({});
 		this.props.orderActions.ClearOrder();
 	}
 
