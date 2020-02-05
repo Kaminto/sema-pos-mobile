@@ -13,17 +13,12 @@ import {
 	ScrollView,
 	SectionList
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Events from 'react-native-simple-events';
 
 import * as ToolbarActions from '../actions/ToolBarActions';
-import ModalDropdown from 'react-native-modal-dropdown';
-import PosStorage from '../database/PosStorage';
-import SettingRealm from '../database/settings/settings.operations';
 import CustomerRealm from '../database/customers/customer.operations';
 import * as CustomerActions from '../actions/CustomerActions';
 
@@ -41,7 +36,6 @@ class ReceiptLineItem extends Component {
 
 	render() {
 		return (
-
 			<View
 				style={{
 					flex: 1,
@@ -68,43 +62,6 @@ class ReceiptLineItem extends Component {
 		);
 	}
 
-	// We'll keep this feature for later
-	onDeleteReceiptLineItem(receiptIndex, item) {
-		return () => {
-			Alert.alert(
-				'Confirm Receipt Line Item Deletion',
-				'Are you sure you want to delete this receipt line item? (this cannot be undone)',
-				[
-					{
-						text: i18n.t('no'),
-						onPress: () => console.log('Cancel Pressed'),
-						style: 'cancel'
-					},
-					{
-						text: i18n.t('yes'),
-						onPress: () => {
-							this.deleteReceiptLineItem(
-								receiptIndex,
-								this.props.lineItemIndex,
-								{ active: false, updated: true }
-							);
-						}
-					}
-				],
-				{ cancelable: true }
-			);
-		};
-	}
-
-	deleteReceiptLineItem(receiptIndex, receiptLineItemIndex, updatedFields) {
-		this.props.receiptActions.updateReceiptLineItem(
-			receiptIndex,
-			receiptLineItemIndex,
-			updatedFields
-		);
-		PosStorage.saveRemoteReceipts(this.props.receipts);
-		this.props.handleUpdate();
-	}
 
 	getImage = item => {
 		const productImage =
@@ -122,7 +79,6 @@ class ReceiptLineItem extends Component {
 		}
 	};
 }
-
 
 class TransactionDetail extends Component {
 	constructor(props) {
@@ -206,7 +162,7 @@ class TransactionDetail extends Component {
 		var receiptLineItems;
 		if (this.props.item.receiptLineItems !== undefined) {
 			receiptLineItems = this.props.item.receiptLineItems.map((lineItem, idx) => {
-				console.log('lineItem-lineItem-lineItem', lineItem);
+				// console.log('lineItem-lineItem-lineItem', lineItem);
 				return (
 					<ReceiptLineItem
 						receiptActions={this.props.receiptActions}
@@ -290,7 +246,6 @@ class TransactionDetail extends Component {
 
 }
 
-
 class Transactions extends Component {
 	constructor(props) {
 		super(props);
@@ -365,8 +320,7 @@ class Transactions extends Component {
 								item={this.state.selected}
 								products={this.props.products}
 								receiptActions={this.props.receiptActions}
-								// receipts={this.props.receipts}
-								remoteReceipts={this.props.receipts}
+								receipts={this.props.receipts}
 								paymenttypes={this.props.receiptsPaymentTypes}
 							/>
 						</ScrollView>
@@ -402,11 +356,11 @@ class Transactions extends Component {
 		// Used for enumerating receipts
 		const totalCount = this.props.receipts.length;
 		//const totalCount = this.props.receipts.length;
-		console.log('this.props.receipts', this.props.receipts);
-		console.log(this.props.receiptsPaymentTypes);
+		// console.log('this.props.receipts', this.props.receipts);
+		// console.log('Carl ' + this.props.receiptsPaymentTypes);
 		console.log(this.props.paymentTypes);
-		console.log(this.comparePaymentTypes());
-		console.log(this.comparePaymentTypeReceipts());
+		console.log("ComparePaymentTypes" + JSON.stringify(this.comparePaymentTypes()));
+		// console.log("ComparePaymentTypeReceipts" + JSON.stringify(this.comparePaymentTypeReceipts()));
 
 		let receipts = this.comparePaymentTypeReceipts().map((receipt, index) => {
 			return {

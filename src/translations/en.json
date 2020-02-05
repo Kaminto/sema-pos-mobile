@@ -94,7 +94,7 @@
   "cheque": "Cheque",
   "bank-transfer": "Bank Transfer",
   "sale-amount-due": "Sale Amount Due",
-  "previous-amount-due": "Previous Amount Due",
+  "previous-amount-due": "Outstanding Debt",
   "total-amount-due": "Total Amount Due",
   "complete-sale": "Complete Sale",
   "processing-order": "Processing order...",
