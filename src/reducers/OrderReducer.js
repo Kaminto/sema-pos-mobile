@@ -75,6 +75,20 @@ const orderReducer = (state = initialState, action) => {
 			for (let product of state.products) {
 				if (product.product.productId === action.data.product.productId) {
 					product.quantity = action.data.quantity;
+
+					if (!product.hasOwnProperty('discount')) {
+						product.finalAmount = (Number(product.quantity)) * Number(product.unitPrice);
+					}
+
+					if (product.hasOwnProperty('discount')) {
+						if (product.type === 'Percentage') {
+							product.finalAmount = (product.quantity * product.unitPrice) - Number(product.discount);
+						}
+
+						if (product.type === 'Flat') {
+							product.finalAmount = (product.quantity * product.unitPrice) * Number(product.discount) / 100;
+						}
+					}
 				}
 				newState.products.push(product);
 			}

@@ -21,7 +21,7 @@ import RemindersReport from '../components/reports/ReminderReport';
 
 import SalesReport from '../components/reports/SalesReport';
 
-import {Input} from 'react-native-elements';
+import { Input } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomSidebarMenu from './CustomSidebarMenu';
 import { Tooltip } from 'react-native-elements';
@@ -31,7 +31,7 @@ import i18n from '../app/i18n';
 class NavigationDrawerStructure extends Component {
     toggleDrawer = () => {
         this.props.navigationProps.toggleDrawer();
-	};
+    };
 
     render() {
         return (
@@ -68,12 +68,12 @@ const CustomerTransactionStack = createStackNavigator({
 },
     {
         headerMode: 'none',
-		initialRouteName: 'Transaction',
-		// navigationOptions: { headerTitle: 'Header title' },
+        initialRouteName: 'Transaction',
+        // navigationOptions: { headerTitle: 'Header title' },
     });
 
 const TabNavigator = createBottomTabNavigator({
-// const TabNavigator = createMaterialTopTabNavigator({
+    // const TabNavigator = createMaterialTopTabNavigator({
     Transaction: CustomerTransactionStack,
     Credit: CreditHistoryStack
     // ,Debit: DebitHistoryStack
@@ -88,16 +88,16 @@ const TabNavigator = createBottomTabNavigator({
             activeTintColor: 'white',
             inactiveTintColor: '#CCC',
             style: {
-				backgroundColor: '#00549C',
-				fontSize: 24,
-				padding: 10
-			},
-			labelStyle: {
-				fontSize: 18,
-				textTransform: 'uppercase'
-			  },
-		},
-		// navigationOptions: { headerTitle: 'Header title' },
+                backgroundColor: '#00549C',
+                fontSize: 24,
+                padding: 10
+            },
+            labelStyle: {
+                fontSize: 18,
+                textTransform: 'uppercase'
+            },
+        },
+        // navigationOptions: { headerTitle: 'Header title' },
     });
 
 
@@ -119,7 +119,7 @@ const ListCustomerStack = createStackNavigator({
     CustomerList: {
         screen: CustomerList,
         navigationOptions: ({ navigation }) => ({
-            title: navigation.getParam('title', 'Customers'),
+            title: navigation.getParam('isCustomerSelected') ? navigation.getParam('title', 'Customers') : 'Customers',
             headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
             headerStyle: {
                 backgroundColor: '#00549C',
@@ -131,13 +131,33 @@ const ListCustomerStack = createStackNavigator({
                         flexDirection: 'row',
                     }}>
 
+
                     <View
                         style={{
                             marginTop: 12,
                             flex: 1
                         }}>
                         {navigation.getParam('isCustomerSelected') && (
-							<Icon
+                            <Icon
+                                name='md-cash'
+                                size={30}
+                                color="white"
+                                style={{
+                                    marginRight: 20,
+                                }}
+                                onPress={navigation.getParam('clearLoan')}
+                            />
+                        )}
+                    </View>
+
+
+                    <View
+                        style={{
+                            marginTop: 12,
+                            flex: 1
+                        }}>
+                        {navigation.getParam('isCustomerSelected') && (
+                            <Icon
                                 name='md-trash'
                                 size={30}
                                 color="white"
@@ -234,17 +254,17 @@ const ListCustomerStack = createStackNavigator({
                             marginTop: 12,
                             flex: 1
                         }}>
-                          <Picker
-								mode="dropdown"
-								placeholder="Start Year"
-                                selectedValue={navigation.getParam('salesChannelValue')}
-                                style={{ height: 50, width: 150, color: 'white', alignContent: 'flex-end' }}
-                                onValueChange={navigation.getParam('checkfilter')}>
-                                <Picker.Item label="All Channels" value="all" />
-                                <Picker.Item label="Direct" value="direct" />
-                                <Picker.Item label="Reseller" value="reseller" />
-                                {/* <Picker.Item label="Water Club" value="water club" /> */}
-                            </Picker>
+                        <Picker
+                            mode="dropdown"
+                            placeholder="Start Year"
+                            selectedValue={navigation.getParam('salesChannelValue')}
+                            style={{ height: 50, width: 150, color: 'white', alignContent: 'flex-end' }}
+                            onValueChange={navigation.getParam('checkfilter')}>
+                            <Picker.Item label="All Channels" value="all" />
+                            <Picker.Item label="Direct" value="direct" />
+                            <Picker.Item label="Reseller" value="reseller" />
+                            {/* <Picker.Item label="Water Club" value="water club" /> */}
+                        </Picker>
 
                     </View>
 
@@ -294,8 +314,8 @@ const ListCustomerStack = createStackNavigator({
                     }}>
                         <Icon name='md-arrow-back' style={{
                             marginRight: 25,
-							marginLeft: 15,
-							color: 'white',
+                            marginLeft: 15,
+                            color: 'white',
                             fontWeight: 'bold',
                         }} size={20} onPress={() => { navigation.goBack() }} />
                     </View>
@@ -371,19 +391,19 @@ const TransactionStack = createStackNavigator({
                             marginTop: 12,
                             flex: 1
                         }}>
-                          <Picker
-						        mode="dropdown"
-                                selectedValue={navigation.getParam('paymentTypeValue')}
-                                style={{ height: 50, width: 190, color: 'white', alignContent: 'flex-end' }}
-                                onValueChange={navigation.getParam('checkPaymentTypefilter')}>
-                                <Picker.Item label="All Payment Types" value="all" />
-                                <Picker.Item label="Cash" value="cash" />
-                                <Picker.Item label="Mobile" value="mobile" />
-                                <Picker.Item label="Loan" value="loan" />
-                                <Picker.Item label="Cheque" value="cheque" />
-                                <Picker.Item label="Bank" value="bank" />
-                                <Picker.Item label="Credit" value="credit" />
-                            </Picker>
+                        <Picker
+                            mode="dropdown"
+                            selectedValue={navigation.getParam('paymentTypeValue')}
+                            style={{ height: 50, width: 190, color: 'white', alignContent: 'flex-end' }}
+                            onValueChange={navigation.getParam('checkPaymentTypefilter')}>
+                            <Picker.Item label="All Payment Types" value="all" />
+                            <Picker.Item label="Cash" value="cash" />
+                            <Picker.Item label="Mobile" value="mobile" />
+                            <Picker.Item label="Loan" value="loan" />
+                            <Picker.Item label="Cheque" value="cheque" />
+                            <Picker.Item label="Bank" value="bank" />
+                            <Picker.Item label="Credit" value="credit" />
+                        </Picker>
                     </View>
                 </View>
             ),

@@ -37,9 +37,9 @@ class CustomerDebtApi {
 		};
 		let url = 'sema/customer_debt';
 		console.log('this._url', this._url);
-		if (updatedSince) {
-			url = url + '?updated-date=' + updatedSince;
-		}
+		// if (updatedSince) {
+		// 	url = url + '?updated-date=' + updatedSince;
+		// }
 
 		return fetch(this._url + url, options)
 		.then(response => response.json())

@@ -42,57 +42,57 @@ class CreditHistory extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         return true;
-	}
+    }
 
     render() {
         return (
             <View style={{ backgroundColor: '#fff', flex: 1 }}>
-                        <SelectedCustomerDetails
-                            creditSales={this.comparePaymentTypes()}
-                            navigation={this.props.navigation}
-                            topupTotal={this.props.topupTotal}
-                            selectedCustomer={this.props.selectedCustomer} />
+                <SelectedCustomerDetails
+                    creditSales={this.comparePaymentTypes()}
+                    navigation={this.props.navigation}
+                    topupTotal={this.props.topupTotal}
+                    selectedCustomer={this.props.selectedCustomer} />
 
-			<View style={{ flexDirection: 'row', paddingTop: 20, flex: .75, width: '80%', alignSelf:'center', backgroundColor: '#FFF' }}>
+                <View style={{ flexDirection: 'row', paddingTop: 20, flex: .75, width: '80%', alignSelf: 'center', backgroundColor: '#FFF' }}>
 
-				<View style={{ flex:.6 }}>
-					<FlatList
-						ref={ref => {
-							this.flatListRef = ref;
-						}}
-						data={this.prepareTopUpData()}
-						ListHeaderComponent={this.showHeader}
-						extraData={this.state.refresh}
-						renderItem={({ item, index, separators }) => (
-							<TouchableHighlight
-								onPress={() => this.onPressItem(item)}
-								onShowUnderlay={separators.highlight}
-								onHideUnderlay={separators.unhighlight}>
-								{this.getRow(item, index, separators)}
-							</TouchableHighlight>
-						)}
-						keyExtractor={item => item.customerId}
-						initialNumToRender={50}
-					/>
-				</View>
-				<View style={{ flex:.4 }}>
-					<Card title={i18n.t('topup-placeholder')}>
-                    <Input
-                        placeholder={i18n.t(
-                            'topup-placeholder'
-                        )}
-                        // label={i18n.t('topup-placeholder')}
-                        value={this.state.topup}
-                        onChangeText={this.onChangeTopup}
-                    />
-                    <Button
-                        onPress={() => this.addCredit()}
-                        buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10 }}
-                        title={i18n.t('topup')} />
-						</Card>
+                    <View style={{ flex: .6 }}>
+                        <FlatList
+                            ref={ref => {
+                                this.flatListRef = ref;
+                            }}
+                            data={this.prepareTopUpData()}
+                            ListHeaderComponent={this.showHeader}
+                            extraData={this.state.refresh}
+                            renderItem={({ item, index, separators }) => (
+                                <TouchableHighlight
+                                    onPress={() => this.onPressItem(item)}
+                                    onShowUnderlay={separators.highlight}
+                                    onHideUnderlay={separators.unhighlight}>
+                                    {this.getRow(item, index, separators)}
+                                </TouchableHighlight>
+                            )}
+                            keyExtractor={item => item.customerId}
+                            initialNumToRender={50}
+                        />
+                    </View>
+                    <View style={{ flex: .4 }}>
+                        <Card title={i18n.t('topup-placeholder')}>
+                            <Input
+                                placeholder={i18n.t(
+                                    'topup-placeholder'
+                                )}
+                                // label={i18n.t('topup-placeholder')}
+                                value={this.state.topup}
+                                onChangeText={this.onChangeTopup}
+                            />
+                            <Button
+                                onPress={() => this.addCredit()}
+                                buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10 }}
+                                title={i18n.t('topup')} />
+                        </Card>
+                    </View>
                 </View>
             </View>
-			</View>
         );
     }
 
@@ -119,6 +119,21 @@ class CreditHistory extends Component {
     };
 
     addCredit = () => {
+        console.log('Number(this.state.topup)', Number(this.state.topup))
+        if (Number(this.state.topup) === 0) {
+            Alert.alert(
+                'Notice',
+                'Payment Made',
+                [{
+                    text: 'OK',
+                    onPress: () => {
+                        return;
+                    }
+                }],
+                { cancelable: false }
+            );
+        }
+
 
         console.log(this.state.topup);
         console.log(this.props.selectedCustomer);
@@ -181,14 +196,14 @@ class CreditHistory extends Component {
                 style={[
                     this.getRowBackground(index, isSelected),
                     {
-						flex: 1,
-						padding: 5,
+                        flex: 1,
+                        padding: 5,
                         flexDirection: 'row',
                         height: 50,
                         alignItems: 'center'
                     }
                 ]}>
-				<View style={{ flex: 1 }}>
+                <View style={{ flex: 1 }}>
                     <Text style={[styles.baseItem]}>
                         {moment
                             .tz(item.created_at, moment.tz.guess())
@@ -218,13 +233,13 @@ class CreditHistory extends Component {
                     {
                         flex: 1,
                         flexDirection: 'row',
-						height: 50,
-						padding: 10,
+                        height: 50,
+                        padding: 10,
                         alignItems: 'center'
                     },
                     styles.headerBackground
                 ]}>
-				<View style={[{ flex: 1 }]}>
+                <View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem]}>Date</Text>
                 </View>
 
@@ -378,8 +393,8 @@ export default connect(
 
 const styles = StyleSheet.create({
     baseItem: {
-		fontSize: 18,
-		alignContent: 'flex-end'
+        fontSize: 18,
+        alignContent: 'flex-end'
     },
     leftMargin: {
         left: 10

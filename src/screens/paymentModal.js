@@ -376,6 +376,9 @@ class PaymentModal extends Component {
 					this.props.selectedCustomer.dueAmount
 				);
 				this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
+				this.props.customerActions.setCustomers(
+					CustomerRealm.getAllCustomer()
+				);
 			}
 
 			Alert.alert(
