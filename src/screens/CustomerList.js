@@ -19,7 +19,7 @@ import * as ToolbarActions from '../actions/ToolBarActions';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import ModalDropdown from 'react-native-modal-dropdown';
+import Modal from 'react-native-modalbox';
 
 import CustomerRealm from '../database/customers/customer.operations';
 import OrderRealm from '../database/orders/orders.operations';
@@ -28,7 +28,10 @@ import SalesChannelRealm from '../database/sales-channels/sales-channels.operati
 import Events from 'react-native-simple-events';
 import i18n from '../app/i18n';
 
+import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
+import * as PaymentTypesActions from "../actions/PaymentTypesActions";
 
+import PaymentModal from './paymentModal';
 const anonymousId = '9999999-9999-9999-9999-9999999';
 
 class CustomerList extends Component {
@@ -50,11 +53,12 @@ class CustomerList extends Component {
         this.props.navigation.setParams({ isCustomerSelected: false });
         this.props.navigation.setParams({ salesChannelValue: 'all' });
         this.props.navigation.setParams({ customerTypeValue: 'all' });
-		this.props.navigation.setParams({ customerName: "" });
+        this.props.navigation.setParams({ customerName: "" });
         this.props.navigation.setParams({ searchCustomer: this.searchCustomer });
         this.props.navigation.setParams({ checkfilter: this.checkfilter });
         this.props.navigation.setParams({ checkCustomerTypefilter: this.checkCustomerTypefilter });
         this.props.navigation.setParams({ onDelete: this.onDelete });
+        this.props.navigation.setParams({ clearLoan: this.clearLoan });
         this.props.navigation.setParams({ checkSelectedCustomer: this.checkSelectedCustomer });
         this.props.navigation.setParams({ editCustomer: this.editCustomer });
 
@@ -69,7 +73,7 @@ class CustomerList extends Component {
             'customerId1',
             this.onScrollCustomerTo.bind(this)
         );
-	}
+    }
 
     searchCustomer = (searchText) => {
         console.log(searchText)
@@ -87,6 +91,21 @@ class CustomerList extends Component {
         this.props.navigation.setParams({ customerTypeValue: searchText });
         this.props.customerActions.SearchCustomerTypes(searchText);
     };
+
+    modalOnClose() {
+        console.log('Modal closed here')
+        PaymentTypeRealm.resetSelected();
+        this.props.paymentTypesActions.setPaymentTypes(
+            PaymentTypeRealm.getPaymentTypes());
+    }
+
+    closePaymentModal = () => {
+        this.refs.modal6.close();
+    };
+
+    clearLoan = () => {
+        this.refs.modal6.open();
+    }
 
 
     onDelete = () => {
@@ -176,8 +195,8 @@ class CustomerList extends Component {
     });
 
     shouldComponentUpdate(nextProps, nextState) {
-		console.log('onScrollCustomerTo');
-		// this.props.navigation.setParams({ 'title': 'Customers' });
+        console.log('onScrollCustomerTo');
+        // this.props.navigation.setParams({ 'title': 'Customers' });
         return true;
     }
 
@@ -216,6 +235,19 @@ class CustomerList extends Component {
                         this.props.navigation.navigate('EditCustomer');
                     }}
                 />
+
+                <View style={styles.modalPayment}>
+                    <Modal
+                        style={[styles.modal, styles.modal3]}
+                        coverScreen={true}
+                        position={"center"} ref={"modal6"}
+                        onClosed={() => this.modalOnClose()}
+                        isDisabled={this.state.isDisabled}>
+                        <PaymentModal
+                            modalOnClose={this.modalOnClose}
+                            closePaymentModal={this.closePaymentModal} />
+                    </Modal>
+                </View>
                 <SearchWatcher parent={this}>
                     {this.props.searchString}
                 </SearchWatcher>
@@ -226,7 +258,7 @@ class CustomerList extends Component {
     prepareData = () => {
         this.salesChannels = SalesChannelRealm.getSalesChannelsForDisplay();
         this.customerTypes = CustomerTypeRealm.getCustomerTypes();
-        console.log('this.customerTypes',this.customerTypes);
+        console.log('this.customerTypes', this.customerTypes);
         let data = [];
         if (this.props.customers.length > 0) {
             data = this.filterItems(this.props.customers);
@@ -238,23 +270,26 @@ class CustomerList extends Component {
     filterItems = data => {
         let filter = {
             salesChannel: this.props.channelFilterString.length > 0 ? this.props.channelFilterString === 'all' ? "" : this.props.channelFilterString : "",
-            name: this.props.searchString.length > 0 ? this.props.searchString : "",
+            searchString: this.props.searchString.length > 0 ? this.props.searchString : "",
             customerType: this.props.customerTypeFilter.length > 0 ? this.props.customerTypeFilter === 'all' ? "" : this.props.customerTypeFilter : "",
         };
         data = data.map(item => {
             return {
                 ...item,
                 salesChannel: this.getCustomerSalesChannel(item).toLowerCase(),
+                searchString: item.name + ' ' + item.phoneNumber,
                 customerType: this.getCustomerTypes(item).toLowerCase()
             }
         });
+
+        console.log('data', data);
 
         let filteredItems = data.filter(function (item) {
             for (var key in filter) {
                 if (
                     item[key].toString() === undefined ||
-                    item[key].toString().toLowerCase().startsWith(filter[key].toString().toLowerCase()) !=
-                    filter[key].toString().toLowerCase().startsWith(filter[key].toString().toLowerCase())
+                    item[key].toString().toLowerCase().includes(filter[key].toString().toLowerCase()) !=
+                    filter[key].toString().toLowerCase().includes(filter[key].toString().toLowerCase())
                 )
                     return false;
             }
@@ -442,8 +477,8 @@ class CustomerList extends Component {
         this.setState({ refresh: !this.state.refresh });
         this.props.customerActions.setCustomerEditStatus(true);
         this.props.navigation.setParams({ isCustomerSelected: true });
-		this.props.navigation.setParams({ customerName: item.name });
-		this.props.navigation.setParams({ 'title': item.name });
+        this.props.navigation.setParams({ customerName: item.name });
+        this.props.navigation.setParams({ 'title': item.name });
         Events.trigger('onOrder', { customer: item });
     };
 
@@ -539,7 +574,8 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
     return {
         customerActions: bindActionCreators(CustomerActions, dispatch),
-        toolbarActions: bindActionCreators(ToolbarActions, dispatch)
+        toolbarActions: bindActionCreators(ToolbarActions, dispatch),
+        paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch),
     };
 }
 
@@ -564,7 +600,16 @@ const styles = StyleSheet.create({
     headerBackground: {
         backgroundColor: '#ABC1DE'
     },
-
+    modalPayment: {
+        backgroundColor: 'white',
+    },
+    modal3: {
+        width: '70%',
+        height: 400,
+    },
+    modal: {
+        justifyContent: 'center',
+    },
     lightBackground: {
         backgroundColor: 'white'
     },
