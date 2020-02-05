@@ -25,13 +25,14 @@ import { Input } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomSidebarMenu from './CustomSidebarMenu';
 import { Tooltip } from 'react-native-elements';
+import FontAwesome, { SolidIcons, RegularIcons } from 'react-native-fontawesome';
 
 import i18n from '../app/i18n';
 
 class NavigationDrawerStructure extends Component {
     toggleDrawer = () => {
         this.props.navigationProps.toggleDrawer();
-    };
+	};
 
     render() {
         return (
@@ -50,6 +51,7 @@ class NavigationDrawerStructure extends Component {
         );
     }
 }
+
 
 const CreditHistoryStack = createStackNavigator({
     CreditHistory: {
@@ -138,13 +140,10 @@ const ListCustomerStack = createStackNavigator({
                             flex: 1
                         }}>
                         {navigation.getParam('isCustomerSelected') && (
-                            <Icon
-                                name='md-cash'
-                                size={30}
-                                color="white"
-                                style={{
-                                    marginRight: 20,
-                                }}
+
+							<FontAwesome
+							    style={{marginRight: 20, fontSize: 30, color: 'white'}}
+							    icon={SolidIcons.balanceScale}
                                 onPress={navigation.getParam('clearLoan')}
                             />
                         )}
