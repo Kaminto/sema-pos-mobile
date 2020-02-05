@@ -137,7 +137,7 @@ const ListCustomerStack = createStackNavigator({
                             marginTop: 12,
                             flex: 1
                         }}>
-                        {navigation.getParam('isCustomerSelected') && (
+                        {navigation.getParam('isCustomerSelected') && navigation.getParam('isDueAmount') > 0 && (
                             <Icon
                                 name='md-cash'
                                 size={30}

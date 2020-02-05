@@ -3,6 +3,7 @@ import {
     View,
     Text,
     FlatList,
+    Alert,
     TouchableHighlight,
     StyleSheet,
 } from 'react-native';
@@ -48,9 +49,9 @@ class CreditHistory extends Component {
         return (
             <View style={{ backgroundColor: '#fff', flex: 1 }}>
                 <SelectedCustomerDetails
-                    creditSales={this.comparePaymentTypes()}
+                    creditSales={this.customerCreditPaymentTypeReceipts()}
                     navigation={this.props.navigation}
-                    topupTotal={this.props.topupTotal}
+                    topupTotal={this.totalTopUp()}
                     selectedCustomer={this.props.selectedCustomer} />
 
                 <View style={{ flexDirection: 'row', paddingTop: 20, flex: .75, width: '80%', alignSelf: 'center', backgroundColor: '#FFF' }}>
@@ -127,11 +128,12 @@ class CreditHistory extends Component {
                 [{
                     text: 'OK',
                     onPress: () => {
-                        return;
+                        
                     }
                 }],
                 { cancelable: false }
             );
+            return;
         }
 
 
@@ -152,6 +154,9 @@ class CreditHistory extends Component {
         );
     }
 
+    totalTopUp() {
+        return this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
+    }
 
     prepareTopUpData() {
 
@@ -268,40 +273,58 @@ class CreditHistory extends Component {
         // Events.trigger('onOrder', { customer: item });
     };
 
-    comparePaymentTypeReceipts() {
-        let receiptsPaymentTypes = [...this.comparePaymentTypes()];
-        let customerReceipt = [...this.getCustomerRecieptData()];
-        console.log(receiptsPaymentTypes);
-        console.log(customerReceipt);
-        let finalCustomerReceiptsPaymentTypes = [];
-        for (let receiptsPaymentType of receiptsPaymentTypes) {
-            const rpIndex = customerReceipt.map(function (e) { return e.id }).indexOf(receiptsPaymentType.receipt_id);
-            console.log(rpIndex);
-            if (rpIndex >= 0) {
-                receiptsPaymentType.receipt = receiptsPaymentTypes[rpIndex];
-                finalCustomerReceiptsPaymentTypes.push(receiptsPaymentType);
-            }
-        }
-        return finalCustomerReceiptsPaymentTypes;
-    }
+    customerCreditPaymentTypeReceipts() {
+		let receiptsPaymentTypes = [...this.compareCreditPaymentTypes()];
+		let customerReceipt = [...this.getCustomerRecieptData()];
+		console.log(receiptsPaymentTypes);
+		console.log(customerReceipt);
+		let finalCustomerReceiptsPaymentTypes = [];
 
-    comparePaymentTypes() {
-        let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
-        let paymentTypes = [...this.props.paymentTypes];
+		for (let receiptsPaymentType of receiptsPaymentTypes) {
+			const rpIndex = customerReceipt.map(function (e) { return e.id }).indexOf(receiptsPaymentType.receipt_id);
+			console.log(rpIndex);
+			if (rpIndex >= 0) {
+				receiptsPaymentType.receipt = receiptsPaymentTypes[rpIndex];
+				finalCustomerReceiptsPaymentTypes.push(receiptsPaymentType);
+			}
+		}
+		return finalCustomerReceiptsPaymentTypes;
+	}
 
-        let finalreceiptsPaymentTypes = [];
+	compareCreditPaymentTypes() {
+		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
+		let paymentTypes = [...this.props.paymentTypes];
+		let finalreceiptsPaymentTypes = [];
+		for (let receiptsPaymentType of receiptsPaymentTypes) {
+			const rpIndex = paymentTypes.map(function (e) { return e.id }).indexOf(receiptsPaymentType.payment_type_id);
+			if (rpIndex >= 0) {
+				if (paymentTypes[rpIndex].name === 'credit') {
+					receiptsPaymentType.name = paymentTypes[rpIndex].name;
+					finalreceiptsPaymentTypes.push(receiptsPaymentType);
+				}
+			}
+		}
+		return finalreceiptsPaymentTypes;
+	}
 
-        for (let receiptsPaymentType of receiptsPaymentTypes) {
-            const rpIndex = paymentTypes.map(function (e) { return e.id }).indexOf(receiptsPaymentType.payment_type_id);
-            if (rpIndex >= 0) {
-                if (paymentTypes[rpIndex].name === 'credit') {
-                    receiptsPaymentType.name = paymentTypes[rpIndex].name;
-                    finalreceiptsPaymentTypes.push(receiptsPaymentType);
-                }
-            }
-        }
-        return finalreceiptsPaymentTypes;
-    }
+
+	compareLoanPaymentTypes() {
+		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
+		let paymentTypes = [...this.props.paymentTypes];
+
+		let finalreceiptsPaymentTypes = [];
+
+		for (let receiptsPaymentType of receiptsPaymentTypes) {
+			const rpIndex = paymentTypes.map(function (e) { return e.id }).indexOf(receiptsPaymentType.payment_type_id);
+			if (rpIndex >= 0) {
+				if (paymentTypes[rpIndex].name === 'loan') {
+					receiptsPaymentType.name = paymentTypes[rpIndex].name;
+					finalreceiptsPaymentTypes.push(receiptsPaymentType);
+				}
+			}
+		}
+		return finalreceiptsPaymentTypes;
+	}
 
     getCustomerRecieptData() {
         // Used for enumerating receipts
