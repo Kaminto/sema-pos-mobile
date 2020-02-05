@@ -31,6 +31,8 @@ import ReceiptPaymentTypeRealm from '../../database/reciept_payment_types/reciep
 import * as Utilities from "../../services/Utilities";
 import ToggleSwitch from 'toggle-switch-react-native';
 
+import moment from 'moment-timezone';
+
 const uuidv1 = require('uuid/v1');
 
 const widthQuanityModal = '70%';
@@ -50,7 +52,6 @@ class OrderCheckout extends Component {
 			isDisabled: false,
 			swipeToClose: true,
 			sliderValue: 0.3,
-			paymentOptions: "",
 			selectedPaymentTypes: [],
 			selectedType: {},
 			checkedType: {},
@@ -113,8 +114,8 @@ class OrderCheckout extends Component {
 						<TouchableHighlight underlayColor='#c0c0c0'
 							onPress={() => this.onPay()}>
 							<Text
-							style={[{ paddingTop: 10, paddingBottom: 10, textAlign: 'center' },
-							 styles.buttonText]}>{i18n.t('pay')}</Text>
+								style={[{ paddingTop: 10, paddingBottom: 10, textAlign: 'center' },
+								styles.buttonText]}>{i18n.t('pay')}</Text>
 						</TouchableHighlight>
 					</View>
 				</View>
@@ -137,107 +138,119 @@ class OrderCheckout extends Component {
 								}}>
 								{this.getCancelButton()}
 							</View>
-						<View
-							style={{
-								flex: 1,
-								marginTop: 0,
-								marginLeft: 20,
-								marginRight: 20
-							}}>
+							<View
+								style={{
+									flex: 1,
+									marginTop: 0,
+									marginLeft: 20,
+									marginRight: 20
+								}}>
 
 
-							<View style={{ flex: 1, flexDirection: 'row' }}>
-									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
-							</View>
-
-							<FlatList
-								data={this.props.paymentTypes}
-								renderItem={({ item, index, separators }) => (
-									this.paymentTypesRow(item, index, separators)
-								)}
-								extraData={this.props.selectedPaymentTypes}
-								numColumns={2}
-								contentContainerStyle={styles.container}
-							/>
-
-							<Card
-							 containerStyle={{ backgroundColor: '#ABC1DE'}}
-							  title={this.getSaleAmount()}>
 								<View style={{ flex: 1, flexDirection: 'row' }}>
-									<PaymentDescription
-										title={`${i18n.t('previous-amount-due')}:`}
-										total={Utilities.formatCurrency(
-											this.calculateAmountDue()
-										)}
-									/>
-									<PaymentDescription
-										title={`${i18n.t('total-amount-due')}:`}
-										total={Utilities.formatCurrency(
-											this.calculateTotalDue()
-										)}
-									/>
-									</View>
-							</Card>
+									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
+								</View>
 
-							<View style={{ flex: 1, flexDirection: 'row' }}>
-								<View style={{ flex: 1 }}>
-									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Delivery Mode</Text>
+								<FlatList
+									data={this.props.paymentTypes}
+									renderItem={({ item, index, separators }) => (
+										this.paymentTypesRow(item, index, separators)
+									)}
+									extraData={this.props.selectedPaymentTypes}
+									numColumns={2}
+									contentContainerStyle={styles.container}
+								/>
+
+								<Card
+									containerStyle={{ backgroundColor: '#ABC1DE' }}
+								>
+
+									<View style={{ flex: 1, flexDirection: 'row' }}>
+										{this.getSaleAmount()}
+										<PaymentDescription
+											title={`${i18n.t('available-credit')}:`}
+											total={Utilities.formatCurrency(
+												this.currentCredit()
+											)}
+										/>
+									</View>
+
+
+									<View style={{ flex: 1, flexDirection: 'row' }}>
+										<PaymentDescription
+											title={`${i18n.t('previous-amount-due')}:`}
+											total={Utilities.formatCurrency(
+												this.calculateAmountDue()
+											)}
+										/>
+										<PaymentDescription
+											title={`${i18n.t('total-amount-due')}:`}
+											total={Utilities.formatCurrency(
+												this.calculateTotalDue()
+											)}
+										/>
+									</View>
+								</Card>
+
+								<View style={{ flex: 1, flexDirection: 'row' }}>
+									<View style={{ flex: 1 }}>
+										<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Delivery Mode</Text>
+
+									</View>
+								</View>
+
+								<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center', paddingBottom: 10 }}>
+									<CheckBox
+										title={'Delivery'}
+										checkedIcon={<Icon
+											name="md-checkbox"
+											size={20}
+											color="black"
+										/>}
+										uncheckedIcon={<Icon
+											name="md-square-outline"
+											size={20}
+											color="black"
+										/>}
+										checked={this.props.delivery === 'delivery'}
+										onPress={() => {
+											this.setState({ isWalkIn: false });
+											if (this.props.delivery === 'delivery') {
+												this.props.paymentTypesActions.setDelivery('walkin');
+												return;
+											}
+											this.props.paymentTypesActions.setDelivery('delivery');
+										}}
+									/>
+									<CheckBox
+										title={'Walk In'}
+										checkedIcon={<Icon
+											name="md-checkbox"
+											size={20}
+											color="black"
+										/>}
+										uncheckedIcon={<Icon
+											name="md-square-outline"
+											size={20}
+											color="black"
+										/>}
+										checked={this.props.delivery === 'walkin'}
+										onPress={() => {
+											this.setState({ isWalkIn: false });
+
+											if (this.props.delivery === 'walkin') {
+												this.props.paymentTypesActions.setDelivery('delivery');
+												return;
+											}
+
+											this.props.paymentTypesActions.setDelivery('walkin');
+										}}
+									/>
 
 								</View>
-							</View>
-
-							<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center', paddingBottom: 10 }}>
-								<CheckBox
-									title={'Delivery'}
-									checkedIcon={<Icon
-										name="md-checkbox"
-										size={20}
-										color="black"
-									/>}
-									uncheckedIcon={<Icon
-										name="md-square-outline"
-										size={20}
-										color="black"
-									/>}
-									checked={this.props.delivery === 'delivery'}
-									onPress={() => {
-										this.setState({ isWalkIn: false });
-										if (this.props.delivery === 'delivery') {
-											this.props.paymentTypesActions.setDelivery('walkin');
-											return;
-										}
-										this.props.paymentTypesActions.setDelivery('delivery');
-									}}
-								/>
-								<CheckBox
-									title={'Walk In'}
-									checkedIcon={<Icon
-										name="md-checkbox"
-										size={20}
-										color="black"
-									/>}
-									uncheckedIcon={<Icon
-										name="md-square-outline"
-										size={20}
-										color="black"
-									/>}
-									checked={this.props.delivery === 'walkin'}
-									onPress={() => {
-										this.setState({ isWalkIn: false });
-
-										if (this.props.delivery === 'walkin') {
-											this.props.paymentTypesActions.setDelivery('delivery');
-											return;
-										}
-
-										this.props.paymentTypesActions.setDelivery('walkin');
-									}}
-								/>
-
-							</View>
-							<View style={{ flex: 1, flexDirection: 'row' }}>
-							<Text style={ [styles.baseItem, { fontSize: 16, paddingTop: 15, textAlign: 'left' }]}>Are you recording an old sale?</Text>{this.getBackDateComponent()}
-							</View>
+								<View style={{ flex: 1, flexDirection: 'row' }}>
+									<Text style={[styles.baseItem, { fontSize: 16, paddingTop: 15, textAlign: 'left' }]}>Are you recording an old sale?</Text>{this.getBackDateComponent()}
+								</View>
 							</View>
 							<View style={styles.completeOrderBtn}>
 								<View style={{ justifyContent: 'center' }}>
@@ -246,7 +259,7 @@ class OrderCheckout extends Component {
 										onPress={() => this.onCompleteOrder()}>
 										<Text
 											style={[
-												{ paddingTop: 10 , paddingBottom: 20},
+												{ paddingTop: 10, paddingBottom: 20 },
 												styles.buttonText
 											]}>
 											{i18n.t('complete-sale')}
@@ -325,7 +338,7 @@ class OrderCheckout extends Component {
 									Alert.alert(
 										'Notice. ',
 										`Amount can not be greater that ${this.calculateOrderDue()}`,
-										[{ text: 'OK', onPress: () => {} }],
+										[{ text: 'OK', onPress: () => { } }],
 										{ cancelable: false }
 									);
 									return;
@@ -455,7 +468,7 @@ class OrderCheckout extends Component {
 		if (!this.isPayoffOnly()) {
 			return (
 				<PaymentDescription
-				styles={{ fontWeight: 'bold' }}
+					styles={{ fontWeight: 'bold' }}
 					title={`${i18n.t('sale-amount-due')}: `}
 					total={Utilities.formatCurrency(this.calculateOrderDue())}
 				/>
@@ -482,7 +495,7 @@ class OrderCheckout extends Component {
 			return (
 				<View
 					style={{
-					    padding: 10
+						padding: 10
 					}}>
 					<Button
 						style={{ flex: 1 }}
@@ -551,22 +564,6 @@ class OrderCheckout extends Component {
 			}
 		}
 		return null;
-	};
-
-
-	closeHandler = () => {
-		this.setState({ isCompleteOrderVisible: false });
-		if (this.saleSuccess) {
-			this.props.customerBarActions.ShowHideCustomers(1);
-			this.props.customerActions.CustomerSelected({});
-		} else {
-			Alert.alert(
-				'Invalid payment amount. ',
-				'The amount paid cannot exceed to cost of goods and customer amount due',
-				[{ text: 'OK', onPress: () =>{}}],
-				{ cancelable: false }
-			);
-		}
 	};
 
 	getTotalOrders = () => {
@@ -656,7 +653,7 @@ class OrderCheckout extends Component {
 			}
 			let cogs_total = 0;
 
-			receipt.products =  this.props.products.map(product => {
+			receipt.products = this.props.products.map(product => {
 				let receiptLineItem = {};
 				let tempValue = this.getItemCogs(product.product) * product.quantity;
 				receiptLineItem.price_total = this.getItemPrice(product.product) * product.quantity;
@@ -705,7 +702,7 @@ class OrderCheckout extends Component {
 						[
 							{
 								text: 'OK',
-								onPress: () => {}
+								onPress: () => { }
 							}
 						],
 						{ cancelable: false }
@@ -732,7 +729,7 @@ class OrderCheckout extends Component {
 						[
 							{
 								text: 'OK',
-								onPress: () => {}
+								onPress: () => { }
 							}
 						],
 						{ cancelable: false }
@@ -754,10 +751,7 @@ class OrderCheckout extends Component {
 				OrderRealm.getAllOrder()
 			);
 
-
-
 			const rpIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("loan");
-
 
 			if (rpIndex >= 0) {
 				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) + Number(this.props.selectedPaymentTypes[rpIndex].amount);
@@ -791,6 +785,139 @@ class OrderCheckout extends Component {
 		this.refs.modal6.close();
 	};
 
+	getCreditPurchases() {
+		console.log('customerCreditPaymentTypeReceipts', this.customerCreditPaymentTypeReceipts());
+		return this.customerCreditPaymentTypeReceipts().reduce((total, item) => { return (total + item.amount) }, 0)
+	}
+
+	currentCredit() {
+		console.log('topupTotal', this.totalTopUp());
+		return this.totalTopUp() - this.getCreditPurchases();
+	}
+
+	totalTopUp() {
+        return this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
+    }
+
+    prepareTopUpData() {
+
+        if (this.props.topups.length > 0) {
+            const totalCount = this.props.topups.length;
+            let topupLogs = [...new Set(this.props.topups)];
+            let topups = topupLogs.map((topup, index) => {
+                return {
+                    active: topup.active,
+                    //id: topup.id,
+                    createdAt: topup.createdDate,
+                    topUpId: topup.topUpId,
+                    customer_account_id: topup.customer_account_id,
+                    total: topup.total,
+                    topup: topup.topup,
+                    balance: topup.balance,
+                    totalCount
+                };
+            });
+
+            topups.sort((a, b) => {
+                return moment
+                    .tz(a.createdAt, moment.tz.guess())
+                    .isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+                    ? 1
+                    : -1;
+            });
+
+            console.log('topups', topups);
+            return topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
+        } else {
+            return [];
+        }
+
+    }
+
+	customerCreditPaymentTypeReceipts() {
+		let receiptsPaymentTypes = [...this.compareCreditPaymentTypes()];
+		let customerReceipt = [...this.getCustomerRecieptData()];
+		console.log(receiptsPaymentTypes);
+		console.log(customerReceipt);
+		let finalCustomerReceiptsPaymentTypes = [];
+
+		for (let receiptsPaymentType of receiptsPaymentTypes) {
+			const rpIndex = customerReceipt.map(function (e) { return e.id }).indexOf(receiptsPaymentType.receipt_id);
+			console.log(rpIndex);
+			if (rpIndex >= 0) {
+				receiptsPaymentType.receipt = receiptsPaymentTypes[rpIndex];
+				finalCustomerReceiptsPaymentTypes.push(receiptsPaymentType);
+			}
+		}
+		return finalCustomerReceiptsPaymentTypes;
+	}
+
+	compareCreditPaymentTypes() {
+		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
+		let paymentTypes = [...this.props.paymentTypes];
+		let finalreceiptsPaymentTypes = [];
+		for (let receiptsPaymentType of receiptsPaymentTypes) {
+			const rpIndex = paymentTypes.map(function (e) { return e.id }).indexOf(receiptsPaymentType.payment_type_id);
+			if (rpIndex >= 0) {
+				if (paymentTypes[rpIndex].name === 'credit') {
+					receiptsPaymentType.name = paymentTypes[rpIndex].name;
+					finalreceiptsPaymentTypes.push(receiptsPaymentType);
+				}
+			}
+		}
+		return finalreceiptsPaymentTypes;
+	}
+
+
+	getCustomerRecieptData() {
+		// Used for enumerating receipts
+		//console.log("here selectedCustomer", this.props.selectedCustomer);
+
+		if (this.props.receipts.length > 0) {
+			const totalCount = this.props.receipts.length;
+
+			let salesLogs = [...new Set(this.props.receipts)];
+			let remoteReceipts = salesLogs.map((receipt, index) => {
+				//console.log("customerAccount", receipt.customer_account);
+				return {
+					active: receipt.active,
+					id: receipt.id,
+					createdAt: receipt.created_at,
+					customerAccount: receipt.customer_account,
+					customer_account_id: receipt.customer_account_id,
+					receiptLineItems: receipt.receipt_line_items,
+					isLocal: receipt.isLocal || false,
+					key: receipt.isLocal ? receipt.key : null,
+					index,
+					updated: receipt.updated,
+					amountLoan: receipt.amount_loan,
+					totalCount,
+					currency: receipt.currency_code,
+					totalAmount: receipt.total
+				};
+			});
+
+			remoteReceipts.sort((a, b) => {
+				return moment
+					.tz(a.createdAt, moment.tz.guess())
+					.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+					? 1
+					: -1;
+			});
+
+			let siteId = 0;
+			if (SettingRealm.getAllSetting()) {
+				siteId = SettingRealm.getAllSetting().siteId;
+			}
+			return remoteReceipts.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
+		} else {
+			return [];
+		}
+
+	}
+
+
+
 	getOpacity = () => {
 		if (this.props.products.length == 0 || this.props.flow.page != 'products') {
 			return { opacity: .3 };
@@ -809,6 +936,8 @@ function mapStateToProps(state, props) {
 		selectedDiscounts: state.orderReducer.discounts,
 		flow: state.orderReducer.flow,
 		channel: state.orderReducer.channel,
+		receiptsPaymentTypes: state.paymentTypesReducer.receiptsPaymentTypes,
+		receipts: state.receiptReducer.receipts,
 		payment: state.orderReducer.payment,
 		selectedCustomer: state.customerReducer.selectedCustomer,
 		topups: state.topupReducer.topups,

@@ -4,7 +4,6 @@ import { CheckBox } from 'react-native-elements';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as OrderActions from "../actions/OrderActions";
-import Modal from 'react-native-modalbox';
 import * as CustomerBarActions from '../actions/CustomerBarActions';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
@@ -333,7 +332,6 @@ class PaymentModal extends Component {
 	};
 
 	clearLoan = () => {
-
 		const creditIndex = this.props.selectedDebtPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
 		console.log('creditIndex', creditIndex);
 		if (creditIndex >= 0) {
