@@ -29,9 +29,9 @@ class OrderApi {
         this._siteId = siteId;
     }
 
-    
+
     createReceipt(receipt) {
-		
+
 		let options = {
 			method: 'POST',
 			headers: {
@@ -74,8 +74,6 @@ class OrderApi {
 				});
 		});
 	}
-
-
 
 	_remoteReceiptFromReceipt(receipt) {
 		return receipt;
@@ -153,9 +151,6 @@ class OrderApi {
 				throw error;
 			});
 	}
-
-
-
 
 }
 
