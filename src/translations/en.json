@@ -57,7 +57,7 @@
   "product": "Product",
 
   "address": "Address",
-  "balance": "Balance",
+  "balance": "Loan Balance",
   "channel": "Channel",
   "edit": "Edit",
   "delete": "Delete",

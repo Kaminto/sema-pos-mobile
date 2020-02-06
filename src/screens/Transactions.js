@@ -355,12 +355,6 @@ class Transactions extends Component {
 	prepareData() {
 		// Used for enumerating receipts
 		const totalCount = this.props.receipts.length;
-		//const totalCount = this.props.receipts.length;
-		// console.log('this.props.receipts', this.props.receipts);
-		// console.log('Carl ' + this.props.receiptsPaymentTypes);
-		console.log(this.props.paymentTypes);
-		console.log("ComparePaymentTypes" + JSON.stringify(this.comparePaymentTypes()));
-		// console.log("ComparePaymentTypeReceipts" + JSON.stringify(this.comparePaymentTypeReceipts()));
 
 		let receipts = this.comparePaymentTypeReceipts().map((receipt, index) => {
 			return {
@@ -398,8 +392,6 @@ class Transactions extends Component {
 			paymentTypes: this.props.paymentTypeFilter.length > 0 ? this.props.paymentTypeFilter === 'all' ? "" : this.props.paymentTypeFilter : "",
 		};
 
-		// console.log('filter', filter)
-		// console.log('filteredItems', data)
 		let filteredItems = data.filter(function (item) {
 			for (var key in filter) {
 				if (key === "paymentTypes") {

@@ -203,7 +203,7 @@ class CustomerList extends Component {
 					<View style={{ flex: 2 }}>
 						<Text style={[styles.baseItem]}>{item.address}</Text>
 					</View>
-					<View style={{ flex: 0.75 }}>
+					<View style={{ flex: 1 }}>
 						<Text style={[styles.baseItem]}>
 							{item.dueAmount.toFixed(2)}
 						</Text>
@@ -269,7 +269,7 @@ class CustomerList extends Component {
 			this.props.toolbarActions.ShowScreen('editCustomer');
 		} else if (index === 1) {
 			this.deleteCustomer();
-		} else if (index === 2) {			
+		} else if (index === 2) {
 		this.props.toolbarActions.ShowScreen("customerDetails");
 		}
 	}
@@ -327,7 +327,7 @@ class CustomerList extends Component {
 
 	onPressItem = item => {
 		console.log('_onPressItem');
-		this.props.customerActions.CustomerSelected(item);		
+		this.props.customerActions.CustomerSelected(item);
 		// this.setState({ selectedCustomer:item });
 		this.setState({ refresh: !this.state.refresh });
 		Events.trigger('onOrder', { customer: item });
@@ -364,7 +364,7 @@ class CustomerList extends Component {
 				<View style={[{ flex: 2 }]}>
 					<Text style={[styles.headerItem]}>{i18n.t('address')}</Text>
 				</View>
-				<View style={[{ flex: 0.75 }]}>
+				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.headerItem]}>{i18n.t('balance')}</Text>
 				</View>
 				<View style={[{ flex: 1 }]}>

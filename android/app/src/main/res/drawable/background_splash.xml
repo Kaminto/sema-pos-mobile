@@ -6,7 +6,7 @@
     <item>
         <bitmap
             android:gravity="center|fill"
-            android:src="@drawable/jibublue"/>
+            android:src="@drawable/bottlesrackmin"/>
     </item>
 
 </layer-list>

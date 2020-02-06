@@ -152,26 +152,7 @@ const ListCustomerStack = createStackNavigator({
                         )}
                     </View>
 
-
-                    <View
-                        style={{
-                            marginTop: 12,
-                            flex: 1
-                        }}>
-                        {navigation.getParam('isCustomerSelected') && (
-                            <Icon
-                                name='md-trash'
-                                size={30}
-                                color="white"
-                                style={{
-                                    marginRight: 20,
-                                }}
-                                onPress={navigation.getParam('onDelete')}
-                            />
-                        )}
-                    </View>
-
-                    <View
+					<View
                         style={{
                             marginTop: 12,
                             flex: 1
@@ -191,6 +172,25 @@ const ListCustomerStack = createStackNavigator({
                                     navigation.navigate('CustomerDetails');
                                 }}
 
+                            />
+                        )}
+                    </View>
+
+
+                    <View
+                        style={{
+                            marginTop: 12,
+                            flex: 1
+                        }}>
+                        {navigation.getParam('isCustomerSelected') && (
+                            <Icon
+                                name='md-trash'
+                                size={30}
+                                color="white"
+                                style={{
+                                    marginRight: 20,
+                                }}
+                                onPress={navigation.getParam('onDelete')}
                             />
                         )}
                     </View>

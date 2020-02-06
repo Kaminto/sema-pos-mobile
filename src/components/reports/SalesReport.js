@@ -132,15 +132,15 @@ class SalesReport extends Component {
 				<View style={[{ flex: .5, }]}>
 					<Text style={[styles.rowItemCenter]}>{item.quantity}</Text>
 				</View>
-				<View style={[{ flex: .7 }]}>
+				{/* <View style={[{ flex: .7 }]}>
 					<Text style={[styles.rowItemCenter]}>{this.getItemLitersPerSku(item)}</Text>
-				</View>
+				</View> */}
 				<View style={[{ flex: .7 }]}>
 					<Text style={[styles.rowItemCenter]}>{this.getItemTotalLiters(item)}</Text>
 				</View>
-				<View style={[{ flex: .7 }]}>
+				{/* <View style={[{ flex: .7 }]}>
 					<Text style={[styles.rowItemCenter]}>{item.pricePerSku.toFixed(2)}</Text>
-				</View>
+				</View> */}
 				<View style={[{ flex: .7 }]}>
 					<Text style={[styles.rowItemCenter]}>{item.totalSales.toFixed(2)}</Text>
 				</View>
@@ -156,15 +156,15 @@ class SalesReport extends Component {
 				<View style={[ {flex: .5}]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('quantity').toUpperCase()}</Text>
 				</View>
-				<View style={ [ {flex: .7}]}>
+				{/* <View style={ [ {flex: .7}]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('liters-per-sku').toUpperCase()}</Text>
-				</View>
+				</View> */}
 				<View style={ [{flex: .7}]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('total-liters').toUpperCase()}</Text>
 				</View>
-				<View style={ [{flex: .7}]}>
+				{/* <View style={ [{flex: .7}]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('price-per-sku').toUpperCase()}</Text>
-				</View>
+				</View> */}
 				<View style={ [{flex: .7}]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('total-sales').toUpperCase()}</Text>
 				</View>

@@ -95,8 +95,8 @@ class AuthLoadingScreen extends React.Component {
         );
         this.props.topUpActions.setTopups(
             CreditRealm.getAllCredit()
-        );     
-       
+        );
+
 
         this.props.inventoryActions.setInventory(
             InventroyRealm.getAllInventory()
@@ -121,7 +121,7 @@ class AuthLoadingScreen extends React.Component {
         );
 
         console.log('getCustomerDebts', CustomerDebtRealm.getCustomerDebts());
-        
+
         this.props.paymentTypesActions.setCustomerPaidDebt(
             CustomerDebtRealm.getCustomerDebts()
         );
@@ -149,7 +149,7 @@ class AuthLoadingScreen extends React.Component {
         const animating = this.state.animating;
         return (
             <View style={styles.container}>
-                <ActivityIndicator animating={animating} size={120} color="#0000ff" />
+                <ActivityIndicator animating={animating} size={120} color="#ABC1DE" />
                 <StatusBar barStyle="default" />
             </View>
         );
