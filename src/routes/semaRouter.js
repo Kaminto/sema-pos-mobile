@@ -75,13 +75,12 @@ const CustomerTransactionStack = createStackNavigator({
 const TabNavigator = createBottomTabNavigator({
     // const TabNavigator = createMaterialTopTabNavigator({
     Transaction: CustomerTransactionStack,
-    Credit: CreditHistoryStack
+    Wallet: CreditHistoryStack
     // ,Debit: DebitHistoryStack
 },
     {
         initialRouteName: 'Transaction',
         headerMode: 'none',
-
         swipeEnabled: true,
         animationEnabled: true,
         tabBarOptions: {
@@ -356,7 +355,8 @@ const ListCustomerStack = createStackNavigator({
     OrderView: {
         screen: OrderView,
         navigationOptions: ({ navigation }) => ({
-            title: 'Order View',
+           /// title: 'Order View',
+            title: `${navigation.getParam('customerName')} Order View`,
             headerStyle: {
                 backgroundColor: '#00549C',
             },

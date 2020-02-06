@@ -22,6 +22,8 @@ class OrderView extends Component {
 	componentDidMount() {
 		Events.on('ProductsUpdated', 'productsUpdate2', this.onProductsUpdated.bind(this));
 		Events.on('ProductMrpsUpdated', 'productMrpsUpdate1', this.onProductsUpdated.bind(this));
+		console.log('selectedCustomer', this.props.selectedCustomer.name);
+		this.props.navigation.setParams({ 'customerName': this.props.selectedCustomer.name });
 	}
 
 	componentWillUnmount() {
@@ -41,7 +43,7 @@ class OrderView extends Component {
 				{this.getProductScreen()}
 				{this.getPaymentScreen()}
 				<OrderSummaryScreen
-				 navigation={this.props.navigation} />
+					navigation={this.props.navigation} />
 			</View>
 		);
 	}
@@ -63,9 +65,10 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-	return { 
+	return {
 		orderActions: bindActionCreators(OrderActions, dispatch),
-		customerActions: bindActionCreators(CustomerActions, dispatch) };
+		customerActions: bindActionCreators(CustomerActions, dispatch)
+	};
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderView);

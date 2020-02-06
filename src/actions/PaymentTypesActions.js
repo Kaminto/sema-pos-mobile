@@ -11,6 +11,8 @@ export const SET_SELECTED_DEBT_PAYMENT_TYPES = 'SET_SELECTED_DEBT_PAYMENT_TYPES'
 export const UPDATE_SELECTED_DEBT_PAYMENT_TYPES = 'UPDATE_SELECTED_DEBT_PAYMENT_TYPES';
 export const REMOVE_SELECTED_DEBT_PAYMENT_TYPES = 'REMOVE_SELECTED_DEBT_PAYMENT_TYPES';
 
+export const RESET_SELECTED_PAYMENT_TYPES = 'RESET_SELECTED_PAYMENT_TYPES';
+
 export function setPaymentTypes(paymentTypes) {
     return (dispatch) => { dispatch({ type: SET_PAYMENT_TYPES, data: paymentTypes }) };
 }
@@ -19,6 +21,11 @@ export function resetSelectedDebt() {
 	return (dispatch) => { dispatch({ type: RESET_SELECTED_DEBT_PAYMENT_TYPES, data: [] }) };
 
 }
+
+export function resetSelectedPayment() {
+	return (dispatch) => { dispatch({ type: RESET_SELECTED_PAYMENT_TYPES, data: [] }) };
+}
+
 
 export function setRecieptPaymentTypes(receiptsPaymentTypes) {
     return (dispatch) => { dispatch({ type: SET_RECIEPT_PAYMENT_TYPES, data: receiptsPaymentTypes }) };
