@@ -115,6 +115,12 @@ class PaymentModal extends Component {
 								this.calculateAmountDue()
 							)}
 						/>
+						<PaymentDescription
+											title={`${i18n.t('available-credit')}:`}
+											total={Utilities.formatCurrency(
+												this.currentCredit()
+											)}
+										/>
 						{/* {this.getBackDateComponent()} */}
 						<View style={styles.completeOrder}>
 							<View style={{ justifyContent: 'center', height: 50 }}>
@@ -140,6 +146,140 @@ class PaymentModal extends Component {
 		);
 	}
 
+
+	getCreditPurchases() {
+		console.log('customerCreditPaymentTypeReceipts', this.customerCreditPaymentTypeReceipts());
+		return this.customerCreditPaymentTypeReceipts().reduce((total, item) => { return (total + item.amount) }, 0)
+	}
+
+	currentCredit() {
+		console.log('topupTotal', this.totalTopUp());
+		return this.totalTopUp() - this.getCreditPurchases();
+	}
+
+	totalTopUp() {
+        return this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
+    }
+
+    prepareTopUpData() {
+
+        if (this.props.topups.length > 0) {
+            const totalCount = this.props.topups.length;
+            let topupLogs = [...new Set(this.props.topups)];
+            let topups = topupLogs.map((topup, index) => {
+                return {
+                    active: topup.active,
+                    //id: topup.id,
+                    createdAt: topup.createdDate,
+                    topUpId: topup.topUpId,
+                    customer_account_id: topup.customer_account_id,
+                    total: topup.total,
+                    topup: topup.topup,
+                    balance: topup.balance,
+                    totalCount
+                };
+            });
+
+            topups.sort((a, b) => {
+                return moment
+                    .tz(a.createdAt, moment.tz.guess())
+                    .isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+                    ? 1
+                    : -1;
+            });
+
+            console.log('topups', topups);
+            return topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
+        } else {
+            return [];
+        }
+
+    }
+
+	customerCreditPaymentTypeReceipts() {
+		let receiptsPaymentTypes = [...this.compareCreditPaymentTypes()];
+		let customerReceipt = [...this.getCustomerRecieptData()];
+		console.log(receiptsPaymentTypes);
+		console.log(customerReceipt);
+		let finalCustomerReceiptsPaymentTypes = [];
+
+		for (let receiptsPaymentType of receiptsPaymentTypes) {
+			const rpIndex = customerReceipt.map(function (e) { return e.id }).indexOf(receiptsPaymentType.receipt_id);
+			console.log(rpIndex);
+			if (rpIndex >= 0) {
+				receiptsPaymentType.receipt = receiptsPaymentTypes[rpIndex];
+				finalCustomerReceiptsPaymentTypes.push(receiptsPaymentType);
+			}
+		}
+		return finalCustomerReceiptsPaymentTypes;
+	}
+
+	compareCreditPaymentTypes() {
+		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
+		let paymentTypes = [...this.props.paymentTypes];
+		let finalreceiptsPaymentTypes = [];
+		for (let receiptsPaymentType of receiptsPaymentTypes) {
+			const rpIndex = paymentTypes.map(function (e) { return e.id }).indexOf(receiptsPaymentType.payment_type_id);
+			if (rpIndex >= 0) {
+				if (paymentTypes[rpIndex].name === 'credit') {
+					receiptsPaymentType.name = paymentTypes[rpIndex].name;
+					finalreceiptsPaymentTypes.push(receiptsPaymentType);
+				}
+			}
+		}
+		return finalreceiptsPaymentTypes;
+	}
+
+
+	getCustomerRecieptData() {
+		// Used for enumerating receipts
+		//console.log("here selectedCustomer", this.props.selectedCustomer);
+
+		if (this.props.receipts.length > 0) {
+			const totalCount = this.props.receipts.length;
+
+			let salesLogs = [...new Set(this.props.receipts)];
+			let remoteReceipts = salesLogs.map((receipt, index) => {
+				//console.log("customerAccount", receipt.customer_account);
+				return {
+					active: receipt.active,
+					id: receipt.id,
+					createdAt: receipt.created_at,
+					customerAccount: receipt.customer_account,
+					customer_account_id: receipt.customer_account_id,
+					receiptLineItems: receipt.receipt_line_items,
+					isLocal: receipt.isLocal || false,
+					key: receipt.isLocal ? receipt.key : null,
+					index,
+					updated: receipt.updated,
+					amountLoan: receipt.amount_loan,
+					totalCount,
+					currency: receipt.currency_code,
+					totalAmount: receipt.total
+				};
+			});
+
+			remoteReceipts.sort((a, b) => {
+				return moment
+					.tz(a.createdAt, moment.tz.guess())
+					.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+					? 1
+					: -1;
+			});
+
+			let siteId = 0;
+			if (SettingRealm.getAllSetting()) {
+				siteId = SettingRealm.getAllSetting().siteId;
+			}
+			return remoteReceipts.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
+		} else {
+			return [];
+		}
+
+	}
+
+
+
 	paymentTypesRow = (item, index, separators) => {
 
 		let isSelectedAvailable = false;
@@ -159,10 +299,6 @@ class PaymentModal extends Component {
 			}
 		}
 
-		console.log('isSelectedAvailable', isSelectedAvailable);
-		console.log('description', item.description);
-		console.log('isSelected', item.isSelected);
-		console.log('item.isSelected || isSelectedAvailable', item.isSelected || isSelectedAvailable);
 		if (item.name != "loan") {
 			return (
 				<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
@@ -470,6 +606,9 @@ function mapStateToProps(state, props) {
 		selectedDebtPaymentTypes: state.paymentTypesReducer.selectedDebtPaymentTypes,
 		selectedDiscounts: state.orderReducer.discounts,
 		flow: state.orderReducer.flow,
+		receiptsPaymentTypes: state.paymentTypesReducer.receiptsPaymentTypes,
+		receipts: state.receiptReducer.receipts,
+		payment: state.orderReducer.payment,
 		channel: state.orderReducer.channel,
 		payment: state.orderReducer.payment,
 		selectedCustomer: state.customerReducer.selectedCustomer,

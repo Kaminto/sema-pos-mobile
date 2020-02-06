@@ -124,7 +124,7 @@ class CreditHistory extends Component {
         if (Number(this.state.topup) === 0) {
             Alert.alert(
                 'Notice',
-                'Payment Made',
+                'Top Up should be more than 0',
                 [{
                     text: 'OK',
                     onPress: () => {

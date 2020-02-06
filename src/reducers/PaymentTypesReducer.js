@@ -6,6 +6,7 @@ import {
     UPDATE_SELECTED_PAYMENT_TYPES,
     SET_DELIVERY,
     REMOVE_SELECTED_DEBT_PAYMENT_TYPES,
+    RESET_SELECTED_PAYMENT_TYPES,
     SET_SELECTED_DEBT_PAYMENT_TYPES,
     RESET_SELECTED_DEBT_PAYMENT_TYPES,
     UPDATE_SELECTED_DEBT_PAYMENT_TYPES,
@@ -35,6 +36,10 @@ const paymentTypesReducer = (state = initialState, action) => {
         case RESET_SELECTED_DEBT_PAYMENT_TYPES:
             newState = { ...state };
             newState.selectedDebtPaymentTypes = [];
+            return newState;
+        case RESET_SELECTED_PAYMENT_TYPES:
+            newState = { ...state };
+            newState.selectedPaymentTypes = [];
             return newState;
         case SET_CUSTOMER_PAID_DEBT:
             newState = { ...state };
