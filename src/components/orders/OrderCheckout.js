@@ -470,8 +470,6 @@ class OrderCheckout extends Component {
 			PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
 			this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(), isSelected: item.isSelected === true ? false : true, amount: 0 });
 		}
-
-
 		this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
 	};
 
@@ -498,6 +496,7 @@ class OrderCheckout extends Component {
 
 	modalOnClose() {
 		PaymentTypeRealm.resetSelected();
+		this.props.paymentTypesActions.resetSelectedPayment();
 		this.props.paymentTypesActions.setPaymentTypes(
 			PaymentTypeRealm.getPaymentTypes());
 	}
@@ -774,22 +773,36 @@ class OrderCheckout extends Component {
 		if (receipt != null) {
 			const creditIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
 
-			if (creditIndex >= 0) {
-				if (Number(this.props.selectedPaymentTypes[creditIndex].amount) > Number(this.props.selectedCustomer.dueAmount)) {
-					Alert.alert(
-						i18n.t('credit-due-amount-title'),
-						i18n.t('credit-due-amount-text') +
-						this.props.selectedCustomer.dueAmount,
-						[
-							{
-								text: 'OK',
-								onPress: () => { }
-							}
-						],
-						{ cancelable: false }
-					);
-					return;
-				}
+			// if (creditIndex >= 0) {
+			// 	if (Number(this.props.selectedPaymentTypes[creditIndex].amount) > Number(this.props.selectedCustomer.dueAmount)) {
+			// 		Alert.alert(
+			// 			i18n.t('credit-due-amount-title'),
+			// 			i18n.t('credit-due-amount-text') +
+			// 			this.props.selectedCustomer.dueAmount,
+			// 			[
+			// 				{
+			// 					text: 'OK',
+			// 					onPress: () => { }
+			// 				}
+			// 			],
+			// 			{ cancelable: false }
+			// 		);
+			// 		return;
+			// 	}
+			// }
+
+			if(this.currentCredit() === 0){
+				Alert.alert(
+					'No Jibu Credit',
+					'There is no credit in the wallet',
+					[{
+						text: 'OK',
+						onPress: () => {
+						}
+					}],
+					{ cancelable: false }
+				);
+				return;
 			}
 
 
@@ -800,6 +813,11 @@ class OrderCheckout extends Component {
 					ReceiptPaymentTypeRealm.getReceiptPaymentTypes()
 				);
 			}
+
+
+		
+
+
 			OrderRealm.createOrder(receipt);
 			this.props.receiptActions.setReceipts(
 				OrderRealm.getAllOrder()
@@ -815,6 +833,8 @@ class OrderCheckout extends Component {
 				);
 				this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
 			}
+
+
 
 			Alert.alert(
 				'Notice',
