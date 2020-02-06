@@ -119,6 +119,38 @@ class OrderCheckout extends Component {
 						</TouchableHighlight>
 					</View>
 				</View>
+				<Modal style={[styles.modal, styles.modal2]}
+					coverScreen={true}
+					position={"center"} ref={"modal7"}
+					isDisabled={this.state.isDisabled}>
+						<View style={{ flex: 1, padding: 0, margin: 0 }}>
+							<View
+								style={{
+									justifyContent: 'flex-end',
+									flexDirection: 'row',
+									right: 10,
+									top: 0
+								}}>
+								{this.getBottlesCancelButton()}
+							</View>
+
+							<View
+								style={{
+									flex: 1,
+									marginTop: 0,
+									marginLeft: 20,
+									marginRight: 20
+								}}>
+
+
+								<View style={{ flex: 1, flexDirection: 'row' }}>
+									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Empties returned.</Text>
+								</View>
+							</View>
+
+						</View>
+
+				</Modal>
 
 				<Modal
 					style={[styles.modal, styles.modal3]}
@@ -246,6 +278,12 @@ class OrderCheckout extends Component {
 											this.props.paymentTypesActions.setDelivery('walkin');
 										}}
 									/>
+
+								<TouchableHighlight underlayColor='#c0c0c0'
+									onPress={() => this.onBottles()}>
+									<Text
+										style={{ paddingTop: 10, paddingBottom: 10, textAlign: 'center' }}>Bottles returned</Text>
+								</TouchableHighlight>
 
 								</View>
 								<View style={{ flex: 1, flexDirection: 'row' }}>
@@ -482,7 +520,19 @@ class OrderCheckout extends Component {
 			<TouchableHighlight onPress={() => this.closePaymentModal()}>
 				<Icon
 					size={40}
-					name="md-close"
+					name="md-close-circle-outline"
+					color="black"
+				/>
+			</TouchableHighlight>
+		);
+	}
+
+	getBottlesCancelButton() {
+		return (
+			<TouchableHighlight onPress={() => this.closeBottlesModal()}>
+				<Icon
+					size={40}
+					name="md-close-circle-outline"
 					color="black"
 				/>
 			</TouchableHighlight>
@@ -586,6 +636,10 @@ class OrderCheckout extends Component {
 
 	onPay = () => {
 		this.refs.modal6.open();
+	};
+
+	onBottles = () => {
+		this.refs.modal7.open();
 	};
 
 
@@ -803,6 +857,10 @@ class OrderCheckout extends Component {
 
 	closePaymentModal = () => {
 		this.refs.modal6.close();
+	};
+
+	closeBottlesModal = () => {
+		this.refs.modal7.close();
 	};
 
 	getCreditPurchases() {
@@ -1031,7 +1089,8 @@ const styles = StyleSheet.create({
 
 	modal2: {
 		height: 230,
-		backgroundColor: "#3B5998"
+		width: '70%',
+		backgroundColor: "#f1f1f1"
 	},
 
 	completeOrder: {

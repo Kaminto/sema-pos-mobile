@@ -49,7 +49,8 @@ class SalesReport extends Component {
 								</View>
 							</View>
 					</View>
-					<View style={{ flex: .8, backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10, }}>
+					<View style={{ flex: .8, flexDirection: 'row', backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10, }}>
+						<View style={{ flex: .65 }}>
 						<FlatList
 							data={this.getSalesData()}
 							ListHeaderComponent={this.showHeader}
@@ -62,6 +63,8 @@ class SalesReport extends Component {
 							keyExtractor={item => item.sku}
 							initialNumToRender={50}
 						/>
+						</View>
+						<View style={{ flex: .35, padding: 10 }}><Text>Payment Breakdown</Text></View>
 					</View>
 				</View>
 		);
@@ -129,19 +132,19 @@ class SalesReport extends Component {
 				<View style={[{ flex: 1 }]}>
 					<Text numberOfLines={1} style={[styles.rowItem, styles.leftMargin]}>{item.description}</Text>
 				</View>
-				<View style={[{ flex: .5, }]}>
+				<View style={[{ flex: 1, }]}>
 					<Text style={[styles.rowItemCenter]}>{item.quantity}</Text>
 				</View>
-				<View style={[{ flex: .7 }]}>
+				{/* <View style={[{ flex: .7 }]}>
 					<Text style={[styles.rowItemCenter]}>{this.getItemLitersPerSku(item)}</Text>
-				</View>
-				<View style={[{ flex: .7 }]}>
+				</View> */}
+				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.rowItemCenter]}>{this.getItemTotalLiters(item)}</Text>
 				</View>
-				<View style={[{ flex: .7 }]}>
+				{/* <View style={[{ flex: .7 }]}>
 					<Text style={[styles.rowItemCenter]}>{item.pricePerSku.toFixed(2)}</Text>
-				</View>
-				<View style={[{ flex: .7 }]}>
+				</View> */}
+				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.rowItemCenter]}>{item.totalSales.toFixed(2)}</Text>
 				</View>
 			</View>
@@ -156,15 +159,15 @@ class SalesReport extends Component {
 				<View style={[ {flex: .5}]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('quantity').toUpperCase()}</Text>
 				</View>
-				<View style={ [ {flex: .7}]}>
+				{/* <View style={ [ {flex: .7}]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('liters-per-sku').toUpperCase()}</Text>
-				</View>
+				</View> */}
 				<View style={ [{flex: .7}]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('total-liters').toUpperCase()}</Text>
 				</View>
-				<View style={ [{flex: .7}]}>
+				{/* <View style={ [{flex: .7}]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('price-per-sku').toUpperCase()}</Text>
-				</View>
+				</View> */}
 				<View style={ [{flex: .7}]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('total-sales').toUpperCase()}</Text>
 				</View>

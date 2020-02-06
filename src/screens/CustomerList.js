@@ -343,16 +343,17 @@ class CustomerList extends Component {
                     <View style={{ flex: 2 }}>
                         <Text style={[styles.baseItem]}>{item.address}</Text>
                     </View>
+					<View style={{ flex: 1 }}>
+                        <Text style={[styles.baseItem]}>
+                            {this.getCustomerTypes(item)}
+                        </Text>
+                    </View>
                     <View style={{ flex: 0.75 }}>
                         <Text style={[styles.baseItem]}>
                             {item.dueAmount.toFixed(2)}
                         </Text>
                     </View>
-                    <View style={{ flex: 1 }}>
-                        <Text style={[styles.baseItem]}>
-                            {this.getCustomerSalesChannel(item)}
-                        </Text>
-                    </View>
+
                 </View>
             );
         } else {
@@ -518,12 +519,13 @@ class CustomerList extends Component {
                 <View style={[{ flex: 2 }]}>
                     <Text style={[styles.headerItem]}>{i18n.t('address')}</Text>
                 </View>
+				<View style={[{ flex: 1 }]}>
+                    <Text style={[styles.headerItem]}>{i18n.t('customer-type')}</Text>
+                </View>
                 <View style={[{ flex: 0.75 }]}>
                     <Text style={[styles.headerItem]}>{i18n.t('balance')}</Text>
                 </View>
-                <View style={[{ flex: 1 }]}>
-                    <Text style={[styles.headerItem]}>{i18n.t('channel')}</Text>
-                </View>
+
             </View>
         );
     };

@@ -32,7 +32,7 @@ class Communications {
 		this._password = password;
 		this._token = token;
 		this._siteId = siteId;
- 
+
 
 		CreditApi.initialize(
 			url,
@@ -41,7 +41,7 @@ class Communications {
 			password,
 			token,
 			siteId
-		); 
+		);
 
 
 		InventoryApi.initialize(
@@ -51,8 +51,8 @@ class Communications {
 			password,
 			token,
 			siteId
-		); 
-		
+		);
+
 		CustomerApi.initialize(
 			url,
 			site,
@@ -60,7 +60,7 @@ class Communications {
 			password,
 			token,
 			siteId
-		); 
+		);
 
 		ProductApi.initialize(
 			url,
@@ -69,7 +69,7 @@ class Communications {
 			password,
 			token,
 			siteId
-		); 
+		);
 
 		CustomerTypeApi.initialize(
 			url,
@@ -78,7 +78,7 @@ class Communications {
 			password,
 			token,
 			siteId
-		); 
+		);
 
 		SalesChannelApi.initialize(
 			url,
@@ -87,7 +87,7 @@ class Communications {
 			password,
 			token,
 			siteId
-		); 
+		);
 
 		OrderApi.initialize(
 			url,
@@ -96,7 +96,7 @@ class Communications {
 			password,
 			token,
 			siteId
-		); 
+		);
 		DiscountApi.initialize(
 			url,
 			site,
@@ -104,7 +104,7 @@ class Communications {
 			password,
 			token,
 			siteId
-		); 
+		);
 		CustomerDebtApi.initialize(
 			url,
 			site,
@@ -112,7 +112,7 @@ class Communications {
 			password,
 			token,
 			siteId
-		); 
+		);
 		PaymentTypesApi.initialize(
 			url,
 			site,
@@ -120,7 +120,7 @@ class Communications {
 			password,
 			token,
 			siteId
-		); 
+		);
 		RecieptPaymentTypesApi.initialize(
 			url,
 			site,
@@ -128,7 +128,7 @@ class Communications {
 			password,
 			token,
 			siteId
-		); 
+		);
 
 	}
 
@@ -244,22 +244,6 @@ class Communications {
 		});
 	}
 
-
-	// getReminders() {
-	// 	let options = {
-	// 		method: 'GET',
-	// 		headers: {
-	// 			Accept: 'application/json',
-	// 			Authorization: 'Bearer' + this._token
-	// 		}
-	// 	};
-	// 	let url = 'sema/reminders?site-id='+ this._siteId;
-	// 	that = this;
-	// 	return fetch(that._url + url, options)
-	// 		.then(response => response.json())
-	// 		.catch(error => console.log('ERROR ' + error));
-	// }
-
 	getReminders() {
 		let options = {
 			method: 'GET',
@@ -279,26 +263,5 @@ class Communications {
 
 	}
 
-	// let remoteReceipt = {
-	// 	receiptId: receipt.receiptId,
-	// 	customerId: receipt.customerId,
-	// 	siteId: receipt.siteId,
-	// 	createdDate: new Date(receipt.createdDate),
-	// 	totalSales: receipt.cash + receipt.credit + receipt.mobile,
-	// 	salesChannelId: 122,
-	// 	cogs:"0",		// TODO - Implement this...
-	// 	products: []
-	// };
-	// 	receipt.products.forEach( product => {
-	// 		let remoteProduct = {
-	// 			productId:product.id,
-	// 			quantity: product.quantity,
-	// 			receiptId: remoteReceipt.receiptId,
-	// 			salesPrice:product.priceAmount
-	// 		}
-	// 		remoteReceipt.products.push( remoteProduct);
-	// 	});
-	// 	return remoteReceipt;
-	// }
 }
 export default new Communications();

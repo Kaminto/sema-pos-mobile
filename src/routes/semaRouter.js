@@ -25,13 +25,14 @@ import { Input } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomSidebarMenu from './CustomSidebarMenu';
 import { Tooltip } from 'react-native-elements';
+import FontAwesome, { SolidIcons, RegularIcons } from 'react-native-fontawesome';
 
 import i18n from '../app/i18n';
 
 class NavigationDrawerStructure extends Component {
     toggleDrawer = () => {
         this.props.navigationProps.toggleDrawer();
-    };
+	};
 
     render() {
         return (
@@ -50,6 +51,7 @@ class NavigationDrawerStructure extends Component {
         );
     }
 }
+
 
 const CreditHistoryStack = createStackNavigator({
     CreditHistory: {
@@ -149,26 +151,7 @@ const ListCustomerStack = createStackNavigator({
                         )}
                     </View>
 
-
-                    <View
-                        style={{
-                            marginTop: 12,
-                            flex: 1
-                        }}>
-                        {navigation.getParam('isCustomerSelected') && (
-                            <Icon
-                                name='md-trash'
-                                size={30}
-                                color="white"
-                                style={{
-                                    marginRight: 20,
-                                }}
-                                onPress={navigation.getParam('onDelete')}
-                            />
-                        )}
-                    </View>
-
-                    <View
+					<View
                         style={{
                             marginTop: 12,
                             flex: 1
@@ -188,6 +171,25 @@ const ListCustomerStack = createStackNavigator({
                                     navigation.navigate('CustomerDetails');
                                 }}
 
+                            />
+                        )}
+                    </View>
+
+
+                    <View
+                        style={{
+                            marginTop: 12,
+                            flex: 1
+                        }}>
+                        {navigation.getParam('isCustomerSelected') && (
+                            <Icon
+                                name='md-trash'
+                                size={30}
+                                color="white"
+                                style={{
+                                    marginRight: 20,
+                                }}
+                                onPress={navigation.getParam('onDelete')}
                             />
                         )}
                     </View>
@@ -222,7 +224,7 @@ const ListCustomerStack = createStackNavigator({
                         }}>
                         {navigation.getParam('isCustomerSelected') && (
                             <Icon
-                                name='md-water'
+                                name='md-cart'
                                 size={30}
                                 color="white"
                                 style={{
@@ -248,26 +250,26 @@ const ListCustomerStack = createStackNavigator({
                         />
                     </View>
 
-                    <View
+                    {/* <View
                         style={{
                             marginTop: 12,
                             flex: 1
                         }}>
-                        <Picker
-                            mode="dropdown"
-                            placeholder="Start Year"
-                            selectedValue={navigation.getParam('salesChannelValue')}
-                            style={{ height: 50, width: 150, color: 'white', alignContent: 'flex-end' }}
-                            onValueChange={navigation.getParam('checkfilter')}>
-                            <Picker.Item label="All Channels" value="all" />
-                            <Picker.Item label="Direct" value="direct" />
-                            <Picker.Item label="Reseller" value="reseller" />
-                            {/* <Picker.Item label="Water Club" value="water club" /> */}
-                        </Picker>
+                          <Picker
+								mode="dropdown"
+								placeholder="Start Year"
+                                selectedValue={navigation.getParam('salesChannelValue')}
+                                style={{ height: 50, width: 150, color: 'white', alignContent: 'flex-end' }}
+                                onValueChange={navigation.getParam('checkfilter')}>
+                                <Picker.Item label="All Channels" value="all" />
+                                <Picker.Item label="Direct" value="direct" />
+                                <Picker.Item label="Reseller" value="reseller" />
+                                <Picker.Item label="Water Club" value="water club" />
+                            </Picker>
 
-                    </View>
+                    </View> */}
 
-                    {/* <View
+                    <View
                         style={{
                             marginTop: 12,
                             flex: 1
@@ -275,7 +277,7 @@ const ListCustomerStack = createStackNavigator({
                           <Picker
 						  		mode="dropdown"
                                 selectedValue={navigation.getParam('customerTypeValue')}
-                                style={{ height: 50, width: 130, color: 'white' }}
+                                style={{ height: 50, width: 200, color: 'white' }}
 								onValueChange={navigation.getParam('checkCustomerTypefilter')}>
 
                                 <Picker.Item label="All Customer Types" value="all" />
@@ -286,7 +288,7 @@ const ListCustomerStack = createStackNavigator({
                                 <Picker.Item label="Anonymous" value="Anonymous" />
                             </Picker>
 
-                    </View> */}
+                    </View>
 
                 </View>
 

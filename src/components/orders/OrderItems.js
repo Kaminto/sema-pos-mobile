@@ -232,7 +232,7 @@ class OrderItems extends Component {
 			<TouchableHighlight onPress={() => this.onCancelOrder()}>
 				<Icon
 					size={40}
-					name="md-close"
+					name="md-close-circle-outline"
 					color="black"
 				/>
 			</TouchableHighlight>

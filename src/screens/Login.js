@@ -3,14 +3,13 @@ import {
 	View,
 	Text,
 	ScrollView,
-	TouchableHighlight,
-	TextInput,
 	StyleSheet,
 	Dimensions,
 	Image,
 	Picker,
 	Alert,
-	ActivityIndicator
+	ActivityIndicator,
+	ImageBackground
 } from 'react-native';
 import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -66,9 +65,9 @@ const supportedUILanguages = [
 
 class Login extends Component {
 	constructor(props) {
-		
+
 		super(props);
-	 
+
 		this.supportedLanguages = React.createRef();
 
 		this.state = {
@@ -94,18 +93,16 @@ class Login extends Component {
 			return <Picker.Item key={i} value={s.iso_code} label={s.name} />
 		});
 		return (
-			<View style={styles.container}>
-				<ScrollView style={{ flex: 1 }}>
-					<KeyboardAwareScrollView
-						style={{ flex: 1 }}
-						resetScrollToCoords={{ x: 0, y: 0 }}
-						scrollEnabled={false}>
-						<View style={{ flex: 1, alignItems: 'center', backgroundColor: '#f1f1f1' }}>
+			<ImageBackground style={ styles.imgBackground }
+                 resizeMode='cover'
+                 source={require('../images/bottlesrackmin.jpg')}>
+				<ScrollView style={{ flex: 1, backgroundColor: 'transparent' }}>
+						<View style={{ flex: 1,  backgroundColor: 'transparent', alignItems: 'center' }}>
 							<Card
 								title={'Welcome to SEMA'}
 								titleStyle={{ fontSize: 26 }}
 								dividerStyle={{ display: 'none' }}
-								containerStyle={{ width: '40%', marginTop: 30, elevation: 5 }}>
+								containerStyle={{ width: '40%', marginTop: 30, borderRadius: 5, elevation: 10 }}>
 
 								<Input
 									label={i18n.t('username-or-email-placeholder')}
@@ -119,6 +116,7 @@ class Login extends Component {
 									inputContainerStyle={[styles.inputText]}
 								/>
 								<Picker
+								    style={{ padding: 10, width:'95%', alignSelf:'center' }}
 									selectedValue={this.state.selectedLanguage.iso_code}
 									onValueChange={(itemValue, itemIndex) => {
 										this.onLanguageSelected(itemIndex);
@@ -134,20 +132,20 @@ class Login extends Component {
 
 							</Card>
 						</View>
-					</KeyboardAwareScrollView>
 					{
 						this.state.isLoading && (
-							<ActivityIndicator size={120} color="#0000ff" />
+							<ActivityIndicator size={100} color="#ABC1DE" />
 						)
 					}
 				</ScrollView>
-			</View>
+
+			 </ImageBackground>
 		);
 	}
- 
+
 	onShowLanguages() {
 		this.supportedLanguages.current.show();
-	} 
+	}
 
 	onSynchronize() {
 		try {
@@ -166,7 +164,7 @@ class Login extends Component {
 		} catch (error) { }
 	};
 
-  
+
 	_clearDataAndSync() {
 		try {
 			PosStorage.clearDataOnly();
@@ -311,7 +309,7 @@ class Login extends Component {
 	}
 
 	isSiteIdDifferent(newSiteID, oldSiteID) {
-		//Check is locally stored siteID is different from the remote returned siteID 
+		//Check is locally stored siteID is different from the remote returned siteID
 		if (newSiteID != oldSiteID) {
 			// New site - clear all data
 			this._clearDataAndSync();
@@ -373,8 +371,8 @@ function mapDispatchToProps(dispatch) {
 		authActions: bindActionCreators(AuthActions, dispatch),
 		inventoryActions: bindActionCreators(InventoryActions, dispatch),
 		productActions: bindActionCreators(ProductActions, dispatch),
-		receiptActions: bindActionCreators(receiptActions, dispatch),		
-        discountActions: bindActionCreators(discountActions, dispatch),  
+		receiptActions: bindActionCreators(receiptActions, dispatch),
+        discountActions: bindActionCreators(discountActions, dispatch),
 	};
 }
 
@@ -393,7 +391,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		width: '100%',
 		height: '100%',
-		backgroundColor: '#f1f1f1'
+		backgroundColor: 'transparent'
 	},
 
 	headerText: {
@@ -447,6 +445,12 @@ const styles = StyleSheet.create({
 
 	dropdownText: {
 		fontSize: 24
+	},
+
+	imgBackground: {
+        width: '100%',
+        height: '100%',
+        flex: 1
 	},
 
 	updating: {
