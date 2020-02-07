@@ -728,7 +728,6 @@ class OrderCheckout extends Component {
 				? this.state.receiptDate
 				: new Date(Date.now());
 
-
 			receipt = {
 				id: uuidv1(),
 				createdDate: receiptDate,
@@ -767,9 +766,9 @@ class OrderCheckout extends Component {
 				receiptLineItem.quantity = product.quantity;
 				receiptLineItem.notes = product.notes;
 
-				receiptLineItem.emptiesReturned = product.emptiesReturned;
-				receiptLineItem.refillPending = product.refillPending;
-				receiptLineItem.emptiesDamaged = product.emptiesDamaged;
+				receiptLineItem.emptiesReturned = Number(product.emptiesReturned);
+				receiptLineItem.refillPending = Number(product.refillPending);
+				receiptLineItem.emptiesDamaged = Number(product.emptiesDamaged);
 				receiptLineItem.product_id = product.product.productId;
 				receiptLineItem.product = product.product;
 				receiptLineItem.cogs_total = tempValue == 0 ? product.quantity : tempValue;

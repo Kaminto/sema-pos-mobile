@@ -15,7 +15,7 @@ export function AddProductToOrder(product, quantity, price) {
 	return dispatch => {
 		dispatch({
 			type: ADD_PRODUCT_TO_ORDER,
-			data: { product: product, quantity: quantity, unitPrice: price, finalAmount: Number(price) * Number(quantity), notes: ""  }
+			data: { product: product, quantity: quantity, unitPrice: price, finalAmount: Number(price) * Number(quantity), notes: "", emptiesReturned: "", emptiesDamaged: "", refillPending: ""  }
 		});
 	};
 }
