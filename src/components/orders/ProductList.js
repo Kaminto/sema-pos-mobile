@@ -13,15 +13,14 @@ import * as ProductActions from '../../actions/ProductActions';
 import * as OrderActions from '../../actions/OrderActions';
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
-import Communications from '../../services/Communications';
 import randomMC from 'random-material-color';
 
 class ProductList extends Component {
 	constructor(props) {
 		super(props);
 	}
+
 	componentDidMount() {
-		console.log('ProductList = Mounted');
 	}
 
 	render() {
@@ -76,18 +75,9 @@ class ProductList extends Component {
 
 	prepareData = () => {
 		let productMrp = ProductMRPRealm.getFilteredProductMRP();
-		let ids=Object.keys(productMrp).map(key=>productMrp[key].productId);
-
-		return result=this.props.products.filter(prod=>ids.includes(prod.productId));
+		let ids = Object.keys(productMrp).map(key => productMrp[key].productId);
+		return result = this.props.products.filter(prod => ids.includes(prod.productId));
 	};
-
-	hasMappingTable(product, productMrp) {
-		// Search through the keys of productMrp
-		return Object.keys(productMrp).reduce((hasMrp, key) => {
-			if (key.startsWith(`${product.productId}-`)) return true;
-			return hasMrp;
-		}, false);
-	}
 
 	getImage = item => {
 		if (item.base64encodedImage.startsWith('data:image')) {
@@ -98,8 +88,7 @@ class ProductList extends Component {
 	};
 
 	onPressItem = item => {
-		console.log('onPressItem');
-		const unitPrice=this.getItemPrice(item)
+		const unitPrice = this.getItemPrice(item)
 		this.props.orderActions.AddProductToOrder(item, 1, unitPrice);
 	};
 
@@ -108,8 +97,6 @@ class ProductList extends Component {
 	};
 
 	getLabelBackground = categoryId => {
-		// random-material-color will get a different color for each category of the sales channel
-		// It will remember the color based on the text property we pass
 		return {
 			backgroundColor: `${randomMC.getColor({
 				text: `${categoryId}-${this.props.filter}`
@@ -129,8 +116,6 @@ class ProductList extends Component {
 					salesChannel.id
 				)
 			];
-
-			//console.log(productMrp)
 			if (productMrp) {
 				return productMrp.priceAmount;
 			}
