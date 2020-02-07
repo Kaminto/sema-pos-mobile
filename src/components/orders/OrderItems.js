@@ -85,7 +85,7 @@ class OrderItems extends Component {
 							</View>
 							<View style={{ flex: .6 }}>
 								<Text style={[{ textAlign: 'center' }, styles.baseItem]}>
-								{this.getCurrency(this.state.selectedItem)} {this.getDiscountPrice((this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)), this.state.selectedItem)}</Text>
+									{this.getCurrency(this.state.selectedItem)} {this.getDiscountPrice((this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)), this.state.selectedItem)}</Text>
 							</View>
 							<View
 								style={{
@@ -158,53 +158,26 @@ class OrderItems extends Component {
 							/>
 
 							<View style={[{ flex: 1, flexDirection: 'row' }]}>
-								<View style={[{ flex: 1}]}>
-									<Text style={[styles.headerItem, {textTransform: 'uppercase'}]}>Empties Returned</Text>
+								<View style={[{ flex: 1 }]}>
+									<Text style={[styles.headerItem, { textTransform: 'uppercase' }]}>Empties Returned</Text>
 								</View>
 								<View style={[{ flex: 1 }]}>
-									<Text style={[styles.headerItem, {textTransform: 'uppercase'}]}>Damaged Bottles</Text>
+									<Text style={[styles.headerItem, { textTransform: 'uppercase' }]}>Damaged Bottles</Text>
 								</View>
 								<View style={[{ flex: 1 }]}>
-									<Text style={[styles.headerItem, {textTransform: 'uppercase'}]}>Pending Bottles</Text>
+									<Text style={[styles.headerItem, { textTransform: 'uppercase' }]}>Pending Bottles</Text>
 								</View>
 							</View>
 
 							<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white', padding: 5 }}>
 								<View style={[{ flex: 1 }]}>
-									<TextInput
-										style={{
-											textAlign: 'center',
-											height: 50,
-											fontSize: 24
-										}}
-										keyboardType="number-pad"
-										underlineColorAndroid="transparent"
-										placeholder="0"
-									/>
+									{this.emptiesReturnedValue()}
 								</View>
 								<View style={[{ flex: 1 }]}>
-									<TextInput
-										style={{
-											textAlign: 'center',
-											height: 50,
-											fontSize: 24
-										}}
-										keyboardType="number-pad"
-										underlineColorAndroid="transparent"
-										placeholder="0"
-									/>
+									{this.emptiesDamagedValue()}
 								</View>
 								<View style={[{ flex: 1 }]}>
-									<TextInput
-										style={{
-											textAlign: 'center',
-											height: 50,
-											fontSize: 24
-										}}
-										keyboardType="number-pad"
-										underlineColorAndroid="transparent"
-										placeholder="0"
-									/>
+									{this.refillPendingValue()}
 								</View>
 							</View>
 
@@ -222,6 +195,8 @@ class OrderItems extends Component {
 									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>NOTES</Text>
 								</View>
 							</View>
+
+
 
 							<View style={{ flex: 1, flexDirection: 'row' }}>
 								<View style={{ flex: 1, height: 50 }}>
@@ -273,7 +248,7 @@ class OrderItems extends Component {
 									width: '100%'
 								}}
 							/>
-						<View
+							<View
 								style={{
 									flex: .2,
 									marginTop: 10,
@@ -282,11 +257,11 @@ class OrderItems extends Component {
 									right: 0,
 									bottom: 0
 								}}>
-							<Button
-								onPress={() => this.onCancelOrder()}
-								style={{ padding: 20, color: '#CCC' }}
-								title="SAVE"
-								color="#ABC1DE"
+								<Button
+									onPress={() => this.onCancelOrder()}
+									style={{ padding: 20, color: '#CCC' }}
+									title="SAVE"
+									color="#ABC1DE"
 								/>
 							</View>
 
@@ -361,6 +336,84 @@ class OrderItems extends Component {
 				value={notes}
 				underlineColorAndroid="transparent"
 				placeholder="Add a Note"
+			/>
+		)
+	}
+
+	emptiesReturnedValue() {
+		let emptiesReturned = '';
+		if (!this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
+			emptiesReturned = this.state.selectedItem.emptiesReturned;
+		}
+
+		return (
+			<TextInput
+				style={{
+					textAlign: 'center',
+					height: 50,
+					fontSize: 24
+				}}
+				onChangeText={this.setEmptiesReturned}
+				value={emptiesReturned}
+				keyboardType="number-pad"
+				underlineColorAndroid="transparent"
+				placeholder="0"
+			/>
+		)
+	}
+
+	emptiesDamagedValue() {
+		let emptiesDamaged = '';
+		if (!this.state.selectedItem.hasOwnProperty('emptiesDamaged')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('emptiesDamaged')) {
+			emptiesDamaged = this.state.selectedItem.emptiesDamaged;
+		}
+
+		return (
+			<TextInput
+				style={{
+					textAlign: 'center',
+					height: 50,
+					fontSize: 24
+				}}
+				onChangeText={this.setEmptiesDamaged}
+				value={emptiesDamaged}
+				keyboardType="number-pad"
+				underlineColorAndroid="transparent"
+				placeholder="0"
+			/>
+		)
+	}
+
+	refillPendingValue() {
+		let refillPending = '';
+		if (!this.state.selectedItem.hasOwnProperty('refillPending')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('refillPending')) {
+			refillPending = this.state.selectedItem.refillPending;
+		}
+
+		return (
+			<TextInput
+				style={{
+					textAlign: 'center',
+					height: 50,
+					fontSize: 24
+				}}
+				onChangeText={this.setRefillPending}
+				value={refillPending}
+				keyboardType="number-pad"
+				underlineColorAndroid="transparent"
+				placeholder="0"
 			/>
 		)
 	}
@@ -441,7 +494,7 @@ class OrderItems extends Component {
 				</View>
 				<View style={[{ flex: 1 }]}>
 					<Text numberOfLines={1} style={[styles.baseItem]}>
-					{this.getCurrency(item)} {this.getDiscountPrice((item.quantity * this.getItemPrice(item.product)), item)}</Text>
+						{this.getCurrency(item)} {this.getDiscountPrice((item.quantity * this.getItemPrice(item.product)), item)}</Text>
 				</View>
 			</View>
 		);
@@ -456,8 +509,6 @@ class OrderItems extends Component {
 			if (this.props.selectedDiscounts[productIndex].discount.length > 0 && this.state.selectedDiscounts.length === 0) {
 
 				this.props.orderActions.SetOrderDiscounts('Custom', searchText, this.state.selectedItem.product, this.props.selectedDiscounts[productIndex].discount, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)));
-
-
 			} else {
 
 				this.props.orderActions.SetOrderDiscounts('Custom', searchText, this.state.selectedItem.product, this.state.selectedDiscounts, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)));
@@ -471,8 +522,133 @@ class OrderItems extends Component {
 
 	};
 
-	setNotes = searchText => {
-		this.props.orderActions.AddNotesToProduct(this.state.selectedItem.product, searchText);
+	setNotes = notes => {
+		let emptiesReturned = '';
+		if (!this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
+			emptiesReturned = this.state.selectedItem.emptiesReturned;
+		}
+
+		let refillPending = '';
+		if (!this.state.selectedItem.hasOwnProperty('refillPending')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('refillPending')) {
+			refillPending = this.state.selectedItem.refillPending;
+		}
+
+		let emptiesDamaged = '';
+		if (!this.state.selectedItem.hasOwnProperty('emptiesDamaged')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('emptiesDamaged')) {
+			emptiesDamaged = this.state.selectedItem.emptiesDamaged;
+		}
+
+
+		this.props.orderActions.AddNotesToProduct(this.state.selectedItem.product, notes, emptiesReturned, refillPending, emptiesDamaged);
+	};
+
+
+
+	setEmptiesDamaged = emptiesDamaged => {
+		let refillPending = '';
+		if (!this.state.selectedItem.hasOwnProperty('refillPending')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('refillPending')) {
+			refillPending = this.state.selectedItem.refillPending;
+		}
+
+		let emptiesReturned = '';
+		if (!this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
+			emptiesReturned = this.state.selectedItem.emptiesReturned;
+		}
+
+		let notes = '';
+		if (!this.state.selectedItem.hasOwnProperty('notes')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('notes')) {
+			notes = this.state.selectedItem.notes;
+		}
+
+		this.props.orderActions.AddNotesToProduct(this.state.selectedItem.product, notes, emptiesReturned, refillPending, emptiesDamaged);
+	};
+
+	setEmptiesReturned = emptiesReturned => {
+		let refillPending = '';
+		if (!this.state.selectedItem.hasOwnProperty('refillPending')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('refillPending')) {
+			refillPending = this.state.selectedItem.refillPending;
+		}
+
+		let emptiesDamaged = '';
+		if (!this.state.selectedItem.hasOwnProperty('emptiesDamaged')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('emptiesDamaged')) {
+			emptiesDamaged = this.state.selectedItem.emptiesDamaged;
+		}
+
+		let notes = '';
+		if (!this.state.selectedItem.hasOwnProperty('notes')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('notes')) {
+			notes = this.state.selectedItem.notes;
+		}
+
+		this.props.orderActions.AddNotesToProduct(this.state.selectedItem.product, notes, emptiesReturned, refillPending, emptiesDamaged);
+
+	};
+
+	setRefillPending = refillPending => {
+		let emptiesReturned = '';
+		if (!this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
+			emptiesReturned = this.state.selectedItem.emptiesReturned;
+		}
+
+		let emptiesDamaged = '';
+		if (!this.state.selectedItem.hasOwnProperty('emptiesDamaged')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('emptiesDamaged')) {
+			emptiesDamaged = this.state.selectedItem.emptiesDamaged;
+		}
+
+		let notes = '';
+		if (!this.state.selectedItem.hasOwnProperty('notes')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('notes')) {
+			notes = this.state.selectedItem.notes;
+		}
+
+		this.props.orderActions.AddNotesToProduct(this.state.selectedItem.product, notes, emptiesReturned, refillPending, emptiesDamaged);
+
 	};
 
 	changeQuantity = value => {

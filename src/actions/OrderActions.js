@@ -15,16 +15,16 @@ export function AddProductToOrder(product, quantity, price) {
 	return dispatch => {
 		dispatch({
 			type: ADD_PRODUCT_TO_ORDER,
-			data: { product: product, quantity: quantity, unitPrice: price, finalAmount: Number(price) * Number(quantity), notes: ""  }
+			data: { product: product, quantity: quantity, unitPrice: price, finalAmount: Number(price) * Number(quantity), notes: "", emptiesReturned: "", emptiesDamaged: "", refillPending: ""  }
 		});
 	};
 }
 
-export function AddNotesToProduct(product, notes) {
+export function AddNotesToProduct(product, notes, emptiesReturned, refillPending, emptiesDamaged) {
 	return dispatch => {
 		dispatch({
 			type: SET_PRODUCT_NOTES,
-			data: { product, notes }
+			data: { product, notes, emptiesReturned, refillPending, emptiesDamaged }
 		});
 	};
 }
