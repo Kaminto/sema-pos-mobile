@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import * as reportActions from "../../actions/ReportActions";
 import DateFilter from "./DateFilter";
 import * as Utilities from "../../services/Utilities";
-
+const moment = require('moment');
 
 import i18n from '../../app/i18n';
 
@@ -26,31 +26,31 @@ class SalesReport extends Component {
 	}
 
 	render() {
-			return (
-				<View style={{ flex: 1 }}>
-					<View style={{
-						flex: .2,
-						backgroundColor: 'white',
-						marginLeft: 10,
-						marginRight: 10,
-						marginBottom: 10,
-					}}>
-						<View style={{ flex: 1, flexDirection: 'row' }}>
-						   <DateFilter/>
-							<View style={{ flex: .7, height: 90, borderRadius: 10, flexDirection: 'row', marginTop: 10, backgroundColor: '#2462a0', overflow: 'hidden', color: '#fff' }}>
-								<View style={{ height: 90, flex: .5, color: '#fff' }} >
-									<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-liters').toUpperCase()}</Text>
-									<Text style={[styles.totalItem, { flex: .6 }]}>{this.getTotalLiters()}</Text>
-								</View>
-									<View style={{ height: 90, flex: .5, color: '#fff' }} >
-									<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-sales').toUpperCase()}</Text>
-									<Text style={[styles.totalItem, { flex: .6 }]}>{Utilities.formatCurrency(this.getTotalSales())}</Text>
-									</View>
-								</View>
+		return (
+			<View style={{ flex: 1 }}>
+				<View style={{
+					flex: .2,
+					backgroundColor: 'white',
+					marginLeft: 10,
+					marginRight: 10,
+					marginBottom: 10,
+				}}>
+					<View style={{ flex: 1, flexDirection: 'row' }}>
+						<DateFilter />
+						<View style={{ flex: .7, height: 90, borderRadius: 10, flexDirection: 'row', marginTop: 10, backgroundColor: '#2462a0', overflow: 'hidden', color: '#fff' }}>
+							<View style={{ height: 90, flex: .5, color: '#fff' }} >
+								<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-liters').toUpperCase()}</Text>
+								<Text style={[styles.totalItem, { flex: .6 }]}>{this.getTotalLiters()}</Text>
 							</View>
+							<View style={{ height: 90, flex: .5, color: '#fff' }} >
+								<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-sales').toUpperCase()}</Text>
+								<Text style={[styles.totalItem, { flex: .6 }]}>{Utilities.formatCurrency(this.getTotalSales())}</Text>
+							</View>
+						</View>
 					</View>
-					<View style={{ flex: .8, flexDirection: 'row', backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10, }}>
-						<View style={{ flex: .65 }}>
+				</View>
+				<View style={{ flex: .8, flexDirection: 'row', backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10, }}>
+					<View style={{ flex: .65 }}>
 						<FlatList
 							data={this.getSalesData()}
 							ListHeaderComponent={this.showHeader}
@@ -63,10 +63,10 @@ class SalesReport extends Component {
 							keyExtractor={item => item.sku}
 							initialNumToRender={50}
 						/>
-						</View>
-						<View style={{ flex: .35, padding: 10 }}><Text>Payment Breakdown</Text></View>
 					</View>
+					<View style={{ flex: .35, padding: 10 }}><Text>Payment Breakdown</Text></View>
 				</View>
+			</View>
 		);
 	}
 
@@ -83,14 +83,11 @@ class SalesReport extends Component {
 				this.startDate = this.props.dateFilter.startDate;
 				this.endDate = this.props.dateFilter.endDate;
 				this.updateReport();
-				//return this.props.salesData.salesItems;
 				sales = this.props.salesData.salesItems;
-				//return this.removeDuplicates(this.props.salesData.salesItems, "id");
 			}
 		} else {
 			//return this.props.salesData.salesItems;
 			sales = this.props.salesData.salesItems;
-			//return this.removeDuplicates(this.props.salesData.salesItems, "id");
 		}
 		return sales;
 	}
@@ -125,6 +122,54 @@ class SalesReport extends Component {
 		return 'N/A';
 	}
 
+	getTotalTypes() {
+		let groupedTypes = { ...this.groupPaymentTypes() };
+		let groupedTotals = [];
+		let objKeys = [...Object.keys(groupedTypes)];
+		for (let key of objKeys) {
+			groupedTotals.push({
+				name: key,
+				totalAmount: groupedTypes[key].reduce((total, item) => {
+					return total + item.amount;
+				}, 0)
+			});
+
+		}
+		return groupedTotals;
+	}
+
+	groupPaymentTypes() {
+		let types = [...this.comparePaymentTypes()],
+			result = types.reduce(function (r, a) {
+				r[a.name] = r[a.name] || [];
+				r[a.name].push(a);
+				return r;
+			}, Object.create(null));
+		return result;
+	}
+
+	comparePaymentTypes() {
+		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
+		let filteredReceipts= [];
+		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
+			filteredReceipts = receiptsPaymentTypes.filter(receipt =>
+				moment
+					.tz(new Date(receipt.created_at), moment.tz.guess())
+					.isBetween(this.props.dateFilter.startDate, this.props.dateFilter.endDate));
+		}
+
+		let paymentTypes = [...this.props.paymentTypes];
+		let finalreceiptsPaymentTypes = [];
+		for (let receiptsPaymentType of filteredReceipts) {
+			const rpIndex = paymentTypes.map(function (e) { return e.id }).indexOf(receiptsPaymentType.payment_type_id);
+			if (rpIndex >= 0) {
+				receiptsPaymentType.name = paymentTypes[rpIndex].name;
+				finalreceiptsPaymentTypes.push(receiptsPaymentType);
+			}
+		}
+		return finalreceiptsPaymentTypes;
+	}
+
 	getRow = (item) => {
 		console.log("SalesReport - getRow");
 		return (
@@ -146,9 +191,9 @@ class SalesReport extends Component {
 	};
 	showHeader = () => {
 		return (
-			<View style={[{flex: 1, flexDirection: 'row', height:50, alignItems:'center'},styles.headerBackground]}>
-				<View style={ [{flex: 1}]}>
-					<Text style={[styles.headerItem,styles.leftMargin]}>{'Product'.toUpperCase()}</Text>
+			<View style={[{ flex: 1, flexDirection: 'row', height: 50, alignItems: 'center' }, styles.headerBackground]}>
+				<View style={[{ flex: 1 }]}>
+					<Text style={[styles.headerItem, styles.leftMargin]}>{'Product'.toUpperCase()}</Text>
 				</View>
 				<View style={[ {flex: 1}]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('quantity').toUpperCase()}</Text>
@@ -171,7 +216,10 @@ class SalesReport extends Component {
 function mapStateToProps(state, props) {
 	return {
 		salesData: state.reportReducer.salesData,
-		dateFilter: state.reportReducer.dateFilter
+		dateFilter: state.reportReducer.dateFilter,
+		receiptsPaymentTypes: state.paymentTypesReducer.receiptsPaymentTypes,
+		paymentTypes: state.paymentTypesReducer.paymentTypes,
+		receipts: state.receiptReducer.receipts,
 	};
 }
 
@@ -193,46 +241,46 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		textAlign: 'center'
 	},
-	rowItem:{
-		fontSize:16,
-		paddingLeft:10,
-		paddingTop:5,
-		paddingBottom:5
+	rowItem: {
+		fontSize: 16,
+		paddingLeft: 10,
+		paddingTop: 5,
+		paddingBottom: 5
 	},
-	rowItemCenter:{
-		fontSize:16,
-		paddingLeft:10,
-		paddingTop:5,
-		paddingBottom:5,
-		textAlign:'center'
-	},
-
-	rowBackground:{
-		backgroundColor:'white',
-		borderLeftWidth:1,
-		borderColor:'#f1f1f1',
-		borderTopWidth:1,
-		borderBottomWidth:1,
-		borderRightWidth:1,
-		padding:5
+	rowItemCenter: {
+		fontSize: 16,
+		paddingLeft: 10,
+		paddingTop: 5,
+		paddingBottom: 5,
+		textAlign: 'center'
 	},
 
-	headerBackground:{
-		backgroundColor:'#f1f1f1',
+	rowBackground: {
+		backgroundColor: 'white',
+		borderLeftWidth: 1,
+		borderColor: '#f1f1f1',
+		borderTopWidth: 1,
+		borderBottomWidth: 1,
+		borderRightWidth: 1,
+		padding: 5
+	},
+
+	headerBackground: {
+		backgroundColor: '#f1f1f1',
 		borderColor: '#CCC',
 		padding: 5
 	},
-	totalItem:{
-		fontWeight:"bold",
-		fontSize:24,
+	totalItem: {
+		fontWeight: "bold",
+		fontSize: 24,
 		color: 'white',
-		paddingLeft:10,
+		paddingLeft: 10,
 	},
-	totalLabel:{
-		fontWeight:"bold",
-		fontSize:18,
+	totalLabel: {
+		fontWeight: "bold",
+		fontSize: 18,
 		color: 'white',
-		paddingLeft:10,
+		paddingLeft: 10,
 	},
 	titleItem: {
 		fontWeight: "bold",

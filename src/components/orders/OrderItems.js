@@ -86,7 +86,7 @@ class OrderItems extends Component {
 							</View>
 							<View style={{ flex: .6 }}>
 								<Text style={[{ textAlign: 'center' }, styles.baseItem]}>
-									{this.getDiscountPrice((this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)), this.state.selectedItem)}</Text>
+								{this.getCurrency(this.state.selectedItem)} {this.getDiscountPrice((this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)), this.state.selectedItem)}</Text>
 							</View>
 							<View
 								style={{
@@ -366,7 +366,7 @@ class OrderItems extends Component {
 				</View>
 				<View style={[{ flex: 1 }]}>
 					<Text numberOfLines={1} style={[styles.baseItem]}>
-						{this.getDiscountPrice((item.quantity * this.getItemPrice(item.product)), item)}</Text>
+					{this.getCurrency(item)} {this.getDiscountPrice((item.quantity * this.getItemPrice(item.product)), item)}</Text>
 				</View>
 			</View>
 		);
@@ -541,6 +541,16 @@ class OrderItems extends Component {
 			}
 		}
 		return item.priceAmount;	// Just use product price
+	};
+
+	getCurrency = (item) => {
+
+		console.log('item', item);
+		if (item.hasOwnProperty('product')) {		
+			return item.product.priceCurrency;
+		}
+		
+		
 	};
 
 	getDiscountPrice = (amountPerQuantity, item) => {
