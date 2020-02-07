@@ -46,8 +46,6 @@ const orderReducer = (state = initialState, action) => {
 						}
 					}
 
-
-
 					newState.products = newState.products.slice();
 					return newState;
 				}
@@ -165,40 +163,6 @@ const orderReducer = (state = initialState, action) => {
 			}
 			return newState;
 
-
-
-
-		// newState = { ...state };
-		// //newState.discounts = [];
-		// console.log('state.discounts', state.discounts);
-		// console.log('action.data', action.data);
-
-
-		// const productIndex = state.discounts.map(function (e) { return e.product.productId }).indexOf(action.data.product.productId);
-
-		// if (productIndex >= 0) {
-		// 	let productDiscountArray = [...state.discounts];
-		// 	productDiscountArray.splice(productIndex, 1);
-		// }
-
-		// for (let product of state.discounts) {
-		// 	if (product.product.productId === action.data.product.productId) {
-		// 		const itemIndex = product.discount.map(function (e) { return e.id }).indexOf(action.data.discountId);
-		// 		//
-		// 		console.log('itemIndex', itemIndex);
-		// 		if (itemIndex >= 0) {
-		// 			let discountArray = [...product.discount];
-		// 			discountArray.splice(itemIndex, 1);
-		// 			product.discount = discountArray;
-		// 			console.log('product.discount', product.discount);
-		// 			console.log('discountArray', discountArray);
-		// 			console.log('product', product);
-		// 		}
-
-		// 	}
-		// }
-		// console.log('newState.discounts', newState.discounts);
-		// return newState;
 
 		case SET_ORDER_FLOW:
 			newState = { ...state };

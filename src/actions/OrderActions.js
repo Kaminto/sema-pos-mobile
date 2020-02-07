@@ -79,7 +79,7 @@ export function AddProductDiscounts(isCustom, customDiscount, product, discount,
 
 
 export function RemoveProductDiscountsFromOrder(product) {
-	 console.log("REMOVE_PRODUCT_DISCOUNT - action");
+	//  console.log("REMOVE_PRODUCT_DISCOUNT - action");
 	return dispatch => {
 		dispatch({ type: REMOVE_PRODUCT_DISCOUNT, data: { product} });
 	};

@@ -10,11 +10,6 @@ class ProductListScreen extends Component {
 		super(props);
 
 		let {height, width} = Dimensions.get('window');
-		console.log("ProductListScreen Constructor: Width-" +width);
-		// Empirically we know that this view has flex of 1 and the view beside it,
-		// (OrderSummaryScreen has a flex of .6 This makes the width of this view 1/1.6 * screen width
-		// Since there is no way to dynamilcally determine view width until the layout is complete, use
-		// this to set width. (Note this will break if view layout changes
 		this.viewWidth = 1/1.6 * width;
 		this.salesChannel;
 		this.state =  {
@@ -27,7 +22,7 @@ class ProductListScreen extends Component {
 			salesChannel: SalesChannelRealm.getSalesChannelFromId(this.props.selectedCustomer.salesChannelId)
 		}, () => {
 			this.props.navigation.addListener('didFocus', () => {
-				console.log(`ProductListScreen-Focused - filter=${this.state.salesChannel.name}`)
+				// console.log(`ProductListScreen-Focused - filter=${this.state.salesChannel.name}`)
 				this.props.orderActions.SetOrderChannel(this.state.salesChannel.name);
 			});
 

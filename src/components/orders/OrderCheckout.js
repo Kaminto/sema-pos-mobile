@@ -335,7 +335,7 @@ class OrderCheckout extends Component {
 								<TouchableHighlight underlayColor='#c0c0c0'
 									onPress={() => this.onBottles()}>
 									<Text
-										style={{ paddingTop: 10, paddingBottom: 10, textAlign: 'center' }}>Bottles returned</Text>
+										style={{ padding: 10, margin: 10, color: 'white', backgroundColor: '#036', textAlign: 'center', alignSelf: 'flex-end' }}>Bottles returned</Text>
 								</TouchableHighlight>
 
 								</View>

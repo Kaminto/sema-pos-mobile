@@ -1,5 +1,5 @@
 import React, {Component}  from "react"
-import { View, Text, FlatList, TouchableHighlight, StyleSheet } from "react-native";
+import { View } from "react-native";
 import OrderSummary from "./OrderSummary";
 import OrderTotal from "./OrderTotal";
 import OrderItems from "./OrderItems";
