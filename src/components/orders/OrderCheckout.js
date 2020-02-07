@@ -159,8 +159,8 @@ class OrderCheckout extends Component {
 							</View>
 
 							<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white', padding: 5 }}>
-							<View style={{ flex: 1, flexDirection: 'row' }}>
-									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>20L Tap Refill</Text>
+							   <View style={{ flex: 1, flexDirection: 'row' }}>
+								<Text style={[{ textAlign: 'left' }, styles.baseItem]}>{this.props.products.length > 0 ? this.props.products[0].product.description : ''}</Text>
 								</View>
 								<View style={[{ flex: 1 }]}>
 									<TextInput
@@ -172,6 +172,7 @@ class OrderCheckout extends Component {
 										keyboardType="number-pad"
 										underlineColorAndroid="transparent"
 										placeholder="0"
+										value={this.props.products.length > 0 ? this.props.products[0].emptiesReturned : ''}
 									/>
 								</View>
 								<View style={[{ flex: 1 }]}>
@@ -184,6 +185,7 @@ class OrderCheckout extends Component {
 										keyboardType="number-pad"
 										underlineColorAndroid="transparent"
 										placeholder="0"
+										value={this.props.products.length > 0 ? this.props.products[0].emptiesDamaged : ''}
 									/>
 								</View>
 								<View style={[{ flex: 1 }]}>
@@ -196,6 +198,7 @@ class OrderCheckout extends Component {
 										keyboardType="number-pad"
 										underlineColorAndroid="transparent"
 										placeholder="0"
+										value={this.props.products.length > 0 ? this.props.products[0].refillPending : ''}
 									/>
 								</View>
 							</View>

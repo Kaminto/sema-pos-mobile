@@ -77,7 +77,7 @@ const CustomerTransactionStack = createStackNavigator({
 const TabNavigator = createBottomTabNavigator({
     // const TabNavigator = createMaterialTopTabNavigator({
     Transaction: CustomerTransactionStack,
-    Wallet: CreditHistoryStack
+    CustomerWallet: CreditHistoryStack
     // ,Debit: DebitHistoryStack
 },
     {
@@ -432,7 +432,7 @@ const InventoryStack = createStackNavigator({
     Inventory: {
         screen: InventoryReport,
         navigationOptions: ({ navigation }) => ({
-            title: 'Inventory',
+            title: 'Wastage Report',
             headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
             headerStyle: {
                 backgroundColor: '#00549C',

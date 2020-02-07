@@ -49,7 +49,7 @@ class CustomSidebarMenu extends Component {
       },
       {
         navOptionThumb: 'md-list-box',
-        navOptionName: 'Inventory',
+        navOptionName: 'Wastage Report',
         screenToNavigate: 'Inventory',
       },
       {

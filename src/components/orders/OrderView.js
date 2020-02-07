@@ -23,7 +23,7 @@ class OrderView extends Component {
 		Events.on('ProductsUpdated', 'productsUpdate2', this.onProductsUpdated.bind(this));
 		Events.on('ProductMrpsUpdated', 'productMrpsUpdate1', this.onProductsUpdated.bind(this));
 		console.log('selectedCustomer', this.props.selectedCustomer.name);
-		// this.props.navigation.setParams({ 'customerName': this.props.selectedCustomer.name });
+		this.props.navigation.setParams({ 'customerName': this.props.selectedCustomer.name });
 	}
 
 	componentWillUnmount() {

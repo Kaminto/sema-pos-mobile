@@ -113,11 +113,6 @@ class InventoryReport extends Component {
 	}
 
 	render() {
-		console.log(this.props)
-		console.log(PosStorage.getInventory());
-		console.log(InventroyRealm.getAllInventory());
-
-
 			return (
 				<View style={{ flex: 1 }}>
 					<View style={{ flex: .1, flexDirection: 'row' }}>
@@ -127,7 +122,7 @@ class InventoryReport extends Component {
 					<View style={{ flex: .6, backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10 }}>
 						<View style={{ flex:1, flexDirection: 'row' }}>
 							<FlatList
-								style={{ flex: .4 }}
+								style={{ flex: .5 }}
 								data={this.getInventoryData()}
 								extraData={this.state.refresh}
 								ListHeaderComponent={this.showHeader}
@@ -139,7 +134,7 @@ class InventoryReport extends Component {
 								keyExtractor={item => item.wastageName}
 								initialNumToRender={50}
 							/>
-							<View style={[{ flex: .6 , padding: 5}]}>
+							<View style={[{ flex: .5 , padding: 5}]}>
 								<View style={{ flex: .3, flexDirection: 'row',  alignItems:"center" }}>
 									<Text style={[styles.totalItem, { flex: .45 }]}>{i18n.t('opening-meter')}</Text>
 									<Text style={[styles.rowItemCenter, { flex: .55,
@@ -269,21 +264,10 @@ class InventoryReport extends Component {
 				<View style={[{ flex: .5 }]}>
 					<Text style={[styles.rowItemCenter]}>{item.quantity}</Text>
 				</View>
-				{/* <View style={[{ flex: .7 }]}>
-					<Text style={[styles.rowItemCenter]}>{this.getItemLitersPerSku(item)}</Text>
-				</View> */}
-				{/* <View style={[{ flex: .7 }]}>
-					<Text style={[styles.rowItemCenter]}>{this.getItemTotalLiters(item)}</Text>
-				</View> */}
-				<View style ={[{width:20}]}/>
-
-				{/* <View style={[{ flex: .7 }]}>
-					<Text style={[styles.rowItemCenter]}>{this.getInventorySkuForDisplay(false, item)}</Text>
-				</View> */}
 				{this.getCurrentInventory(item)}
-				{/* <View style={[{ flex: .7 }]}>
-					<Text style={[styles.rowItemCenter]}>{this.getTotalForSkuDisplay(item)}</Text>
-				</View> */}
+				<View style={[{ flex: .7 }]}>
+					<Text style={[styles.rowItemCenter]}>0</Text>
+				</View>
 				<InventoryEdit
 					type = "wastageName"
 					skuToShow = {this.state.currentSkuEdit}
@@ -355,16 +339,15 @@ class InventoryReport extends Component {
 				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('closing-stock').toUpperCase()}</Text>
 				</View>
+				<View style={[{ flex: 1 }]}>
+					<Text style={[styles.headerItemCenter]}>NOT DISPATCHED</Text>
+				</View>
 			</View>
 		);
 	};
 
 
 	updateReport() {
-		console.log('startDate', this.startDate);
-		console.log('endDate', this.endDate);
-		console.log('this.props.products', this.props.products);
-
 		this.props.reportActions.GetInventoryReportData(this.startDate, this.endDate, this.props.products);
 	}
 
