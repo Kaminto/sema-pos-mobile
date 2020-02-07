@@ -156,8 +156,7 @@ class OrderItems extends Component {
 									marginBottom: 10,
 									width: '100%'
 								}}
-							/>
-					
+							/>			
 							
 							
 							<View style={{ flex: 1, flexDirection: 'row' }}>
