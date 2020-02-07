@@ -26,6 +26,7 @@ class SalesReport extends Component {
 	}
 
 	render() {
+		console.log("Breakdown" + JSON.stringify(this.getTotalTypes()));
 		return (
 			<View style={{ flex: 1 }}>
 				<View style={{
@@ -50,7 +51,7 @@ class SalesReport extends Component {
 					</View>
 				</View>
 				<View style={{ flex: .8, flexDirection: 'row', backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10, }}>
-					<View style={{ flex: .65 }}>
+					<View style={{ flex: .6, padding: 10 }}>
 						<FlatList
 							data={this.getSalesData()}
 							ListHeaderComponent={this.showHeader}
@@ -64,7 +65,21 @@ class SalesReport extends Component {
 							initialNumToRender={50}
 						/>
 					</View>
-					<View style={{ flex: .35, padding: 10 }}><Text>Payment Breakdown</Text></View>
+					<View style={{ flex: .4, padding: 10 }}>
+						<FlatList
+							data={this.getTotalTypes()}
+							ListHeaderComponent={this.showPaymentHeader}
+							// extraData={this.state.refresh}
+							renderItem={({ item, index, separators }) => (
+								<View>
+									{this.getPaymentRow(item, index, separators)}
+								</View>
+							)}
+							keyExtractor={item => item.name}
+							initialNumToRender={50}
+						/>
+					</View>
+
 				</View>
 			</View>
 		);
@@ -91,6 +106,7 @@ class SalesReport extends Component {
 		}
 		return sales;
 	}
+
 	getTotalSales() {
 		if (this.props.salesData.totalSales) {
 			return this.props.salesData.totalSales;
@@ -135,6 +151,11 @@ class SalesReport extends Component {
 			});
 
 		}
+		groupedTotals.push({
+			name: 'TOTAL',
+			totalAmount: this.getTotalSales()
+		});
+
 		return groupedTotals;
 	}
 
@@ -189,6 +210,23 @@ class SalesReport extends Component {
 			</View>
 		);
 	};
+
+	getPaymentRow = (item) => {
+		console.log("SalesReport - getPaymentRow");
+		return (
+			<View style={[{ flex: 1, flexDirection: 'row', alignItems: 'center' }, styles.rowBackground]}>
+
+				<View style={[{ flex: 1, }]}>
+					<Text style={[styles.rowItemCenter]}>{item.name.toUpperCase()}</Text>
+				</View>
+
+				<View style={[{ flex: 1 }]}>
+					<Text style={[styles.rowItemCenter]}>{item.totalAmount.toFixed(2)}</Text>
+				</View>
+			</View>
+		);
+	};
+
 	showHeader = () => {
 		return (
 			<View style={[{ flex: 1, flexDirection: 'row', height: 50, alignItems: 'center' }, styles.headerBackground]}>
@@ -203,6 +241,19 @@ class SalesReport extends Component {
 				</View>
 				<View style={ [{flex: 1}]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('total-sales').toUpperCase()}</Text>
+				</View>
+			</View>
+		);
+	};
+
+	showPaymentHeader = () => {
+		return (
+			<View style={[{ flex: 1, flexDirection: 'row', height: 50, alignItems: 'center' }, styles.headerBackground]}>
+				<View style={ [{flex: 1}]}>
+					<Text style={[styles.headerItemCenter]}>PAYMENT METHOD</Text>
+				</View>
+				<View style={ [{flex: 1}]}>
+					<Text style={[styles.headerItemCenter]}>AMOUNT</Text>
 				</View>
 			</View>
 		);

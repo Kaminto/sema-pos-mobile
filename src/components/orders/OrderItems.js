@@ -17,7 +17,7 @@ import { Input } from 'react-native-elements';
 
 const { height, width } = Dimensions.get('window');
 const widthQuanityModal = '70%';
-const heightQuanityModal = 400;
+const heightQuanityModal = 500;
 const inputTextWidth = 400;
 const marginInputItems = width / 2 - inputTextWidth / 2;
 
@@ -74,7 +74,6 @@ class OrderItems extends Component {
 						<View
 							style={{
 								height: 5,
-								backgroundColor: '#036',
 								width: '100%'
 							}}
 						/>
@@ -156,9 +155,41 @@ class OrderItems extends Component {
 									marginBottom: 10,
 									width: '100%'
 								}}
-							/>			
-							
-							
+							/>
+
+							<View style={[{ flex: 1, flexDirection: 'row' }]}>
+								<View style={[{ flex: 1 }]}>
+									<Text style={[styles.headerItem, { textTransform: 'uppercase' }]}>Empties Returned</Text>
+								</View>
+								<View style={[{ flex: 1 }]}>
+									<Text style={[styles.headerItem, { textTransform: 'uppercase' }]}>Damaged Bottles</Text>
+								</View>
+								<View style={[{ flex: 1 }]}>
+									<Text style={[styles.headerItem, { textTransform: 'uppercase' }]}>Pending Bottles</Text>
+								</View>
+							</View>
+
+							<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white', padding: 5 }}>
+								<View style={[{ flex: 1 }]}>
+									{this.emptiesReturnedValue()}
+								</View>
+								<View style={[{ flex: 1 }]}>
+									{this.emptiesDamagedValue()}
+								</View>
+								<View style={[{ flex: 1 }]}>
+									{this.refillPendingValue()}
+								</View>
+							</View>
+
+							<View
+								style={{
+									height: 1,
+									backgroundColor: '#ddd',
+									marginBottom: 10,
+									width: '100%'
+								}}
+							/>
+
 							<View style={{ flex: 1, flexDirection: 'row' }}>
 								<View style={{ flex: 1 }}>
 									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>NOTES</Text>
@@ -217,6 +248,23 @@ class OrderItems extends Component {
 									width: '100%'
 								}}
 							/>
+							<View
+								style={{
+									flex: .2,
+									marginTop: 10,
+									justifyContent: 'flex-end',
+									flexDirection: 'row',
+									right: 0,
+									bottom: 0
+								}}>
+								<Button
+									onPress={() => this.onCancelOrder()}
+									style={{ padding: 20, color: '#CCC' }}
+									title="SAVE"
+									color="#ABC1DE"
+								/>
+							</View>
+
 						</View>
 
 					</ScrollView>
@@ -305,12 +353,15 @@ class OrderItems extends Component {
 		return (
 			<TextInput
 				style={{
-					padding: 10
+					textAlign: 'center',
+					height: 50,
+					fontSize: 24
 				}}
 				onChangeText={this.setEmptiesReturned}
 				value={emptiesReturned}
+				keyboardType="number-pad"
 				underlineColorAndroid="transparent"
-				placeholder="Add a Note"
+				placeholder="0"
 			/>
 		)
 	}
@@ -328,12 +379,15 @@ class OrderItems extends Component {
 		return (
 			<TextInput
 				style={{
-					padding: 10
+					textAlign: 'center',
+					height: 50,
+					fontSize: 24
 				}}
 				onChangeText={this.setEmptiesDamaged}
 				value={emptiesDamaged}
+				keyboardType="number-pad"
 				underlineColorAndroid="transparent"
-				placeholder="Add a Note"
+				placeholder="0"
 			/>
 		)
 	}
@@ -351,12 +405,15 @@ class OrderItems extends Component {
 		return (
 			<TextInput
 				style={{
-					padding: 10
+					textAlign: 'center',
+					height: 50,
+					fontSize: 24
 				}}
 				onChangeText={this.setRefillPending}
 				value={refillPending}
+				keyboardType="number-pad"
 				underlineColorAndroid="transparent"
-				placeholder="Add a Note"
+				placeholder="0"
 			/>
 		)
 	}
@@ -643,7 +700,6 @@ class OrderItems extends Component {
 						onToggle={isOn => {
 							DiscountRealm.isSelected(item, isOn === true ? true : false);
 
-
 							if (this.state.selectedDiscounts.hasOwnProperty('id')) {
 								DiscountRealm.isSelected(this.state.selectedDiscounts, false);
 							}
@@ -672,7 +728,7 @@ class OrderItems extends Component {
 	showHeader = () => {
 		return (
 			<View style={[{ flex: 1, flexDirection: 'row' }, styles.headerBackground]}>
-				<View style={[{ flex: 3 }]}>
+				<View style={[{ flex: 2 }]}>
 					<Text style={[styles.headerItem, styles.headerLeftMargin]}>{i18n.t('item')}</Text>
 				</View>
 				<View style={[{ flex: 1 }]}>
@@ -722,7 +778,6 @@ class OrderItems extends Component {
 		}
 	}
 
-
 	getItemPrice = (item) => {
 		if (!item) {
 			return 1;
@@ -741,7 +796,7 @@ class OrderItems extends Component {
 
 		console.log('item', item);
 		if (item.hasOwnProperty('product')) {
-			return item.product.priceCurrency;
+			return item.product.priceCurrency.toUpperCase();
 		}
 
 
@@ -919,8 +974,6 @@ const styles = StyleSheet.create({
 	},
 
 	modal3: {
-		// height: 300,
-		// width: 500
 		width: widthQuanityModal,
 		height: heightQuanityModal,
 	},

@@ -123,7 +123,7 @@ class OrderCheckout extends Component {
 					coverScreen={true}
 					position={"center"} ref={"modal7"}
 					isDisabled={this.state.isDisabled}>
-						<View style={{ flex: 1, padding: 0, margin: 0 }}>
+						<View style={{ flex: 1, padding: 0, margin: 0, paddingLeft: 10 }}>
 							<View
 								style={{
 									justifyContent: 'flex-end',
@@ -137,15 +137,68 @@ class OrderCheckout extends Component {
 							<View
 								style={{
 									flex: 1,
-									marginTop: 0,
-									marginLeft: 20,
-									marginRight: 20
+									marginTop: 0
 								}}>
 
-
 								<View style={{ flex: 1, flexDirection: 'row' }}>
-									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Empties returned.</Text>
+									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Bottle Tracker.</Text>
 								</View>
+								<View style={[{ flex: 1, flexDirection: 'row' }]}>
+								<View style={{ flex: 1, flexDirection: 'row' }}>
+									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Product</Text>
+								</View>
+								<View style={[{ flex: 1}]}>
+									<Text style={[styles.headerItem]}>Empties Returned</Text>
+								</View>
+								<View style={[{ flex: 1 }]}>
+									<Text style={[styles.headerItem]}>Damaged Bottles</Text>
+								</View>
+								<View style={[{ flex: 1 }]}>
+									<Text style={[styles.headerItem]}>Pending Bottles</Text>
+								</View>
+							</View>
+
+							<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white', padding: 5 }}>
+							<View style={{ flex: 1, flexDirection: 'row' }}>
+									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>20L Tap Refill</Text>
+								</View>
+								<View style={[{ flex: 1 }]}>
+									<TextInput
+										style={{
+											textAlign: 'center',
+											height: 50,
+											fontSize: 24
+										}}
+										keyboardType="number-pad"
+										underlineColorAndroid="transparent"
+										placeholder="0"
+									/>
+								</View>
+								<View style={[{ flex: 1 }]}>
+									<TextInput
+										style={{
+											textAlign: 'center',
+											height: 50,
+											fontSize: 24
+										}}
+										keyboardType="number-pad"
+										underlineColorAndroid="transparent"
+										placeholder="0"
+									/>
+								</View>
+								<View style={[{ flex: 1 }]}>
+									<TextInput
+										style={{
+											textAlign: 'center',
+											height: 50,
+											fontSize: 24
+										}}
+										keyboardType="number-pad"
+										underlineColorAndroid="transparent"
+										placeholder="0"
+									/>
+								</View>
+							</View>
 							</View>
 
 						</View>
@@ -819,7 +872,7 @@ class OrderCheckout extends Component {
 			}
 
 
-		
+
 
 
 			OrderRealm.createOrder(receipt);
@@ -1112,6 +1165,22 @@ const styles = StyleSheet.create({
 	modal3: {
 		width: widthQuanityModal,
 		height: heightQuanityModal,
+	},
+
+	headerItem: {
+		fontWeight: 'bold',
+		fontSize: 18,
+		color: 'black',
+		paddingTop: 5,
+		paddingBottom: 5,
+	},
+	baseItem: {
+		fontWeight: 'bold',
+		fontSize: 16,
+		color: 'black',
+		paddingTop: 4,
+		paddingBottom: 4,
+
 	},
 
 });
