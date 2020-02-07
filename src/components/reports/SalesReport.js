@@ -26,9 +26,6 @@ class SalesReport extends Component {
 	}
 
 	render() {
-		console.log('comparePaymentTypes', this.comparePaymentTypes());
-		console.log('comparePaymentTypes', this.groupPaymentTypes());
-		console.log('getTotalTypes', this.getTotalTypes());
 		return (
 			<View style={{ flex: 1 }}>
 				<View style={{
@@ -86,14 +83,11 @@ class SalesReport extends Component {
 				this.startDate = this.props.dateFilter.startDate;
 				this.endDate = this.props.dateFilter.endDate;
 				this.updateReport();
-				//return this.props.salesData.salesItems;
 				sales = this.props.salesData.salesItems;
-				//return this.removeDuplicates(this.props.salesData.salesItems, "id");
 			}
 		} else {
 			//return this.props.salesData.salesItems;
 			sales = this.props.salesData.salesItems;
-			//return this.removeDuplicates(this.props.salesData.salesItems, "id");
 		}
 		return sales;
 	}
@@ -156,9 +150,7 @@ class SalesReport extends Component {
 
 	comparePaymentTypes() {
 		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
-
 		let filteredReceipts= [];
-		console.log('-dateFilter-', this.props.dateFilter);
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
 			filteredReceipts = receiptsPaymentTypes.filter(receipt =>
 				moment
