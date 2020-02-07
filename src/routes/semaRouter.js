@@ -25,7 +25,7 @@ import { Input } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomSidebarMenu from './CustomSidebarMenu';
 import { Tooltip } from 'react-native-elements';
-import FontAwesome, { SolidIcons, RegularIcons } from 'react-native-fontawesome';
+import Icons from 'react-native-vector-icons/FontAwesome';
 
 import i18n from '../app/i18n';
 
@@ -139,15 +139,16 @@ const ListCustomerStack = createStackNavigator({
                             flex: 1
                         }}>
                         {navigation.getParam('isCustomerSelected') && navigation.getParam('isDueAmount') > 0 && (
-                            <Icon
-                                name='md-cash'
-                                size={30}
+                            <Icons
+                                name='balance-scale'
+                                size={28}
                                 color="white"
                                 style={{
                                     marginRight: 20,
                                 }}
                                 onPress={navigation.getParam('clearLoan')}
                             />
+
                         )}
                     </View>
 
