@@ -80,6 +80,32 @@ class ReceiptLineItem extends Component {
 	};
 }
 
+class PaymentTypeItem extends Component {
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		return (
+			<View
+				style={{
+					flex: 1,
+					flexDirection: 'row',
+					marginBottom: 5,
+					marginTop: 5
+				}}>
+					<View style={[styles.itemData, {flex: 3}]}>
+						<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>{this.props.item.name}</Text>
+					</View>
+					<View style={[styles.itemData, {flex: 1}]}>
+						<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold'}]}>{this.props.item.amount} </Text>
+					</View>
+
+			</View>
+		);
+	}
+}
+
 class TransactionDetail extends Component {
 	constructor(props) {
 		super(props);
@@ -160,6 +186,7 @@ class TransactionDetail extends Component {
 	render() {
 
 		var receiptLineItems;
+		var paymentTypes;
 		if (this.props.item.receiptLineItems !== undefined) {
 			receiptLineItems = this.props.item.receiptLineItems.map((lineItem, idx) => {
 				// console.log('lineItem-lineItem-lineItem', lineItem);
@@ -180,6 +207,20 @@ class TransactionDetail extends Component {
 			receiptLineItems = {};
 		}
 
+		if (this.props.item.paymentTypes !== undefined) {
+			paymentTypes = this.props.item.paymentTypes.map((paymentItem, idx) => {
+				return (
+
+					<PaymentTypeItem
+					 item={paymentItem}
+					/>
+				);
+			});
+		} else {
+			paymentTypes = {};
+		}
+
+
 		return (
 			<View style={{ padding: 15 }}>
 				<View style={styles.deleteButtonContainer}>
@@ -195,17 +236,15 @@ class TransactionDetail extends Component {
 				<View style={styles.itemData}>
 					<Text style={styles.customername}>{this.props.item.customerAccount.name}</Text>
 				</View>
-				<View style={styles.itemData}>
-					<Text>
-						{moment
+				<Text>
+				{moment
 							.tz(this.props.item.createdAt, moment.tz.guess())
 							.format('dddd Do MMMM YYYY')}
-					</Text>
-				</View>
+							</Text>
 				<View>
 
 				</View>
-				<View style={styles.receiptStats}>
+				{/* <View style={styles.receiptStats}>
 					{!this.props.item.active && (
 						<Text style={styles.receiptStatusText}>
 							{'Deleted'.toUpperCase()}
@@ -226,10 +265,15 @@ class TransactionDetail extends Component {
 								</Text>
 							</View>
 						)}
+					</View> */}
+				<View>
+					<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>PAYMENT</Text>
 				</View>
 
+				{paymentTypes}
+
 				<View>
-					<Text style={{ fontSize: 16, fontWeight: "bold" }}>PRODUCTS</Text>
+					<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>PRODUCTS</Text>
 				</View>
 
 				{receiptLineItems}
@@ -304,7 +348,7 @@ class Transactions extends Component {
 		if (this.state.selected) {
 			return (
 				<View style={{ flex: 1, flexDirection: 'row' }}>
-					<View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 4, borderRightColor: '#CCC' }}>
+					<View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 1, borderRightColor: '#CCC' }}>
 						<FlatList
 							data={this.prepareData()}
 							renderItem={this.renderReceipt.bind(this)}
@@ -314,14 +358,14 @@ class Transactions extends Component {
 						/>
 					</View>
 
-					<View style={{ flex: 2, backgroundColor: '#fff' }}>
+					<View style={{ flex: 2, backgroundColor: '#fff', paddingLeft: 20 }}>
 						<ScrollView>
 							<TransactionDetail
 								item={this.state.selected}
 								products={this.props.products}
 								receiptActions={this.props.receiptActions}
 								receipts={this.props.receipts}
-								paymenttypes={this.props.receiptsPaymentTypes}
+								paymentTypes={this.props.receiptsPaymentTypes}
 							/>
 						</ScrollView>
 					</View>

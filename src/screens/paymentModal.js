@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import { View, Alert, Text, TextInput, Button, FlatList, ScrollView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
-import { CheckBox } from 'react-native-elements';
+import { CheckBox, Card } from 'react-native-elements';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as OrderActions from "../actions/OrderActions";
@@ -29,6 +29,7 @@ import * as Utilities from "../services/Utilities";
 const widthQuanityModal = '100%';
 const heightQuanityModal = 400;
 const inputTextWidth = 400;
+import moment from 'moment-timezone';
 
 class PaymentModal extends Component {
 
@@ -38,40 +39,9 @@ class PaymentModal extends Component {
 			selectedPaymentTypes: [],
 			selectedType: {},
 			checkedType: {},
-			isDateTimePickerVisible: false,
-			receiptDate: new Date(),
 		};
 	}
 
-	showDateTimePicker = () => {
-		this.setState({ isDateTimePickerVisible: true });
-	};
-
-	hideDateTimePicker = () => {
-		this.setState({ isDateTimePickerVisible: false });
-	};
-
-	handleDatePicked = date => {
-		var randomNumber = Math.floor(Math.random() * 59) + 1;
-		var randomnumstr;
-		if (Number(randomNumber) <= 9) {
-			randomnumstr = "0" + randomNumber;
-		} else {
-			randomnumstr = randomNumber;
-		}
-		var datestr = date.toString();
-		var aftergmt = datestr.slice(-14);
-		var datestring = datestr.substring(0, 22) + randomnumstr + " " + aftergmt;
-		this.setState({ receiptDate: new Date(datestring) });
-		this.hideDateTimePicker();
-	};
-
-	getLimitDate = () => {
-		let date = new Date();
-		let days = date.getDay() === 1 ? 2 : 1;
-		date.setDate(date.getDate() - days);
-		return date;
-	};
 
 	render() {
 		const state = this.state;
@@ -105,10 +75,10 @@ class PaymentModal extends Component {
 								this.paymentTypesRow(item, index, separators)
 							)}
 							extraData={this.props.selectedDebtPaymentTypes}
-							// numColumns={2}
+							numColumns={2}
 							contentContainerStyle={styles.container}
 						/>
-
+					<Card>
 						<PaymentDescription
 							title={`${i18n.t('previous-amount-due')}:`}
 							total={Utilities.formatCurrency(
@@ -121,7 +91,8 @@ class PaymentModal extends Component {
 												this.currentCredit()
 											)}
 										/>
-						{/* {this.getBackDateComponent()} */}
+										</Card>
+
 						<View style={styles.completeOrder}>
 							<View style={{ justifyContent: 'center', height: 50 }}>
 								<TouchableHighlight
@@ -516,7 +487,7 @@ class PaymentModal extends Component {
 			}
 
 			Alert.alert(
-				'Notice',
+				'SEMA',
 				'Payment Made',
 				[{
 					text: 'OK',
@@ -536,39 +507,12 @@ class PaymentModal extends Component {
 		return (
 			<TouchableHighlight onPress={() => this.closePaymentModal()}>
 				<Icon
-					size={50}
-					name="md-close"
+					size={40}
+					name="md-close-circle-outline"
 					color="black"
 				/>
 			</TouchableHighlight>
 		);
-	}
-
-	getBackDateComponent() {
-		if (!this.isPayoffOnly()) {
-			return (
-				<View
-					style={{
-						marginTop: 10,
-						marginBottom: 10,
-						marginLeft: 100,
-						marginRight: 100
-					}}>
-					<Button
-						title="Change Receipt Date"
-						onPress={this.showDateTimePicker}
-					/>
-					<DateTimePicker
-						maximumDate={new Date()}
-						isVisible={this.state.isDateTimePickerVisible}
-						onConfirm={this.handleDatePicked}
-						onCancel={this.hideDateTimePicker}
-					/>
-				</View>
-			);
-		} else {
-			return null;
-		}
 	}
 
 	calculateOrderDue() {
@@ -678,7 +622,6 @@ const styles = StyleSheet.create({
 	},
 
 	modal3: {
-
 		width: widthQuanityModal,
 		height: heightQuanityModal,
 	},
