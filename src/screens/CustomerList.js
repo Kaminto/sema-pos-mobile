@@ -335,20 +335,16 @@ class CustomerList extends Component {
                             {item.phoneNumber}
                         </Text>
                     </View>
-                    {/* <View style={{ flex: 1.5 }}>
-                        <Text style={[styles.baseItem]}>
-                            {item.secondPhoneNumber || ''}
-                        </Text>
-                    </View> */}
+
                     <View style={{ flex: 2 }}>
                         <Text style={[styles.baseItem]}>{item.address}</Text>
                     </View>
-					<View style={{ flex: 1 }}>
+					<View style={{ flex: 1.5 }}>
                         <Text style={[styles.baseItem]}>
                             {this.getCustomerTypes(item)}
                         </Text>
                     </View>
-                    <View style={{ flex: 0.75 }}>
+                    <View style={{ flex: 1 }}>
                         <Text style={[styles.baseItem]}>
                             {item.dueAmount.toFixed(2)}
                         </Text>
@@ -511,18 +507,13 @@ class CustomerList extends Component {
                         {i18n.t('telephone-number')}
                     </Text>
                 </View>
-                {/* <View style={[{ flex: 1.5 }]}>
-                    <Text style={[styles.headerItem]}>
-                        {i18n.t('second-phone-number')}
-                    </Text>
-                </View> */}
                 <View style={[{ flex: 2 }]}>
                     <Text style={[styles.headerItem]}>{i18n.t('address')}</Text>
                 </View>
-				<View style={[{ flex: 1 }]}>
+				<View style={[{ flex: 1.5 }]}>
                     <Text style={[styles.headerItem]}>{i18n.t('customer-type')}</Text>
                 </View>
-                <View style={[{ flex: 0.75 }]}>
+                <View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem]}>{i18n.t('balance')}</Text>
                 </View>
 

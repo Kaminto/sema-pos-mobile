@@ -151,7 +151,6 @@ class SalesReport extends Component {
 			});
 
 		}
-
 		groupedTotals.push({
 			name: 'TOTAL',
 			totalAmount: this.getTotalSales()

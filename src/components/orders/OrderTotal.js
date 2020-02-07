@@ -45,8 +45,8 @@ class OrderTotal extends Component {
 		return (
 			<View style={styles.container}>
 				<Text style={[{ flex: 2 }, styles.totalText]}>{i18n.t('order-total')}</Text>
-		<Text style={[{ flex: 3 }, styles.totalText]}>{this.getCurrency()} {Utilities.formatCurrency(this.getAmount())}</Text>
-				 
+		<Text style={[{ flex: 3 }, styles.totalText]}>{this.getCurrency().toUpperCase()} {Utilities.formatCurrency(this.getAmount())}</Text>
+
 
 				<Modal style={[styles.modal4]} coverScreen={true} swipeToClose={true} position={"bottom"} ref={"modal6"} swipeArea={10}>
 					<ScrollView>
@@ -262,12 +262,12 @@ class OrderTotal extends Component {
 
 	getAmount = () => {
 		if(this.props.products.length > 0){
-			return this.props.products.reduce((total, item) => { 
+			return this.props.products.reduce((total, item) => {
 				return total + item.finalAmount;
 		 }, 0);
 		}
 		return 0;
-		
+
 	};
 
 	getCurrency = () => {
@@ -275,7 +275,7 @@ class OrderTotal extends Component {
 			return this.props.products[0].product.priceCurrency;
 		}
 		return '';
-		
+
 	};
 
 	getItemPrice = (product) => {
