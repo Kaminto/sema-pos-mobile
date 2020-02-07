@@ -105,7 +105,6 @@ class OrderCheckout extends Component {
 	};
 
 	render() {
-		console.log('props', this.props);
 		const state = this.state;
 		return (
 			<View style={styles.container}>
@@ -829,37 +828,38 @@ class OrderCheckout extends Component {
 		if (receipt != null) {
 			const creditIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
 
-			// if (creditIndex >= 0) {
-			// 	if (Number(this.props.selectedPaymentTypes[creditIndex].amount) > Number(this.props.selectedCustomer.dueAmount)) {
-			// 		Alert.alert(
-			// 			i18n.t('credit-due-amount-title'),
-			// 			i18n.t('credit-due-amount-text') +
-			// 			this.props.selectedCustomer.dueAmount,
-			// 			[
-			// 				{
-			// 					text: 'OK',
-			// 					onPress: () => { }
-			// 				}
-			// 			],
-			// 			{ cancelable: false }
-			// 		);
-			// 		return;
-			// 	}
-			// }
-
-			if(this.currentCredit() === 0){
-				Alert.alert(
-					'No Jibu Credit',
-					'There is no credit in the wallet',
-					[{
-						text: 'OK',
-						onPress: () => {
-						}
-					}],
-					{ cancelable: false }
-				);
-				return;
+			if (creditIndex >= 0) {
+				if(this.currentCredit() === 0){
+					Alert.alert(
+						'No Jibu Credit',
+						'There is no credit in the wallet',
+						[{
+							text: 'OK',
+							onPress: () => {
+							}
+						}],
+						{ cancelable: false }
+					);
+					return;
+				}
+				// if (Number(this.props.selectedPaymentTypes[creditIndex].amount) > Number(this.props.selectedCustomer.dueAmount)) {
+				// 	Alert.alert(
+				// 		i18n.t('credit-due-amount-title'),
+				// 		i18n.t('credit-due-amount-text') +
+				// 		this.props.selectedCustomer.dueAmount,
+				// 		[
+				// 			{
+				// 				text: 'OK',
+				// 				onPress: () => { }
+				// 			}
+				// 		],
+				// 		{ cancelable: false }
+				// 	);
+				// 	return;
+				// }
 			}
+
+			
 
 
 			receipt.customer_account = this.props.selectedCustomer;
@@ -920,12 +920,10 @@ class OrderCheckout extends Component {
 	};
 
 	getCreditPurchases() {
-		console.log('customerCreditPaymentTypeReceipts', this.customerCreditPaymentTypeReceipts());
 		return this.customerCreditPaymentTypeReceipts().reduce((total, item) => { return (total + item.amount) }, 0)
 	}
 
 	currentCredit() {
-		console.log('topupTotal', this.totalTopUp());
 		return this.totalTopUp() - this.getCreditPurchases();
 	}
 
@@ -959,8 +957,6 @@ class OrderCheckout extends Component {
                     ? 1
                     : -1;
             });
-
-            console.log('topups', topups);
             return topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
         } else {
             return [];
@@ -971,13 +967,10 @@ class OrderCheckout extends Component {
 	customerCreditPaymentTypeReceipts() {
 		let receiptsPaymentTypes = [...this.compareCreditPaymentTypes()];
 		let customerReceipt = [...this.getCustomerRecieptData()];
-		console.log(receiptsPaymentTypes);
-		console.log(customerReceipt);
 		let finalCustomerReceiptsPaymentTypes = [];
 
 		for (let receiptsPaymentType of receiptsPaymentTypes) {
 			const rpIndex = customerReceipt.map(function (e) { return e.id }).indexOf(receiptsPaymentType.receipt_id);
-			console.log(rpIndex);
 			if (rpIndex >= 0) {
 				receiptsPaymentType.receipt = receiptsPaymentTypes[rpIndex];
 				finalCustomerReceiptsPaymentTypes.push(receiptsPaymentType);
@@ -1004,15 +997,11 @@ class OrderCheckout extends Component {
 
 
 	getCustomerRecieptData() {
-		// Used for enumerating receipts
-		//console.log("here selectedCustomer", this.props.selectedCustomer);
-
 		if (this.props.receipts.length > 0) {
 			const totalCount = this.props.receipts.length;
 
 			let salesLogs = [...new Set(this.props.receipts)];
 			let remoteReceipts = salesLogs.map((receipt, index) => {
-				//console.log("customerAccount", receipt.customer_account);
 				return {
 					active: receipt.active,
 					id: receipt.id,

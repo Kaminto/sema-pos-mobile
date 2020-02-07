@@ -4,7 +4,6 @@ import {bindActionCreators} from "redux";
 import * as ProductActions from "../../actions/ProductActions";
 import * as OrderActions from "../../actions/OrderActions";
 import {connect} from "react-redux";
-
 import i18n from "../../app/i18n";
 
 class OrderSummary extends Component {
@@ -20,7 +19,6 @@ class OrderSummary extends Component {
 		);
 	}
 	getTotalOrders = () =>{
-		console.log("getTotalOrders");
 		return this.props.products.reduce( (total, item) => { return(total + item.quantity) }, 0);
 	};
 }

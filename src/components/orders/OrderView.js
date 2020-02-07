@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, StyleSheet } from 'react-native';
 import OrderProductScreen from "./OrderProductScreen";
+import ProductListScreen from './ProductListScreen';
 import OrderPaymentScreen from "./OrderPaymentScreen";
 import OrderSummaryScreen from "./OrderSummaryScreen";
 import { connect } from "react-redux";
@@ -15,45 +16,21 @@ class OrderView extends Component {
 	}
 
 	render() {
-		console.log('this.props', this.props);
-		return this.displayView();
-	}
-
-	componentDidMount() {
-		Events.on('ProductsUpdated', 'productsUpdate2', this.onProductsUpdated.bind(this));
-		Events.on('ProductMrpsUpdated', 'productMrpsUpdate1', this.onProductsUpdated.bind(this));
-		console.log('selectedCustomer', this.props.selectedCustomer.name);
-		// this.props.navigation.setParams({ 'customerName': this.props.selectedCustomer.name });
-	}
-
-	componentWillUnmount() {
-		Events.rm('ProductsUpdated', 'productsUpdate2');
-		Events.rm('ProductMrpsUpdated', 'productMrpsUpdate1');
-		//this.props.customerActions.CustomerSelected({});
-		this.props.orderActions.ClearOrder();
-	}
-
-	onProductsUpdated() {
-		this.forceUpdate();
-	}
-
-	displayView() {
 		return (
 			<View style={styles.orderView}>
-				{this.getProductScreen()}
-				{this.getPaymentScreen()}
+				<ProductListScreen/>
 				<OrderSummaryScreen
-					navigation={this.props.navigation} />
+				navigation={this.props.navigation} />
 			</View>
 		);
 	}
 
-	getProductScreen() {
-		return this.props.flow.page === 'products' ? <OrderProductScreen /> : null;
+	componentDidMount() {
+		this.props.navigation.setParams({ customerName: this.props.selectedCustomer.name });
 	}
 
-	getPaymentScreen() {
-		return this.props.flow.page === 'payment' ? <OrderPaymentScreen /> : null;
+	componentWillUnmount() {
+		this.props.orderActions.ClearOrder();
 	}
 
 }

@@ -652,8 +652,6 @@ class OrderItems extends Component {
 	};
 
 	changeQuantity = value => {
-		console.log('value', value);
-		console.log('quantity', this.state.selectedItem);
 		let unitPrice = this.getItemPrice(this.state.selectedItem.product);
 		if (Number(value) > Number(this.state.selectedItem.quantity)) {
 			this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, Number(value), unitPrice);
@@ -742,11 +740,9 @@ class OrderItems extends Component {
 	};
 
 	counterChangedHandler = (action) => {
-		console.log('action', action);
 		let unitPrice = this.getItemPrice(this.state.selectedItem.product);
 		switch (action) {
 			case 'inc':
-				console.log('here inc', action);
 				if (this.state.accumulator === 0) {
 					this.refs.productModel.close();
 					this.props.orderActions.RemoveProductFromOrder(this.state.selectedItem.product, unitPrice);
@@ -762,7 +758,6 @@ class OrderItems extends Component {
 				}
 				break;
 			case 'dec':
-				console.log('here dec', action);
 				if (this.state.accumulator === 0) {
 					this.refs.productModel.close();
 					this.props.orderActions.RemoveProductFromOrder(this.state.selectedItem.product, unitPrice);
@@ -793,13 +788,9 @@ class OrderItems extends Component {
 	};
 
 	getCurrency = (item) => {
-
-		console.log('item', item);
 		if (item.hasOwnProperty('product')) {
 			return item.product.priceCurrency.toUpperCase();
 		}
-
-
 	};
 
 	getDiscountPrice = (amountPerQuantity, item) => {
@@ -818,7 +809,6 @@ class OrderItems extends Component {
 		if (item.type === 'Percentage') {
 			return amountPerQuantity * (Number(item.discount) / 100);
 		}
-
 	};
 
 }

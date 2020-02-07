@@ -66,9 +66,6 @@ class CustomerList extends Component {
         this.props.customerActions.CustomerSelected({});
         this.props.customerActions.setCustomerEditStatus(false);
 
-        console.log(
-            'CustomerList:componentDidMount - filter: ' + this.props.searchString
-        );
         Events.on(
             'ScrollCustomerTo',
             'customerId1',
@@ -77,24 +74,20 @@ class CustomerList extends Component {
     }
 
     searchCustomer = (searchText) => {
-        console.log(searchText)
         this.props.customerActions.SearchCustomers(searchText);
     };
 
     checkfilter = (searchText) => {
-        console.log(searchText)
         this.props.navigation.setParams({ salesChannelValue: searchText });
         this.props.customerActions.SearchCustomersChannel(searchText);
     };
 
     checkCustomerTypefilter = (searchText) => {
-        console.log(searchText)
         this.props.navigation.setParams({ customerTypeValue: searchText });
         this.props.customerActions.SearchCustomerTypes(searchText);
     };
 
     modalOnClose() {
-        console.log('Modal closed here')
         PaymentTypeRealm.resetSelected();
         this.props.paymentTypesActions.resetSelectedDebt();
         this.props.paymentTypesActions.setPaymentTypes(
@@ -115,7 +108,6 @@ class CustomerList extends Component {
             this.props.selectedCustomer.hasOwnProperty('name')
             // && !this._isAnonymousCustomer(this.props.selectedCustomer)
         ) {
-            console.log('CustomerBar:onDelete');
             let alertMessage =
                 'Delete  customer ' + this.props.selectedCustomer.name;
             if (this.props.selectedCustomer.dueAmount === 0) {
@@ -125,7 +117,7 @@ class CustomerList extends Component {
                     [
                         {
                             text: 'Cancel',
-                            onPress: () => console.log('Cancel Pressed'),
+                            onPress: () => { },
                             style: 'cancel'
                         },
                         {
@@ -154,7 +146,6 @@ class CustomerList extends Component {
                     '',
                     [{
                         text: 'OK', onPress: () => {
-                            console.log('OK Pressed');
                             this.props.customerActions.CustomerSelected({}); // Clear selected customer
                             this.props.navigation.setParams({ isCustomerSelected: false });
                             this.props.navigation.setParams({ isDueAmount: 0 });
@@ -168,17 +159,11 @@ class CustomerList extends Component {
     };
 
     checkSelectedCustomer = (text) => {
-        // console.log(this.props.selectedCustomer);
-        // if(this.props.selectedCustomer){
-        //     return true;
-        // }
         return 'false';
 
     };
 
     editCustomer() {
-        console.log('onScrollCustomerTo');
-        console.log(this.props);
         //this.props.navigation.navigate('AddCustomerStack');
     }
 
@@ -187,10 +172,6 @@ class CustomerList extends Component {
     }
 
     onScrollCustomerTo(data) {
-        console.log('onScrollCustomerTo');
-        // Commented onto scrollToItem requires getItemLayout and getItemLayout fails with
-        // searches. Expect since not all items are rendered on sea
-        // this.flatListRef.scrollToItem({animated: false, item: data.customer, viewPosition:0.5});
     }
     getItemLayout = (data, index) => ({
         length: 50,
@@ -199,16 +180,10 @@ class CustomerList extends Component {
     });
 
     shouldComponentUpdate(nextProps, nextState) {
-        console.log('onScrollCustomerTo');
-        // this.props.navigation.setParams({ 'title': 'Customers' });
         return true;
     }
 
     render() {
-        //console.log(this.props);
-        //OrderRealm.truncate();
-        console.log('Order Order', OrderRealm.getAllOrder())
-        console.log('OrderItems OrderItems', OrderRealm.getOrderItems())
         return (
             <View style={{ backgroundColor: '#fff', width: '100%', height: '100%' }}>
                 <FlatList
@@ -231,7 +206,6 @@ class CustomerList extends Component {
                 />
                 <FloatingAction
                     onOpen={name => {
-                        console.log(this.props);
                         this.props.customerActions.CustomerSelected({});
                         this.props.customerActions.setCustomerEditStatus(false);
                         this.props.navigation.setParams({ isCustomerSelected: false });
@@ -263,7 +237,6 @@ class CustomerList extends Component {
     prepareData = () => {
         this.salesChannels = SalesChannelRealm.getSalesChannelsForDisplay();
         this.customerTypes = CustomerTypeRealm.getCustomerTypes();
-        console.log('this.customerTypes', this.customerTypes);
         let data = [];
         if (this.props.customers.length > 0) {
             data = this.filterItems(this.props.customers);
@@ -287,8 +260,6 @@ class CustomerList extends Component {
             }
         });
 
-        console.log('data', data);
-
         let filteredItems = data.filter(function (item) {
             for (var key in filter) {
                 if (
@@ -304,13 +275,11 @@ class CustomerList extends Component {
     };
 
     getRow = (item, index, separators) => {
-        // console.log("getRow -index: " + index)
         let isSelected = false;
         if (
             this.props.selectedCustomer &&
             this.props.selectedCustomer.customerId === item.customerId
         ) {
-            console.log('Selected item is ' + item.customerId);
             isSelected = true;
         }
         if (true) {
@@ -339,7 +308,7 @@ class CustomerList extends Component {
                     <View style={{ flex: 2 }}>
                         <Text style={[styles.baseItem]}>{item.address}</Text>
                     </View>
-					<View style={{ flex: 1.5 }}>
+                    <View style={{ flex: 1.5 }}>
                         <Text style={[styles.baseItem]}>
                             {this.getCustomerTypes(item)}
                         </Text>
@@ -433,7 +402,7 @@ class CustomerList extends Component {
                 [
                     {
                         text: i18n.t('cancel'),
-                        onPress: () => console.log('Cancel Pressed'),
+                        onPress: () => { },
                         style: 'cancel'
                     },
                     {
@@ -460,7 +429,7 @@ class CustomerList extends Component {
                 [
                     {
                         text: i18n.t('ok'),
-                        onPress: () => console.log('OK Pressed')
+                        onPress: () => { }
                     }
                 ],
                 { cancelable: true }
@@ -473,7 +442,6 @@ class CustomerList extends Component {
     }
 
     onPressItem = item => {
-        console.log('_onPressItem');
         this.props.customerActions.CustomerSelected(item);
         this.setState({ refresh: !this.state.refresh });
         this.props.customerActions.setCustomerEditStatus(true);
@@ -485,7 +453,6 @@ class CustomerList extends Component {
     };
 
     showHeader = () => {
-        console.log('Displaying header');
         return (
             <View
                 style={[
@@ -510,7 +477,7 @@ class CustomerList extends Component {
                 <View style={[{ flex: 2 }]}>
                     <Text style={[styles.headerItem]}>{i18n.t('address')}</Text>
                 </View>
-				<View style={[{ flex: 1.5 }]}>
+                <View style={[{ flex: 1.5 }]}>
                     <Text style={[styles.headerItem]}>{i18n.t('customer-type')}</Text>
                 </View>
                 <View style={[{ flex: 1 }]}>
@@ -539,7 +506,6 @@ class SearchWatcher extends React.Component {
 
     // TODO: Use states instead of setTimeout
     searchEvent() {
-        console.log('SearchWatcher');
 
         let that = this;
 
