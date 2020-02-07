@@ -20,11 +20,11 @@ export function AddProductToOrder(product, quantity, price) {
 	};
 }
 
-export function AddNotesToProduct(product, notes) {
+export function AddNotesToProduct(product, notes, emptiesReturned, refillPending, emptiesDamaged) {
 	return dispatch => {
 		dispatch({
 			type: SET_PRODUCT_NOTES,
-			data: { product, notes }
+			data: { product, notes, emptiesReturned, refillPending, emptiesDamaged }
 		});
 	};
 }

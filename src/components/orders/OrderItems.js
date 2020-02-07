@@ -86,7 +86,7 @@ class OrderItems extends Component {
 							</View>
 							<View style={{ flex: .6 }}>
 								<Text style={[{ textAlign: 'center' }, styles.baseItem]}>
-								{this.getCurrency(this.state.selectedItem)} {this.getDiscountPrice((this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)), this.state.selectedItem)}</Text>
+									{this.getCurrency(this.state.selectedItem)} {this.getDiscountPrice((this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)), this.state.selectedItem)}</Text>
 							</View>
 							<View
 								style={{
@@ -157,13 +157,16 @@ class OrderItems extends Component {
 									width: '100%'
 								}}
 							/>
-
-
+					
+							
+							
 							<View style={{ flex: 1, flexDirection: 'row' }}>
 								<View style={{ flex: 1 }}>
 									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>NOTES</Text>
 								</View>
 							</View>
+
+
 
 							<View style={{ flex: 1, flexDirection: 'row' }}>
 								<View style={{ flex: 1, height: 50 }}>
@@ -290,6 +293,75 @@ class OrderItems extends Component {
 		)
 	}
 
+	emptiesReturnedValue() {
+		let emptiesReturned = '';
+		if (!this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
+			emptiesReturned = this.state.selectedItem.emptiesReturned;
+		}
+
+		return (
+			<TextInput
+				style={{
+					padding: 10
+				}}
+				onChangeText={this.setEmptiesReturned}
+				value={emptiesReturned}
+				underlineColorAndroid="transparent"
+				placeholder="Add a Note"
+			/>
+		)
+	}
+
+	emptiesDamagedValue() {
+		let emptiesDamaged = '';
+		if (!this.state.selectedItem.hasOwnProperty('emptiesDamaged')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('emptiesDamaged')) {
+			emptiesDamaged = this.state.selectedItem.emptiesDamaged;
+		}
+
+		return (
+			<TextInput
+				style={{
+					padding: 10
+				}}
+				onChangeText={this.setEmptiesDamaged}
+				value={emptiesDamaged}
+				underlineColorAndroid="transparent"
+				placeholder="Add a Note"
+			/>
+		)
+	}
+
+	refillPendingValue() {
+		let refillPending = '';
+		if (!this.state.selectedItem.hasOwnProperty('refillPending')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('refillPending')) {
+			refillPending = this.state.selectedItem.refillPending;
+		}
+
+		return (
+			<TextInput
+				style={{
+					padding: 10
+				}}
+				onChangeText={this.setRefillPending}
+				value={refillPending}
+				underlineColorAndroid="transparent"
+				placeholder="Add a Note"
+			/>
+		)
+	}
+
 
 	getProductDescripion() {
 		if (this.state.selectedItem.hasOwnProperty('product')) {
@@ -366,7 +438,7 @@ class OrderItems extends Component {
 				</View>
 				<View style={[{ flex: 1 }]}>
 					<Text numberOfLines={1} style={[styles.baseItem]}>
-					{this.getCurrency(item)} {this.getDiscountPrice((item.quantity * this.getItemPrice(item.product)), item)}</Text>
+						{this.getCurrency(item)} {this.getDiscountPrice((item.quantity * this.getItemPrice(item.product)), item)}</Text>
 				</View>
 			</View>
 		);
@@ -381,8 +453,6 @@ class OrderItems extends Component {
 			if (this.props.selectedDiscounts[productIndex].discount.length > 0 && this.state.selectedDiscounts.length === 0) {
 
 				this.props.orderActions.SetOrderDiscounts('Custom', searchText, this.state.selectedItem.product, this.props.selectedDiscounts[productIndex].discount, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)));
-
-
 			} else {
 
 				this.props.orderActions.SetOrderDiscounts('Custom', searchText, this.state.selectedItem.product, this.state.selectedDiscounts, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)));
@@ -396,8 +466,133 @@ class OrderItems extends Component {
 
 	};
 
-	setNotes = searchText => {
-		this.props.orderActions.AddNotesToProduct(this.state.selectedItem.product, searchText);
+	setNotes = notes => {
+		let emptiesReturned = '';
+		if (!this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
+			emptiesReturned = this.state.selectedItem.emptiesReturned;
+		}
+
+		let refillPending = '';
+		if (!this.state.selectedItem.hasOwnProperty('refillPending')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('refillPending')) {
+			refillPending = this.state.selectedItem.refillPending;
+		}
+
+		let emptiesDamaged = '';
+		if (!this.state.selectedItem.hasOwnProperty('emptiesDamaged')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('emptiesDamaged')) {
+			emptiesDamaged = this.state.selectedItem.emptiesDamaged;
+		}
+
+
+		this.props.orderActions.AddNotesToProduct(this.state.selectedItem.product, notes, emptiesReturned, refillPending, emptiesDamaged);
+	};
+
+
+
+	setEmptiesDamaged = emptiesDamaged => {
+		let refillPending = '';
+		if (!this.state.selectedItem.hasOwnProperty('refillPending')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('refillPending')) {
+			refillPending = this.state.selectedItem.refillPending;
+		}
+
+		let emptiesReturned = '';
+		if (!this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
+			emptiesReturned = this.state.selectedItem.emptiesReturned;
+		}
+
+		let notes = '';
+		if (!this.state.selectedItem.hasOwnProperty('notes')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('notes')) {
+			notes = this.state.selectedItem.notes;
+		}
+
+		this.props.orderActions.AddNotesToProduct(this.state.selectedItem.product, notes, emptiesReturned, refillPending, emptiesDamaged);
+	};
+
+	setEmptiesReturned = emptiesReturned => {
+		let refillPending = '';
+		if (!this.state.selectedItem.hasOwnProperty('refillPending')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('refillPending')) {
+			refillPending = this.state.selectedItem.refillPending;
+		}
+
+		let emptiesDamaged = '';
+		if (!this.state.selectedItem.hasOwnProperty('emptiesDamaged')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('emptiesDamaged')) {
+			emptiesDamaged = this.state.selectedItem.emptiesDamaged;
+		}
+
+		let notes = '';
+		if (!this.state.selectedItem.hasOwnProperty('notes')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('notes')) {
+			notes = this.state.selectedItem.notes;
+		}
+
+		this.props.orderActions.AddNotesToProduct(this.state.selectedItem.product, notes, emptiesReturned, refillPending, emptiesDamaged);
+
+	};
+
+	setRefillPending = refillPending => {
+		let emptiesReturned = '';
+		if (!this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
+			emptiesReturned = this.state.selectedItem.emptiesReturned;
+		}
+
+		let emptiesDamaged = '';
+		if (!this.state.selectedItem.hasOwnProperty('emptiesDamaged')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('emptiesDamaged')) {
+			emptiesDamaged = this.state.selectedItem.emptiesDamaged;
+		}
+
+		let notes = '';
+		if (!this.state.selectedItem.hasOwnProperty('notes')) {
+			return;
+		}
+
+		if (this.state.selectedItem.hasOwnProperty('notes')) {
+			notes = this.state.selectedItem.notes;
+		}
+
+		this.props.orderActions.AddNotesToProduct(this.state.selectedItem.product, notes, emptiesReturned, refillPending, emptiesDamaged);
+
 	};
 
 	changeQuantity = value => {
@@ -546,11 +741,11 @@ class OrderItems extends Component {
 	getCurrency = (item) => {
 
 		console.log('item', item);
-		if (item.hasOwnProperty('product')) {		
+		if (item.hasOwnProperty('product')) {
 			return item.product.priceCurrency;
 		}
-		
-		
+
+
 	};
 
 	getDiscountPrice = (amountPerQuantity, item) => {

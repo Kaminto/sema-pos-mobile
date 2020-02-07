@@ -713,6 +713,10 @@ class OrderCheckout extends Component {
 				receiptLineItem.totalAmount = product.finalAmount;
 				receiptLineItem.quantity = product.quantity;
 				receiptLineItem.notes = product.notes;
+
+				receiptLineItem.emptiesReturned = product.emptiesReturned;
+				receiptLineItem.refillPending = product.refillPending;
+				receiptLineItem.emptiesDamaged = product.emptiesDamaged;
 				receiptLineItem.product_id = product.product.productId;
 				receiptLineItem.product = product.product;
 				receiptLineItem.cogs_total = tempValue == 0 ? product.quantity : tempValue;

@@ -18,6 +18,9 @@ const orderReducer = (state = initialState, action) => {
 			for (let product of newState.products) {
 				if (product.product.productId === action.data.product.productId) {
 					product.notes = action.data.notes;
+					product.emptiesReturned = action.data.emptiesReturned;
+					product.refillPending = action.data.refillPending;
+					product.emptiesDamaged = action.data.emptiesDamaged;
 					newState.products = newState.products.slice();
 					return newState;
 				}
