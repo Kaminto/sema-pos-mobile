@@ -192,19 +192,15 @@ const getMrps = products => {
 };
 
 export function GetInventoryReportData(beginDate, endDate, products) {
-	console.log('GetInventoryReportData - action');
-	console.log('GetInventoryReportData - products', products);
 	return dispatch => {
 		getInventoryData(beginDate, endDate, getMrps(products))
 			.then(inventoryData => {
-				console.log('GetInventoryReportData - products', INVENTORY_REPORT);
 				dispatch({
 					type: INVENTORY_REPORT,
 					data: { inventoryData: inventoryData }
 				});
 			})
 			.catch(error => {
-				console.log('GetInventoryReportData - Error ' + error);
 				dispatch({
 					type: INVENTORY_REPORT,
 					data: { inventoryData: [] }
@@ -217,11 +213,8 @@ const getInventoryData = (beginDate, endDate, products) => {
 	return new Promise((resolve, reject) => {
 		getSalesData(beginDate, endDate)
 			.then(salesData => {
-				console.log('salesData', salesData);
-				console.log('products', products);
 				getInventoryItem(beginDate, products)
 					.then(inventorySettings => {
-						console.log('inventorySettings', inventorySettings);
 						let inventoryData = createInventory(
 							salesData,
 							inventorySettings,
@@ -241,7 +234,6 @@ const getInventoryData = (beginDate, endDate, products) => {
 
 const createInventory = (salesData, inventorySettings, products) => {
 	let salesAndProducts = { ...salesData };
-	console.log('salesAndProducts', salesAndProducts);
 	salesAndProducts.salesItems = salesData.salesItems.slice();
 	let emptyProducts = [];
 	for (const prod of products) {
@@ -261,13 +253,8 @@ const createInventory = (salesData, inventorySettings, products) => {
 		emptyProducts
 	);
 
-	console.log('salesAndProducts', salesAndProducts.salesItems);
-
 	const groupWastageName = groupBy('wastageName');
 
-	console.log('groupSales', groupWastageName(salesAndProducts.salesItems));
-
-	console.log('SalesObject', Object.values(groupWastageName(salesAndProducts.salesItems)));
 	let salesArray = Object.values(groupWastageName(salesAndProducts.salesItems));
 
 	let newSalesArray = [];
@@ -295,8 +282,6 @@ const createInventory = (salesData, inventorySettings, products) => {
 			});
 		}
 	}
-	console.log('newSalesArray', newSalesArray);
-
 
 	salesAndProducts.salesItems = newSalesArray;
 	let inventoryData = {
@@ -323,19 +308,12 @@ const groupBy = key => array =>
 	}, {});
 
 const getInventoryItem = (beginDate, products) => {
-	console.log('beginDate', beginDate);
-	console.log('products', products);
-
 	return new Promise(resolve => {
 		const promiseToday = PosStorage.getInventoryItem(beginDate);
-		//const promiseToday = OrderRealm.getOrdersByDate(beginDate);
-		//const loggedReceipts2 = OrderRealm.getOrdersByDate(beginDate);
 
 		const yesterday = new Date(beginDate.getTime() - 24 * 60 * 60 * 1000);
-		//const promiseYesterday = OrderRealm.getOrdersByDate(yesterday);
+
 		const promiseYesterday = PosStorage.getInventoryItem(yesterday);
-		console.log('promiseToday', promiseToday);
-		console.log('promiseYesterday', promiseYesterday);
 		Promise.all([promiseToday, promiseYesterday]).then(inventoryResults => {
 			console.log('inventoryResults', inventoryResults);
 			if (inventoryResults[0] != null) {
@@ -348,7 +326,6 @@ const getInventoryItem = (beginDate, products) => {
 				let newInventory = initializeInventory();
 				newInventory.date = beginDate;
 
-
 				newInventory.currentProductSkus = products.map(product => {
 					return { sku: product.sku, wastageName: product.wastageName, quantity: 0, inventory: 0 };
 				});
@@ -360,21 +337,18 @@ const getInventoryItem = (beginDate, products) => {
 
 				const groupWastageName = groupBy('wastageName');
 
-				console.log('groupPreviousProductSkus', groupWastageName(newInventory.previousProductSkus));
-				console.log('groupCurrentProductSkus', groupWastageName(newInventory.currentProductSkus));
-
-				console.log('Object', Object.values(groupWastageName(newInventory.previousProductSkus)))
-				console.log('Object2', Object.values(groupWastageName(newInventory.currentProductSkus)))
 				let previousArray = Object.values(groupWastageName(newInventory.previousProductSkus));
 				let currentArray = Object.values(groupWastageName(newInventory.currentProductSkus));
 				let newpreviousArray = [];
 				for (var i in previousArray) {
 					inventoryTotal = 0;
 					quantityTotal = 0;
+					notDispatchedTotal = 0;
 					for (var a in previousArray[i]) {
 						if (previousArray[i][a].wastageName != null) {
 							inventoryTotal = inventoryTotal + previousArray[i][a].inventory;
 							quantityTotal = quantityTotal + previousArray[i][a].quantity;
+							notDispatchedTotal = notDispatchedTotal + previousArray[i][a].notDispatched;
 						}
 					}
 
@@ -383,6 +357,7 @@ const getInventoryItem = (beginDate, products) => {
 							wastageName: previousArray[i][0].wastageName,
 							product_id: previousArray[i][0].wastageName,
 							inventory: inventoryTotal,
+							notDispatched: notDispatchedTotal,
 							kiosk_id: "",
 							closingStockId: "",
 							createdDate: "",
@@ -390,19 +365,19 @@ const getInventoryItem = (beginDate, products) => {
 						});
 					}
 				}
-				console.log(newpreviousArray);
-				newInventory.previousProductSkus = newpreviousArray;
 
-				///
+				newInventory.previousProductSkus = newpreviousArray;
 
 				let newcurrentArray = [];
 				for (var i in currentArray) {
 					inventoryTotal = 0;
 					quantityTotal = 0;
+					notDispatchedTotal = 0;
 					for (var a in currentArray[i]) {
 						if (currentArray[i][a].wastageName != null) {
 							inventoryTotal = inventoryTotal + currentArray[i][a].inventory;
 							quantityTotal = quantityTotal + currentArray[i][a].quantity;
+							notDispatchedTotal = notDispatchedTotal + currentArray[i][a].notDispatched;
 						}
 					}
 
@@ -411,6 +386,7 @@ const getInventoryItem = (beginDate, products) => {
 							wastageName: currentArray[i][0].wastageName,
 							product_id: previousArray[i][0].wastageName,
 							inventory: inventoryTotal,
+							notDispatched: notDispatchedTotal,
 							kiosk_id: "",
 							closingStockId: "",
 							createdDate: "",
@@ -418,9 +394,7 @@ const getInventoryItem = (beginDate, products) => {
 						});
 					}
 				}
-				console.log(newcurrentArray);
 				newInventory.currentProductSkus = newcurrentArray;
-
 
 				if (inventoryResults[1]) {
 					newInventory.previousProductSkus = inventoryResults[1].currentProductSkus;
@@ -454,20 +428,15 @@ export const initializeInventoryData = () => {
 };
 
 export function getRemindersReport(date) {
-	console.log("Getting Reminder Reports ");
 
 	return (dispatch) => {
 		getRemindersAction().then((remindersdata) => {
 
-			console.log("REMINDERS LENGTH" + remindersdata.length);
-
-			console.log("COMEON WORK" + remindersdata.length);
-			console.table(remindersdata);
 			let rem = filterReminders(remindersdata, date);
-			console.log("PREPARED REMINDERS=>" + rem);
+
 			dispatch({ type: REMINDER_REPORT, data: { reminderdata: rem } });
 		}).catch((error) => {
-			console.log(error);
+
 			dispatch({ type: REMINDER_REPORT, data: { reminderdata: [] } });
 		});
 	};

@@ -862,7 +862,7 @@ class OrderCheckout extends Component {
 				// }
 			}
 
-			
+
 
 
 			receipt.customer_account = this.props.selectedCustomer;

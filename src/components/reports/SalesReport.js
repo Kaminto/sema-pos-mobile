@@ -39,13 +39,17 @@ class SalesReport extends Component {
 					<View style={{ flex: 1, flexDirection: 'row' }}>
 						<DateFilter />
 						<View style={{ flex: .7, height: 90, borderRadius: 10, flexDirection: 'row', marginTop: 10, backgroundColor: '#2462a0', overflow: 'hidden', color: '#fff' }}>
-							<View style={{ height: 90, flex: .5, color: '#fff' }} >
+							<View style={{ height: 90, flex: 1, color: '#fff' }} >
 								<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-liters').toUpperCase()}</Text>
 								<Text style={[styles.totalItem, { flex: .6 }]}>{this.getTotalLiters()}</Text>
 							</View>
-							<View style={{ height: 90, flex: .5, color: '#fff' }} >
+							<View style={{ height: 90, flex: 1, color: '#fff' }} >
 								<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-sales').toUpperCase()}</Text>
 								<Text style={[styles.totalItem, { flex: .6 }]}>{Utilities.formatCurrency(this.getTotalSales())}</Text>
+							</View>
+							<View style={{ height: 90, flex: 1, color: '#fff' }} >
+								<Text style={[styles.totalLabel, { flex: .4 }]}>DEBT COLLECTED</Text>
+								<Text style={[styles.totalItem, { flex: .6 }]}>UGX 0</Text>
 							</View>
 						</View>
 					</View>

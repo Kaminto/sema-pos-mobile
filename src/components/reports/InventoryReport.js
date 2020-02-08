@@ -364,6 +364,32 @@ class InventoryReport extends Component {
 		);
 	}
 
+	getCurrentNotDispatched( item ){
+		return (
+			<View style={[{ flex: .7}]}>
+				<TouchableHighlight
+					style={styles.currentInventory}
+					onPress= {() => this.displayEditCurrentSku( item.wastageName )}
+					underlayColor='#18376A'>
+					<Text style={[styles.currentInventoryText, {padding: 5}]}>{ this.getNotDispatchedSkuForDisplay(true, item)}</Text>
+				</TouchableHighlight>
+			</View>
+		);
+	}
+
+	getNotDispatchedSkuForDisplay(currentPrev, item ){
+		let inventoryArray = (currentPrev) ? this.props.inventoryData.inventory.currentProductSkus : this.props.inventoryData.inventory.previousProductSkus;
+		for( let index = 0; index < inventoryArray.length; index ++ ){
+			if( inventoryArray[index].wastageName === item.wastageName ){
+				if( inventoryArray[index].notDispatched != null && !isNaN(inventoryArray[index].notDispatched)){
+					return inventoryArray[index].notDispatched;
+				}
+				break;
+			}
+		}
+		return "-";		// No data
+	}
+
 	getInventorySkuForDisplay(currentPrev, item ){
 		let inventoryArray = (currentPrev) ? this.props.inventoryData.inventory.currentProductSkus : this.props.inventoryData.inventory.previousProductSkus;
 		for( let index = 0; index < inventoryArray.length; index ++ ){

@@ -59,7 +59,7 @@ class InventroyRealm {
     }
 
 
-    createInventory(kiosk_id, product_id, quantity, filterDate) {
+    createInventory(kiosk_id, product_id, quantity, notDispatched, filterDate) {
         let existingInventory = this.getAllInventory().filter(inventory => this.formatDay(inventory.created_at) === this.formatDay(filterDate) && inventory.product_id === product_id);
         console.log('existingInventory', existingInventory)
         const now = new Date();
@@ -68,7 +68,8 @@ class InventroyRealm {
                 closingStockId: uuidv1(),
                 kiosk_id,
                 product_id,
-                quantity,
+				quantity,
+				notDispatched,
                 created_at: now,
                 updated_at: now,
                 syncAction: 'create',
@@ -85,7 +86,7 @@ class InventroyRealm {
 
         if (existingInventory.length > 0) {
             return this.updateInventory(
-                { ...existingInventory[0], quantity: quantity, updated_at: now, syncAction: 'update' }
+                { ...existingInventory[0], quantity: quantity, notDispatched: notDispatched, updated_at: now, syncAction: 'update' }
             )
         }
     }
@@ -94,7 +95,8 @@ class InventroyRealm {
         try {
             realm.write(() => {
                 let inventoryObj = realm.objects('Inventory').filtered(`closingStockId = "${inventory.closingStockId}"`);
-                inventoryObj[0].quantity = inventory.quantity;
+				inventoryObj[0].quantity = inventory.quantity;
+				inventoryObj[0].notDispatched = inventory.notDispatched;
                 inventoryObj[0].updated_at = inventory.updated_at;
                 inventoryObj[0].syncAction = inventory.syncAction;
             })
