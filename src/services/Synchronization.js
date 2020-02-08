@@ -234,7 +234,7 @@ class Synchronization {
 							// 		syncResult.sales = saleSync;
 							// 		return saleSync;
 							// 	}
-							// );							
+							// );
 
 							// const promiseReceipts = this.synchronizeReceipts().then(
 							// 	results => {
@@ -295,22 +295,11 @@ class Synchronization {
 			console.log('Synchronization:synchronizeSales - Begin');
 			PosStorage.loadSalesReceipts(this.lastSalesSync)
 				.then(salesReceipts => {
-					console.log(
-						'Synchronization:synchronizeSales - Number of sales receipts: ' +
-						salesReceipts.length
-					);
-					console.log(
-						'Synchronization:synchronizeSales - Number of sales receipts: ',
-						salesReceipts
-					);
 					resolve({
 						error: null,
 						localReceipts: salesReceipts.length
 					});
 					salesReceipts.forEach(receipt => {
-						console.log("***********************")
-						console.log(receipt.sale)
-						console.log("***********************")
 
 						Communications.createReceipt(receipt.sale)
 							.then(result => {
@@ -346,12 +335,10 @@ class Synchronization {
 		});
 	}
 
-
-
 	async synchronizeReceipts() {
 		let settings = SettingRealm.getAllSetting();
 		let remoteReceipts = await PosStorage.loadRemoteReceipts();
-		console.log('remoteReceiptsremoteReceipts', remoteReceipts);
+
 		const receiptIds = [];
 		remoteReceipts = remoteReceipts
 			.map(receipt => {
@@ -383,8 +370,7 @@ class Synchronization {
 			// so we're sending their IDs too.
 			// Sending only remote receipts and local receipts that have been updated.
 			.filter(receipt => receipt.updated || !receipt.isLocal);
-		console.log('remoteReceipts', remoteReceipts);
-		console.log('receiptIds', receiptIds);
+
 		return Communications.sendLoggedReceipts(
 			settings.siteId,
 			remoteReceipts,

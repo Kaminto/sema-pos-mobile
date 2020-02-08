@@ -122,88 +122,45 @@ class OrderCheckout extends Component {
 					coverScreen={true}
 					position={"center"} ref={"modal7"}
 					isDisabled={this.state.isDisabled}>
-						<View style={{ flex: 1, padding: 0, margin: 0, paddingLeft: 10 }}>
+					<ScrollView>
+					<View style={{ flex: 1, paddingLeft: 10 }}>
+					     <View style={{ flex: 1, flexDirection: 'row', height: 50 }}>
+							    <View style={{ flex: 1, flexDirection: 'row' }}>
+										<Text style={[{ textAlign: 'left' }, styles.headerItem]}>Bottle Tracker.</Text>
+								</View>
+								<View
+									style={{
+										justifyContent: 'flex-end',
+										flexDirection: 'row',
+										right: 10,
+										top: 0
+									}}>
+									{this.getBottlesCancelButton()}
+								</View>
+							</View>
+
 							<View
 								style={{
-									justifyContent: 'flex-end',
-									flexDirection: 'row',
-									right: 10,
-									top: 0
-								}}>
-								{this.getBottlesCancelButton()}
-							</View>
-
-							<View
-								style={{
-									flex: 1,
-									marginTop: 0
+									flex: 1
 								}}>
 
-								<View style={{ flex: 1, flexDirection: 'row' }}>
-									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Bottle Tracker.</Text>
-								</View>
-								<View style={[{ flex: 1, flexDirection: 'row' }]}>
-								<View style={{ flex: 1, flexDirection: 'row' }}>
-									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Product</Text>
-								</View>
-								<View style={[{ flex: 1}]}>
-									<Text style={[styles.headerItem]}>Empties Returned</Text>
-								</View>
-								<View style={[{ flex: 1 }]}>
-									<Text style={[styles.headerItem]}>Damaged Bottles</Text>
-								</View>
-								<View style={[{ flex: 1 }]}>
-									<Text style={[styles.headerItem]}>Pending Bottles</Text>
-								</View>
-							</View>
+								<FlatList
+									data={this.props.products}
+									ListHeaderComponent={this.showBottlesHeader}
+									// extraData={this.state.refresh}
+									renderItem={({ item, index, separators }) => (
+										<View>
+											{this.getBottleRow(item, index, separators)}
+										</View>
+									)}
+									keyExtractor={item => item.product.description}
+									initialNumToRender={50}
+								/>
 
-							<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white', padding: 5 }}>
-							   <View style={{ flex: 1, flexDirection: 'row' }}>
-								<Text style={[{ textAlign: 'left' }, styles.baseItem]}>{this.props.products.length > 0 ? this.props.products[0].product.description : ''}</Text>
-								</View>
-								<View style={[{ flex: 1 }]}>
-									<TextInput
-										style={{
-											textAlign: 'center',
-											height: 50,
-											fontSize: 24
-										}}
-										keyboardType="number-pad"
-										underlineColorAndroid="transparent"
-										placeholder="0"
-										value={this.props.products.length > 0 ? this.props.products[0].emptiesReturned : ''}
-									/>
-								</View>
-								<View style={[{ flex: 1 }]}>
-									<TextInput
-										style={{
-											textAlign: 'center',
-											height: 50,
-											fontSize: 24
-										}}
-										keyboardType="number-pad"
-										underlineColorAndroid="transparent"
-										placeholder="0"
-										value={this.props.products.length > 0 ? this.props.products[0].emptiesDamaged : ''}
-									/>
-								</View>
-								<View style={[{ flex: 1 }]}>
-									<TextInput
-										style={{
-											textAlign: 'center',
-											height: 50,
-											fontSize: 24
-										}}
-										keyboardType="number-pad"
-										underlineColorAndroid="transparent"
-										placeholder="0"
-										value={this.props.products.length > 0 ? this.props.products[0].refillPending : ''}
-									/>
-								</View>
-							</View>
 							</View>
 
 						</View>
+						</ScrollView>
 
 				</Modal>
 
@@ -233,7 +190,6 @@ class OrderCheckout extends Component {
 									marginRight: 20
 								}}>
 
-
 								<View style={{ flex: 1, flexDirection: 'row' }}>
 									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
 								</View>
@@ -249,8 +205,7 @@ class OrderCheckout extends Component {
 								/>
 
 								<Card
-									containerStyle={{ backgroundColor: '#ABC1DE' }}
-								>
+									containerStyle={{ backgroundColor: '#ABC1DE' }}>
 
 									<View style={{ flex: 1, flexDirection: 'row' }}>
 										{this.getSaleAmount()}
@@ -337,7 +292,7 @@ class OrderCheckout extends Component {
 								<TouchableHighlight underlayColor='#c0c0c0'
 									onPress={() => this.onBottles()}>
 									<Text
-										style={{ padding: 10, margin: 10, color: 'white', backgroundColor: '#036', textAlign: 'center', alignSelf: 'flex-end' }}>Bottles returned</Text>
+										style={{ padding: 10, margin: 10, borderRadius: 5, color: 'white', backgroundColor: '#036', textAlign: 'center', alignSelf: 'flex-end' }}>Bottles returned</Text>
 								</TouchableHighlight>
 
 								</View>
@@ -370,6 +325,79 @@ class OrderCheckout extends Component {
 		);
 	}
 
+	showBottlesHeader = () => {
+		return (
+			<View style={[{ flex: 1, flexDirection: 'row' }]}>
+								<View style={{ flex: 1}}>
+									<Text style={[styles.headerItem]}>Product</Text>
+								</View>
+								<View style={[{ flex: 1}]}>
+									<Text style={[styles.headerItem]}>Empties Returned</Text>
+								</View>
+								<View style={[{ flex: 1 }]}>
+									<Text style={[styles.headerItem]}>Damaged Bottles</Text>
+								</View>
+								<View style={[{ flex: 1 }]}>
+									<Text style={[styles.headerItem]}>Pending Bottles</Text>
+								</View>
+			</View>
+
+		);
+	};
+
+	getBottleRow = (item) => {
+		if (item.product.description.includes('refill')) {
+		return(
+		<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
+						<View style={{ flex: 1, flexDirection: 'row' }}>
+								<Text style={[{ textAlign: 'left' }, styles.baseItem]}>{item.product.description}</Text>
+								</View>
+								<View style={[{ flex: 1 }]}>
+									<TextInput
+										style={{
+											textAlign: 'center',
+											height: 50,
+											fontSize: 20
+										}}
+										keyboardType="number-pad"
+										underlineColorAndroid="transparent"
+										placeholder="0"
+										value={item.emptiesReturned}
+									/>
+								</View>
+								<View style={[{ flex: 1 }]}>
+									<TextInput
+										style={{
+											textAlign: 'center',
+											height: 50,
+											fontSize: 20
+										}}
+										keyboardType="number-pad"
+										underlineColorAndroid="transparent"
+										placeholder="0"
+										value={item.emptiesDamaged}
+									/>
+								</View>
+								<View style={[{ flex: 1 }]}>
+									<TextInput
+										style={{
+											textAlign: 'center',
+											height: 50,
+											fontSize: 20
+										}}
+										keyboardType="number-pad"
+										underlineColorAndroid="transparent"
+										placeholder="0"
+										value={item.refillPending}
+									/>
+								</View>
+							</View>
+		);
+									}else {
+										return(<View />);
+									}
+	}
+
 	paymentTypesRow = (item, index, separators) => {
 
 		let isSelectedAvailable = false;
@@ -390,7 +418,7 @@ class OrderCheckout extends Component {
 
 		return (
 			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
-				<View style={{ flex: 1, height: 50 }}>
+				<View style={{ flex: 1, height: 45 }}>
 					<View style={styles.checkBoxRow}>
 						<View style={[{ flex: 1 }]}>
 							<CheckBox
@@ -500,7 +528,7 @@ class OrderCheckout extends Component {
 
 		if (this.props.selectedPaymentTypes.length === 2) {
 			Alert.alert(
-				'Notice ',
+				'Payment',
 				`You cannot select more than two payment methods.`,
 				[{
 					text: 'OK', onPress: () => {
@@ -845,25 +873,8 @@ class OrderCheckout extends Component {
 					);
 					return;
 				}
-				// if (Number(this.props.selectedPaymentTypes[creditIndex].amount) > Number(this.props.selectedCustomer.dueAmount)) {
-				// 	Alert.alert(
-				// 		i18n.t('credit-due-amount-title'),
-				// 		i18n.t('credit-due-amount-text') +
-				// 		this.props.selectedCustomer.dueAmount,
-				// 		[
-				// 			{
-				// 				text: 'OK',
-				// 				onPress: () => { }
-				// 			}
-				// 		],
-				// 		{ cancelable: false }
-				// 	);
-				// 	return;
-				// }
+
 			}
-
-
-
 
 			receipt.customer_account = this.props.selectedCustomer;
 			if (this.props.selectedPaymentTypes.length > 0) {
@@ -872,10 +883,6 @@ class OrderCheckout extends Component {
 					ReceiptPaymentTypeRealm.getReceiptPaymentTypes()
 				);
 			}
-
-
-
-
 
 			OrderRealm.createOrder(receipt);
 			this.props.receiptActions.setReceipts(
@@ -1042,8 +1049,6 @@ class OrderCheckout extends Component {
 
 	}
 
-
-
 	getOpacity = () => {
 		if (this.props.products.length == 0 || this.props.flow.page != 'products') {
 			return { opacity: .3 };
@@ -1136,8 +1141,9 @@ const styles = StyleSheet.create({
 	},
 
 	modal2: {
-		height: 230,
-		width: '70%',
+		height: 300,
+		width: '65%',
+		padding: 5,
 		backgroundColor: "#f1f1f1"
 	},
 

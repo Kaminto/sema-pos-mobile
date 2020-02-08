@@ -71,17 +71,9 @@ class OrderItems extends Component {
 					sDisabled={this.state.isDisabled}>
 
 					<ScrollView>
-						<View
-							style={{
-								height: 5,
-								width: '100%'
-							}}
-						/>
 						<View style={[styles.headerBackground, { flex: 1, flexDirection: 'row', paddingLeft: 20, margin: 0 }]}>
 							<View style={{ flex: .3 }}>
 								{this.getProductDescripion()}
-
-
 							</View>
 							<View style={{ flex: .6 }}>
 								<Text style={[{ textAlign: 'center' }, styles.baseItem]}>
@@ -97,8 +89,6 @@ class OrderItems extends Component {
 								}}>
 								{this.getCancelButton()}
 							</View>
-
-
 						</View>
 						<View
 							style={{
@@ -148,38 +138,7 @@ class OrderItems extends Component {
 								</View>
 							</View>
 
-							<View
-								style={{
-									height: 1,
-									backgroundColor: '#ddd',
-									marginBottom: 10,
-									width: '100%'
-								}}
-							/>
-
-							<View style={[{ flex: 1, flexDirection: 'row' }]}>
-								<View style={[{ flex: 1 }]}>
-									<Text style={[styles.headerItem, { textTransform: 'uppercase' }]}>Empties Returned</Text>
-								</View>
-								<View style={[{ flex: 1 }]}>
-									<Text style={[styles.headerItem, { textTransform: 'uppercase' }]}>Damaged Bottles</Text>
-								</View>
-								<View style={[{ flex: 1 }]}>
-									<Text style={[styles.headerItem, { textTransform: 'uppercase' }]}>Pending Bottles</Text>
-								</View>
-							</View>
-
-							<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white', padding: 5 }}>
-								<View style={[{ flex: 1 }]}>
-									{this.emptiesReturnedValue()}
-								</View>
-								<View style={[{ flex: 1 }]}>
-									{this.emptiesDamagedValue()}
-								</View>
-								<View style={[{ flex: 1 }]}>
-									{this.refillPendingValue()}
-								</View>
-							</View>
+							{this.bottlesReturned()}
 
 							<View
 								style={{
@@ -195,8 +154,6 @@ class OrderItems extends Component {
 									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>NOTES</Text>
 								</View>
 							</View>
-
-
 
 							<View style={{ flex: 1, flexDirection: 'row' }}>
 								<View style={{ flex: 1, height: 50 }}>
@@ -309,12 +266,55 @@ class OrderItems extends Component {
 					fontSize: 24
 				}}
 				keyboardType="number-pad"
-				onChangeText={(text) => this.changeQuantity}
+				onChangeText={(value) => this.changeQuantity}
 				value={qty}
 				underlineColorAndroid="transparent"
 				placeholder="Quantity"
 			/>
 		)
+	}
+
+	bottlesReturned(){
+		if (this.state.selectedItem.hasOwnProperty('product')) {
+		if (this.state.selectedItem.product.description.includes('refill')) {
+		      return (
+				<View>
+						<View
+								style={{
+									height: 1,
+									backgroundColor: '#ddd',
+									marginBottom: 10,
+									width: '100%'
+								}}
+							/>
+						<View style={[{ flex: 1, flexDirection: 'row' }]}>
+								<View style={[{ flex: 1 }]}>
+									<Text style={[styles.headerItem, { textTransform: 'uppercase' }]}>Empties Returned</Text>
+								</View>
+								<View style={[{ flex: 1 }]}>
+									<Text style={[styles.headerItem, { textTransform: 'uppercase' }]}>Damaged Bottles</Text>
+								</View>
+								<View style={[{ flex: 1 }]}>
+									<Text style={[styles.headerItem, { textTransform: 'uppercase' }]}>Pending Bottles</Text>
+								</View>
+							</View>
+
+							<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white', padding: 5 }}>
+								<View style={[{ flex: 1 }]}>
+									{this.emptiesReturnedValue()}
+								</View>
+								<View style={[{ flex: 1 }]}>
+									{this.emptiesDamagedValue()}
+								</View>
+								<View style={[{ flex: 1 }]}>
+									{this.refillPendingValue()}
+								</View>
+							</View>
+					</View>
+					);
+				}
+		}
+
 	}
 
 	notesValue() {
@@ -417,7 +417,6 @@ class OrderItems extends Component {
 			/>
 		)
 	}
-
 
 	getProductDescripion() {
 		if (this.state.selectedItem.hasOwnProperty('product')) {

@@ -24,17 +24,13 @@ class InventorySync {
 
                     if (initlocalInventories.length > 0) {
 
-                        console.log('initlocalInventories', initlocalInventories);
-                        console.log('localInventories', localInventories);
-                        console.log('remoteInventories', remoteInventories);
                         initlocalInventories.forEach(localInventory => {
                             let filteredObj = remoteInventories.filter(obj => obj.closingStockId === localInventory.closingStockId)
-                            console.log('filteredObj', filteredObj);
+
                             if (filteredObj.length > 0) {
                                 const remoteIndex = remoteInventories.map(function (e) { return e.closingStockId }).indexOf(filteredObj[0].closingStockId);
                                 const localIndex = localInventories.map(function (e) { return e.closingStockId }).indexOf(filteredObj[0].closingStockId);
-                                console.log('remoteIndex', remoteIndex);
-                                console.log('localIndex', localIndex);
+
                                 remoteInventories.splice(remoteIndex, 1);
                                 localInventories.splice(localIndex, 1);
 
@@ -45,7 +41,7 @@ class InventorySync {
                             if (filteredObj.length === 0) {
                                 onlyLocally.push(localInventory);
                                 const localIndex = localInventories.map(function (e) { return e.closingStockId }).indexOf(localInventory.closingStockId);
-                                console.log('localIndex', localIndex);
+
                                 localInventories.splice(localIndex, 1);
                             }
                         });
@@ -139,13 +135,6 @@ class InventorySync {
                                 }
                             })
                         }
-
-                        console.log('onlyRemote', onlyRemote);
-                        console.log('onlyLocally', onlyLocally);
-                        console.log('bothLocalRemote', bothLocalRemote);
-
-                        console.log('localInventories2', localInventories);
-                        console.log('remoteInventories2', remoteInventories);
 
                     }
                     resolve({

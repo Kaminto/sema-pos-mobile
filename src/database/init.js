@@ -50,7 +50,7 @@ export default realm = new Realm({
         ReceiptPaymentTypeSchema,
         CustomerDebtSchema
     ],
-    schemaVersion: 67,
+    schemaVersion: 68,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
         console.log('newRealm', newRealm)
@@ -58,11 +58,6 @@ export default realm = new Realm({
         if (oldRealm.schemaVersion < 1) {
             const oldObjects = oldRealm.objects('InventoryInventorySynDate');
             const newObjects = newRealm.objects('InventoryInventorySynDate');
-
-            // // loop through all objects and set the name property in the new schema
-            // for (let i = 0; i < oldObjects.length; i++) {
-            //   newObjects[i].name = oldObjects[i].firstName + ' ' + oldObjects[i].lastName;
-            // }
         }
     }
 });
