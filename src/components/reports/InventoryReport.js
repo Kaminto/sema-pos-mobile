@@ -254,8 +254,6 @@ class InventoryReport extends Component {
 	}
 
 	getRow = (item) => {
-		console.log("InventoryReport - getRow");
-		console.log("InventoryReport - getRow", item);
 		return (
 			<View style={[{ flex: 1, flexDirection: 'row', alignItems: 'center' }, styles.rowBackground]}>
 				<View style={[{ flex: 1 }]}>
@@ -264,10 +262,11 @@ class InventoryReport extends Component {
 				<View style={[{ flex: .5 }]}>
 					<Text style={[styles.rowItemCenter]}>{item.quantity}</Text>
 				</View>
+
 				{this.getCurrentInventory(item)}
-				<View style={[{ flex: .7 }]}>
-					<Text style={[styles.rowItemCenter]}>0</Text>
-				</View>
+
+				{this.getCurrentNotDispatched(item)}
+
 				<InventoryEdit
 					type = "wastageName"
 					skuToShow = {this.state.currentSkuEdit}

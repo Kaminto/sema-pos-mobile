@@ -26,19 +26,11 @@ class RemindersReport extends Component {
 	  // this.endDate=null;
        }
 	componentDidMount() {
-	    console.log("Reminders Report has Mounted");
-	    console.log("Current Date Being Used In Reminders" + this.props.dateFilter.startDate);
+
 	    this.props.reportActions.getRemindersReport(this.props.dateFilter.currentDate);
 	    this.onPressItem.bind(this);
-	    // this.prepareReminderCustomersData.bind(this);
-
-
 	}
-    	// componentWillUnmount(){
 
-
-    	// }
-    	// //Assuming this is your update function
     	getReminders(filterDate){
 	    this.props.reportActions.getRemindersReport(filterDate);
 	}
@@ -46,7 +38,7 @@ class RemindersReport extends Component {
 	getRemindersData(){
 	    if(this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")){
 		this.reminderDate=this.props.dateFilter.startDate;
-		console.log("ENTERED THE GETREMINDERDATA");
+
 		if(this.props.dateFilter.endDate == this.reminderDate){
 		    this.getReminders(this.reminderDate);
 	      	    return this.props.reminderData;

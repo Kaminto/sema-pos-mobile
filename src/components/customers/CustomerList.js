@@ -33,9 +33,6 @@ class CustomerList extends Component {
 		};
 	}
 	componentDidMount() {
-		console.log(
-			'CustomerList:componentDidMount - filter: ' + this.props.filter
-		);
 		Events.on(
 			'ScrollCustomerTo',
 			'customerId1',
@@ -48,9 +45,6 @@ class CustomerList extends Component {
 
 	onScrollCustomerTo(data) {
 		console.log('onScrollCustomerTo');
-		// Commented onto scrollToItem requires getItemLayout and getItemLayout fails with
-		// searches. Expect since not all items are rendered on sea
-		// this.flatListRef.scrollToItem({animated: false, item: data.customer, viewPosition:0.5});
 	}
 	getItemLayout = (data, index) => ({
 		length: 50,
@@ -59,7 +53,6 @@ class CustomerList extends Component {
 	});
 
 	shouldComponentUpdate(nextProps, nextState) {
-		console.log('onScrollCustomerTo');
 		return true;
 	}
 
@@ -67,10 +60,6 @@ class CustomerList extends Component {
 		console.log(this.props);
 		return (
 			<View style={{ backgroundColor: '#fff', width: '100%', height: '100%' }}>
-				{/*<FlatList*/}
-				{/*data={[{key: 'aaaaaaa'}, {key: 'bbbbbbbb'}]}*/}
-				{/*renderItem={({item}) => <Text>{item.key}</Text>}*/}
-				{/*/>*/}
 				<FlatList
 					ref={ref => {
 						this.flatListRef = ref;
@@ -83,9 +72,9 @@ class CustomerList extends Component {
 					renderItem={({ item, index, separators }) => (
 						<TouchableHighlight
 							onPress={() => this.onPressItem(item)}
-							onLongPress={event =>
-								this.onLongPressItem(item, event)
-							}
+							// onLongPress={event =>
+							// 	this.onLongPressItem(item, event)
+							// }
 							onShowUnderlay={separators.highlight}
 							onHideUnderlay={separators.unhighlight}>
 							{this.getRow(item, index, separators)}

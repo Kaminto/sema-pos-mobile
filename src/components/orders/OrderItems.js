@@ -13,17 +13,13 @@ import SalesChannelRealm from '../../database/sales-channels/sales-channels.oper
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import DiscountRealm from '../../database/discount/discount.operations';
 import ToggleSwitch from 'toggle-switch-react-native';
-import { Input } from 'react-native-elements';
 
 const { height, width } = Dimensions.get('window');
 const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
 const inputTextWidth = 400;
-const marginInputItems = width / 2 - inputTextWidth / 2;
 
 const inputFontHeight = Math.round((24 * height) / 752);
-const marginTextInput = Math.round((5 * height) / 752);
-const marginSpacing = Math.round((20 * height) / 752);
 
 class OrderItems extends Component {
 	constructor(props) {
@@ -111,25 +107,25 @@ class OrderItems extends Component {
 								alignItems: 'stretch',
 
 							}}>
-								<View style={{ flex: .2, height: 50 }}>
+								<View style={{ flex: .2, height: 40 }}>
 									<TouchableHighlight style={{ flex: 1 }}
 										onPress={() => this.counterChangedHandler('dec')}>
 										<Icon
-											size={50}
+											size={40}
 											style={[{ textAlign: 'center' }, styles.leftMargin]}
 											name="md-remove-circle-outline"
 											color="black"
 										/>
 									</TouchableHighlight>
 								</View>
-								<View style={{ flex: .6, height: 50, textAlign: 'center' }} >
+								<View style={{ flex: .6, height: 40, textAlign: 'center' }} >
 									{this.qtyValue()}
 								</View>
-								<View style={{ flex: .2, height: 50 }}>
+								<View style={{ flex: .2, height: 40 }}>
 									<TouchableHighlight style={{ flex: 1 }}
 										onPress={() => this.counterChangedHandler('inc')}>
 										<Icon
-											size={50}
+											size={40}
 											style={[{ textAlign: 'center' }, styles.leftMargin]}
 											name="md-add-circle-outline"
 											color="black"
@@ -208,18 +204,17 @@ class OrderItems extends Component {
 							<View
 								style={{
 									flex: .2,
+									width: 100,
 									marginTop: 10,
-									justifyContent: 'flex-end',
+									alignSelf: 'flex-end',
 									flexDirection: 'row',
 									right: 0,
 									bottom: 0
 								}}>
-								<Button
-									onPress={() => this.onCancelOrder()}
-									style={{ padding: 20, color: '#CCC' }}
-									title="SAVE"
-									color="#ABC1DE"
-								/>
+								<TouchableHighlight style={{ flex: 1 }}
+										onPress={() => this.onCancelOrder()}>
+										<Text style={{ padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#036' }}>SAVE</Text>
+									</TouchableHighlight>
 							</View>
 
 						</View>

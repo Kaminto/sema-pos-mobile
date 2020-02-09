@@ -1,17 +1,13 @@
-import React, { Component } from "react"
-import { View, Alert, Text, TextInput, Button, CheckBox, FlatList, Picker, ScrollView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
+import React, { Component } from "react";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as OrderActions from "../../../actions/OrderActions";
-import Modal from 'react-native-modalbox';
 import * as CustomerBarActions from '../../../actions/CustomerBarActions';
 import * as CustomerActions from '../../../actions/CustomerActions';
 import * as PaymentTypesActions from "../../../actions/PaymentTypesActions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-const { height, width } = Dimensions.get('window');
 const widthQuanityModal = 1000;
 const heightQuanityModal = 500;
 const inputTextWidth = 400;
