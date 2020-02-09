@@ -110,8 +110,7 @@ const getSalesData = (beginDate, endDate) => {
 		const finalData = allReceiptLineItems.reduce(
 			(final, lineItem) => {
 				const productIndex = final.mapping.get(lineItem.product.sku);
-				console.log('lineItem', lineItem)
-				// Note how we explicitly check it's undefined. The index could be 0
+
 				const product =
 					typeof productIndex !== 'undefined'
 						? final.salesItems[productIndex]
@@ -170,8 +169,6 @@ const getSalesData = (beginDate, endDate) => {
 
 		finalData.mapping.clear();
 		delete finalData.mapping;
-
-		console.log('finalData', finalData)
 
 		resolve(finalData);
 	});
