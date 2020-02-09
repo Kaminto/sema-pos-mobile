@@ -124,10 +124,14 @@ class RemindersReport extends Component {
 			final.push({
 			  customer: key,
 			  name: groupCustomers(data)[key][0].customer_account.name,
+			  phone_number: groupCustomers(data)[key][0].customer_account.phone_number,
+			  address: groupCustomers(data)[key][0].customer_account.hasOwnProperty('address') ? groupCustomers(data)[key][0].customer_account.address : 'N/A',
 			  frequency: this.pairwiseDifference(dateArray, dateArray.length), 
 			  avg: arrAvg(this.pairwiseDifference(dateArray, dateArray.length)), 
 			  reminder:this.addDays(new Date(lastDay),Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length)))),
-			  dates: groupCustomers(data)[key].map(e => e.created_at)
+			  dates: groupCustomers(data)[key].map(e => e.created_at),
+			  lastDatePurchased: new Date(lastDay)
+
 			});
 		  }
 		console.log(final);
