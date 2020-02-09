@@ -60,6 +60,7 @@ class InventroyRealm {
 
 
     createInventory(kiosk_id, product_id, quantity, notDispatched, filterDate) {
+        console.log("notDispatched", notDispatched);
         let existingInventory = this.getAllInventory().filter(inventory => this.formatDay(inventory.created_at) === this.formatDay(filterDate) && inventory.product_id === product_id);
         console.log('existingInventory', existingInventory)
         const now = new Date();
