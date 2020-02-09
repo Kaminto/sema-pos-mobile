@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import { View, Alert, Text, TextInput, Button, FlatList, ScrollView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as OrderActions from "../../actions/OrderActions";
 import Modal from 'react-native-modalbox';
@@ -10,7 +9,6 @@ import * as CustomerActions from '../../actions/CustomerActions';
 import * as PaymentTypesActions from "../../actions/PaymentTypesActions";
 import * as receiptActions from '../../actions/ReceiptActions';
 import * as TopUpActions from '../../actions/TopUpActions';
-
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import i18n from "../../app/i18n";
@@ -18,23 +16,15 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import CustomerTypeRealm from '../../database/customer-types/customer-types.operations';
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
-
-import PaymentMethod from './order-checkout/payment-method';
 import PaymentDescription from './order-checkout/payment-description';
-
 import PaymentTypeRealm from '../../database/payment_types/payment_types.operations';
 import SettingRealm from '../../database/settings/settings.operations';
 import CustomerRealm from '../../database/customers/customer.operations';
 import OrderRealm from '../../database/orders/orders.operations';
-
 import ReceiptPaymentTypeRealm from '../../database/reciept_payment_types/reciept_payment_types.operations';
 import * as Utilities from "../../services/Utilities";
-import ToggleSwitch from 'toggle-switch-react-native';
-
 import moment from 'moment-timezone';
-
 const uuidv1 = require('uuid/v1');
-
 const widthQuanityModal = '70%';
 const heightQuanityModal = 540;
 const inputTextWidth = 400;
@@ -45,9 +35,6 @@ class OrderCheckout extends Component {
 		super(props);
 		this.saleSuccess = false;
 		this.state = {
-			isQuantityVisible: false,
-			firstKey: true,
-			isOpen: false,
 			isWalkIn: true,
 			isDisabled: false,
 			swipeToClose: true,
@@ -59,16 +46,6 @@ class OrderCheckout extends Component {
 			isCompleteOrderVisible: false,
 			isDateTimePickerVisible: false,
 			receiptDate: new Date(),
-			canProceed: true,
-
-			isCash: true,
-			isLoan: false,
-			isMobile: false,
-			isCredit: false,
-			isJibuCredit: false,
-			isCheque: false,
-			isBank: false,
-
 			selectedPaymentType: "Cash",
 		};
 	}
@@ -106,6 +83,18 @@ class OrderCheckout extends Component {
 
 	render() {
 		const state = this.state;
+
+		let isRefill = this.props.products.filter(element => {
+			if (element.hasOwnProperty('product')) {
+				if (element.product.description.includes('refill')) {
+					return true;
+				}
+			}
+			return false;
+		});
+		console.log('isRefill', isRefill);
+
+
 		return (
 			<View style={styles.container}>
 				<View style={[{ flexDirection: 'row' }, this.getOpacity()]}>
@@ -123,10 +112,10 @@ class OrderCheckout extends Component {
 					position={"center"} ref={"modal7"}
 					isDisabled={this.state.isDisabled}>
 					<ScrollView>
-					<View style={{ flex: 1, paddingLeft: 10 }}>
-					     <View style={{ flex: 1, flexDirection: 'row', height: 50 }}>
-							    <View style={{ flex: 1, flexDirection: 'row' }}>
-										<Text style={[{ textAlign: 'left' }, styles.headerItem]}>Bottle Tracker.</Text>
+						<View style={{ flex: 1, paddingLeft: 10 }}>
+							<View style={{ flex: 1, flexDirection: 'row', height: 50 }}>
+								<View style={{ flex: 1, flexDirection: 'row' }}>
+									<Text style={[{ textAlign: 'left' }, styles.headerItem]}>Bottle Tracker.</Text>
 								</View>
 								<View
 									style={{
@@ -143,7 +132,6 @@ class OrderCheckout extends Component {
 								style={{
 									flex: 1
 								}}>
-
 								<FlatList
 									data={this.props.products}
 									ListHeaderComponent={this.showBottlesHeader}
@@ -156,12 +144,9 @@ class OrderCheckout extends Component {
 									keyExtractor={item => item.product.description}
 									initialNumToRender={50}
 								/>
-
 							</View>
-
 						</View>
-						</ScrollView>
-
+					</ScrollView>
 				</Modal>
 
 				<Modal
@@ -289,11 +274,13 @@ class OrderCheckout extends Component {
 										}}
 									/>
 
-								<TouchableHighlight underlayColor='#c0c0c0'
-									onPress={() => this.onBottles()}>
-									<Text
-										style={{ padding: 10, margin: 10, borderRadius: 5, color: 'white', backgroundColor: '#036', textAlign: 'center', alignSelf: 'flex-end' }}>Bottles returned</Text>
-								</TouchableHighlight>
+									{isRefill.length > 0 && (
+										<TouchableHighlight underlayColor='#c0c0c0'
+											onPress={() => this.onBottles()}>
+											<Text
+												style={{ padding: 10, margin: 10, borderRadius: 5, color: 'white', backgroundColor: '#036', textAlign: 'center', alignSelf: 'flex-end' }}>Bottles returned</Text>
+										</TouchableHighlight>
+									)}
 
 								</View>
 								<View style={{ flex: 1, flexDirection: 'row' }}>
@@ -328,18 +315,18 @@ class OrderCheckout extends Component {
 	showBottlesHeader = () => {
 		return (
 			<View style={[{ flex: 1, flexDirection: 'row' }]}>
-								<View style={{ flex: 1}}>
-									<Text style={[styles.headerItem]}>Product</Text>
-								</View>
-								<View style={[{ flex: 1}]}>
-									<Text style={[styles.headerItem]}>Empties Returned</Text>
-								</View>
-								<View style={[{ flex: 1 }]}>
-									<Text style={[styles.headerItem]}>Damaged Bottles</Text>
-								</View>
-								<View style={[{ flex: 1 }]}>
-									<Text style={[styles.headerItem]}>Pending Bottles</Text>
-								</View>
+				<View style={{ flex: 1 }}>
+					<Text style={[styles.headerItem]}>Product</Text>
+				</View>
+				<View style={[{ flex: 1 }]}>
+					<Text style={[styles.headerItem]}>Empties Returned</Text>
+				</View>
+				<View style={[{ flex: 1 }]}>
+					<Text style={[styles.headerItem]}>Damaged Bottles</Text>
+				</View>
+				<View style={[{ flex: 1 }]}>
+					<Text style={[styles.headerItem]}>Pending Bottles</Text>
+				</View>
 			</View>
 
 		);
@@ -347,55 +334,55 @@ class OrderCheckout extends Component {
 
 	getBottleRow = (item) => {
 		if (item.product.description.includes('refill')) {
-		return(
-		<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
-						<View style={{ flex: 1, flexDirection: 'row' }}>
-								<Text style={[{ textAlign: 'left' }, styles.baseItem]}>{item.product.description}</Text>
-								</View>
-								<View style={[{ flex: 1 }]}>
-									<TextInput
-										style={{
-											textAlign: 'center',
-											height: 50,
-											fontSize: 20
-										}}
-										keyboardType="number-pad"
-										underlineColorAndroid="transparent"
-										placeholder="0"
-										value={item.emptiesReturned}
-									/>
-								</View>
-								<View style={[{ flex: 1 }]}>
-									<TextInput
-										style={{
-											textAlign: 'center',
-											height: 50,
-											fontSize: 20
-										}}
-										keyboardType="number-pad"
-										underlineColorAndroid="transparent"
-										placeholder="0"
-										value={item.emptiesDamaged}
-									/>
-								</View>
-								<View style={[{ flex: 1 }]}>
-									<TextInput
-										style={{
-											textAlign: 'center',
-											height: 50,
-											fontSize: 20
-										}}
-										keyboardType="number-pad"
-										underlineColorAndroid="transparent"
-										placeholder="0"
-										value={item.refillPending}
-									/>
-								</View>
-							</View>
-		);
-									}else {
-										return(<View />);
-									}
+			return (
+				<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
+					<View style={{ flex: 1, flexDirection: 'row' }}>
+						<Text style={[{ textAlign: 'left' }, styles.baseItem]}>{item.product.description}</Text>
+					</View>
+					<View style={[{ flex: 1 }]}>
+						<TextInput
+							style={{
+								textAlign: 'center',
+								height: 50,
+								fontSize: 20
+							}}
+							keyboardType="number-pad"
+							underlineColorAndroid="transparent"
+							placeholder="0"
+							value={item.emptiesReturned}
+						/>
+					</View>
+					<View style={[{ flex: 1 }]}>
+						<TextInput
+							style={{
+								textAlign: 'center',
+								height: 50,
+								fontSize: 20
+							}}
+							keyboardType="number-pad"
+							underlineColorAndroid="transparent"
+							placeholder="0"
+							value={item.emptiesDamaged}
+						/>
+					</View>
+					<View style={[{ flex: 1 }]}>
+						<TextInput
+							style={{
+								textAlign: 'center',
+								height: 50,
+								fontSize: 20
+							}}
+							keyboardType="number-pad"
+							underlineColorAndroid="transparent"
+							placeholder="0"
+							value={item.refillPending}
+						/>
+					</View>
+				</View>
+			);
+		} else {
+			return (<View />);
+		}
 	}
 
 	paymentTypesRow = (item, index, separators) => {
@@ -860,7 +847,7 @@ class OrderCheckout extends Component {
 			const creditIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
 
 			if (creditIndex >= 0) {
-				if(this.currentCredit() === 0){
+				if (this.currentCredit() === 0) {
 					Alert.alert(
 						'No Jibu Credit',
 						'There is no credit in the wallet',
@@ -938,41 +925,41 @@ class OrderCheckout extends Component {
 	}
 
 	totalTopUp() {
-        return this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
-    }
+		return this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
+	}
 
-    prepareTopUpData() {
+	prepareTopUpData() {
 
-        if (this.props.topups.length > 0) {
-            const totalCount = this.props.topups.length;
-            let topupLogs = [...new Set(this.props.topups)];
-            let topups = topupLogs.map((topup, index) => {
-                return {
-                    active: topup.active,
-                    //id: topup.id,
-                    createdAt: topup.createdDate,
-                    topUpId: topup.topUpId,
-                    customer_account_id: topup.customer_account_id,
-                    total: topup.total,
-                    topup: topup.topup,
-                    balance: topup.balance,
-                    totalCount
-                };
-            });
+		if (this.props.topups.length > 0) {
+			const totalCount = this.props.topups.length;
+			let topupLogs = [...new Set(this.props.topups)];
+			let topups = topupLogs.map((topup, index) => {
+				return {
+					active: topup.active,
+					//id: topup.id,
+					createdAt: topup.createdDate,
+					topUpId: topup.topUpId,
+					customer_account_id: topup.customer_account_id,
+					total: topup.total,
+					topup: topup.topup,
+					balance: topup.balance,
+					totalCount
+				};
+			});
 
-            topups.sort((a, b) => {
-                return moment
-                    .tz(a.createdAt, moment.tz.guess())
-                    .isBefore(moment.tz(b.createdAt, moment.tz.guess()))
-                    ? 1
-                    : -1;
-            });
-            return topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
-        } else {
-            return [];
-        }
+			topups.sort((a, b) => {
+				return moment
+					.tz(a.createdAt, moment.tz.guess())
+					.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+					? 1
+					: -1;
+			});
+			return topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
+		} else {
+			return [];
+		}
 
-    }
+	}
 
 	customerCreditPaymentTypeReceipts() {
 		let receiptsPaymentTypes = [...this.compareCreditPaymentTypes()];

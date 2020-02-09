@@ -122,6 +122,7 @@
   "previous": "Previous",
   "current": "Current",
   "closing-stock": "Closing Stock",
+  "not-dispatched": "NOT DISPATCHED",
   "delta-liters": "Delta Liters",
   "delta-inventory": "Delta Inventory",
   "output": "Output",
