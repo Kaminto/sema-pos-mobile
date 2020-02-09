@@ -52,6 +52,7 @@ export function setReportFilter(startDate, endDate) {
 const getSalesData = (beginDate, endDate) => {
 	return new Promise(async (resolve, reject) => {
 		const loggedReceipts = OrderRealm.getAllOrder();
+		console.log('beginDate-',beginDate, 'endDate-', endDate);
 		console.log('loggedReceipts', loggedReceipts);
 		const filteredReceipts = loggedReceipts.filter(receipt =>
 			moment
@@ -210,6 +211,7 @@ export function GetInventoryReportData(beginDate, endDate, products) {
 }
 
 const getInventoryData = (beginDate, endDate, products) => {
+	console.log('beginDate-',beginDate, 'endDate-', endDate);
 	return new Promise((resolve, reject) => {
 		getSalesData(beginDate, endDate)
 			.then(salesData => {

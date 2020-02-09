@@ -13,7 +13,7 @@ import CustomerBar from "../customers/CustomerBar";
 //import {ViewSwitcher} from "../../components/PosApp";
 import DateFilter from './DateFilter';
 import Events from 'react-native-simple-events';
-
+import moment from 'moment-timezone';
 import i18n from '../../app/i18n';
 
 class RemindersReport extends Component {
@@ -124,10 +124,14 @@ class RemindersReport extends Component {
 			final.push({
 			  customer: key,
 			  name: groupCustomers(data)[key][0].customer_account.name,
+			  phone_number: groupCustomers(data)[key][0].customer_account.phone_number,
+			  address: groupCustomers(data)[key][0].customer_account.hasOwnProperty('address') ? groupCustomers(data)[key][0].customer_account.address : 'N/A',
 			  frequency: this.pairwiseDifference(dateArray, dateArray.length), 
 			  avg: arrAvg(this.pairwiseDifference(dateArray, dateArray.length)), 
 			  reminder:this.addDays(new Date(lastDay),Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length)))),
-			  dates: groupCustomers(data)[key].map(e => e.created_at)
+			  dates: groupCustomers(data)[key].map(e => e.created_at),
+			  lastDatePurchased: new Date(lastDay)
+
 			});
 		  }
 		console.log(final);
@@ -224,11 +228,27 @@ class RemindersReport extends Component {
 		}
 	}
 
+	subtractDays =(theDate, days) => {
+		 return new Date(theDate.getTime() - days*24*60*60*1000);
+	 }
+
+	getFilteredReceipts(){
+		console.log(new Date(),'jui', this.subtractDays(new Date(),90));
+		return this.props.receipts.filter(receipt =>
+		{	console.log('receipt', moment
+		.tz(new Date(receipt.created_at), moment.tz.guess())
+		.isBetween(new Date(), this.subtractDays(new Date(),90)));
+			return moment
+				.tz(new Date(receipt.created_at), moment.tz.guess())
+				.isBetween(new Date(), this.subtractDays(new Date(),90))}
+		);
+	}
+	
 
 	render() {
 		console.log(this.props.receipts);
-		console.log('getRemindersNew', this.getRemindersNew(this.props.receipts))
-		if (this.props.reportType === "reminders") {
+		console.log('getFilteredReceipts',this.getFilteredReceipts());
+		console.log('getRemindersNew', this.getRemindersNew(this.props.receipts));
 			return (
 				<View style={{ flex: 1 }}>
 					<View style={{ flex: .7, backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10, }}>
@@ -242,9 +262,6 @@ class RemindersReport extends Component {
 					</View>
 				</View>
 			);
-		} else {
-			return null;
-		}
 
 	}
 }
