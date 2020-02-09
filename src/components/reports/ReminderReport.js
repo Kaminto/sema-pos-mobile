@@ -107,8 +107,8 @@ class RemindersReport extends Component {
 		return arrCalc;
 	};
 
-	addDays =(theDate, days) => {
-		return new Date(theDate.getTime() + days*24*60*60*1000);
+	addDays = (theDate, days) => {
+		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
 	}
 
 	getRemindersNew = (data) => {
@@ -118,22 +118,22 @@ class RemindersReport extends Component {
 		let final = [];
 		for (let key of Object.keys(groupCustomers(data))) {
 			let dateArray = groupCustomers(data)[key].map(e => e.created_at);
-			const arrAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length;
-			const dateLength =groupCustomers(data)[key].map(e => e.created_at).length - 1;
+			const arrAvg = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
+			const dateLength = groupCustomers(data)[key].map(e => e.created_at).length - 1;
 			const lastDay = groupCustomers(data)[key].map(e => e.created_at)[dateLength];
 			final.push({
-			  customer: key,
-			  name: groupCustomers(data)[key][0].customer_account.name,
-			  phone_number: groupCustomers(data)[key][0].customer_account.phone_number,
-			  address: groupCustomers(data)[key][0].customer_account.hasOwnProperty('address') ? groupCustomers(data)[key][0].customer_account.address : 'N/A',
-			  frequency: this.pairwiseDifference(dateArray, dateArray.length), 
-			  avg: arrAvg(this.pairwiseDifference(dateArray, dateArray.length)), 
-			  reminder:this.addDays(new Date(lastDay),Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length)))),
-			  dates: groupCustomers(data)[key].map(e => e.created_at),
-			  lastDatePurchased: new Date(lastDay)
+				customer: key,
+				name: groupCustomers(data)[key][0].customer_account.name,
+				phone_number: groupCustomers(data)[key][0].customer_account.phone_number,
+				address: groupCustomers(data)[key][0].customer_account.hasOwnProperty('address') ? groupCustomers(data)[key][0].customer_account.address : 'N/A',
+				frequency: this.pairwiseDifference(dateArray, dateArray.length),
+				avg: arrAvg(this.pairwiseDifference(dateArray, dateArray.length)),
+				reminder: this.addDays(new Date(lastDay), Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length)))),
+				dates: groupCustomers(data)[key].map(e => e.created_at),
+				lastDatePurchased: new Date(lastDay)
 
 			});
-		  }
+		}
 		console.log(final);
 		return final;
 	}
@@ -228,40 +228,41 @@ class RemindersReport extends Component {
 		}
 	}
 
-	subtractDays =(theDate, days) => {
-		 return new Date(theDate.getTime() - days*24*60*60*1000);
-	 }
+	subtractDays = (theDate, days) => {
+		return new Date(theDate.getTime() - days * 24 * 60 * 60 * 1000);
+	}
 
-	getFilteredReceipts(){
-		console.log(new Date(),'jui', this.subtractDays(new Date(),90));
-		return this.props.receipts.filter(receipt =>
-		{	console.log('receipt', moment
-		.tz(new Date(receipt.created_at), moment.tz.guess())
-		.isBetween(new Date(), this.subtractDays(new Date(),90)));
+	getFilteredReceipts() {
+		console.log(new Date(), 'jui', this.subtractDays(new Date(), 90));
+		return this.props.receipts.filter(receipt => {
+			console.log('receipt', moment
+				.tz(new Date(receipt.created_at), moment.tz.guess())
+				.isBetween(this.subtractDays(new Date(), 90),new Date()));
 			return moment
 				.tz(new Date(receipt.created_at), moment.tz.guess())
-				.isBetween(new Date(), this.subtractDays(new Date(),90))}
+				.isBetween(this.subtractDays(new Date(), 90),new Date())
+		}
 		);
 	}
-	
+
 
 	render() {
 		console.log(this.props.receipts);
-		console.log('getFilteredReceipts',this.getFilteredReceipts());
+		console.log('getFilteredReceipts', this.getFilteredReceipts());
 		console.log('getRemindersNew', this.getRemindersNew(this.props.receipts));
-			return (
-				<View style={{ flex: 1 }}>
-					<View style={{ flex: .7, backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10, }}>
-						<View style={styles.titleText}>
-							<View style={styles.leftHeader}>
-								<Text style={styles.titleItem}>Reminders</Text>
-							</View>
+		return (
+			<View style={{ flex: 1 }}>
+				<View style={{ flex: .7, backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10, }}>
+					<View style={styles.titleText}>
+						<View style={styles.leftHeader}>
+							<Text style={styles.titleItem}>Reminders</Text>
 						</View>
-
-						{this.displayReminders()}
 					</View>
+
+					{this.displayReminders()}
 				</View>
-			);
+			</View>
+		);
 
 	}
 }
