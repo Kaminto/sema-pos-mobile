@@ -332,10 +332,10 @@ class InventoryReport extends Component {
 					this.props.inventoryData.inventory.currentProductSkus[index].createdDate = new Date(this.props.inventoryData.inventory.date);
 					this.props.inventoryData.inventory.currentProductSkus[index].closingStockId = uuidv1();
 					PosStorage.addOrUpdateInventoryItem(this.props.inventoryData.inventory, this.props.inventoryData.inventory.date);
-					InventroyRealm.createInventory(this.props.settings.siteId, wastageName, update, this.props.dateFilter.startDate);
-					this.props.inventoryActions.setInventory(
-						InventroyRealm.getAllInventory()
-					);
+					// InventroyRealm.createInventory(this.props.settings.siteId, wastageName, update, this.props.dateFilter.startDate);
+					// this.props.inventoryActions.setInventory(
+					// 	InventroyRealm.getAllInventory()
+					// );
 					break;
 				}
 			}
@@ -361,10 +361,10 @@ class InventoryReport extends Component {
 					this.props.inventoryData.inventory.currentProductSkus[index].createdDate = new Date(this.props.inventoryData.inventory.date);
 					this.props.inventoryData.inventory.currentProductSkus[index].closingStockId = uuidv1();
 					PosStorage.addOrUpdateInventoryItem(this.props.inventoryData.inventory, this.props.inventoryData.inventory.date);
-					InventroyRealm.createInventory(this.props.settings.siteId, wastageName, update, this.props.dateFilter.startDate);
-					this.props.inventoryActions.setInventory(
-						InventroyRealm.getAllInventory()
-					);
+					// InventroyRealm.createInventory(this.props.settings.siteId, wastageName, update, this.props.dateFilter.startDate);
+					// this.props.inventoryActions.setInventory(
+					// 	InventroyRealm.getAllInventory()
+					// );
 					break;
 				}
 			}
@@ -433,7 +433,6 @@ class InventoryReport extends Component {
 
 	getNotDispatchedSkuForDisplay(currentPrev, item) {
 		let inventoryArray = (currentPrev) ? this.props.inventoryData.inventory.currentProductSkus : this.props.inventoryData.inventory.previousProductSkus;
-		console.log('inventoryArray', inventoryArray)
 		for (let index = 0; index < inventoryArray.length; index++) {
 			if (inventoryArray[index].wastageName === item.wastageName) {
 				if (inventoryArray[index].notDispatched != null && !isNaN(inventoryArray[index].notDispatched)) {
@@ -442,7 +441,7 @@ class InventoryReport extends Component {
 				break;
 			}
 		}
-		return "-";		// No data
+		return 0;		// No data
 	}
 
 	getInventorySkuForDisplay(currentPrev, item) {
@@ -467,12 +466,26 @@ class InventoryReport extends Component {
 		return `${((current - previous) * item.litersPerSku).toFixed(2)} L`;
 	}
 
+
+	getTotalForSkuDisplayNotDispatched(item) {
+		if (!item.litersPerSku || item.litersPerSku === 'N/A') return '-';
+		let current = this.getNotDispatchedSkuForDisplay(true, item);
+		console.log('-current', current);
+		if (current == '-') return '-';
+		let previous = this.getNotDispatchedSkuForDisplay(false, item);
+		console.log('-previous', previous);
+		if (previous == '-') return '-';
+		console.log('(current - previous)', (current - previous));
+		return `${((current - previous) * item.litersPerSku).toFixed(2)} L`;
+	}
+
 	getTotalInventory() {
 		try {
 			let result = 0;
 			let valid = false;
 			for (let index = 0; index < this.props.inventoryData.salesAndProducts.salesItems.length; index++) {
 				let inventoryItem = this.getTotalForSkuDisplay(this.props.inventoryData.salesAndProducts.salesItems[index]);
+				console.log('inventoryItem',inventoryItem)
 				if (inventoryItem != '-') {
 					valid = true;
 					result += parseFloat(inventoryItem);
@@ -490,6 +503,31 @@ class InventoryReport extends Component {
 		return '-';
 	}
 
+
+	getTotalNotDispatched() {
+		try {
+			let result = 0;
+			let valid = false;
+			for (let index = 0; index < this.props.inventoryData.salesAndProducts.salesItems.length; index++) {
+				let inventoryItem = this.getTotalForSkuDisplayNotDispatched(this.props.inventoryData.salesAndProducts.salesItems[index]);
+				console.log('inventoryItem--]',inventoryItem)
+				if (inventoryItem != '-') {
+					valid = true;
+					result += parseFloat(inventoryItem);
+				}
+			}
+			if (valid) {
+				return result.toFixed(2) + ' L';
+			} else {
+				return '-';
+			}
+		} catch (error) {
+			console.log(JSON.stringify(this.props.inventoryData));
+			console.log("getTotalNotDispatched " + error);
+		}
+		return '-';
+	}
+
 	getOutput() {
 		let sales = 0;
 		let inventory = 0;
@@ -497,6 +535,9 @@ class InventoryReport extends Component {
 		let totalSales = this.getTotalLiters();
 		let getTotalInventory = this.getTotalInventory();
 		let getTotalNotDispatched = this.getTotalNotDispatched();
+		console.log('totalSales', totalSales);
+		console.log('getTotalInventory', getTotalInventory);
+		console.log('getTotalNotDispatched', getTotalNotDispatched);
 		if (totalSales == '-' && getTotalInventory == '-' && getTotalNotDispatched == '-') {
 			return '-';
 		}
@@ -541,7 +582,7 @@ class InventoryReport extends Component {
 		if (meter != null && !isNaN(meter)) {
 			return meter.toFixed(2) + ' L';
 		} else {
-			return "-";		// No data
+			return 0;		// No data
 		}
 	}
 
