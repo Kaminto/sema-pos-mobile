@@ -8,9 +8,7 @@ import * as customerBarActions from "../../actions/CustomerBarActions";
 import * as toolBarActions from "../../actions/ToolBarActions";
 import * as orderActions from "../../actions/OrderActions";
 import * as reminderActions from "../../actions/ReminderActions.js";
-import PosStorage from "../../database/PosStorage";
-import CustomerBar from "../customers/CustomerBar";
-//import {ViewSwitcher} from "../../components/PosApp";
+
 import DateFilter from './DateFilter';
 import Events from 'react-native-simple-events';
 import moment from 'moment-timezone';
@@ -23,7 +21,6 @@ class RemindersReport extends Component {
 			refresh: false
 		};
 		this.reminderDate = null;
-		// this.endDate=null;
 	}
 	componentDidMount() {
 
@@ -60,24 +57,23 @@ class RemindersReport extends Component {
 	showHeader = () => {
 
 		return (
-			<View>
-				{/* <CustomerBar /> */}
-				<DateFilter />
-				<View style={[{ flex: 1, flexDirection: 'row', height: 50, alignItems: 'center' }, styles.headerBackground]}>
+				<View style={[{ flex: 1, flexDirection: 'row', height: 50, alignSelf: 'center' }, styles.headerBackground]}>
 					<View style={[{ flex: 2 }]}>
-						<Text style={[styles.headerItem, styles.leftMargin]}>account-name</Text>
+						<Text style={[styles.headerItem]}>Customer Name</Text>
 					</View>
-					<View style={[{ flex: 2.5 }]}>
-						<Text style={[styles.headerItem]}>telephone-number</Text>
+					<View style={[{ flex: 1.5 }]}>
+						<Text style={[styles.headerItem]}>Phone Number</Text>
+					</View>
+					<View style={[{ flex: 1.5 }]}>
+						<Text style={[styles.headerItem]}>Address</Text>
 					</View>
 					<View style={[{ flex: 2 }]}>
-						<Text style={[styles.headerItem]}>address</Text>
+						<Text style={[styles.headerItem]}>Last Purchase Date</Text>
 					</View>
-					<View style={[{ flex: 2.5 }]}>
-						<Text style={[styles.headerItem]}>products</Text>
+					<View style={[{ flex: 1.5 }]}>
+						<Text style={[styles.headerItem]}>Frequency</Text>
 					</View>
 				</View>
-			</View>
 
 		);
 	};
@@ -124,40 +120,28 @@ class RemindersReport extends Component {
 			final.push({
 				customer: key,
 				name: groupCustomers(data)[key][0].customer_account.name,
-				phone_number: groupCustomers(data)[key][0].customer_account.phone_number,
+				phone_number: groupCustomers(data)[key][0].customer_account.hasOwnProperty('phone_number') ? groupCustomers(data)[key][0].customer_account.phone_number : 'N/A',
 				address: groupCustomers(data)[key][0].customer_account.hasOwnProperty('address') ? groupCustomers(data)[key][0].customer_account.address : 'N/A',
 				frequency: this.pairwiseDifference(dateArray, dateArray.length),
-				avg: arrAvg(this.pairwiseDifference(dateArray, dateArray.length)),
+				avg: Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length))),
 				reminder: this.addDays(new Date(lastDay), Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length)))),
 				dates: groupCustomers(data)[key].map(e => e.created_at),
-				lastDatePurchased: new Date(lastDay)
+				lastPurchaseDate:   moment.tz(new Date(lastDay), moment.tz.guess()).format('ddd Do MMM YYYY')
+			
 
 			});
 		}
 		console.log(final);
+		 
+		  
 		return final;
 	}
 
 	onPressItem = (item) => {
-		console.log("_onPressReminderItem");
-		this.props.customerActions.CustomerSelected(item);
-		//this.props.customerActions.SearchCustomers(item);
-		//this.props.customerBarActions.ShowHideCustomers(0);
-		this.setState({ refresh: !this.state.refresh });
-		//this.props.orderActions.ClearOrder();
-		//this.props.orderActions.SetOrderFlow('products');
-		Events.trigger('onOrder', { customer: item });
-		//this.props.toolbarActions.ShowScreen('orderReminder');
-		this.props.toolbarActions.ShowScreen("main");
-		//
 
 	};
 
-	// getReceipts(){
-	//     receipts = PosStorage.getReceipts();
 
-
-	// }
 	getRow = (item, index, separators) => {
 		// console.log("getRow -index: " + index)
 		let isSelected = false;
@@ -165,65 +149,53 @@ class RemindersReport extends Component {
 			console.log("Selected item is " + item.customerId);
 			isSelected = true;
 		}
-		// if( true ) {
 		return (
-			<View style={[this.getRowBackground(index, isSelected), { flex: 1, flexDirection: 'row', height: 100, alignItems: 'center' }]}>
+			<View style={{ flex: 1, flexDirection: 'row', height: 50, alignItems: 'center' }}>
 				<View style={{ flex: 2 }}>
 					<Text style={[styles.baseItem, styles.leftMargin]}>{item.name}</Text>
 				</View>
-				<View style={{ flex: 2.5 }}>
+				<View style={{ flex: 1.5 }}>
 					<Text style={[styles.baseItem]}>{item.phoneNumber}</Text>
 				</View>
-				<View style={{ flex: 2 }}>
+				<View style={{ flex: 1.5 }}>
 					<Text style={[styles.baseItem]}>{item.address}</Text>
 				</View>
-
-				<View style={{ flex: 2.5 }}>
-					<Text style={[styles.baseItem]}>{item.product_name}</Text>
+				<View style={{ flex: 2 }}>
+					<Text style={[styles.baseItem]}>{item.lastPurchaseDate}</Text>
+				</View>
+				<View style={{ flex: 1.5 }}>
+					<Text style={[styles.baseItem]}>{item.avg}</Text>
 				</View>
 			</View>
 		);
-		// }else{
-		// 	return (<View/>);
-		// }
-	};
-
-	getRowBackground = (index, isSelected) => {
-		if (isSelected) {
-			return styles.selectedBackground;
-		} else {
-			return ((index % 2) === 0) ? styles.lightBackground : styles.darkBackground;
-		}
 	};
 
 
 	displayReminders() {
-		if (!this.props.reminderData || this.props.reminderData.length == 0) {
+		if (!this.getRemindersNew(this.getFilteredReceipts()) || this.getRemindersNew(this.getFilteredReceipts()).length == 0) {
 			return (
 				<View style={{ flex: 1 }}>
-					<View>{this.showHeader()}</View>
-					<Text style={styles.titleText}>No Reminders Available</Text>
+					<Text style={[styles.titleText, {textAlign: 'center'}]}>No Reminders Available</Text>
 				</View>
 			);
 
 		} else {
-			console.log("I AM IN THE REPORTS=>" + Object.values(this.props.reminderData));
 
 			return (
-				<FlatList
-					ListHeaderComponent={this.showHeader}
-					extraData={this.state.refresh}
-					data={this.getRemindersData()}
-					renderItem={({ item, index, separators }) => (
-						<TouchableHighlight
-							onPress={() => this.onPressItem(item)}
-							onShowUnderlay={separators.highlight}
-							onHideUnderlay={separators.unhighlight}>
-							{this.getRow(item, index, separators)}
-						</TouchableHighlight>
-					)}
-					keyExtractor={item => `${item.customerId}${item.receipt}`}
-				/>
+					<FlatList
+						ListHeaderComponent={this.showHeader}
+						extraData={this.state.refresh}
+						data={this.getRemindersNew(this.getFilteredReceipts())}
+						renderItem={({ item, index, separators }) => (
+							<TouchableHighlight
+								onPress={() => this.onPressItem(item)}
+								onShowUnderlay={separators.highlight}
+								onHideUnderlay={separators.unhighlight}>
+								{this.getRow(item, index, separators)}
+							</TouchableHighlight>
+						)}
+						keyExtractor={item => `${item.customerId}${item.receipt}`}
+					/>
 			)
 		}
 	}
@@ -233,11 +205,7 @@ class RemindersReport extends Component {
 	}
 
 	getFilteredReceipts() {
-		console.log(new Date(), 'jui', this.subtractDays(new Date(), 90));
 		return this.props.receipts.filter(receipt => {
-			console.log('receipt', moment
-				.tz(new Date(receipt.created_at), moment.tz.guess())
-				.isBetween(this.subtractDays(new Date(), 90),new Date()));
 			return moment
 				.tz(new Date(receipt.created_at), moment.tz.guess())
 				.isBetween(this.subtractDays(new Date(), 90),new Date())
@@ -249,19 +217,16 @@ class RemindersReport extends Component {
 	render() {
 		console.log(this.props.receipts);
 		console.log('getFilteredReceipts', this.getFilteredReceipts());
-		console.log('getRemindersNew', this.getRemindersNew(this.props.receipts));
-		return (
-			<View style={{ flex: 1 }}>
-				<View style={{ flex: .7, backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10, }}>
-					<View style={styles.titleText}>
-						<View style={styles.leftHeader}>
-							<Text style={styles.titleItem}>Reminders</Text>
-						</View>
+		console.log('getRemindersNew', this.getRemindersNew(this.getFilteredReceipts()));
+			return (
+				<View style={{ flex: 1, flexDirection: 'column' }}>
+					<View style={{ flex: .15 }}>
+						<DateFilter />
 					</View>
-
-					{this.displayReminders()}
+					<View style={{ flex: .85, backgroundColor: 'white', marginLeft: 10, marginRight: 10 }}>
+						{this.displayReminders()}
+					</View>
 				</View>
-			</View>
 		);
 
 	}

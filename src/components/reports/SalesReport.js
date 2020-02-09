@@ -132,14 +132,14 @@ class SalesReport extends Component {
 		if (item.totalLiters && item.totalLiters !== 'N/A') {
 			return `${item.totalLiters.toFixed(2)} L`;
 		}
-		return 'N/A';
+		return 0;
 	}
 
 	getItemLitersPerSku(item) {
 		if (item.litersPerSku && item.litersPerSku !== 'N/A') {
 			return `${item.litersPerSku} L`;
 		}
-		return 'N/A';
+		return 0;
 	}
 
 	getTotalTypes() {
