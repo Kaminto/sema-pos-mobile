@@ -11,6 +11,8 @@ import * as reminderActions from "../../actions/ReminderActions.js";
 
 import DateFilter from './DateFilter';
 import Events from 'react-native-simple-events';
+import moment from 'moment-timezone';
+import i18n from '../../app/i18n';
 
 class RemindersReport extends Component {
 	constructor(props) {
@@ -62,10 +64,10 @@ class RemindersReport extends Component {
 					<View style={[{ flex: 1.5 }]}>
 						<Text style={[styles.headerItem]}>Phone Number</Text>
 					</View>
-					<View style={[{ flex: 2 }]}>
+					<View style={[{ flex: 1.5 }]}>
 						<Text style={[styles.headerItem]}>Address</Text>
 					</View>
-					<View style={[{ flex: 1.5 }]}>
+					<View style={[{ flex: 2 }]}>
 						<Text style={[styles.headerItem]}>Last Purchase Date</Text>
 					</View>
 					<View style={[{ flex: 1.5 }]}>
@@ -118,31 +120,19 @@ class RemindersReport extends Component {
 			final.push({
 			  customer: key,
 			  name: groupCustomers(data)[key][0].customer_account.name,
-			  phoneNumber: groupCustomers(data)[key][0].customer_account.phoneNumber,
-			  address: groupCustomers(data)[key][0].customer_account.address,
-			  lastPurchaseDate: new Date(lastDay),
+			  phoneNumber: groupCustomers(data)[key][0].customer_account.phone_number,
+			  address: groupCustomers(data)[key][0].customer_account.hasOwnProperty('address') ? groupCustomers(data)[key][0].customer_account.address : 'N/A',
 			  frequency: this.pairwiseDifference(dateArray, dateArray.length),
 			  avg: arrAvg(this.pairwiseDifference(dateArray, dateArray.length)).toFixed(0),
 			  reminder:this.addDays(new Date(lastDay),Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length)))),
-			  dates: groupCustomers(data)[key].map(e => e.created_at)
+			  dates: groupCustomers(data)[key].map(e => e.created_at),
+			  lastPurchaseDate:   moment.tz(new Date(lastDay), moment.tz.guess()).format('ddd Do MMM YYYY')
 			});
 		  }
-		console.log("Galen Ask" + JSON.stringify(final));
 		return final;
 	}
 
 	onPressItem = (item) => {
-		console.log("_onPressReminderItem");
-		this.props.customerActions.CustomerSelected(item);
-		//this.props.customerActions.SearchCustomers(item);
-		//this.props.customerBarActions.ShowHideCustomers(0);
-		this.setState({ refresh: !this.state.refresh });
-		//this.props.orderActions.ClearOrder();
-		//this.props.orderActions.SetOrderFlow('products');
-		Events.trigger('onOrder', { customer: item });
-		//this.props.toolbarActions.ShowScreen('orderReminder');
-		this.props.toolbarActions.ShowScreen("main");
-		//
 
 	};
 
@@ -162,10 +152,10 @@ class RemindersReport extends Component {
 				<View style={{ flex: 1.5 }}>
 					<Text style={[styles.baseItem]}>{item.phoneNumber}</Text>
 				</View>
-				<View style={{ flex: 2 }}>
+				<View style={{ flex: 1.5 }}>
 					<Text style={[styles.baseItem]}>{item.address}</Text>
 				</View>
-				<View style={{ flex: 1.5 }}>
+				<View style={{ flex: 2 }}>
 					<Text style={[styles.baseItem]}>{item.lastPurchaseDate}</Text>
 				</View>
 				<View style={{ flex: 1.5 }}>
@@ -205,7 +195,27 @@ class RemindersReport extends Component {
 		}
 	}
 
+	subtractDays =(theDate, days) => {
+		 return new Date(theDate.getTime() - days*24*60*60*1000);
+	 }
+
+	getFilteredReceipts(){
+		console.log(new Date(),'jui', this.subtractDays(new Date(),90));
+		return this.props.receipts.filter(receipt =>
+		{	console.log('receipt', moment
+		.tz(new Date(receipt.created_at), moment.tz.guess())
+		.isBetween(new Date(), this.subtractDays(new Date(),90)));
+			return moment
+				.tz(new Date(receipt.created_at), moment.tz.guess())
+				.isBetween(new Date(), this.subtractDays(new Date(),90))}
+		);
+	}
+
+
 	render() {
+		console.log(this.props.receipts);
+		console.log('getFilteredReceipts',this.getFilteredReceipts());
+		console.log('getRemindersNew', this.getRemindersNew(this.props.receipts));
 			return (
 				<View style={{ flex: 1, flexDirection: 'column' }}>
 					<View style={{ flex: .15 }}>
