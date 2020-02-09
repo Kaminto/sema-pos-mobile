@@ -493,9 +493,11 @@ class InventoryReport extends Component {
 	getOutput() {
 		let sales = 0;
 		let inventory = 0;
+		let notDispatched = 0;
 		let totalSales = this.getTotalLiters();
 		let getTotalInventory = this.getTotalInventory();
-		if (totalSales == '-' && getTotalInventory == '-') {
+		let getTotalNotDispatched = this.getTotalNotDispatched();
+		if (totalSales == '-' && getTotalInventory == '-' && getTotalNotDispatched == '-') {
 			return '-';
 		}
 		if (totalSales != '-') {
@@ -504,7 +506,10 @@ class InventoryReport extends Component {
 		if (getTotalInventory != '-') {
 			inventory = parseFloat(getTotalInventory);
 		}
-		return (sales + inventory).toFixed(2) + ' L';
+		if (getTotalNotDispatched != '-') {
+			notDispatched = parseFloat(getTotalNotDispatched);
+		}
+		return (sales + inventory + notDispatched).toFixed(2) + ' L';
 	}
 
 	displayEditCurrentSku(wastageName) {
