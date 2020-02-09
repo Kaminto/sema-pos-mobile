@@ -8,13 +8,9 @@ import * as customerBarActions from "../../actions/CustomerBarActions";
 import * as toolBarActions from "../../actions/ToolBarActions";
 import * as orderActions from "../../actions/OrderActions";
 import * as reminderActions from "../../actions/ReminderActions.js";
-import PosStorage from "../../database/PosStorage";
-import CustomerBar from "../customers/CustomerBar";
-//import {ViewSwitcher} from "../../components/PosApp";
+
 import DateFilter from './DateFilter';
 import Events from 'react-native-simple-events';
-
-import i18n from '../../app/i18n';
 
 class RemindersReport extends Component {
 	constructor(props) {
@@ -23,7 +19,6 @@ class RemindersReport extends Component {
 			refresh: false
 		};
 		this.reminderDate = null;
-		// this.endDate=null;
 	}
 	componentDidMount() {
 
@@ -60,24 +55,23 @@ class RemindersReport extends Component {
 	showHeader = () => {
 
 		return (
-			<View>
-				{/* <CustomerBar /> */}
-				<DateFilter />
-				<View style={[{ flex: 1, flexDirection: 'row', height: 50, alignItems: 'center' }, styles.headerBackground]}>
+				<View style={[{ flex: 1, flexDirection: 'row', height: 50, alignSelf: 'center' }, styles.headerBackground]}>
 					<View style={[{ flex: 2 }]}>
-						<Text style={[styles.headerItem, styles.leftMargin]}>account-name</Text>
+						<Text style={[styles.headerItem]}>Customer Name</Text>
 					</View>
-					<View style={[{ flex: 2.5 }]}>
-						<Text style={[styles.headerItem]}>telephone-number</Text>
+					<View style={[{ flex: 1.5 }]}>
+						<Text style={[styles.headerItem]}>Phone Number</Text>
 					</View>
 					<View style={[{ flex: 2 }]}>
-						<Text style={[styles.headerItem]}>address</Text>
+						<Text style={[styles.headerItem]}>Address</Text>
 					</View>
-					<View style={[{ flex: 2.5 }]}>
-						<Text style={[styles.headerItem]}>products</Text>
+					<View style={[{ flex: 1.5 }]}>
+						<Text style={[styles.headerItem]}>Last Purchase Date</Text>
+					</View>
+					<View style={[{ flex: 1.5 }]}>
+						<Text style={[styles.headerItem]}>Frequency</Text>
 					</View>
 				</View>
-			</View>
 
 		);
 	};
@@ -124,13 +118,16 @@ class RemindersReport extends Component {
 			final.push({
 			  customer: key,
 			  name: groupCustomers(data)[key][0].customer_account.name,
+			  phoneNumber: groupCustomers(data)[key][0].customer_account.phoneNumber,
+			  address: groupCustomers(data)[key][0].customer_account.address,
+			  lastPurchaseDate: new Date(lastDay),
 			  frequency: this.pairwiseDifference(dateArray, dateArray.length),
-			  avg: arrAvg(this.pairwiseDifference(dateArray, dateArray.length)),
+			  avg: arrAvg(this.pairwiseDifference(dateArray, dateArray.length)).toFixed(0),
 			  reminder:this.addDays(new Date(lastDay),Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length)))),
 			  dates: groupCustomers(data)[key].map(e => e.created_at)
 			});
 		  }
-		console.log(final);
+		console.log("Galen Ask" + JSON.stringify(final));
 		return final;
 	}
 
@@ -149,11 +146,7 @@ class RemindersReport extends Component {
 
 	};
 
-	// getReceipts(){
-	//     receipts = PosStorage.getReceipts();
 
-
-	// }
 	getRow = (item, index, separators) => {
 		// console.log("getRow -index: " + index)
 		let isSelected = false;
@@ -161,90 +154,68 @@ class RemindersReport extends Component {
 			console.log("Selected item is " + item.customerId);
 			isSelected = true;
 		}
-		// if( true ) {
 		return (
-			<View style={[this.getRowBackground(index, isSelected), { flex: 1, flexDirection: 'row', height: 100, alignItems: 'center' }]}>
+			<View style={{ flex: 1, flexDirection: 'row', height: 50, alignItems: 'center' }}>
 				<View style={{ flex: 2 }}>
 					<Text style={[styles.baseItem, styles.leftMargin]}>{item.name}</Text>
 				</View>
-				<View style={{ flex: 2.5 }}>
+				<View style={{ flex: 1.5 }}>
 					<Text style={[styles.baseItem]}>{item.phoneNumber}</Text>
 				</View>
 				<View style={{ flex: 2 }}>
 					<Text style={[styles.baseItem]}>{item.address}</Text>
 				</View>
-
-				<View style={{ flex: 2.5 }}>
-					<Text style={[styles.baseItem]}>{item.product_name}</Text>
+				<View style={{ flex: 1.5 }}>
+					<Text style={[styles.baseItem]}>{item.lastPurchaseDate}</Text>
+				</View>
+				<View style={{ flex: 1.5 }}>
+					<Text style={[styles.baseItem]}>{item.avg}</Text>
 				</View>
 			</View>
 		);
-		// }else{
-		// 	return (<View/>);
-		// }
-	};
-
-	getRowBackground = (index, isSelected) => {
-		if (isSelected) {
-			return styles.selectedBackground;
-		} else {
-			return ((index % 2) === 0) ? styles.lightBackground : styles.darkBackground;
-		}
 	};
 
 
 	displayReminders() {
-		if (!this.props.reminderData || this.props.reminderData.length == 0) {
+		if (!this.getRemindersNew(this.props.receipts) || this.getRemindersNew(this.props.receipts).length == 0) {
 			return (
 				<View style={{ flex: 1 }}>
-					<View>{this.showHeader()}</View>
-					<Text style={styles.titleText}>No Reminders Available</Text>
+					<Text style={[styles.titleText, {textAlign: 'center'}]}>No Reminders Available</Text>
 				</View>
 			);
 
 		} else {
-			console.log("I AM IN THE REPORTS=>" + Object.values(this.props.reminderData));
 
 			return (
-				<FlatList
-					ListHeaderComponent={this.showHeader}
-					extraData={this.state.refresh}
-					data={this.getRemindersData()}
-					renderItem={({ item, index, separators }) => (
-						<TouchableHighlight
-							onPress={() => this.onPressItem(item)}
-							onShowUnderlay={separators.highlight}
-							onHideUnderlay={separators.unhighlight}>
-							{this.getRow(item, index, separators)}
-						</TouchableHighlight>
-					)}
-					keyExtractor={item => `${item.customerId}${item.receipt}`}
-				/>
+					<FlatList
+						ListHeaderComponent={this.showHeader}
+						extraData={this.state.refresh}
+						data={this.getRemindersNew(this.props.receipts)}
+						renderItem={({ item, index, separators }) => (
+							<TouchableHighlight
+								onPress={() => this.onPressItem(item)}
+								onShowUnderlay={separators.highlight}
+								onHideUnderlay={separators.unhighlight}>
+								{this.getRow(item, index, separators)}
+							</TouchableHighlight>
+						)}
+						keyExtractor={item => `${item.customerId}${item.receipt}`}
+					/>
 			)
 		}
 	}
 
-
 	render() {
-		console.log(this.props.receipts);
-		console.log('getRemindersNew', this.getRemindersNew(this.props.receipts))
-		if (this.props.reportType === "reminders") {
 			return (
-				<View style={{ flex: 1 }}>
-					<View style={{ flex: .7, backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10, }}>
-						<View style={styles.titleText}>
-							<View style={styles.leftHeader}>
-								<Text style={styles.titleItem}>Reminders</Text>
-							</View>
-						</View>
-
+				<View style={{ flex: 1, flexDirection: 'column' }}>
+					<View style={{ flex: .15 }}>
+						<DateFilter />
+					</View>
+					<View style={{ flex: .85, backgroundColor: 'white', marginLeft: 10, marginRight: 10 }}>
 						{this.displayReminders()}
 					</View>
 				</View>
 			);
-		} else {
-			return null;
-		}
 
 	}
 }
