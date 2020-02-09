@@ -8,13 +8,8 @@ import * as customerBarActions from "../../actions/CustomerBarActions";
 import * as toolBarActions from "../../actions/ToolBarActions";
 import * as orderActions from "../../actions/OrderActions";
 import * as reminderActions from "../../actions/ReminderActions.js";
-import PosStorage from "../../database/PosStorage";
-import CustomerBar from "../customers/CustomerBar";
-//import {ViewSwitcher} from "../../components/PosApp";
 import DateFilter from './DateFilter';
 import Events from 'react-native-simple-events';
-
-import i18n from '../../app/i18n';
 
 class RemindersReport extends Component {
       constructor(props){
@@ -63,7 +58,7 @@ class RemindersReport extends Component {
 		<View>
 		{/* <CustomerBar /> */}
 		<DateFilter />
-			<View style={[{flex: 1, flexDirection: 'row', height:50, alignItems:'center'},styles.headerBackground]}>
+			<View style={[{flex: 1, flexDirection: 'row', height: 50, alignItems: 'center'},styles.headerBackground]}>
 				<View style={ [{flex: 2}]}>
 					<Text style={[styles.headerItem,styles.leftMargin]}>account-name</Text>
 				</View>
