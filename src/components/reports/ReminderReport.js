@@ -182,12 +182,12 @@ class RemindersReport extends Component {
 						extraData={this.state.refresh}
 						data={this.getRemindersNew(this.props.receipts)}
 						renderItem={({ item, index, separators }) => (
-							<TouchableHighlight
-								onPress={() => this.onPressItem(item)}
-								onShowUnderlay={separators.highlight}
-								onHideUnderlay={separators.unhighlight}>
-								{this.getRow(item, index, separators)}
-							</TouchableHighlight>
+							// <TouchableHighlight
+							// 	onPress={() => this.onPressItem(item)}
+							// 	onShowUnderlay={separators.highlight}
+							// 	onHideUnderlay={separators.unhighlight}>
+								this.getRow(item, index, separators)
+							// </TouchableHighlight>
 						)}
 						keyExtractor={item => `${item.customerId}${item.receipt}`}
 					/>
