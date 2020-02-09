@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { View, StyleSheet } from 'react-native';
-import OrderProductScreen from "./OrderProductScreen";
 import ProductListScreen from './ProductListScreen';
-import OrderPaymentScreen from "./OrderPaymentScreen";
 import OrderSummaryScreen from "./OrderSummaryScreen";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -18,9 +16,9 @@ class OrderView extends Component {
 	render() {
 		return (
 			<View style={styles.orderView}>
-				<ProductListScreen/>
+				<ProductListScreen />
 				<OrderSummaryScreen
-				navigation={this.props.navigation} />
+					navigation={this.props.navigation} />
 			</View>
 		);
 	}
