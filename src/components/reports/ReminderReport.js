@@ -57,23 +57,23 @@ class RemindersReport extends Component {
 	showHeader = () => {
 
 		return (
-				<View style={[{ flex: 1, flexDirection: 'row', height: 50, alignSelf: 'center' }, styles.headerBackground]}>
-					<View style={[{ flex: 2 }]}>
-						<Text style={[styles.headerItem]}>Customer Name</Text>
-					</View>
-					<View style={[{ flex: 1.5 }]}>
-						<Text style={[styles.headerItem]}>Phone Number</Text>
-					</View>
-					<View style={[{ flex: 1.5 }]}>
-						<Text style={[styles.headerItem]}>Address</Text>
-					</View>
-					<View style={[{ flex: 2 }]}>
-						<Text style={[styles.headerItem]}>Last Purchase Date</Text>
-					</View>
-					<View style={[{ flex: 1.5 }]}>
-						<Text style={[styles.headerItem]}>Frequency</Text>
-					</View>
+			<View style={[{ flex: 1, flexDirection: 'row', height: 50, alignSelf: 'center' }, styles.headerBackground]}>
+				<View style={[{ flex: 2 }]}>
+					<Text style={[styles.headerItem]}>Customer Name</Text>
 				</View>
+				<View style={[{ flex: 1.5 }]}>
+					<Text style={[styles.headerItem]}>Phone Number</Text>
+				</View>
+				<View style={[{ flex: 1.5 }]}>
+					<Text style={[styles.headerItem]}>Address</Text>
+				</View>
+				<View style={[{ flex: 2 }]}>
+					<Text style={[styles.headerItem]}>Last Purchase Date</Text>
+				</View>
+				<View style={[{ flex: 1.5 }]}>
+					<Text style={[styles.headerItem]}>Frequency</Text>
+				</View>
+			</View>
 
 		);
 	};
@@ -103,8 +103,8 @@ class RemindersReport extends Component {
 		return arrCalc;
 	};
 
-	addDays =(theDate, days) => {
-		return new Date(theDate.getTime() + days*24*60*60*1000);
+	addDays = (theDate, days) => {
+		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
 	}
 
 	getRemindersNew = (data) => {
@@ -114,21 +114,26 @@ class RemindersReport extends Component {
 		let final = [];
 		for (let key of Object.keys(groupCustomers(data))) {
 			let dateArray = groupCustomers(data)[key].map(e => e.created_at);
-			const arrAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length;
-			const dateLength =groupCustomers(data)[key].map(e => e.created_at).length - 1;
+			const arrAvg = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
+			const dateLength = groupCustomers(data)[key].map(e => e.created_at).length - 1;
 			const lastDay = groupCustomers(data)[key].map(e => e.created_at)[dateLength];
 			final.push({
-			  customer: key,
-			  name: groupCustomers(data)[key][0].customer_account.name,
-			  phoneNumber: groupCustomers(data)[key][0].customer_account.phone_number,
-			  address: groupCustomers(data)[key][0].customer_account.hasOwnProperty('address') ? groupCustomers(data)[key][0].customer_account.address : 'N/A',
-			  frequency: this.pairwiseDifference(dateArray, dateArray.length),
-			  avg: arrAvg(this.pairwiseDifference(dateArray, dateArray.length)).toFixed(0),
-			  reminder:this.addDays(new Date(lastDay),Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length)))),
-			  dates: groupCustomers(data)[key].map(e => e.created_at),
-			  lastPurchaseDate:   moment.tz(new Date(lastDay), moment.tz.guess()).format('ddd Do MMM YYYY')
+				customer: key,
+				name: groupCustomers(data)[key][0].customer_account.name,
+				phoneNumber: groupCustomers(data)[key][0].customer_account.hasOwnProperty('phone_number') ? groupCustomers(data)[key][0].customer_account.phone_number : 'N/A',
+				address: groupCustomers(data)[key][0].customer_account.hasOwnProperty('address') ? groupCustomers(data)[key][0].customer_account.address : groupCustomers(data)[key][0].customer_account.address_line1,
+				frequency: this.pairwiseDifference(dateArray, dateArray.length),
+				avg: Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length))),
+				reminder: this.addDays(new Date(lastDay), Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length)))),
+				dates: groupCustomers(data)[key].map(e => e.created_at),
+				lastPurchaseDate: moment.tz(new Date(lastDay), moment.tz.guess()).format('ddd Do MMM YYYY')
+
+
 			});
-		  }
+		}
+		console.log(final);
+
+
 		return final;
 	}
 
@@ -167,65 +172,92 @@ class RemindersReport extends Component {
 
 
 	displayReminders() {
-		if (!this.getRemindersNew(this.props.receipts) || this.getRemindersNew(this.props.receipts).length == 0) {
+		if (!this.getRemindersNew(this.getFilteredReceipts()) || this.getRemindersNew(this.getFilteredReceipts()).length == 0) {
 			return (
 				<View style={{ flex: 1 }}>
-					<Text style={[styles.titleText, {textAlign: 'center'}]}>No Reminders Available</Text>
+					<Text style={[styles.titleText, { textAlign: 'center' }]}>No Reminders Available</Text>
 				</View>
 			);
 
 		} else {
 
 			return (
-					<FlatList
-						ListHeaderComponent={this.showHeader}
-						extraData={this.state.refresh}
-						data={this.getRemindersNew(this.props.receipts)}
-						renderItem={({ item, index, separators }) => (
-							// <TouchableHighlight
-							// 	onPress={() => this.onPressItem(item)}
-							// 	onShowUnderlay={separators.highlight}
-							// 	onHideUnderlay={separators.unhighlight}>
-								this.getRow(item, index, separators)
-							// </TouchableHighlight>
-						)}
-						keyExtractor={item => `${item.customerId}${item.receipt}`}
-					/>
+				<FlatList
+					ListHeaderComponent={this.showHeader}
+					extraData={this.state.refresh}
+					data={this.getRemindersNew(this.getFilteredReceipts())}
+					renderItem={({ item, index, separators }) => (
+						<TouchableHighlight
+							onPress={() => this.onPressItem(item)}
+							onShowUnderlay={separators.highlight}
+							onHideUnderlay={separators.unhighlight}>
+							{this.getRow(item, index, separators)}
+						</TouchableHighlight>
+					)}
+					keyExtractor={item => `${item.customerId}${item.receipt}`}
+				/>
 			)
 		}
 	}
 
-	subtractDays =(theDate, days) => {
-		 return new Date(theDate.getTime() - days*24*60*60*1000);
-	 }
+	subtractDays = (theDate, days) => {
+		return new Date(theDate.getTime() - days * 24 * 60 * 60 * 1000);
+	}
 
-	getFilteredReceipts(){
-		console.log(new Date(),'jui', this.subtractDays(new Date(),90));
-		return this.props.receipts.filter(receipt =>
-		{	console.log('receipt', moment
-		.tz(new Date(receipt.created_at), moment.tz.guess())
-		.isBetween(new Date(), this.subtractDays(new Date(),90)));
+	getFilteredReceipts() {
+		return this.props.receipts.filter(receipt => {
 			return moment
 				.tz(new Date(receipt.created_at), moment.tz.guess())
-				.isBetween(new Date(), this.subtractDays(new Date(),90))}
+				.isBetween(this.subtractDays(new Date(), 90), new Date())
+		}
 		);
 	}
 
+	isDate(value) {
+		switch (typeof value) {
+			case 'number':
+				return true;
+			case 'string':
+				return !isNaN(Date.parse(value));
+			case 'object':
+				if (value instanceof Date) {
+					return !isNaN(value.getTime());
+				}
+			default:
+				return false;
+		}
+	}
+
+	getCurrentFilteredReceipts() {
+		return this.getRemindersNew(this.getFilteredReceipts()).filter(receipt => {
+			if (this.isDate(receipt.reminder)) {
+				console.log('startDate', moment
+					.tz(new Date(receipt.reminder), moment.tz.guess())
+					.isBetween(this.props.dateFilter.startDate, this.props.dateFilter.endDate));
+				return moment
+					.tz(new Date(receipt.reminder), moment.tz.guess())
+					.isBetween(this.props.dateFilter.startDate, this.props.dateFilter.endDate);
+			}
+		}
+		);
+	}
 
 	render() {
 		console.log(this.props.receipts);
-		console.log('getFilteredReceipts',this.getFilteredReceipts());
-		console.log('getRemindersNew', this.getRemindersNew(this.props.receipts));
-			return (
-				<View style={{ flex: 1, flexDirection: 'column' }}>
-					<View style={{ flex: .15 }}>
-						<DateFilter />
-					</View>
-					<View style={{ flex: .85, backgroundColor: 'white', marginLeft: 10, marginRight: 10 }}>
-						{this.displayReminders()}
-					</View>
+		console.log(this.props.dateFilter);
+		console.log(this.getCurrentFilteredReceipts());
+		console.log('getFilteredReceipts', this.getFilteredReceipts());
+		console.log('getRemindersNew', this.getRemindersNew(this.getFilteredReceipts()));
+		return (
+			<View style={{ flex: 1, flexDirection: 'column' }}>
+				<View style={{ flex: .15 }}>
+					<DateFilter />
 				</View>
-			);
+				<View style={{ flex: .85, backgroundColor: 'white', marginLeft: 10, marginRight: 10 }}>
+					{this.displayReminders()}
+				</View>
+			</View>
+		);
 
 	}
 }
