@@ -70,8 +70,11 @@ class RemindersReport extends Component {
 				<View style={[{ flex: 2 }]}>
 					<Text style={[styles.headerItem]}>Last Purchase Date</Text>
 				</View>
-				<View style={[{ flex: 1.5 }]}>
+				{/* <View style={[{ flex: 1 }]}>
 					<Text style={[styles.headerItem]}>Frequency</Text>
+				</View> */}
+				<View style={[{ flex: 1.5 }]}>
+					<Text style={[styles.headerItem]}>Reminder Date</Text>
 				</View>
 			</View>
 
@@ -126,9 +129,7 @@ class RemindersReport extends Component {
 				avg: Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length))),
 				reminder: this.addDays(new Date(lastDay), Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length)))),
 				dates: groupCustomers(data)[key].map(e => e.created_at),
-				lastPurchaseDate: moment.tz(new Date(lastDay), moment.tz.guess()).format('ddd Do MMM YYYY')
-
-
+				lastPurchaseDate: new Date(lastDay)
 			});
 		}
 		console.log(final);
@@ -143,7 +144,6 @@ class RemindersReport extends Component {
 
 
 	getRow = (item, index, separators) => {
-		// console.log("getRow -index: " + index)
 		let isSelected = false;
 		if (this.props.selectedCustomer && this.props.selectedCustomer.customerId === item.customerId) {
 			console.log("Selected item is " + item.customerId);
@@ -161,10 +161,13 @@ class RemindersReport extends Component {
 					<Text style={[styles.baseItem]}>{item.address}</Text>
 				</View>
 				<View style={{ flex: 2 }}>
-					<Text style={[styles.baseItem]}>{item.lastPurchaseDate}</Text>
+					<Text style={[styles.baseItem]}>{moment.tz(item.lastPurchaseDate, moment.tz.guess()).format('ddd Do MMM YYYY')}</Text>
 				</View>
-				<View style={{ flex: 1.5 }}>
+				{/* <View style={{ flex: 1 }}>
 					<Text style={[styles.baseItem]}>{item.avg}</Text>
+				</View> */}
+				<View style={{ flex: 1.5 }}>
+					<Text style={[styles.baseItem]}>{moment.tz(item.reminder, moment.tz.guess()).format('ddd Do MMM YYYY')}</Text>
 				</View>
 			</View>
 		);

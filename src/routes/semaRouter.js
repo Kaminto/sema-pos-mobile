@@ -358,7 +358,7 @@ const ListCustomerStack = createStackNavigator({
         screen: OrderView,
         navigationOptions: ({ navigation }) => ({
            /// title: 'Order View',
-            title: `${navigation.getParam('customerName')} Order View`,
+            title: `${navigation.getParam('customerName')} Order`,
             headerStyle: {
                 backgroundColor: '#00549C',
             },
@@ -490,7 +490,7 @@ const JibuDrawerNavigation = createDrawerNavigator({
     Inventory: {
         screen: InventoryStack,
         navigationOptions: {
-            drawerLabel: 'Inventory',
+            drawerLabel: 'Wastage Report',
         },
     },
     Reminders: {

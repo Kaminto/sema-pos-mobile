@@ -316,16 +316,16 @@ class OrderCheckout extends Component {
 		return (
 			<View style={[{ flex: 1, flexDirection: 'row' }]}>
 				<View style={{ flex: 1 }}>
-					<Text style={[styles.headerItem]}>Product</Text>
+					<Text style={[styles.headerBtlItem]}>Product</Text>
 				</View>
 				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.headerItem]}>Empties Returned</Text>
+					<Text style={[styles.headerBtlItem]}>Empties Returned</Text>
 				</View>
 				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.headerItem]}>Damaged Bottles</Text>
+					<Text style={[styles.headerBtlItem]}>Damaged Bottles</Text>
 				</View>
 				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.headerItem]}>Pending Bottles</Text>
+					<Text style={[styles.headerBtlItem]}>Pending Bottles</Text>
 				</View>
 			</View>
 
@@ -337,13 +337,13 @@ class OrderCheckout extends Component {
 			return (
 				<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
 					<View style={{ flex: 1, flexDirection: 'row' }}>
-						<Text style={[{ textAlign: 'left' }, styles.baseItem]}>{item.product.description}</Text>
+						<Text style={[{ textAlign: 'left', fontSize: 20, paddingLeft: 10 }, styles.baseItem]}>{item.product.description}</Text>
 					</View>
 					<View style={[{ flex: 1 }]}>
 						<TextInput
 							style={{
 								textAlign: 'center',
-								height: 50,
+								height: 40,
 								fontSize: 20
 							}}
 							keyboardType="number-pad"
@@ -356,7 +356,7 @@ class OrderCheckout extends Component {
 						<TextInput
 							style={{
 								textAlign: 'center',
-								height: 50,
+								height: 40,
 								fontSize: 20
 							}}
 							keyboardType="number-pad"
@@ -369,7 +369,7 @@ class OrderCheckout extends Component {
 						<TextInput
 							style={{
 								textAlign: 'center',
-								height: 50,
+								height: 40,
 								fontSize: 20
 							}}
 							keyboardType="number-pad"
@@ -1154,6 +1154,14 @@ const styles = StyleSheet.create({
 	headerItem: {
 		fontWeight: 'bold',
 		fontSize: 18,
+		color: 'black',
+		paddingTop: 5,
+		paddingBottom: 5,
+	},
+
+	headerBtlItem: {
+		fontWeight: 'bold',
+		fontSize: 16,
 		color: 'black',
 		paddingTop: 5,
 		paddingBottom: 5,
