@@ -49,7 +49,7 @@ class SalesReport extends Component {
 							</View>
 							<View style={{ height: 90, flex: 1, color: '#fff' }} >
 								<Text style={[styles.totalLabel, { flex: .4 }]}>DEBT COLLECTED</Text>
-								<Text style={[styles.totalItem, { flex: .6 }]}>UGX 0</Text>
+								<Text style={[styles.totalItem, { flex: .6 }]}>{Utilities.formatCurrency(this.getTotalDebt())}</Text>
 							</View>
 						</View>
 					</View>
@@ -114,6 +114,14 @@ class SalesReport extends Component {
 	getTotalSales() {
 		if (this.props.salesData.totalSales) {
 			return this.props.salesData.totalSales;
+		} else {
+			return 0;
+		}
+	}
+
+	getTotalDebt() {
+		if (this.props.salesData.totalDebt) {
+			return this.props.salesData.totalDebt;
 		} else {
 			return 0;
 		}
