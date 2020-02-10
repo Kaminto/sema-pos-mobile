@@ -37,7 +37,6 @@ class OrderItems extends Component {
 		};
 	}
 
-
 	render() {
 
 		const state = this.state;
@@ -95,7 +94,135 @@ class OrderItems extends Component {
 							}}
 						/>
 						<View style={{ flex: 1, paddingRight: 20, paddingLeft: 20 }}>
+							{this.qtyAmount()}
+
+							{this.bottlesReturned()}
+
+							<View
+								style={{
+									height: 1,
+									backgroundColor: '#ddd',
+									marginBottom: 10,
+									width: '100%'
+								}}
+							/>
+
 							<View style={{ flex: 1, flexDirection: 'row' }}>
+								<View style={{ flex: 1 }}>
+									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>NOTES</Text>
+								</View>
+							</View>
+
+							<View style={{ flex: 1, flexDirection: 'row' }}>
+								<View style={{ flex: 1, height: 50 }}>
+									{this.notesValue()}
+								</View>
+							</View>
+
+							<View
+								style={{
+									height: 1,
+									backgroundColor: '#ddd',
+									marginBottom: 10,
+									width: '100%'
+								}}
+							/>
+
+							{this.discountCmpt()}
+
+							<View
+								style={{
+									flex: .2,
+									width: 100,
+									marginTop: 10,
+									alignSelf: 'flex-end',
+									flexDirection: 'row',
+									right: 0,
+									bottom: 0
+								}}>
+								<TouchableHighlight style={{ flex: 1 }}
+										onPress={() => this.onCancelOrder()}>
+										<Text style={{ padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#036' }}>SAVE</Text>
+									</TouchableHighlight>
+							</View>
+
+						</View>
+
+					</ScrollView>
+
+				</Modal>
+
+			</View>
+
+		);
+	}
+
+	discountCmpt(){
+		if (this.state.selectedItem.hasOwnProperty('product')) {
+			if (!this.state.selectedItem.product.description.includes('delivery') &&
+			!this.state.selectedItem.product.description.includes('discount')
+			) {
+		return (
+			<View>
+		        	<View style={{ flex: 1, flexDirection: 'row' }}>
+								<View style={{ flex: 1, height: 50 }}>
+									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>DISCOUNTS</Text>
+								</View>
+							</View>
+
+
+							<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
+								<FlatList
+									data={this.props.discounts}
+									extraData={this.state.selectedDiscounts}
+									renderItem={({ item, index, separators }) => (
+										this.discountRows(item, index, separators)
+									)}
+								/>
+							</View>
+
+							<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
+								<View style={{ flex: 1, height: 50 }}>
+									<Text style={[styles.baseItem, {
+										marginLeft: 12, padding: 10
+									}]}>Custom</Text>
+								</View>
+								<View style={{ flex: 1, height: 50 }}>
+									{this.customDiscountValue()}
+								</View>
+							</View>
+							<View
+								style={{
+									height: 1,
+									backgroundColor: '#ddd',
+									width: '100%'
+								}}
+							/>
+							</View>
+						);
+								}
+							}
+	}
+
+	qtyAmount() {
+		if (this.state.selectedItem.hasOwnProperty('product')) {
+		if (this.state.selectedItem.product.description.includes('delivery') ||
+		this.state.selectedItem.product.description.includes('discount')
+		) {
+			return (
+			<View style={{ flex: 1 }}>
+				<View style={{ flex: 1 }}>
+					<Text style={[{ textAlign: 'left' }, styles.baseItem]}>AMOUNT</Text>
+				</View>
+				<View style={{ flex: 1, height: 40, textAlign: 'center' }} >
+					{this.qtyValue()}
+				</View>
+			</View>
+			);
+		} else {
+			return(
+				<View>
+		                    <View style={{ flex: 1, flexDirection: 'row' }}>
 								<View style={{ flex: 1 }}>
 									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>QUANTITY</Text>
 								</View>
@@ -133,101 +260,12 @@ class OrderItems extends Component {
 									</TouchableHighlight>
 								</View>
 							</View>
-
-							{this.bottlesReturned()}
-
-							<View
-								style={{
-									height: 1,
-									backgroundColor: '#ddd',
-									marginBottom: 10,
-									width: '100%'
-								}}
-							/>
-
-							<View style={{ flex: 1, flexDirection: 'row' }}>
-								<View style={{ flex: 1 }}>
-									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>NOTES</Text>
-								</View>
-							</View>
-
-							<View style={{ flex: 1, flexDirection: 'row' }}>
-								<View style={{ flex: 1, height: 50 }}>
-									{this.notesValue()}
-								</View>
-							</View>
-
-							<View
-								style={{
-									height: 1,
-									backgroundColor: '#ddd',
-									marginBottom: 10,
-									width: '100%'
-								}}
-							/>
-
-							<View style={{ flex: 1, flexDirection: 'row' }}>
-								<View style={{ flex: 1, height: 50 }}>
-									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>DISCOUNTS</Text>
-								</View>
-							</View>
-
-
-							<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
-								<FlatList
-									data={this.props.discounts}
-									extraData={this.state.selectedDiscounts}
-									renderItem={({ item, index, separators }) => (
-										this.discountRows(item, index, separators)
-									)}
-								/>
-							</View>
-
-							<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
-								<View style={{ flex: 1, height: 50 }}>
-									<Text style={[styles.baseItem, {
-										marginLeft: 12, padding: 10
-									}]}>Custom</Text>
-								</View>
-								<View style={{ flex: 1, height: 50 }}>
-									{this.customDiscountValue()}
-								</View>
-							</View>
-
-							<View
-								style={{
-									height: 1,
-									backgroundColor: '#ddd',
-									width: '100%'
-								}}
-							/>
-							<View
-								style={{
-									flex: .2,
-									width: 100,
-									marginTop: 10,
-									alignSelf: 'flex-end',
-									flexDirection: 'row',
-									right: 0,
-									bottom: 0
-								}}>
-								<TouchableHighlight style={{ flex: 1 }}
-										onPress={() => this.onCancelOrder()}>
-										<Text style={{ padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#036' }}>SAVE</Text>
-									</TouchableHighlight>
-							</View>
-
 						</View>
-
-					</ScrollView>
-
-				</Modal>
-
-			</View>
-
-		);
+			);
+		}
 	}
 
+}
 
 	getCancelButton() {
 		return (
@@ -476,17 +514,16 @@ class OrderItems extends Component {
 		this.refs.productModel.open();
 	};
 
-
 	getRow = (item) => {
 		return (
 			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
-				<View style={[{ flex: 3 }]}>
+				<View style={[{ flex: 2 }]}>
 					<Text style={[styles.baseItem, styles.leftMargin]}>{item.product.description}</Text>
 				</View>
-				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.baseItem]}>{item.quantity}</Text>
+				<View style={[{ flex: 1.2 }]}>
+					<Text style={[styles.baseItem, {textAlign: 'center'}]}>{item.quantity}</Text>
 				</View>
-				<View style={[{ flex: 1 }]}>
+				<View style={[{ flex: 2 }]}>
 					<Text numberOfLines={1} style={[styles.baseItem]}>
 						{this.getCurrency(item)} {this.getDiscountPrice((item.quantity * this.getItemPrice(item.product)), item)}</Text>
 				</View>
@@ -547,8 +584,6 @@ class OrderItems extends Component {
 
 		this.props.orderActions.AddNotesToProduct(this.state.selectedItem.product, notes, emptiesReturned, refillPending, emptiesDamaged);
 	};
-
-
 
 	setEmptiesDamaged = emptiesDamaged => {
 		let refillPending = '';
@@ -662,7 +697,7 @@ class OrderItems extends Component {
 			})
 		}
 
-		if (Number(value) === 0) {
+		if (Number(value) <= 0) {
 			this.props.orderActions.RemoveProductFromOrder(this.state.selectedItem.product, unitPrice);
 
 		}
@@ -726,7 +761,7 @@ class OrderItems extends Component {
 				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.headerItem]}>{i18n.t('quantity')}</Text>
 				</View>
-				<View style={[{ flex: 1 }]}>
+				<View style={[{ flex: 2 }]}>
 					<Text style={[styles.headerItem]}>{i18n.t('charge')}</Text>
 				</View>
 			</View>
@@ -737,7 +772,7 @@ class OrderItems extends Component {
 		let unitPrice = this.getItemPrice(this.state.selectedItem.product);
 		switch (action) {
 			case 'inc':
-				if (this.state.accumulator === 0) {
+				if (this.state.accumulator <= 0) {
 					this.refs.productModel.close();
 					this.props.orderActions.RemoveProductFromOrder(this.state.selectedItem.product, unitPrice);
 				} else {
@@ -752,7 +787,7 @@ class OrderItems extends Component {
 				}
 				break;
 			case 'dec':
-				if (this.state.accumulator === 0) {
+				if (this.state.accumulator <= 0) {
 					this.refs.productModel.close();
 					this.props.orderActions.RemoveProductFromOrder(this.state.selectedItem.product, unitPrice);
 				} else {
@@ -806,7 +841,6 @@ class OrderItems extends Component {
 	};
 
 }
-
 
 function mapStateToProps(state, props) {
 	return {

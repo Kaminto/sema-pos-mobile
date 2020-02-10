@@ -55,42 +55,42 @@ class SelectedCustomerDetails extends React.Component {
 		return (
 			<>
 			<View style={styles.commandBarContainer}>
-				<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
-					<Text style={styles.selectedCustomerText}>
-						{this.getName()}
-					</Text>
-
-					<Text style={styles.selectedCustomerText}>
-						{this.getPhone()}
-					</Text>
-					{/* <Text style={styles.selectedCustomerText}>
-						{this.getCustomerType()}
-					</Text> */}
-				</View>
-				<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
-					{/* <Text style={styles.selectedCustomerText}>
-					{this.getCreditPurchases()} Credit Purchases
-					</Text> */}
-					<Text style={styles.selectedCustomerText}>
-						Credit Balance: {this.props.topupTotal - this.getCreditPurchases()}
+				<View style={{ flexDirection: 'column', flex: 1.5, height: 100 }}>
+					<Text style={[styles.selectedCustomerText,{fontSize: 18}]}>
+						{this.getName()} . {this.getPhone()}
 					</Text>
 					<View style={styles.completeOrder}>
 						<TouchableHighlight
 							onPress={() => this.props.navigation.navigate('OrderView')}>
 							<Text style={styles.buttonText}>Make Sale</Text>
 						</TouchableHighlight>
+					</View>
+				</View>
+				<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
+					{/* <Text style={styles.selectedCustomerText}>
+					{this.getCreditPurchases()} Credit Purchases
+					</Text> */}
+					<Text style={styles.selectedCustomerText}>
+						Customer Wallet: {this.props.topupTotal - this.getCreditPurchases()}
+					</Text>
+					<View style={styles.completeOrder}>
+						<TouchableHighlight
+							onPress={() => this.props.navigation.navigate('CustomerWallet')}>
+							<Text style={styles.buttonText}>Topup Wallet</Text>
+						</TouchableHighlight>
 						</View>
 					</View>
+
 			    	<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
 					<Text style={styles.selectedCustomerText}>
-						Loan:  {this.props.selectedCustomer.dueAmount}
+						Loan Balance:  {this.props.selectedCustomer.dueAmount}
 					</Text>
 						<View style={styles.completeOrder}>
 							<TouchableHighlight
 								onPress={() => {
 									this.refs.modal6.open();
 								}}>
-								<Text style={styles.buttonText}>Loan Payment</Text>
+								<Text style={styles.buttonText}>Loan Repayment</Text>
 							</TouchableHighlight>
 							</View>
 

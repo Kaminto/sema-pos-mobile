@@ -244,7 +244,7 @@ class TransactionDetail extends Component {
 				<View>
 
 				</View>
-				{/* <View style={styles.receiptStats}>
+				<View style={styles.receiptStats}>
 					{!this.props.item.active && (
 						<Text style={styles.receiptStatusText}>
 							{'Deleted'.toUpperCase()}
@@ -265,7 +265,7 @@ class TransactionDetail extends Component {
 								</Text>
 							</View>
 						)}
-					</View> */}
+					</View>
 				<View>
 					<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>PAYMENT</Text>
 				</View>

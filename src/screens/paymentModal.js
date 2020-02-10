@@ -86,7 +86,7 @@ class PaymentModal extends Component {
 							)}
 						/>
 						<PaymentDescription
-											title={`${i18n.t('available-credit')}:`}
+											title={`${i18n.t('customer-wallet')}:`}
 											total={Utilities.formatCurrency(
 												this.currentCredit()
 											)}

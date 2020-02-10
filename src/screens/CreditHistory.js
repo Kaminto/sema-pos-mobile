@@ -43,7 +43,7 @@ class CreditHistory extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         return true;
-    }
+	}
 
     render() {
         return (
@@ -128,7 +128,7 @@ class CreditHistory extends Component {
                 [{
                     text: 'OK',
                     onPress: () => {
-                        
+
                     }
                 }],
                 { cancelable: false }

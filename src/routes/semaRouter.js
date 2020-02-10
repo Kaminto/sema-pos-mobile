@@ -54,12 +54,13 @@ class NavigationDrawerStructure extends Component {
 
 const CreditHistoryStack = createStackNavigator({
     CreditHistory: {
-        screen: CreditHistory
+		screen: CreditHistory
     },
 },
     {
         headerMode: 'none',
-        initialRouteName: 'CreditHistory',
+		initialRouteName: 'CreditHistory',
+		title: 'Customer Wallet'
     });
 
 const CustomerTransactionStack = createStackNavigator({
@@ -75,12 +76,12 @@ const CustomerTransactionStack = createStackNavigator({
 
 const TabNavigator = createBottomTabNavigator({
     // const TabNavigator = createMaterialTopTabNavigator({
-    Transaction: CustomerTransactionStack,
+    Transactions: CustomerTransactionStack,
     CustomerWallet: CreditHistoryStack
     // ,Debit: DebitHistoryStack
 },
     {
-        initialRouteName: 'Transaction',
+        initialRouteName: 'Transactions',
         headerMode: 'none',
         swipeEnabled: true,
         animationEnabled: true,
@@ -245,8 +246,8 @@ const ListCustomerStack = createStackNavigator({
                         <Input
                             onChangeText={navigation.getParam('searchCustomer')}
                             placeholder={i18n.t('search-placeholder')}
-                            placeholderTextColor='white'
-                            style={{ flex: 1 }}
+							placeholderTextColor='white'
+                            style={{ flex: 1, color: 'white'}}
                         />
                     </View>
 

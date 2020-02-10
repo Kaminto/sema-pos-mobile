@@ -195,7 +195,7 @@ class OrderCheckout extends Component {
 									<View style={{ flex: 1, flexDirection: 'row' }}>
 										{this.getSaleAmount()}
 										<PaymentDescription
-											title={`${i18n.t('available-credit')}:`}
+											title={`${i18n.t('customer-wallet')}:`}
 											total={Utilities.formatCurrency(
 												this.currentCredit()
 											)}
@@ -849,8 +849,8 @@ class OrderCheckout extends Component {
 			if (creditIndex >= 0) {
 				if (this.currentCredit() === 0) {
 					Alert.alert(
-						'No Jibu Credit',
-						'There is no credit in the wallet',
+						'Empty Customer Wallet',
+						"There is no money in the customer's wallet",
 						[{
 							text: 'OK',
 							onPress: () => {
@@ -890,7 +890,7 @@ class OrderCheckout extends Component {
 
 
 			Alert.alert(
-				'Notice',
+				'SEMA',
 				'Payment Made',
 				[{
 					text: 'OK',

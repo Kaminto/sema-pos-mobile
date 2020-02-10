@@ -255,7 +255,7 @@ class CustomerList extends Component {
             return {
                 ...item,
                 salesChannel: this.getCustomerSalesChannel(item).toLowerCase(),
-                searchString: item.name + ' ' + item.phoneNumber,
+                searchString: item.name + ' ' + item.phoneNumber + ' ' + item.address,
                 customerType: this.getCustomerTypes(item).toLowerCase()
             }
         });
