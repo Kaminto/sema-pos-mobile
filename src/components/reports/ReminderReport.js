@@ -123,7 +123,7 @@ class RemindersReport extends Component {
 				phoneNumber: groupCustomers(data)[key][0].customer_account.hasOwnProperty('phone_number') ? groupCustomers(data)[key][0].customer_account.phone_number : 'N/A',
 				address: groupCustomers(data)[key][0].customer_account.hasOwnProperty('address') ? groupCustomers(data)[key][0].customer_account.address : groupCustomers(data)[key][0].customer_account.address_line1,
 				frequency: this.pairwiseDifference(dateArray, dateArray.length),
-				avg: Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length))),
+				avg: Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length))) >= 0 ? Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length))) : 0,
 				reminder: this.addDays(new Date(lastDay), Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length)))),
 				dates: groupCustomers(data)[key].map(e => e.created_at),
 				lastPurchaseDate: moment.tz(new Date(lastDay), moment.tz.guess()).format('ddd Do MMM YYYY')
@@ -233,10 +233,10 @@ class RemindersReport extends Component {
 			if (this.isDate(receipt.reminder)) {
 				console.log('startDate', moment
 					.tz(new Date(receipt.reminder), moment.tz.guess())
-					.isBetween(this.props.dateFilter.startDate, this.props.dateFilter.endDate));
+					.isBetween(new Date(this.props.dateFilter.startDate), new Date(this.props.dateFilter.endDate)));
 				return moment
 					.tz(new Date(receipt.reminder), moment.tz.guess())
-					.isBetween(this.props.dateFilter.startDate, this.props.dateFilter.endDate);
+					.isBetween(new Date(this.props.dateFilter.startDate), new Date(this.props.dateFilter.endDate));
 			}
 		}
 		);
