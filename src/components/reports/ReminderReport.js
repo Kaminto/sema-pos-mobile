@@ -167,11 +167,11 @@ class RemindersReport extends Component {
 				<View style={{ flex: 2 }}>
 					<Text style={[styles.baseItem]}>{moment.tz(item.lastPurchaseDate, moment.tz.guess()).format('ddd Do MMM YYYY')}</Text>
 				</View>
-				<View style={{ flex: 1.5 }}>
+				<View style={{ flex: 1 }}>
 					<Text style={[styles.baseItem]}>{item.frequency}</Text>
 				</View>
 				<View style={{ flex: 1.5 }}>
-					<Text style={[styles.baseItem]}>{moment.tz(new Date(item.reminderDate), moment.tz.guess()).format('YYYY-MM-DD')}</Text>
+					<Text style={[styles.baseItem]}>{moment.tz(item.reminder, moment.tz.guess()).format('YYYY-MM-DD')}</Text>
 				</View>
 				<View style={{ flex: 1.5 }}>
 					<TouchableHighlight
@@ -186,11 +186,6 @@ class RemindersReport extends Component {
 			</View>
 		);
 	};
-
-	// displayNotDispatcheModal(wastageName) {
-	// 	this.setState({ notDispatchedEdit: wastageName });
-	// 	this.setState({ refresh: !this.state.refresh });
-	// }
 
 
 	displayReminders() {
