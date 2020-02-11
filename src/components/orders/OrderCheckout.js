@@ -5,6 +5,7 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as OrderActions from "../../actions/OrderActions";
 import Modal from 'react-native-modalbox';
 import * as CustomerBarActions from '../../actions/CustomerBarActions';
+import * as CustomerReminderActions from '../../actions/CustomerReminderActions';
 import * as CustomerActions from '../../actions/CustomerActions';
 import * as PaymentTypesActions from "../../actions/PaymentTypesActions";
 import * as receiptActions from '../../actions/ReceiptActions';
@@ -21,6 +22,8 @@ import PaymentTypeRealm from '../../database/payment_types/payment_types.operati
 import SettingRealm from '../../database/settings/settings.operations';
 import CustomerRealm from '../../database/customers/customer.operations';
 import OrderRealm from '../../database/orders/orders.operations';
+import CustomerReminderRealm from '../../database/customer-reminder/customer-reminder.operations';
+
 import ReceiptPaymentTypeRealm from '../../database/reciept_payment_types/reciept_payment_types.operations';
 import * as Utilities from "../../services/Utilities";
 import moment from 'moment-timezone';
@@ -860,7 +863,6 @@ class OrderCheckout extends Component {
 					);
 					return;
 				}
-
 			}
 
 			receipt.customer_account = this.props.selectedCustomer;
@@ -874,6 +876,12 @@ class OrderCheckout extends Component {
 			OrderRealm.createOrder(receipt);
 			this.props.receiptActions.setReceipts(
 				OrderRealm.getAllOrder()
+			);
+
+
+			this.saveCustomerFrequency(OrderRealm.getAllOrder().filter(r => r.customer_account_id === this.props.selectedCustomer.customerId));
+			this.props.customerReminderActions.setCustomerReminders(
+				CustomerReminderRealm.getCustomerReminders()
 			);
 
 			const rpIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("loan");
@@ -907,6 +915,68 @@ class OrderCheckout extends Component {
 		}
 		return true;
 	};
+
+	datediff = (date1, date2) => {
+		date1 = new Date(date1);
+		date2 = new Date(date2);
+		const diffTime = Math.abs(date2 - date1);
+		return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+	};
+
+	groupBy = key => array =>
+		array.reduce((objectsByKeyValue, obj) => {
+			const value = obj[key];
+			objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
+			return objectsByKeyValue;
+		}, {});
+
+
+	pairwiseDifference = (arr, n) => {
+		let diff = 0,
+			arrCalc = [];
+		for (let i = 0; i < n - 1; i++) {
+			diff = this.datediff(arr[i], arr[i + 1]);
+			arrCalc.push(diff);
+		}
+		return arrCalc;
+	};
+
+	addDays = (theDate, days) => {
+		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
+	}
+
+	getRemindersNew = (data) => {
+		const groupCustomers = this.groupBy("customer_account_id");
+		groupCustomers(data);
+
+		let final = [];
+		for (let key of Object.keys(groupCustomers(data))) {
+			let dateArray = groupCustomers(data)[key].map(e => e.created_at);
+			const arrAvg = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
+			const dateLength = groupCustomers(data)[key].map(e => e.created_at).length - 1;
+			const lastDay = groupCustomers(data)[key].map(e => e.created_at)[dateLength];
+			final.push({
+				customer_account_id: key,
+				name: groupCustomers(data)[key][0].customer_account.name,
+				phoneNumber: groupCustomers(data)[key][0].customer_account.hasOwnProperty('phone_number') ? groupCustomers(data)[key][0].customer_account.phone_number : 'N/A',
+				address: groupCustomers(data)[key][0].customer_account.hasOwnProperty('address') ? groupCustomers(data)[key][0].customer_account.address : groupCustomers(data)[key][0].customer_account.address_line1,
+				frequency: this.pairwiseDifference(dateArray, dateArray.length),
+				avg: Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length))) >= 0 ? Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length))) : 0,
+				reminder: this.addDays(new Date(lastDay), Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length)))),
+				dates: groupCustomers(data)[key].map(e => e.created_at),
+				lastPurchaseDate: new Date(lastDay)
+			});
+		}
+			return final;
+	}
+
+
+	saveCustomerFrequency(receipts) {
+		CustomerReminderRealm.createCustomerReminder(this.getRemindersNew(receipts)[0])
+	}
+
+	
+
 
 	closePaymentModal = () => {
 		this.refs.modal6.close();
@@ -1071,6 +1141,7 @@ function mapDispatchToProps(dispatch) {
 		customerActions: bindActionCreators(CustomerActions, dispatch),
 		paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch),
 		topUpActions: bindActionCreators(TopUpActions, dispatch),
+		customerReminderActions: bindActionCreators(CustomerReminderActions, dispatch),
 	};
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OrderCheckout);
