@@ -8,7 +8,7 @@ import {
 	FlatList,
 	Image
 } from 'react-native';
- 
+
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from 'prop-types';
@@ -78,7 +78,7 @@ class QuantityChanger extends Component {
 
 
 	render() {
-	 
+
 		const state = this.state;
 		return (
 			<View style={{ flex: 1 }}>
@@ -90,7 +90,7 @@ class QuantityChanger extends Component {
 				}}>
 					<View style={[styles.leftToolbar
 					]}>
-						
+
 						<TouchableHighlight onPress={() => this.onCancelEdit()}>
 							<Image
 								source={require('../../images/icons8-cancel-50.png')}
@@ -105,7 +105,7 @@ class QuantityChanger extends Component {
 				<View style={{ flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' }}>
 					<Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
 						<Row data={state.tableHead} style={{ height: 40, backgroundColor: '#f1f8ff' }} textStyle={{ margin: 6 }} />
-						
+
 						<Rows data={state.tableData} textStyle={{ margin: 6 }} />
 					</Table>
 				</View>
@@ -114,8 +114,6 @@ class QuantityChanger extends Component {
 			</View>
 		);
 	}
-
-
 
 	showHeader = () => {
 		console.log('Displaying header');

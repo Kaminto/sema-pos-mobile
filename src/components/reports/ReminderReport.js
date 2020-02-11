@@ -70,8 +70,11 @@ class RemindersReport extends Component {
 				<View style={[{ flex: 2 }]}>
 					<Text style={[styles.headerItem]}>Last Purchase Date</Text>
 				</View>
-				<View style={[{ flex: 1.5 }]}>
+				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.headerItem]}>Frequency</Text>
+				</View>
+				<View style={[{ flex: 1.5 }]}>
+					<Text style={[styles.headerItem]}>Reminder Date</Text>
 				</View>
 				<View style={[{ flex: 1.5 }]}>
 					<Text style={[styles.headerItem]}>Custom Reminder</Text>
@@ -128,7 +131,7 @@ class RemindersReport extends Component {
 				avg: Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length))) >= 0 ? Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length))) : 0,
 				reminder: this.addDays(new Date(lastDay), Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length)))),
 				dates: groupCustomers(data)[key].map(e => e.created_at),
-				lastPurchaseDate: moment.tz(new Date(lastDay), moment.tz.guess()).format('ddd Do MMM YYYY')
+				lastPurchaseDate: new Date(lastDay)
 			});
 		}
 		console.log(final);
@@ -140,7 +143,6 @@ class RemindersReport extends Component {
 
 
 	getRow = (item, index, separators) => {
-		// console.log("getRow -index: " + index)
 		let isSelected = false;
 		if (this.props.selectedCustomer && this.props.selectedCustomer.customerId === item.customerId) {
 			console.log("Selected item is " + item.customerId);
@@ -158,10 +160,13 @@ class RemindersReport extends Component {
 					<Text style={[styles.baseItem]}>{item.address}</Text>
 				</View>
 				<View style={{ flex: 2 }}>
-					<Text style={[styles.baseItem]}>{item.lastPurchaseDate}</Text>
+					<Text style={[styles.baseItem]}>{moment.tz(item.lastPurchaseDate, moment.tz.guess()).format('ddd Do MMM YYYY')}</Text>
 				</View>
 				<View style={{ flex: 1.5 }}>
 					<Text style={[styles.baseItem]}>{item.frequency}</Text>
+				</View>
+				<View style={{ flex: 1.5 }}>
+					<Text style={[styles.baseItem]}>{moment.tz(new Date(item.reminderDate), moment.tz.guess()).format('YYYY-MM-DD')}</Text>
 				</View>
 				<View style={{ flex: 1.5 }}>
 					<TouchableHighlight
@@ -222,11 +227,11 @@ class RemindersReport extends Component {
 	closeModal = () => {
         this.refs.customModal.close();
 	};
-	
+
 	modalClosed() {
 
 	}
-	
+
 	openModal = () => {
 		this.setState({ selectedReminder: item });
         this.refs.customModal.open();

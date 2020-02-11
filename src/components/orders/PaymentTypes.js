@@ -8,7 +8,7 @@ import {
 	FlatList,
 	Image
 } from 'react-native';
- 
+
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from 'prop-types';
@@ -34,7 +34,7 @@ class PaymentTypes extends Component {
                 ['', 'Cash', 'Enable Input Field if option is selected'],
                 ['', 'Loan', 'Enable Input Field if option is selected'],
                 ['', 'Mobile', 'Enable Input Field if option is selected'],
-                ['', 'Jibu Credit', 'Enable Input Field if option is selected'],
+                ['', 'Wallet', 'Enable Input Field if option is selected'],
                 ['', 'Cheque', 'Enable Input Field if option is selected'],
                 ['', 'Bank Transfer', 'Enable Input Field if option is selected'],
 			]
@@ -74,7 +74,7 @@ class PaymentTypes extends Component {
 
 
 	render() {
-	 
+
 		const state = this.state;
 		return (
 			<View style={{ flex: 1 }}>
@@ -86,7 +86,7 @@ class PaymentTypes extends Component {
 				}}>
 					<View style={[styles.leftToolbar
 					]}>
-						
+
 						<TouchableHighlight onPress={() => this.onCancelEdit()}>
 							<Image
 								source={require('../../images/icons8-cancel-50.png')}
@@ -95,12 +95,11 @@ class PaymentTypes extends Component {
 						</TouchableHighlight>
 					</View>
 
-
 				</View>
 
 				<View style={{ flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' }}>
 					<Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
-						 
+
 						<Rows data={state.tableData} textStyle={{ margin: 6 }} />
 					</Table>
 				</View>

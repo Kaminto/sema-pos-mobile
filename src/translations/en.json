@@ -94,9 +94,10 @@
   "cheque": "Cheque",
   "bank-transfer": "Bank Transfer",
   "sale-amount-due": "Sale Amount Due",
-  "previous-amount-due": "Outstanding Debt",
+  "previous-amount-due": "Loan Balance",
   "total-amount-due": "Total Amount Due",
   "available-credit": "Available Credit",
+  "customer-wallet": "Customer Wallet",
   "complete-sale": "Complete Sale",
   "processing-order": "Processing order...",
 
@@ -113,7 +114,7 @@
   "total-liters": "Total Liters",
   "price-per-sku": "Price/SKU",
   "total-sales": "Total Sales",
-  "payoff":"Loan Settlement",
+  "payoff":"Loan Repayment",
 
   "make-payment": "Make Payment",
   "clear-loan": "Clear Loan",
