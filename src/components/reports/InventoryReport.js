@@ -31,10 +31,10 @@ class InventoryEdit extends Component {
 				<View style={{ justifyContent: 'center', alignItems: 'center' }}>
 
 					<View style={[styles.editInventory]}>
-						<View style={{ marginTop: 5 }}>
-							<Text style={{ fontSize: 28, fontWeight: 'bold' }}>{i18n.t('inventory')}</Text>
+						<View>
+							<Text style={{ fontSize: 24, fontWeight: 'bold' }}>{this.props.headerTitle}</Text>
 						</View>
-						<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
+						<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 10 }}>
 							<Text style={{ fontSize: 18, fontWeight: 'bold', flex: .7, paddingLeft: 20 }}>{this.props.title}</Text>
 							<TextInput
 								reference='quantityInput'
@@ -50,7 +50,7 @@ class InventoryEdit extends Component {
 
 							</TextInput>
 						</View>
-						<View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
+						<View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
 							<View style={{ backgroundColor: "#2858a7", borderRadius: 10, flex: .3 }}>
 								<TouchableHighlight underlayColor='#c0c0c0' onPress={() => this.props.okMethod(this.props.wastageName, this.state.inventoryQuantity)}>
 									<Text style={styles.buttonText}>{i18n.t('ok')}</Text>
@@ -153,6 +153,7 @@ class InventoryReport extends Component {
 									type="currentMeter"
 									visible={this.state.currentMeterVisible}
 									wastageName={""}
+									headerTitle="Closing Meter"
 									title="Closing Meter"
 									quantity={this.getInventoryCurrentMeterForEdit()}
 									cancelMethod={this.onCancelCurrentMeter.bind(this)}
@@ -274,6 +275,7 @@ class InventoryReport extends Component {
 					type="wastageName"
 					skuToShow={this.state.currentSkuEdit}
 					wastageName={item.wastageName}
+					headerTitle="Closing Stock"
 					title={item.wastageName}
 					quantity={this.getInventorySkuForEdit(true, item)}
 					cancelMethod={this.onCancelEditCurrentSku.bind(this)}
@@ -284,7 +286,8 @@ class InventoryReport extends Component {
 					type="wastageName"
 					skuToShow={this.state.notDispatchedEdit}
 					wastageName={item.wastageName}
-					title={`${item.wastageName} Not Dispatched`}
+					title={item.wastageName}
+					headerTitle="Not Dispatched"
 					quantity={this.getNotDispatchedEdit(true, item)}
 					cancelMethod={this.onCancelNotDispatchedEdit.bind(this)}
 					okMethod={this.onOkNotDispatchedEdit.bind(this)}>

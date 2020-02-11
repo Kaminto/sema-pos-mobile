@@ -247,7 +247,7 @@ const ListCustomerStack = createStackNavigator({
                             onChangeText={navigation.getParam('searchCustomer')}
                             placeholder={i18n.t('search-placeholder')}
 							placeholderTextColor='white'
-                            style={{ flex: 1, color: 'white'}}
+							inputStyle={{ flex: .8, color: 'white'}}
                         />
                     </View>
 
