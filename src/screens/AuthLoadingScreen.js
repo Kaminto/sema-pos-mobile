@@ -19,6 +19,7 @@ import * as ProductActions from '../actions/ProductActions';
 import * as receiptActions from '../actions/ReceiptActions';
 import * as discountActions from '../actions/DiscountActions';
 import * as paymentTypesActions from '../actions/PaymentTypesActions';
+import * as CustomerReminderActions from '../actions/CustomerReminderActions';
 
 import PosStorage from '../database/PosStorage';
 import CreditRealm from '../database/credit/credit.operations';
@@ -28,6 +29,8 @@ import SettingRealm from '../database/settings/settings.operations';
 import ProductsRealm from '../database/products/product.operations';
 import OrderRealm from '../database/orders/orders.operations';
 import DiscountRealm from '../database/discount/discount.operations';
+
+import CustomerReminderRealm from '../database/customer-reminder/customer-reminder.operations';
 
 import Synchronization from '../services/Synchronization';
 
@@ -120,6 +123,11 @@ class AuthLoadingScreen extends React.Component {
             ReceiptPaymentTypeRealm.getReceiptPaymentTypes()
         );
 
+        this.props.customerReminderActions.setCustomerReminders(
+            CustomerReminderRealm.getCustomerReminders()
+        );
+        
+
         console.log('getCustomerDebts', CustomerDebtRealm.getCustomerDebts());
 
         this.props.paymentTypesActions.setCustomerPaidDebt(
@@ -176,6 +184,7 @@ function mapDispatchToProps(dispatch) {
         receiptActions: bindActionCreators(receiptActions, dispatch),
         discountActions: bindActionCreators(discountActions, dispatch),
         paymentTypesActions: bindActionCreators(paymentTypesActions, dispatch),
+        customerReminderActions: bindActionCreators(CustomerReminderActions, dispatch),
     };
 }
 
