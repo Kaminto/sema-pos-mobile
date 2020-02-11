@@ -36,7 +36,7 @@ class OrderCheckout extends Component {
 
 	constructor(props) {
 		super(props);
-		slowlog(this, /.*/);
+		// slowlog(this, /.*/);
 		this.saleSuccess = false;
 		this.state = {
 			isWalkIn: true,

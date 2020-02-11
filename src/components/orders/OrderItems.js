@@ -24,7 +24,7 @@ const inputFontHeight = Math.round((24 * height) / 752);
 class OrderItems extends Component {
 	constructor(props) {
 		super(props);
-		slowlog(this, /.*/);
+		// slowlog(this, /.*/);
 		this.state = {
 			selectedItem: {},
 			accumulator: 0,
@@ -480,7 +480,7 @@ class OrderItems extends Component {
 				}}
 				onChangeText={this.customDiscount}
 				value={(customValue)}
-				keyboardType="numeric"
+				keyboardType="number-pad"
 				underlineColorAndroid="transparent"
 				placeholder="Custom Discount"
 			/>
