@@ -8,8 +8,9 @@ import * as customerBarActions from "../../actions/CustomerBarActions";
 import * as toolBarActions from "../../actions/ToolBarActions";
 import * as orderActions from "../../actions/OrderActions";
 import * as reminderActions from "../../actions/ReminderActions.js";
-
+import Modal from 'react-native-modalbox';
 import DateFilter from './DateFilter';
+import SetCustomReminderDate from './SetCustomRemiderDate';
 import Events from 'react-native-simple-events';
 import moment from 'moment-timezone';
 import i18n from '../../app/i18n';
@@ -73,6 +74,9 @@ class RemindersReport extends Component {
 				<View style={[{ flex: 1.5 }]}>
 					<Text style={[styles.headerItem]}>Frequency</Text>
 				</View>
+				<View style={[{ flex: 1.5 }]}>
+					<Text style={[styles.headerItem]}>Custom Reminder</Text>
+				</View>
 			</View>
 
 		);
@@ -127,8 +131,6 @@ class RemindersReport extends Component {
 				reminder: this.addDays(new Date(lastDay), Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length)))),
 				dates: groupCustomers(data)[key].map(e => e.created_at),
 				lastPurchaseDate: moment.tz(new Date(lastDay), moment.tz.guess()).format('ddd Do MMM YYYY')
-
-
 			});
 		}
 		console.log(final);
@@ -164,11 +166,26 @@ class RemindersReport extends Component {
 					<Text style={[styles.baseItem]}>{item.lastPurchaseDate}</Text>
 				</View>
 				<View style={{ flex: 1.5 }}>
-					<Text style={[styles.baseItem]}>{item.avg}</Text>
+					<Text style={[styles.baseItem]}>{item.frequency}</Text>
+				</View>
+				<View style={{ flex: 1.5 }}>
+					<TouchableHighlight
+						style={styles.currentInventory}
+						onPress={() => this.openModal()}
+						underlayColor='#18376A'>
+						<Text style={[styles.currentInventoryText, { padding: 5 }]}>
+							{item.customReminderDate ? moment.tz(new Date(item.customReminderDate), moment.tz.guess()).format('YYYY-MM-DD') : 'N/A'}
+						</Text>
+					</TouchableHighlight>
 				</View>
 			</View>
 		);
 	};
+
+	// displayNotDispatcheModal(wastageName) {
+	// 	this.setState({ notDispatchedEdit: wastageName });
+	// 	this.setState({ refresh: !this.state.refresh });
+	// }
 
 
 	displayReminders() {
@@ -182,10 +199,10 @@ class RemindersReport extends Component {
 		} else {
 
 			return (
-				<FlatList
+				<><FlatList
 					ListHeaderComponent={this.showHeader}
 					extraData={this.state.refresh}
-					data={this.getRemindersNew(this.getFilteredReceipts())}
+					data={this.props.customerReminder}
 					renderItem={({ item, index, separators }) => (
 						<TouchableHighlight
 							onPress={() => this.onPressItem(item)}
@@ -196,9 +213,30 @@ class RemindersReport extends Component {
 					)}
 					keyExtractor={item => `${item.customerId}${item.receipt}`}
 				/>
+					<Modal
+						style={[styles.modal, styles.modal3]}
+						coverScreen={true}
+						position={"center"} ref={"customModal"}
+						onClosed={() => this.modalClosed()}
+						isDisabled={this.state.isDisabled}>
+						<SetCustomReminderDate closeModal={this.closeModal} />
+					</Modal></>
 			)
 		}
 	}
+
+	closeModal = () => {
+        this.refs.customModal.close();
+	};
+	
+	modalClosed() {
+
+	}
+	
+	openModal = () => {
+        this.refs.customModal.open();
+    }
+
 
 	subtractDays = (theDate, days) => {
 		return new Date(theDate.getTime() - days * 24 * 60 * 60 * 1000);
@@ -243,7 +281,7 @@ class RemindersReport extends Component {
 	}
 
 	render() {
-		console.log(this.props.receipts);
+		console.log('customerReminder', this.props.customerReminder);
 		console.log(this.props.dateFilter);
 		console.log(this.getCurrentFilteredReceipts());
 		console.log('getFilteredReceipts', this.getFilteredReceipts());
@@ -272,7 +310,7 @@ function mapStateToProps(state, props) {
 		products: state.productReducer.products,
 		dateFilter: state.reportReducer.dateFilter,
 		receipts: state.receiptReducer.receipts,
-
+		customerReminder: state.customerReminderReducer.customerReminder,
 	};
 }
 
@@ -322,7 +360,32 @@ const styles = StyleSheet.create({
 		borderRightWidth: 1,
 		textAlign: 'center'
 	},
-
+	modalPayment: {
+        backgroundColor: 'white',
+    },
+    modal3: {
+        width: '70%',
+        height: 400,
+    },
+    modal: {
+        justifyContent: 'center',
+    },
+	currentInventory: {
+		marginRight: 2,
+		marginLeft: 2,
+		// marginTop:2,
+		// paddingTop:2,
+		// paddingBottom:2,
+		backgroundColor: '#2858a7',
+		borderRadius: 5,
+		borderWidth: 1,
+		borderColor: '#fff'
+	},
+	currentInventoryText: {
+		fontSize: 16,
+		color: '#fff',
+		textAlign: 'center',
+	},
 	rowBackground: {
 		backgroundColor: 'white'
 	},
