@@ -141,7 +141,7 @@ class RemindersReport extends Component {
 				<View style={{ flex: 2 }}>
 					<Text style={[styles.baseItem]}>{moment.tz(item.lastPurchaseDate, moment.tz.guess()).format('ddd Do MMM YYYY')}</Text>
 				</View>
-				<View style={{ flex: 1.5 }}>
+				<View style={{ flex: 1 }}>
 					<Text style={[styles.baseItem]}>{item.frequency}</Text>
 				</View>
 				<View style={{ flex: 1.5 }}>
