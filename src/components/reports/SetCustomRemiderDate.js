@@ -39,7 +39,8 @@ class SetCustomReminderDate extends Component {
 			selectedPaymentTypes: [],
             selectedType: {},
             isDateTimePickerVisible: false,
-			checkedType: {},
+            checkedType: {},
+            customReminderDate: new Date(),
 		};
 	}
 
@@ -63,7 +64,7 @@ class SetCustomReminderDate extends Component {
 		var aftergmt = datestr.slice(-14);
 		var datestring = datestr.substring(0, 22) + randomnumstr + " " + aftergmt;
 
-		this.setState({ receiptDate: new Date(datestring) });
+		this.setState({ customReminderDate: new Date(datestring) });
 		this.hideDateTimePicker();
 	};
 
@@ -75,6 +76,7 @@ class SetCustomReminderDate extends Component {
 	};
 
 	render() {
+        console.log('selectedReminder',this.props.selectedReminder);
 		const state = this.state;
 		return (
 			// <View style={styles.modal3}>
@@ -87,7 +89,7 @@ class SetCustomReminderDate extends Component {
 						}}>
 						<View style={{ flex: 1, flexDirection: 'row' }}>
 							<View style={{ flex: 1, height: 50 }}>
-								<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Set Custom Reminder</Text>
+								<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Custom Reminder</Text>
 
 							</View>
 							<View
@@ -107,11 +109,11 @@ class SetCustomReminderDate extends Component {
 					}}>
 					<Button
 						style={{ flex: 1 }}
-						title="Change Receipt Date"
+						title="Set Custom Reminder Date"
 						onPress={this.showDateTimePicker}
 					/>
 					<DateTimePicker
-						maximumDate={new Date()}
+						minimumDate={new Date()}
 						isVisible={this.state.isDateTimePickerVisible}
 						onConfirm={this.handleDatePicked}
 						onCancel={this.hideDateTimePicker}
@@ -129,7 +131,7 @@ class SetCustomReminderDate extends Component {
 											{ paddingTop: 20, paddingBottom: 20 },
 											styles.buttonText
 										]}>
-										{i18n.t('clear-loan')}
+										{i18n.t('set-reminder')}
 									</Text>
 								</TouchableHighlight>
 							</View>

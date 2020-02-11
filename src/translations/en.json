@@ -117,6 +117,7 @@
 
   "make-payment": "Make Payment",
   "clear-loan": "Clear Loan",
+  "set-reminder": "SET",
   "topup": "Top Up",
   "topup-placeholder": "Top Up",
   "previous": "Previous",

@@ -19,14 +19,14 @@ class RemindersReport extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			refresh: false
+			refresh: false,
+			selectedReminder: {}
 		};
 		this.reminderDate = null;
 	}
 	componentDidMount() {
 
 		this.props.reportActions.getRemindersReport(this.props.dateFilter.currentDate);
-		this.onPressItem.bind(this);
 	}
 
 	getReminders(filterDate) {
@@ -56,7 +56,6 @@ class RemindersReport extends Component {
 
 
 	showHeader = () => {
-
 		return (
 			<View style={[{ flex: 1, flexDirection: 'row', height: 50, alignSelf: 'center' }, styles.headerBackground]}>
 				<View style={[{ flex: 2 }]}>
@@ -78,7 +77,6 @@ class RemindersReport extends Component {
 					<Text style={[styles.headerItem]}>Custom Reminder</Text>
 				</View>
 			</View>
-
 		);
 	};
 
@@ -139,9 +137,6 @@ class RemindersReport extends Component {
 		return final;
 	}
 
-	onPressItem = (item) => {
-
-	};
 
 
 	getRow = (item, index, separators) => {
@@ -171,7 +166,7 @@ class RemindersReport extends Component {
 				<View style={{ flex: 1.5 }}>
 					<TouchableHighlight
 						style={styles.currentInventory}
-						onPress={() => this.openModal()}
+						onPress={() => this.openModal(item)}
 						underlayColor='#18376A'>
 						<Text style={[styles.currentInventoryText, { padding: 5 }]}>
 							{item.customReminderDate ? moment.tz(new Date(item.customReminderDate), moment.tz.guess()).format('YYYY-MM-DD') : 'N/A'}
@@ -205,7 +200,6 @@ class RemindersReport extends Component {
 					data={this.props.customerReminder}
 					renderItem={({ item, index, separators }) => (
 						<TouchableHighlight
-							onPress={() => this.onPressItem(item)}
 							onShowUnderlay={separators.highlight}
 							onHideUnderlay={separators.unhighlight}>
 							{this.getRow(item, index, separators)}
@@ -219,7 +213,7 @@ class RemindersReport extends Component {
 						position={"center"} ref={"customModal"}
 						onClosed={() => this.modalClosed()}
 						isDisabled={this.state.isDisabled}>
-						<SetCustomReminderDate closeModal={this.closeModal} />
+						<SetCustomReminderDate closeModal={this.closeModal} selectedReminder={this.props.selectedReminder} />
 					</Modal></>
 			)
 		}
@@ -234,6 +228,7 @@ class RemindersReport extends Component {
 	}
 	
 	openModal = () => {
+		this.setState({ selectedReminder: item });
         this.refs.customModal.open();
     }
 
