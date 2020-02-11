@@ -27,10 +27,10 @@ export function GetSalesReportData(beginDate, endDate) {
 				);
 				console.log('filteredDebt', filteredDebt);
 				console.log('filteredDebt-', filteredDebt.reduce((total, item) => { return (total + item.due_amount) }, 0));
-console.log('salesData',salesData)
+				console.log('salesData', salesData)
 				dispatch({
 					type: SALES_REPORT_FROM_ORDERS,
-					data: { salesData: {...salesData, totalDebt: filteredDebt.reduce((total, item) => { return (total + item.due_amount) }, 0)} }
+					data: { salesData: { ...salesData, totalDebt: filteredDebt.reduce((total, item) => { return (total + item.due_amount) }, 0) } }
 				});
 			})
 			.catch(error => {
@@ -63,17 +63,8 @@ export function setReportFilter(startDate, endDate) {
 const getSalesData = (beginDate, endDate) => {
 	return new Promise(async (resolve, reject) => {
 		const loggedReceipts = OrderRealm.getAllOrder();
-		const customerDebts = CustomerDebtRealm.getCustomerDebts();
 		console.log('beginDate-', beginDate, 'endDate-', endDate);
 		console.log('loggedReceipts', loggedReceipts);
-		console.log('customerDebts', customerDebts);
-		const filteredDebt = customerDebts.filter(debt =>
-			moment
-				.tz(new Date(debt.created_at), moment.tz.guess())
-				.isBetween(beginDate, endDate)
-		);
-		console.log('filteredDebt', filteredDebt);
-		console.log('filteredDebt-', filteredDebt.reduce((total, item) => { return (total + item.due_amount) }, 0));
 		const filteredReceipts = loggedReceipts.filter(receipt =>
 			moment
 				.tz(new Date(receipt.created_at), moment.tz.guess())
@@ -177,14 +168,11 @@ const getSalesData = (beginDate, endDate) => {
 					Number(lineItem.litersPerSku) *
 					Number(lineItem.quantity);
 				final.totalSales += parseFloat(lineItem.price_total);
-				//final.totalDebt =  filteredDebt.reduce((total, item) => { return (total + item.due_amount) }, 0);
-
 				return final;
 			},
 			{
 				totalLiters: 0,
 				totalSales: 0,
-				totalDebt: 0,
 				salesItems: [],
 				mapping: new Map()
 			}

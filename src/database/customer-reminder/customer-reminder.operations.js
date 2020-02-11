@@ -49,13 +49,13 @@ class CustomerReminderRealm {
                 console.log('customerReminderObj', customerReminderObj);
                 if (customerReminderObj.length > 0) {
                     let customerReminderUpdateObj = realm.objects('CustomerReminder').filtered(`customer_account_id = "${customerReminder.customer_account_id}"`);
-               
+
                     console.log('treminder existsp');
                     customerReminderUpdateObj[0].frequency = customerReminder.avg;
                     customerReminderUpdateObj[0].phoneNumber = customerReminder.phoneNumber,
-                    customerReminderUpdateObj[0].address = customerReminder.address,
-                    customerReminderUpdateObj[0].name = customerReminder.name,
-                    customerReminderUpdateObj[0].reminder_date = new Date(customerReminder.reminder);
+                        customerReminderUpdateObj[0].address = customerReminder.address,
+                        customerReminderUpdateObj[0].name = customerReminder.name,
+                        customerReminderUpdateObj[0].reminder_date = new Date(customerReminder.reminder);
                     customerReminderUpdateObj[0].lastPurchaseDate = new Date(customerReminder.lastPurchaseDate);
                     customerReminderUpdateObj[0].syncAction = 'UPDATE';
                     customerReminderUpdateObj[0].updated_at = new Date();
@@ -78,6 +78,23 @@ class CustomerReminderRealm {
                     realm.create('CustomerReminder', ObjSave);
                 }
                 // realm.create('CustomerReminder', customerReminder);
+            });
+        } catch (e) {
+            console.log("Error on creation", e);
+        }
+    }
+
+    setCustomReminder(customer_account_id, customReminderDate) {
+        console.log('customerReminder-', customReminderDate);
+        try {
+            realm.write(() => {
+                let customerReminderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerReminder').filtered(`customer_account_id = "${customer_account_id}"`))));
+                if (customerReminderObj.length > 0) {
+                    let customerReminderUpdateObj = realm.objects('CustomerReminder').filtered(`customer_account_id = "${customer_account_id}"`);
+                    customerReminderUpdateObj[0].customReminderDate = customReminderDate;
+                    customerReminderUpdateObj[0].syncAction = 'UPDATE';
+                    customerReminderUpdateObj[0].updated_at = new Date();
+                }
             });
         } catch (e) {
             console.log("Error on creation", e);

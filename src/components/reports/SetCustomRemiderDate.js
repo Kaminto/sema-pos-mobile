@@ -434,68 +434,70 @@ class SetCustomReminderDate extends Component {
 	};
 
 	clearLoan = () => {
-		const creditIndex = this.props.selectedDebtPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
-		console.log('creditIndex', creditIndex);
-		if (creditIndex >= 0) {
-			if (Number(this.props.selectedDebtPaymentTypes[creditIndex].amount) > Number(this.props.selectedCustomer.dueAmount)) {
-				Alert.alert(
-					i18n.t('credit-due-amount-title'),
-					i18n.t('credit-due-amount-text') +
-					this.props.selectedCustomer.dueAmount,
-					[
-						{
-							text: 'OK',
-							onPress: () => console.log('OK Pressed')
-						}
-					],
-					{ cancelable: false }
-				);
-				return;
-			}
-		}
+		console.log(this.state.customReminderDate);
+		console.log(this.props.selectedReminder);
+		// const creditIndex = this.props.selectedDebtPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
+		// console.log('creditIndex', creditIndex);
+		// if (creditIndex >= 0) {
+		// 	if (Number(this.props.selectedDebtPaymentTypes[creditIndex].amount) > Number(this.props.selectedCustomer.dueAmount)) {
+		// 		Alert.alert(
+		// 			i18n.t('credit-due-amount-title'),
+		// 			i18n.t('credit-due-amount-text') +
+		// 			this.props.selectedCustomer.dueAmount,
+		// 			[
+		// 				{
+		// 					text: 'OK',
+		// 					onPress: () => console.log('OK Pressed')
+		// 				}
+		// 			],
+		// 			{ cancelable: false }
+		// 		);
+		// 		return;
+		// 	}
+		// }
 
-		console.log(this.props.selectedDebtPaymentTypes.length);
-		if (this.props.selectedDebtPaymentTypes.length > 0) {
-			CustomerDebtRealm.createManyCustomerDebt(this.props.selectedDebtPaymentTypes, this.props.selectedCustomer.customerId);
-			this.props.paymentTypesActions.setCustomerPaidDebt(
-				CustomerDebtRealm.getCustomerDebts()
-			);
-		}
+		// console.log(this.props.selectedDebtPaymentTypes.length);
+		// if (this.props.selectedDebtPaymentTypes.length > 0) {
+		// 	CustomerDebtRealm.createManyCustomerDebt(this.props.selectedDebtPaymentTypes, this.props.selectedCustomer.customerId);
+		// 	this.props.paymentTypesActions.setCustomerPaidDebt(
+		// 		CustomerDebtRealm.getCustomerDebts()
+		// 	);
+		// }
 
-		if (this.props.selectedDebtPaymentTypes.length >= 0) {
-			console.log('selectedDebtPaymentTypes', this.props.selectedDebtPaymentTypes)
-			let amountPaid = this.props.selectedDebtPaymentTypes.reduce((total, item) => {
-				console.log('amount Paid', item.amount);
-				return (total + item.amount);
-			}, 0)
-			console.log('amount Paid', amountPaid);
-			if (amountPaid >= 0) {
-				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - Number(amountPaid);
-				CustomerRealm.updateCustomerDueAmount(
-					this.props.selectedCustomer,
-					this.props.selectedCustomer.dueAmount
-				);
-				this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
-				this.props.customerActions.setCustomers(
-					CustomerRealm.getAllCustomer()
-				);
-			}
+		// if (this.props.selectedDebtPaymentTypes.length >= 0) {
+		// 	console.log('selectedDebtPaymentTypes', this.props.selectedDebtPaymentTypes)
+		// 	let amountPaid = this.props.selectedDebtPaymentTypes.reduce((total, item) => {
+		// 		console.log('amount Paid', item.amount);
+		// 		return (total + item.amount);
+		// 	}, 0)
+		// 	console.log('amount Paid', amountPaid);
+		// 	if (amountPaid >= 0) {
+		// 		this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - Number(amountPaid);
+		// 		CustomerRealm.updateCustomerDueAmount(
+		// 			this.props.selectedCustomer,
+		// 			this.props.selectedCustomer.dueAmount
+		// 		);
+		// 		this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
+		// 		this.props.customerActions.setCustomers(
+		// 			CustomerRealm.getAllCustomer()
+		// 		);
+		// 	}
 
-			Alert.alert(
-				'SEMA',
-				'Payment Made',
-				[{
-					text: 'OK',
-					onPress: () => {
-						this.closeModal();
-					}
-				}],
-				{ cancelable: false }
-			);
+		// 	Alert.alert(
+		// 		'SEMA',
+		// 		'Payment Made',
+		// 		[{
+		// 			text: 'OK',
+		// 			onPress: () => {
+		// 				this.closeModal();
+		// 			}
+		// 		}],
+		// 		{ cancelable: false }
+		// 	);
 
-		}
+		// }
 
-		return true;
+		// return true;
 	};
 
 	getCancelButton() {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, TouchableHighlight, FlatList } from 'react-native';
+import { Text, View, StyleSheet, TouchableHighlight, Button, Alert, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as reportActions from "../../actions/ReportActions";
@@ -8,10 +8,10 @@ import * as customerBarActions from "../../actions/CustomerBarActions";
 import * as toolBarActions from "../../actions/ToolBarActions";
 import * as orderActions from "../../actions/OrderActions";
 import * as reminderActions from "../../actions/ReminderActions.js";
-import Modal from 'react-native-modalbox';
+import CustomerReminderRealm from '../../database/customer-reminder/customer-reminder.operations';
+import * as CustomerReminderActions from '../../actions/CustomerReminderActions';
 import DateFilter from './DateFilter';
-import SetCustomReminderDate from './SetCustomRemiderDate';
-import Events from 'react-native-simple-events';
+import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from 'moment-timezone';
 import i18n from '../../app/i18n';
 
@@ -20,14 +20,56 @@ class RemindersReport extends Component {
 		super(props);
 		this.state = {
 			refresh: false,
-			selectedReminder: {}
+			selectedReminder: {},
+			isDateTimePickerVisible: false,
+			checkedType: {},
+			customReminderDate: new Date(),
 		};
 		this.reminderDate = null;
 	}
 	componentDidMount() {
-
 		this.props.reportActions.getRemindersReport(this.props.dateFilter.currentDate);
 	}
+
+	showDateTimePicker = (reminder) => {
+		this.setState({ selectedReminder: reminder });
+		this.setState({ isDateTimePickerVisible: true });
+	};
+
+	hideDateTimePicker = () => {
+		this.setState({ isDateTimePickerVisible: false });
+	};
+
+	handleDatePicked = date => {
+
+		Alert.alert(
+			'Notice ',
+			`You are about to set a custom Reminder`,
+			[{
+				text: 'OK',
+				onPress: () => {
+					console.log('OK Pressed');
+					console.log(this.state.selectedReminder);
+					CustomerReminderRealm.setCustomReminder(this.state.selectedReminder.customer_account_id, new Date(date))
+					this.props.customerReminderActions.setCustomerReminders(
+						CustomerReminderRealm.getCustomerReminders()
+					);
+					this.hideDateTimePicker();
+
+				}
+			}, {
+				text: 'Cancel',
+				onPress: () => {
+					console.log('Cancel Pressed')
+					this.hideDateTimePicker();
+				},
+				style: 'cancel',
+			},],
+			{ cancelable: false }
+		);
+
+	};
+
 
 	getReminders(filterDate) {
 		this.props.reportActions.getRemindersReport(filterDate);
@@ -83,71 +125,8 @@ class RemindersReport extends Component {
 		);
 	};
 
-	datediff = (date1, date2) => {
-		date1 = new Date(date1);
-		date2 = new Date(date2);
-		const diffTime = Math.abs(date2 - date1);
-		return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-	};
-
-	groupBy = key => array =>
-		array.reduce((objectsByKeyValue, obj) => {
-			const value = obj[key];
-			objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
-			return objectsByKeyValue;
-		}, {});
-
-
-	pairwiseDifference = (arr, n) => {
-		let diff = 0,
-			arrCalc = [];
-		for (let i = 0; i < n - 1; i++) {
-			diff = this.datediff(arr[i], arr[i + 1]);
-			arrCalc.push(diff);
-		}
-		return arrCalc;
-	};
-
-	addDays = (theDate, days) => {
-		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
-	}
-
-	getRemindersNew = (data) => {
-		const groupCustomers = this.groupBy("customer_account_id");
-		groupCustomers(data);
-
-		let final = [];
-		for (let key of Object.keys(groupCustomers(data))) {
-			let dateArray = groupCustomers(data)[key].map(e => e.created_at);
-			const arrAvg = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
-			const dateLength = groupCustomers(data)[key].map(e => e.created_at).length - 1;
-			const lastDay = groupCustomers(data)[key].map(e => e.created_at)[dateLength];
-			final.push({
-				customer: key,
-				name: groupCustomers(data)[key][0].customer_account.name,
-				phoneNumber: groupCustomers(data)[key][0].customer_account.hasOwnProperty('phone_number') ? groupCustomers(data)[key][0].customer_account.phone_number : 'N/A',
-				address: groupCustomers(data)[key][0].customer_account.hasOwnProperty('address') ? groupCustomers(data)[key][0].customer_account.address : groupCustomers(data)[key][0].customer_account.address_line1,
-				frequency: this.pairwiseDifference(dateArray, dateArray.length),
-				avg: Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length))) >= 0 ? Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length))) : 0,
-				reminder: this.addDays(new Date(lastDay), Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length)))),
-				dates: groupCustomers(data)[key].map(e => e.created_at),
-				lastPurchaseDate: new Date(lastDay)
-			});
-		}
-		console.log(final);
-
-
-		return final;
-	}
-
-
-
 	getRow = (item, index, separators) => {
-		let isSelected = false;
-		if (this.props.selectedCustomer && this.props.selectedCustomer.customerId === item.customerId) {
-			console.log("Selected item is " + item.customerId);
-			isSelected = true;
-		}
+		console.log('index', index);
 		return (
 			<View style={{ flex: 1, flexDirection: 'row', height: 50, alignItems: 'center' }}>
 				<View style={{ flex: 2 }}>
@@ -166,30 +145,32 @@ class RemindersReport extends Component {
 					<Text style={[styles.baseItem]}>{item.frequency}</Text>
 				</View>
 				<View style={{ flex: 1.5 }}>
-					<Text style={[styles.baseItem]}>{moment.tz(new Date(item.reminderDate), moment.tz.guess()).format('YYYY-MM-DD')}</Text>
+					<Text style={[styles.baseItem]}>{moment.tz(new Date(item.reminder_date), moment.tz.guess()).format('ddd Do MMM YYYY')}</Text>
 				</View>
 				<View style={{ flex: 1.5 }}>
 					<TouchableHighlight
 						style={styles.currentInventory}
-						onPress={() => this.openModal(item)}
+						onPress={() => this.showDateTimePicker(item)}
 						underlayColor='#18376A'>
 						<Text style={[styles.currentInventoryText, { padding: 5 }]}>
-							{item.customReminderDate ? moment.tz(new Date(item.customReminderDate), moment.tz.guess()).format('YYYY-MM-DD') : 'N/A'}
+							{item.customReminderDate ? moment.tz(new Date(item.customReminderDate), moment.tz.guess()).format('ddd Do MMM YYYY') : 'SET'}
 						</Text>
 					</TouchableHighlight>
+					<DateTimePicker
+						key={index}
+						minimumDate={new Date()}
+						isVisible={this.state.isDateTimePickerVisible}
+						onConfirm={this.handleDatePicked}
+						onCancel={this.hideDateTimePicker}
+					/>
 				</View>
 			</View>
 		);
 	};
 
-	// displayNotDispatcheModal(wastageName) {
-	// 	this.setState({ notDispatchedEdit: wastageName });
-	// 	this.setState({ refresh: !this.state.refresh });
-	// }
-
 
 	displayReminders() {
-		if (!this.getRemindersNew(this.getFilteredReceipts()) || this.getRemindersNew(this.getFilteredReceipts()).length == 0) {
+		if (this.props.customerReminder.length == 0) {
 			return (
 				<View style={{ flex: 1 }}>
 					<Text style={[styles.titleText, { textAlign: 'center' }]}>No Reminders Available</Text>
@@ -199,7 +180,7 @@ class RemindersReport extends Component {
 		} else {
 
 			return (
-				<><FlatList
+				<FlatList
 					ListHeaderComponent={this.showHeader}
 					extraData={this.state.refresh}
 					data={this.props.customerReminder}
@@ -212,20 +193,12 @@ class RemindersReport extends Component {
 					)}
 					keyExtractor={item => `${item.customerId}${item.receipt}`}
 				/>
-					<Modal
-						style={[styles.modal, styles.modal3]}
-						coverScreen={true}
-						position={"center"} ref={"customModal"}
-						onClosed={() => this.modalClosed()}
-						isDisabled={this.state.isDisabled}>
-						<SetCustomReminderDate closeModal={this.closeModal} selectedReminder={this.props.selectedReminder} />
-					</Modal></>
 			)
 		}
 	}
 
 	closeModal = () => {
-        this.refs.customModal.close();
+		this.refs.customModal.close();
 	};
 
 	modalClosed() {
@@ -234,58 +207,12 @@ class RemindersReport extends Component {
 
 	openModal = () => {
 		this.setState({ selectedReminder: item });
-        this.refs.customModal.open();
-    }
-
-
-	subtractDays = (theDate, days) => {
-		return new Date(theDate.getTime() - days * 24 * 60 * 60 * 1000);
-	}
-
-	getFilteredReceipts() {
-		return this.props.receipts.filter(receipt => {
-			return moment
-				.tz(new Date(receipt.created_at), moment.tz.guess())
-				.isBetween(this.subtractDays(new Date(), 90), new Date())
-		}
-		);
-	}
-
-	isDate(value) {
-		switch (typeof value) {
-			case 'number':
-				return true;
-			case 'string':
-				return !isNaN(Date.parse(value));
-			case 'object':
-				if (value instanceof Date) {
-					return !isNaN(value.getTime());
-				}
-			default:
-				return false;
-		}
-	}
-
-	getCurrentFilteredReceipts() {
-		return this.getRemindersNew(this.getFilteredReceipts()).filter(receipt => {
-			if (this.isDate(receipt.reminder)) {
-				console.log('startDate', moment
-					.tz(new Date(receipt.reminder), moment.tz.guess())
-					.isBetween(new Date(this.props.dateFilter.startDate), new Date(this.props.dateFilter.endDate)));
-				return moment
-					.tz(new Date(receipt.reminder), moment.tz.guess())
-					.isBetween(new Date(this.props.dateFilter.startDate), new Date(this.props.dateFilter.endDate));
-			}
-		}
-		);
+		this.refs.customModal.open();
 	}
 
 	render() {
 		console.log('customerReminder', this.props.customerReminder);
 		console.log(this.props.dateFilter);
-		console.log(this.getCurrentFilteredReceipts());
-		console.log('getFilteredReceipts', this.getFilteredReceipts());
-		console.log('getRemindersNew', this.getRemindersNew(this.getFilteredReceipts()));
 		return (
 			<View style={{ flex: 1, flexDirection: 'column' }}>
 				<View style={{ flex: .15 }}>
@@ -322,6 +249,7 @@ function mapDispatchToProps(dispatch) {
 		customerBarActions: bindActionCreators(customerBarActions, dispatch),
 		reminderActions: bindActionCreators(reminderActions, dispatch),
 		orderActions: bindActionCreators(orderActions, dispatch),
+		customerReminderActions: bindActionCreators(CustomerReminderActions, dispatch),
 	};
 }
 
@@ -361,15 +289,15 @@ const styles = StyleSheet.create({
 		textAlign: 'center'
 	},
 	modalPayment: {
-        backgroundColor: 'white',
-    },
-    modal3: {
-        width: '70%',
-        height: 400,
-    },
-    modal: {
-        justifyContent: 'center',
-    },
+		backgroundColor: 'white',
+	},
+	modal3: {
+		width: '70%',
+		height: 400,
+	},
+	modal: {
+		justifyContent: 'center',
+	},
 	currentInventory: {
 		marginRight: 2,
 		marginLeft: 2,
