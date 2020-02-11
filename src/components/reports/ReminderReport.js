@@ -20,8 +20,10 @@ class RemindersReport extends Component {
 		super(props);
 		this.state = {
 			refresh: false,
+			filterDate: new Date(),
 			selectedReminder: {},
 			isDateTimePickerVisible: false,
+			isDatePickerFilterVisible: false,
 			checkedType: {},
 			customReminderDate: new Date(),
 		};
@@ -36,8 +38,24 @@ class RemindersReport extends Component {
 		this.setState({ isDateTimePickerVisible: true });
 	};
 
+	showDatePickerFilter = () => {
+		this.setState({ isDatePickerFilterVisible: true });
+	};
+
 	hideDateTimePicker = () => {
 		this.setState({ isDateTimePickerVisible: false });
+	};
+
+
+	hideDatePickerFilter = () => {
+		this.setState({ isDatePickerFilterVisible: false });
+	};
+
+	handleDatePickedFilter = date => {
+
+		this.setState({ filterDate: new Date(date) })
+		this.hideDateTimePicker();
+
 	};
 
 	handleDatePicked = date => {
@@ -183,7 +201,7 @@ class RemindersReport extends Component {
 				<FlatList
 					ListHeaderComponent={this.showHeader}
 					extraData={this.state.refresh}
-					data={this.props.customerReminder}
+					data={this.prepareData()}
 					renderItem={({ item, index, separators }) => (
 						<TouchableHighlight
 							onShowUnderlay={separators.highlight}
@@ -196,6 +214,40 @@ class RemindersReport extends Component {
 			)
 		}
 	}
+
+
+	prepareData() {
+		console.log('-iop-', this.filterDate(this.props.customerReminder));
+		return this.filterDate(this.props.customerReminder);
+	}
+
+	formateDate(date) {
+		return moment.tz(new Date(date), moment.tz.guess()).format("YYYY-MM-DD");
+	}
+
+	filterDate(data) {
+		let filteredItems = data.filter((item) => {
+			if (!item.customReminderDate) {
+				if (this.formateDate(item.reminder_date) === this.formateDate(this.state.filterDate)) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+
+			if (item.customReminderDate) {
+				if (this.formateDate(item.customReminderDate) === this.formateDate(this.state.filterDate)) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+			return true;
+		});
+		return filteredItems
+	}
+
+
 
 	closeModal = () => {
 		this.refs.customModal.close();
@@ -212,11 +264,25 @@ class RemindersReport extends Component {
 
 	render() {
 		console.log('customerReminder', this.props.customerReminder);
-		console.log(this.props.dateFilter);
+		console.log(this.state.filterDate);
+		//this.setState({ filterDate: this.props.dateFilter.startDate })
 		return (
 			<View style={{ flex: 1, flexDirection: 'column' }}>
 				<View style={{ flex: .15 }}>
-					<DateFilter />
+					{/* <DateFilter /> */}
+					<TouchableHighlight
+						style={styles.currentInventory}
+						onPress={() => this.showDatePickerFilter()}
+						underlayColor='#18376A'>
+						<Text style={[styles.currentInventoryText, { padding: 5 }]}>
+							{moment.tz(new Date(this.state.filterDate), moment.tz.guess()).format('ddd Do MMM YYYY')}
+						</Text>
+					</TouchableHighlight>
+					<DateTimePicker
+						isVisible={this.state.isDatePickerFilterVisible}
+						onConfirm={this.handleDatePickedFilter}
+						onCancel={this.hideDatePickerFilter}
+					/>
 				</View>
 				<View style={{ flex: .85, backgroundColor: 'white', marginLeft: 10, marginRight: 10 }}>
 					{this.displayReminders()}
