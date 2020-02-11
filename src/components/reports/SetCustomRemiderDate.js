@@ -39,7 +39,8 @@ class SetCustomReminderDate extends Component {
 			selectedPaymentTypes: [],
             selectedType: {},
             isDateTimePickerVisible: false,
-			checkedType: {},
+            checkedType: {},
+            customReminderDate: new Date(),
 		};
 	}
 
@@ -63,7 +64,7 @@ class SetCustomReminderDate extends Component {
 		var aftergmt = datestr.slice(-14);
 		var datestring = datestr.substring(0, 22) + randomnumstr + " " + aftergmt;
 
-		this.setState({ receiptDate: new Date(datestring) });
+		this.setState({ customReminderDate: new Date(datestring) });
 		this.hideDateTimePicker();
 	};
 
@@ -75,6 +76,7 @@ class SetCustomReminderDate extends Component {
 	};
 
 	render() {
+        console.log('selectedReminder',this.props.selectedReminder);
 		const state = this.state;
 		return (
 			// <View style={styles.modal3}>
@@ -87,7 +89,7 @@ class SetCustomReminderDate extends Component {
 						}}>
 						<View style={{ flex: 1, flexDirection: 'row' }}>
 							<View style={{ flex: 1, height: 50 }}>
-								<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Set Custom Reminder</Text>
+								<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Custom Reminder</Text>
 
 							</View>
 							<View
@@ -107,11 +109,11 @@ class SetCustomReminderDate extends Component {
 					}}>
 					<Button
 						style={{ flex: 1 }}
-						title="Change Receipt Date"
+						title="Set Custom Reminder Date"
 						onPress={this.showDateTimePicker}
 					/>
 					<DateTimePicker
-						maximumDate={new Date()}
+						minimumDate={new Date()}
 						isVisible={this.state.isDateTimePickerVisible}
 						onConfirm={this.handleDatePicked}
 						onCancel={this.hideDateTimePicker}
@@ -129,7 +131,7 @@ class SetCustomReminderDate extends Component {
 											{ paddingTop: 20, paddingBottom: 20 },
 											styles.buttonText
 										]}>
-										{i18n.t('clear-loan')}
+										{i18n.t('set-reminder')}
 									</Text>
 								</TouchableHighlight>
 							</View>
@@ -432,68 +434,70 @@ class SetCustomReminderDate extends Component {
 	};
 
 	clearLoan = () => {
-		const creditIndex = this.props.selectedDebtPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
-		console.log('creditIndex', creditIndex);
-		if (creditIndex >= 0) {
-			if (Number(this.props.selectedDebtPaymentTypes[creditIndex].amount) > Number(this.props.selectedCustomer.dueAmount)) {
-				Alert.alert(
-					i18n.t('credit-due-amount-title'),
-					i18n.t('credit-due-amount-text') +
-					this.props.selectedCustomer.dueAmount,
-					[
-						{
-							text: 'OK',
-							onPress: () => console.log('OK Pressed')
-						}
-					],
-					{ cancelable: false }
-				);
-				return;
-			}
-		}
+		console.log(this.state.customReminderDate);
+		console.log(this.props.selectedReminder);
+		// const creditIndex = this.props.selectedDebtPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
+		// console.log('creditIndex', creditIndex);
+		// if (creditIndex >= 0) {
+		// 	if (Number(this.props.selectedDebtPaymentTypes[creditIndex].amount) > Number(this.props.selectedCustomer.dueAmount)) {
+		// 		Alert.alert(
+		// 			i18n.t('credit-due-amount-title'),
+		// 			i18n.t('credit-due-amount-text') +
+		// 			this.props.selectedCustomer.dueAmount,
+		// 			[
+		// 				{
+		// 					text: 'OK',
+		// 					onPress: () => console.log('OK Pressed')
+		// 				}
+		// 			],
+		// 			{ cancelable: false }
+		// 		);
+		// 		return;
+		// 	}
+		// }
 
-		console.log(this.props.selectedDebtPaymentTypes.length);
-		if (this.props.selectedDebtPaymentTypes.length > 0) {
-			CustomerDebtRealm.createManyCustomerDebt(this.props.selectedDebtPaymentTypes, this.props.selectedCustomer.customerId);
-			this.props.paymentTypesActions.setCustomerPaidDebt(
-				CustomerDebtRealm.getCustomerDebts()
-			);
-		}
+		// console.log(this.props.selectedDebtPaymentTypes.length);
+		// if (this.props.selectedDebtPaymentTypes.length > 0) {
+		// 	CustomerDebtRealm.createManyCustomerDebt(this.props.selectedDebtPaymentTypes, this.props.selectedCustomer.customerId);
+		// 	this.props.paymentTypesActions.setCustomerPaidDebt(
+		// 		CustomerDebtRealm.getCustomerDebts()
+		// 	);
+		// }
 
-		if (this.props.selectedDebtPaymentTypes.length >= 0) {
-			console.log('selectedDebtPaymentTypes', this.props.selectedDebtPaymentTypes)
-			let amountPaid = this.props.selectedDebtPaymentTypes.reduce((total, item) => {
-				console.log('amount Paid', item.amount);
-				return (total + item.amount);
-			}, 0)
-			console.log('amount Paid', amountPaid);
-			if (amountPaid >= 0) {
-				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - Number(amountPaid);
-				CustomerRealm.updateCustomerDueAmount(
-					this.props.selectedCustomer,
-					this.props.selectedCustomer.dueAmount
-				);
-				this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
-				this.props.customerActions.setCustomers(
-					CustomerRealm.getAllCustomer()
-				);
-			}
+		// if (this.props.selectedDebtPaymentTypes.length >= 0) {
+		// 	console.log('selectedDebtPaymentTypes', this.props.selectedDebtPaymentTypes)
+		// 	let amountPaid = this.props.selectedDebtPaymentTypes.reduce((total, item) => {
+		// 		console.log('amount Paid', item.amount);
+		// 		return (total + item.amount);
+		// 	}, 0)
+		// 	console.log('amount Paid', amountPaid);
+		// 	if (amountPaid >= 0) {
+		// 		this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - Number(amountPaid);
+		// 		CustomerRealm.updateCustomerDueAmount(
+		// 			this.props.selectedCustomer,
+		// 			this.props.selectedCustomer.dueAmount
+		// 		);
+		// 		this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
+		// 		this.props.customerActions.setCustomers(
+		// 			CustomerRealm.getAllCustomer()
+		// 		);
+		// 	}
 
-			Alert.alert(
-				'SEMA',
-				'Payment Made',
-				[{
-					text: 'OK',
-					onPress: () => {
-						this.closeModal();
-					}
-				}],
-				{ cancelable: false }
-			);
+		// 	Alert.alert(
+		// 		'SEMA',
+		// 		'Payment Made',
+		// 		[{
+		// 			text: 'OK',
+		// 			onPress: () => {
+		// 				this.closeModal();
+		// 			}
+		// 		}],
+		// 		{ cancelable: false }
+		// 	);
 
-		}
+		// }
 
-		return true;
+		// return true;
 	};
 
 	getCancelButton() {
