@@ -76,12 +76,12 @@ const CustomerTransactionStack = createStackNavigator({
 
 const TabNavigator = createBottomTabNavigator({
     // const TabNavigator = createMaterialTopTabNavigator({
-    Transactions: CustomerTransactionStack,
+    Transaction: CustomerTransactionStack,
     CustomerWallet: CreditHistoryStack
     // ,Debit: DebitHistoryStack
 },
     {
-        initialRouteName: 'Transactions',
+        initialRouteName: 'Transaction',
         headerMode: 'none',
         swipeEnabled: true,
         animationEnabled: true,

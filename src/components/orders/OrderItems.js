@@ -24,6 +24,7 @@ const inputFontHeight = Math.round((24 * height) / 752);
 class OrderItems extends Component {
 	constructor(props) {
 		super(props);
+		slowlog(this, /.*/);
 		this.state = {
 			selectedItem: {},
 			accumulator: 0,
@@ -973,8 +974,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		textAlign: 'center'
 	},
-
-
 
 	wrapper: {
 		paddingTop: 50,

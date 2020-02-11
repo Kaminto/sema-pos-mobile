@@ -129,11 +129,13 @@ class CustomSidebarMenu extends Component {
             </View>
           ))}
         </View>
-        {/* {
+                 {
 						this.state.isLoading && (
-							<ActivityIndicator size={120} color="#0000ff" />
+
+								<ActivityIndicator size={60} color="#ABC1DE" />
+
 						)
-					} */}
+					}
       </View>
     );
   }

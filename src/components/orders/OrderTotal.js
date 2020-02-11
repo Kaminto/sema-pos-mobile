@@ -15,7 +15,8 @@ class OrderTotal extends Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { 
+		slowlog(this, /.*/);
+		this.state = {
 		};
 	}
 

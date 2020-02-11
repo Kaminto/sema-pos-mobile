@@ -212,7 +212,7 @@ class InventoryReport extends Component {
 	getInventoryData() {
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
 			if (this.props.dateFilter.startDate == this.startDate && this.props.dateFilter.endDate == this.endDate) {
-				return this.props.inventoryData.salesAndProducts.salesItems
+				return  this.props.inventoryData.salesAndProducts.salesItems;
 			} else {
 				// Get new data
 				this.startDate = this.props.dateFilter.startDate;
@@ -649,7 +649,6 @@ class InventoryReport extends Component {
 function mapStateToProps(state, props) {
 	return {
 		inventoryData: state.reportReducer.inventoryData,
-		products: state.productReducer.products,
 		products: state.productReducer.products,
 		dateFilter: state.reportReducer.dateFilter,
 		reportType: state.reportReducer.reportType,

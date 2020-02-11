@@ -179,7 +179,7 @@ class RemindersReport extends Component {
 						onPress={() => this.openModal()}
 						underlayColor='#18376A'>
 						<Text style={[styles.currentInventoryText, { padding: 5 }]}>
-							{item.customReminderDate ? moment.tz(new Date(item.customReminderDate), moment.tz.guess()).format('YYYY-MM-DD') : 'N/A'}
+							{item.customReminderDate ? moment.tz(item.reminder, moment.tz.guess()).format('YYYY-MM-DD') : 'N/A'}
 						</Text>
 					</TouchableHighlight>
 				</View>

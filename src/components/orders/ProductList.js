@@ -17,6 +17,7 @@ import randomMC from 'random-material-color';
 
 class ProductList extends Component {
 	constructor(props) {
+		slowlog(this, /.*/);
 		super(props);
 	}
 

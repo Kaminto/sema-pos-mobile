@@ -26,6 +26,7 @@ import i18n from '../../app/i18n';
 class CustomerProperty extends Component {
 	constructor(props) {
 		super(props);
+		slowlog(this, /.*/);
 		this.state = { propertyText: this.props.valueFn(this.props.parent) };
 	}
 
@@ -657,7 +658,7 @@ class CustomerEdit extends Component {
 				this.customerChannel.current.state.selectedIndex
 			].id;
 		}
- 
+
 		if (this.customerType.current.state.selectedIndex === -1) {
 			this.customerType.current.show();
 			return;
