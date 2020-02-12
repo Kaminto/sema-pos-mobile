@@ -16,11 +16,9 @@ class InventoryEdit extends Component {
 		this.state = { inventoryQuantity: this.props.quantity };
 		this.quantityInput = React.createRef();
 	}
-	componentWillUpdate() {
+
+	componentDidUpdate(){
 		this.state.inventoryQuantity = this.props.quantity;
-		// if( this.quantityInput.current ) {
-		// 	this.quantityInput.current.refs.quantityInput.focus();
-		// }
 	}
 
 	render() {
@@ -125,6 +123,7 @@ class InventoryReport extends Component {
 						<FlatList
 							style={{ flex: .5 }}
 							data={this.getInventoryData()}
+							// data={this.props.inventoryData}
 							extraData={this.state.refresh}
 							ListHeaderComponent={this.showHeader}
 							renderItem={({ item, index, separators }) => (
@@ -210,6 +209,7 @@ class InventoryReport extends Component {
 	}
 
 	getInventoryData() {
+		if (this.props.inventoryData.salesAndProducts.salesItems.length > 0){
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
 			if (this.props.dateFilter.startDate == this.startDate && this.props.dateFilter.endDate == this.endDate) {
 				return  this.props.inventoryData.salesAndProducts.salesItems;
@@ -223,6 +223,7 @@ class InventoryReport extends Component {
 		} else {
 			return this.props.inventoryData.salesAndProducts.salesItems;
 		}
+	}
 	}
 
 	getTotalSales() {

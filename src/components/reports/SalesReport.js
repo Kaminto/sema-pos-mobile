@@ -26,7 +26,6 @@ class SalesReport extends Component {
 	}
 
 	render() {
-		console.log("Breakdown" + JSON.stringify(this.getTotalTypes()));
 		return (
 			<View style={{ flex: 1 }}>
 				<View style={{

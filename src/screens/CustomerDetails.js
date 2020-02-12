@@ -718,7 +718,9 @@ class TransactionDetail extends Component {
 				return (
 
 					<PaymentTypeItem
-					 item={paymentItem}
+						key={paymentItem.id}
+						item={paymentItem}
+						lineItemIndex={idx}
 					/>
 				);
 			});

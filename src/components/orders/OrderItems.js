@@ -479,7 +479,7 @@ class OrderItems extends Component {
 					padding: 10
 				}}
 				onChangeText={this.customDiscount}
-				value={(customValue)}
+				value={(customValue.toString())}
 				keyboardType="number-pad"
 				underlineColorAndroid="transparent"
 				placeholder="Custom Discount"

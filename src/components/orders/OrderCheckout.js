@@ -115,7 +115,7 @@ class OrderCheckout extends Component {
 					coverScreen={true}
 					position={"center"} ref={"modal7"}
 					isDisabled={this.state.isDisabled}>
-					<ScrollView>
+					{/* <ScrollView> */}
 						<View style={{ flex: 1, paddingLeft: 10 }}>
 							<View style={{ flex: 1, flexDirection: 'row', height: 50 }}>
 								<View style={{ flex: 1, flexDirection: 'row' }}>
@@ -150,7 +150,7 @@ class OrderCheckout extends Component {
 								/>
 							</View>
 						</View>
-					</ScrollView>
+					{/* </ScrollView> */}
 				</Modal>
 
 				<Modal
@@ -961,7 +961,7 @@ class OrderCheckout extends Component {
 				name: groupCustomers(data)[key][0].customer_account.name,
 				phoneNumber: groupCustomers(data)[key][0].customer_account.hasOwnProperty('phone_number') ? groupCustomers(data)[key][0].customer_account.phone_number : 'N/A',
 				address: groupCustomers(data)[key][0].customer_account.hasOwnProperty('address') ? groupCustomers(data)[key][0].customer_account.address : groupCustomers(data)[key][0].customer_account.address_line1,
-				frequency: this.pairwiseDifference(dateArray, dateArray.length),
+				frequency: this.pairwiseDifference(dateArray, dateArray.length) > 10 ? 10 : this.pairwiseDifference(dateArray, dateArray.length),
 				avg: Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length))) >= 0 ? Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length))) : 0,
 				reminder: this.addDays(new Date(lastDay), Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length)))),
 				dates: groupCustomers(data)[key].map(e => e.created_at),
