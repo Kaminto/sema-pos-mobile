@@ -1,6 +1,6 @@
 import React, {Component}  from "react";
 import { View, Text, TouchableHighlight, TextInput, StyleSheet, Modal, ImageBackground, Image } from "react-native";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
@@ -104,6 +104,7 @@ class Login extends Component {
 			this.setState({invalidCredentials:true})
 		}
 	};
+
 	ShowLoggingIn = () =>{
 		let that = this;
 		if( this.state.isLoginComplete ) {
@@ -126,6 +127,7 @@ class Login extends Component {
 			</View>
 		);
 	};
+
 	ShowInvalidCredentials = () => {
 		if (this.state.invalidCredentials) {
 			return (
@@ -145,6 +147,7 @@ class Login extends Component {
 function mapStateToProps(state, props) {
 	return {};
 }
+
 function mapDispatchToProps(dispatch) {
 	return {
 		toolbarActions:bindActionCreators(ToolbarActions, dispatch)
