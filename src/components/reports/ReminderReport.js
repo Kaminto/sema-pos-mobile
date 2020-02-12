@@ -10,7 +10,7 @@ import * as orderActions from "../../actions/OrderActions";
 import * as reminderActions from "../../actions/ReminderActions.js";
 import CustomerReminderRealm from '../../database/customer-reminder/customer-reminder.operations';
 import * as CustomerReminderActions from '../../actions/CustomerReminderActions';
-import DateFilter from './DateFilter';
+import DateFilter from './ReminderDateFilter';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from 'moment-timezone';
 import i18n from '../../app/i18n';
@@ -26,7 +26,9 @@ class RemindersReport extends Component {
 			isDatePickerFilterVisible: false,
 			checkedType: {},
 			customReminderDate: new Date(),
+
 		};
+
 		this.reminderDate = null;
 	}
 	componentDidMount() {
@@ -186,7 +188,6 @@ class RemindersReport extends Component {
 		);
 	};
 
-
 	displayReminders() {
 		if (this.props.customerReminder.length == 0) {
 			return (
@@ -214,7 +215,6 @@ class RemindersReport extends Component {
 			)
 		}
 	}
-
 
 	prepareData() {
 		console.log('-iop-', this.filterDate(this.props.customerReminder));
@@ -247,8 +247,6 @@ class RemindersReport extends Component {
 		return filteredItems
 	}
 
-
-
 	closeModal = () => {
 		this.refs.customModal.close();
 	};
@@ -269,8 +267,8 @@ class RemindersReport extends Component {
 		return (
 			<View style={{ flex: 1, flexDirection: 'column' }}>
 				<View style={{ flex: .15 }}>
-					{/* <DateFilter /> */}
-					<TouchableHighlight
+					<DateFilter />
+					{/* <TouchableHighlight
 						style={styles.currentInventory}
 						onPress={() => this.showDatePickerFilter()}
 						underlayColor='#18376A'>
@@ -282,7 +280,7 @@ class RemindersReport extends Component {
 						isVisible={this.state.isDatePickerFilterVisible}
 						onConfirm={this.handleDatePickedFilter}
 						onCancel={this.hideDatePickerFilter}
-					/>
+					/> */}
 				</View>
 				<View style={{ flex: .85, backgroundColor: 'white', marginLeft: 10, marginRight: 10 }}>
 					{this.displayReminders()}
