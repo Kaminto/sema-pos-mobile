@@ -126,6 +126,32 @@ class ReceiptLineItem extends Component {
 	};
 }
 
+class PaymentTypeItem extends Component {
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		return (
+			<View
+				style={{
+					flex: 1,
+					flexDirection: 'row',
+					marginBottom: 5,
+					marginTop: 5
+				}}>
+					<View style={[styles.itemData, {flex: 3}]}>
+						<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>{this.props.item.name}</Text>
+					</View>
+					<View style={[styles.itemData, {flex: 1}]}>
+						<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold'}]}>{this.props.item.amount} </Text>
+					</View>
+
+			</View>
+		);
+	}
+}
+
 class CustomerDetails extends Component {
 	constructor(props) {
 		super(props);
@@ -360,6 +386,7 @@ class CustomerDetails extends Component {
 								products={this.props.products}
 								receiptActions={this.props.receiptActions}
 								remoteReceipts={this.props.receipts}
+								paymentTypes={this.props.receiptsPaymentTypes}
 							/>
 						</ScrollView>
 					</View>
@@ -557,6 +584,41 @@ class CustomerDetails extends Component {
 		);
 	};
 
+	comparePaymentTypeReceipts() {
+		let receiptsPaymentTypes = [...this.comparePaymentTypes()];
+		let customerReceipts = [...this.props.receipts];
+		let finalCustomerReceiptsPaymentTypes = [];
+		for (let customerReceipt of customerReceipts) {
+			let paymentTypes = [];
+			for (let receiptsPaymentType of receiptsPaymentTypes) {
+				if (receiptsPaymentType.receipt_id === customerReceipt.receiptId) {
+					paymentTypes.push(receiptsPaymentType);
+				}
+			}
+			customerReceipt.paymentTypes = paymentTypes;
+			finalCustomerReceiptsPaymentTypes.push(customerReceipt);
+
+		}
+		return finalCustomerReceiptsPaymentTypes;
+	}
+
+	comparePaymentTypes() {
+		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
+		let paymentTypes = [...this.props.paymentTypes];
+
+		let finalreceiptsPaymentTypes = [];
+
+		for (let receiptsPaymentType of receiptsPaymentTypes) {
+			const rpIndex = paymentTypes.map(function (e) { return e.id }).indexOf(receiptsPaymentType.payment_type_id);
+			if (rpIndex >= 0) {
+				receiptsPaymentType.name = paymentTypes[rpIndex].name;
+				finalreceiptsPaymentTypes.push(receiptsPaymentType);
+
+			}
+		}
+		return finalreceiptsPaymentTypes;
+	}
+
 }
 
 class TransactionDetail extends Component {
@@ -652,6 +714,16 @@ class TransactionDetail extends Component {
 			);
 		});
 
+		const paymentTypes = this.props.item.paymentTypes.map((paymentItem, idx) => {
+				return (
+
+					<PaymentTypeItem
+					 item={paymentItem}
+					/>
+				);
+			});
+
+
 		return (
 			<View style={{ padding: 15 }}>
 				<View style={styles.deleteButtonContainer}>
@@ -699,6 +771,11 @@ class TransactionDetail extends Component {
 							</View>
 						)}
 				</View>
+				<View>
+					<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>PAYMENT</Text>
+				</View>
+
+				{paymentTypes}
 
 				<View>
 					<Text style={{ fontSize: 16, fontWeight: "bold" }}>PRODUCTS</Text>

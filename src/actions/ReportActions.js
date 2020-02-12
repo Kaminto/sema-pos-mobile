@@ -451,7 +451,6 @@ export function getRemindersReport(date) {
 	};
 }
 
-
 const getRemindersAction = () => {
 	return new Promise(async (resolve, reject) => {
 		let reminders = PosStorage.getRemindersPos();

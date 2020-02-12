@@ -130,9 +130,9 @@ class RemindersReport extends Component {
 				<View style={[{ flex: 2 }]}>
 					<Text style={[styles.headerItem]}>Last Purchase Date</Text>
 				</View>
-				<View style={[{ flex: 1 }]}>
+				{/* <View style={[{ flex: 1 }]}>
 					<Text style={[styles.headerItem]}>Frequency</Text>
-				</View>
+				</View> */}
 				<View style={[{ flex: 1.5 }]}>
 					<Text style={[styles.headerItem]}>Reminder Date</Text>
 				</View>
@@ -159,11 +159,11 @@ class RemindersReport extends Component {
 				<View style={{ flex: 2 }}>
 					<Text style={[styles.baseItem]}>{moment.tz(item.lastPurchaseDate, moment.tz.guess()).format('ddd Do MMM YYYY')}</Text>
 				</View>
-				<View style={{ flex: 1 }}>
+				{/* <View style={{ flex: 1 }}>
 					<Text style={[styles.baseItem]}>{item.frequency}</Text>
-				</View>
+				</View> */}
 				<View style={{ flex: 1.5 }}>
-					<Text style={[styles.baseItem]}>{moment.tz(new Date(item.reminder_date), moment.tz.guess()).format('ddd Do MMM YYYY')}</Text>
+					<Text style={[styles.baseItem]}>{moment.tz(new Date(item.reminder_date), moment.tz.guess()).format('ddd Do MMM YYYY') + ' ('+item.frequency+')'}</Text>
 				</View>
 				<View style={{ flex: 1.5 }}>
 					<TouchableHighlight

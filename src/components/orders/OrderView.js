@@ -10,7 +10,10 @@ import Events from "react-native-simple-events";
 
 class OrderView extends Component {
 	constructor(props) {
+
 		super(props);
+
+		// slowlog(this, /.*/);
 	}
 
 	render() {

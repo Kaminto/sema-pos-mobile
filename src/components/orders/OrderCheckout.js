@@ -36,6 +36,7 @@ class OrderCheckout extends Component {
 
 	constructor(props) {
 		super(props);
+		// slowlog(this, /.*/);
 		this.saleSuccess = false;
 		this.state = {
 			isWalkIn: true,
@@ -975,9 +976,6 @@ class OrderCheckout extends Component {
 		CustomerReminderRealm.createCustomerReminder(this.getRemindersNew(receipts)[0])
 	}
 
-	
-
-
 	closePaymentModal = () => {
 		this.refs.modal6.close();
 	};
@@ -1113,6 +1111,8 @@ class OrderCheckout extends Component {
 			return { opacity: 1 };
 		}
 	}
+
+
 }
 
 function mapStateToProps(state, props) {

@@ -25,6 +25,8 @@ class CustomerList extends Component {
 	constructor(props) {
 		super(props);
 
+		slowlog(this, /.*/);
+
 		this.state = {
 			refresh: false,
 			// selectedCustomer: null,
