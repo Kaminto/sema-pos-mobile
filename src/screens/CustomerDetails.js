@@ -586,7 +586,8 @@ class CustomerDetails extends Component {
 
 	comparePaymentTypeReceipts() {
 		let receiptsPaymentTypes = [...this.comparePaymentTypes()];
-		let customerReceipts = [...this.props.receipts];
+
+		let customerReceipts = [...this.prepareData()];
 		let finalCustomerReceiptsPaymentTypes = [];
 		for (let customerReceipt of customerReceipts) {
 			let paymentTypes = [];
@@ -698,7 +699,10 @@ class TransactionDetail extends Component {
 		this.setState({ refresh: !this.state.refresh });
 	}
 
+
+
 	render() {
+		console.log("Payment Stuffs" + this.props.item.paymentTypes);
 		const receiptLineItems = this.props.item.receiptLineItems.map((lineItem, idx) => {
 			return (
 				<ReceiptLineItem
