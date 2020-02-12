@@ -13,6 +13,8 @@ import * as ToolbarActions from '../actions/ToolBarActions';
 
 
 import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
+import CustomerReminderRealm from '../database/customer-reminder/customer-reminder.operations';
+
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
 
 import * as CustomerActions from '../actions/CustomerActions';
@@ -54,37 +56,44 @@ class SelectedCustomerDetails extends React.Component {
 	render() {
 		return (
 			<>
-			<View style={styles.commandBarContainer}>
-				<View style={{ flexDirection: 'column', flex: 1.5, height: 100 }}>
-					<Text style={[styles.selectedCustomerText,{fontSize: 18}]}>
-						{this.getName()} . {this.getPhone()}
-					</Text>
-					<View style={styles.completeOrder}>
-						<TouchableHighlight
-							onPress={() => this.props.navigation.navigate('OrderView')}>
-							<Text style={styles.buttonText}>Make Sale</Text>
-						</TouchableHighlight>
+				<View style={styles.commandBarContainer}>
+					<View style={{ flexDirection: 'column', flex: 1.5, height: 100 }}>
+						<Text style={[styles.selectedCustomerText, { fontSize: 18 }]}>
+							{this.getName()} . {this.getPhone()}
+						</Text>
+						<Text style={[styles.selectedCustomerText, { fontSize: 18 }]}>
+							Last Purchase {CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId) === 'N/A' ? 'N.A' : CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId).lastPurchaseDate }
+						</Text>
+						<View style={styles.completeOrder}>
+							<TouchableHighlight
+								onPress={() => this.props.navigation.navigate('OrderView')}>
+								<Text style={styles.buttonText}>Make Sale</Text>
+							</TouchableHighlight>
+						</View>
 					</View>
-				</View>
-				<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
-					{/* <Text style={styles.selectedCustomerText}>
+					<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
+						{/* <Text style={styles.selectedCustomerText}>
 					{this.getCreditPurchases()} Credit Purchases
 					</Text> */}
-					<Text style={styles.selectedCustomerText}>
-						Customer Wallet: {this.props.topupTotal - this.getCreditPurchases()}
-					</Text>
-					<View style={styles.completeOrder}>
-						<TouchableHighlight
-							onPress={() => this.props.navigation.navigate('CustomerWallet')}>
-							<Text style={styles.buttonText}>Topup Wallet</Text>
-						</TouchableHighlight>
+						<Text style={styles.selectedCustomerText}>
+							Customer Wallet: {this.props.topupTotal - this.getCreditPurchases()}
+						</Text>
+						<Text style={styles.selectedCustomerText}>
+							Reminder:  {CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId) === 'N/A' ? 'N/A' : CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId).reminder_date }
+						
+						</Text>
+						<View style={styles.completeOrder}>
+							<TouchableHighlight
+								onPress={() => this.props.navigation.navigate('CustomerWallet')}>
+								<Text style={styles.buttonText}>Topup Wallet</Text>
+							</TouchableHighlight>
 						</View>
 					</View>
 
-			    	<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
-					<Text style={styles.selectedCustomerText}>
-						Loan Balance:  {this.props.selectedCustomer.dueAmount}
-					</Text>
+					<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
+						<Text style={styles.selectedCustomerText}>
+							Loan Balance:  {this.props.selectedCustomer.dueAmount}
+						</Text>
 						<View style={styles.completeOrder}>
 							<TouchableHighlight
 								onPress={() => {
@@ -92,27 +101,28 @@ class SelectedCustomerDetails extends React.Component {
 								}}>
 								<Text style={styles.buttonText}>Loan Repayment</Text>
 							</TouchableHighlight>
-							</View>
-
+						</View>
 					</View>
-			</View>
+				</View>
 
-			<View  style={styles.modalPayment}>
-			<Modal
-				style={[styles.modal, styles.modal3]}
-				coverScreen={true}
-				position={"center"} ref={"modal6"}
-				onClosed={() => this.modalOnClose()}
-				isDisabled={this.state.isDisabled}>
-				<PaymentModal
-				modalOnClose={this.modalOnClose}
-				closePaymentModal={this.closePaymentModal}
-				 />
-			</Modal>
-			</View>
+				<View style={styles.modalPayment}>
+					<Modal
+						style={[styles.modal, styles.modal3]}
+						coverScreen={true}
+						position={"center"} ref={"modal6"}
+						onClosed={() => this.modalOnClose()}
+						isDisabled={this.state.isDisabled}>
+						<PaymentModal
+							modalOnClose={this.modalOnClose}
+							closePaymentModal={this.closePaymentModal}
+						/>
+					</Modal>
+				</View>
 			</>
 		);
 	}
+
+
 
 	modalOnClose() {
 		console.log('Modal closed here')
@@ -130,6 +140,30 @@ class SelectedCustomerDetails extends React.Component {
 		console.log(this.props.creditSales);
 		return this.props.creditSales.reduce((total, item) => { return (total + item.amount) }, 0)
 	}
+
+	getReminder(id) {
+		console.log(id);
+		console.log('op', CustomerReminderRealm.getCustomerReminderById(id));
+		if (CustomerReminderRealm.getCustomerReminderById(id).length > 0) {
+			console.log('der',CustomerReminderRealm.getCustomerReminderById(id)[0].reminder_date);
+			return CustomerReminderRealm.getCustomerReminderById(id)[0].reminder_date;
+		} else {
+			return 'N/A';
+		}
+	}
+
+	getLastPurchaseDate(id) {
+		console.log(id);
+		console.log('lastPurchaseDate', CustomerReminderRealm.getCustomerReminderById(id));		
+		if (CustomerReminderRealm.getCustomerReminderById(id).length > 0) {
+			console.log('ty', CustomerReminderRealm.getCustomerReminderById(id)[0].lastPurchaseDate)
+			return CustomerReminderRealm.getCustomerReminderById(id)[0].lastPurchaseDate;
+		} else {
+			return 'N/A';
+		}
+	}
+
+
 
 	getName() {
 		console.log('balanceCredit', this.props.balanceCredit);

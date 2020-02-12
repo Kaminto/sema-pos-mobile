@@ -1,6 +1,6 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-
+import moment from 'moment-timezone';
 class CustomerReminderRealm {
     constructor() {
         this.customerReminder = [];
@@ -99,6 +99,31 @@ class CustomerReminderRealm {
         } catch (e) {
             console.log("Error on creation", e);
         }
+    }
+
+    getCustomerReminderById(customer_account_id) {
+        console.log('customer_account_id-', customer_account_id);
+        //return Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerReminder').filtered(`customer_account_id = "${customer_account_id}"`))));
+        let reminder = Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerReminder').filtered(`customer_account_id = "${customer_account_id}"`))));
+        
+        if (reminder.length > 0) {
+            reminder = reminder.map(element=>{
+                return {
+                    ...element,
+                    lastPurchaseDate:moment
+                    .tz(element.lastPurchaseDate, moment.tz.guess())
+                    .format('dddd Do MMMM YYYY'),
+                    reminder_date:moment
+                    .tz(element.reminder_date, moment.tz.guess())
+                    .format('dddd Do MMMM YYYY')
+                }
+            });
+            console.log('reminder', reminder);
+			return reminder[0];
+		} else {
+			return 'N/A';
+		}
+   
     }
 
     updateCustomerReminder(customerReminder) {
