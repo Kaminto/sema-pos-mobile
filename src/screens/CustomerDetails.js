@@ -140,13 +140,12 @@ class PaymentTypeItem extends Component {
 					marginBottom: 5,
 					marginTop: 5
 				}}>
-					<View style={[styles.itemData, {flex: 3}]}>
-						<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>{this.props.item.name}</Text>
-					</View>
-					<View style={[styles.itemData, {flex: 1}]}>
-						<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold'}]}>{this.props.item.amount} </Text>
-					</View>
-
+				<View style={[styles.itemData, { flex: 3 }]}>
+					<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>{this.props.item.name}</Text>
+				</View>
+				<View style={[styles.itemData, { flex: 1 }]}>
+					<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold' }]}>{this.props.item.amount} </Text>
+				</View>
 			</View>
 		);
 	}
@@ -208,14 +207,14 @@ class CustomerDetails extends Component {
 		return (
 			<View style={{ flex: 1, backgroundColor: '#fff', flexDirection: 'column' }}>
 
-				 	{/* <View style={[styles.leftToolbar]}> */}
-						<SelectedCustomerDetails
-							paymentTypesActions={this.props.paymentTypesActions}
-							creditSales={this.customerCreditPaymentTypeReceipts()}
-							navigation={this.props.navigation}
-							topupTotal={this.totalTopUp()}
-							selectedCustomer={this.props.selectedCustomer}
-						/>
+				{/* <View style={[styles.leftToolbar]}> */}
+				<SelectedCustomerDetails
+					paymentTypesActions={this.props.paymentTypesActions}
+					creditSales={this.customerCreditPaymentTypeReceipts()}
+					navigation={this.props.navigation}
+					topupTotal={this.totalTopUp()}
+					selectedCustomer={this.props.selectedCustomer}
+				/>
 				{/* </View> */}
 
 				{this.getTransactionDetail()}
@@ -225,43 +224,43 @@ class CustomerDetails extends Component {
 	}
 
 	totalTopUp() {
-        return this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
-    }
+		return this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
+	}
 
-    prepareTopUpData() {
+	prepareTopUpData() {
 
-        if (this.props.topups.length > 0) {
-            const totalCount = this.props.topups.length;
-            let topupLogs = [...new Set(this.props.topups)];
-            let topups = topupLogs.map((topup, index) => {
-                return {
-                    active: topup.active,
-                    //id: topup.id,
-                    createdAt: topup.createdDate,
-                    topUpId: topup.topUpId,
-                    customer_account_id: topup.customer_account_id,
-                    total: topup.total,
-                    topup: topup.topup,
-                    balance: topup.balance,
-                    totalCount
-                };
-            });
+		if (this.props.topups.length > 0) {
+			const totalCount = this.props.topups.length;
+			let topupLogs = [...new Set(this.props.topups)];
+			let topups = topupLogs.map((topup, index) => {
+				return {
+					active: topup.active,
+					//id: topup.id,
+					createdAt: topup.createdDate,
+					topUpId: topup.topUpId,
+					customer_account_id: topup.customer_account_id,
+					total: topup.total,
+					topup: topup.topup,
+					balance: topup.balance,
+					totalCount
+				};
+			});
 
-            topups.sort((a, b) => {
-                return moment
-                    .tz(a.createdAt, moment.tz.guess())
-                    .isBefore(moment.tz(b.createdAt, moment.tz.guess()))
-                    ? 1
-                    : -1;
-            });
+			topups.sort((a, b) => {
+				return moment
+					.tz(a.createdAt, moment.tz.guess())
+					.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+					? 1
+					: -1;
+			});
 
-            console.log('topups', topups);
-            return topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
-        } else {
-            return [];
-        }
+			console.log('topups', topups);
+			return topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
+		} else {
+			return [];
+		}
 
-    }
+	}
 
 	customerCreditPaymentTypeReceipts() {
 		let receiptsPaymentTypes = [...this.compareCreditPaymentTypes()];
@@ -368,7 +367,7 @@ class CustomerDetails extends Component {
 		if (this.state.selected) {
 			return (
 
-				<View style={{ flex: .75, flexDirection: 'row', paddingTop: 20, width: '80%', alignSelf:'center'}}>
+				<View style={{ flex: .75, flexDirection: 'row', paddingTop: 20, width: '80%', alignSelf: 'center' }}>
 					<View style={{ flex: .3, backgroundColor: '#f1f1f1', borderRightWidth: 4, borderRightColor: '#CCC' }}>
 						<FlatList
 							data={this.prepareData()}
@@ -394,7 +393,7 @@ class CustomerDetails extends Component {
 			);
 		} else {
 			return (
-				<View style={{ flex: .75, flexDirection: 'row', width: '90%', alignSelf:'center' }}>
+				<View style={{ flex: .75, flexDirection: 'row', width: '90%', alignSelf: 'center' }}>
 					<Text style={{ fontSize: 20, fontWeight: 'bold', alignSelf: "center", justifyContent: "center" }}>Record this customer's sales.</Text>
 				</View>
 			);
@@ -533,21 +532,21 @@ class CustomerDetails extends Component {
 
 		return (
 			<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
-			<View key={index} style={{ padding: 15 }}>
-			<View style={styles.label}>
-				<Text>
-					{moment
-						.tz(item.createdAt, moment.tz.guess())
-						.format('dddd Do MMMM YYYY')}
-				</Text>
-			</View>
-			<Text style={styles.customername}>
-			{item.currency.toUpperCase()} {item.totalAmount}
-			</Text>
-			<View style={styles.itemData}>
-				<Text style={styles.customername}>{item.customerAccount.name}</Text>
-			</View>
-			</View>
+				<View key={index} style={{ padding: 15 }}>
+					<View style={styles.label}>
+						<Text>
+							{moment
+								.tz(item.createdAt, moment.tz.guess())
+								.format('dddd Do MMMM YYYY')}
+						</Text>
+					</View>
+					<Text style={styles.customername}>
+						{item.currency.toUpperCase()} {item.totalAmount}
+					</Text>
+					<View style={styles.itemData}>
+						<Text style={styles.customername}>{item.customerAccount.name}</Text>
+					</View>
+				</View>
 			</TouchableNativeFeedback>
 		);
 	}
@@ -713,10 +712,12 @@ class TransactionDetail extends Component {
 				/>
 			);
 		});
-
-		const paymentTypes = this.props.item.paymentTypes.map((paymentItem, idx) => {
+		let paymentTypes;
+		console.log('item', this.props.item);
+		console.log('paymentTypes', this.props.item.paymentTypes);
+		if (this.props.item.paymentTypes) {
+			paymentTypes = this.props.item.paymentTypes.map((paymentItem, idx) => {
 				return (
-
 					<PaymentTypeItem
 						key={paymentItem.id}
 						item={paymentItem}
@@ -724,6 +725,13 @@ class TransactionDetail extends Component {
 					/>
 				);
 			});
+		}else{
+			paymentTypes= (<View style={[styles.itemData, { flex: 3 }]}>
+					<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>No Payment Types</Text>
+				</View>)
+		}
+
+
 
 
 		return (
