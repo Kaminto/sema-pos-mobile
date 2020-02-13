@@ -247,23 +247,22 @@ class TransactionDetail extends Component {
 
 				</View>
 				<View style={styles.receiptStats}>
-					{!this.props.item.active && (
+					{this.props.item.active && (
 						<Text style={styles.receiptStatusText}>
 							{'Deleted'.toUpperCase()}
 						</Text>
 					)}
-					{this.props.item.isLocal || this.props.item.updated ? (
+					{!this.props.item.active  ? (
 						<View style={{ flexDirection: 'row' }}>
-							{!this.props.item.active && <Text> - </Text>}
 							<Text style={styles.receiptPendingText}>
-								{'Pending'.toLowerCase()}
+								{'Pending'.toUpperCase()}
 							</Text>
 						</View>
 					) : (
 							<View style={{ flexDirection: 'row' }}>
 								{!this.props.item.active && <Text> - </Text>}
 								<Text style={styles.receiptSyncedText}>
-									{'Synced'.toLowerCase()}
+									{'Synced'.toUpperCase()}
 								</Text>
 							</View>
 						)}

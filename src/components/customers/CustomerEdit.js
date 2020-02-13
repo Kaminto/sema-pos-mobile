@@ -26,7 +26,7 @@ import i18n from '../../app/i18n';
 class CustomerProperty extends Component {
 	constructor(props) {
 		super(props);
-		slowlog(this, /.*/);
+		//slowlog(this, /.*/);
 		this.state = { propertyText: this.props.valueFn(this.props.parent) };
 	}
 

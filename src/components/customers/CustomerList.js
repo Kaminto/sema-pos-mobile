@@ -25,7 +25,7 @@ class CustomerList extends Component {
 	constructor(props) {
 		super(props);
 
-		slowlog(this, /.*/);
+		//slowlog(this, /.*/);
 
 		this.state = {
 			refresh: false,
