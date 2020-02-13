@@ -691,6 +691,14 @@ class OrderItems extends Component {
 				accumulator: Number(value)
 			})
 		}
+
+		if (!value) {
+			console.log('empty');
+			this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, '', unitPrice);
+			this.setState({
+				accumulator: ''
+			})
+		}
 	};
 
 	discountRows = (item, index, separators) => {
