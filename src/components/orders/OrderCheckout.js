@@ -98,7 +98,6 @@ class OrderCheckout extends Component {
 		});
 		console.log('isRefill', isRefill);
 
-
 		return (
 			<View style={styles.container}>
 				<View style={[{ flexDirection: 'row' }, this.getOpacity()]}>

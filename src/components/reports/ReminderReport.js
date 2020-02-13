@@ -56,7 +56,7 @@ class RemindersReport extends Component {
 	handleDatePickedFilter = date => {
 
 		this.setState({ filterDate: new Date(date) })
-		this.hideDateTimePicker();
+		this.hideDatePickerFilter();
 
 	};
 
@@ -267,8 +267,8 @@ class RemindersReport extends Component {
 		return (
 			<View style={{ flex: 1, flexDirection: 'column' }}>
 				<View style={{ flex: .15 }}>
-					<DateFilter />
-					{/* <TouchableHighlight
+					{/* <DateFilter /> */}
+					<TouchableHighlight
 						style={styles.currentInventory}
 						onPress={() => this.showDatePickerFilter()}
 						underlayColor='#18376A'>
@@ -280,7 +280,7 @@ class RemindersReport extends Component {
 						isVisible={this.state.isDatePickerFilterVisible}
 						onConfirm={this.handleDatePickedFilter}
 						onCancel={this.hideDatePickerFilter}
-					/> */}
+					/>
 				</View>
 				<View style={{ flex: .85, backgroundColor: 'white', marginLeft: 10, marginRight: 10 }}>
 					{this.displayReminders()}
