@@ -29,7 +29,7 @@ class ProductListScreen extends Component {
 				this.state.fadeAnim,            // The animated value to drive
 				{
 					toValue: 0,                   // Animate to opacity: 1 (opaque)
-					duration: 250,
+					duration: 150,
 					useNativeDriver: true,
 				}
 			).start();

@@ -100,22 +100,24 @@ class RemindersReport extends Component {
 			this.reminderDate = this.props.dateFilter.startDate;
 
 			if (this.props.dateFilter.endDate == this.reminderDate) {
-				this.getReminders(this.reminderDate);
-				return this.props.reminderData;
+				// this.getReminders(this.reminderDate);
+				// return this.props.reminderData;
+				this.props.reportActions.getRemindersReport(this.reminderDate);
 
 			} else {
 				this.reminderDate = this.props.dateFilter.startDate;
-				this.getReminders(this.reminderDate);
-				return this.props.reminderData;
+				// this.getReminders(this.reminderDate);
+				// return this.props.reminderData;
+				this.props.reportActions.getRemindersReport(this.reminderDate);
 			}
 
 		} else {
-			console.log("LASTTRY");
-			this.getReminders(new Date());
-			return this.props.reminderData;
+			// console.log("LASTTRY");
+			// this.getReminders(new Date());
+			// return this.props.reminderData;
+			this.props.reportActions.getRemindersReport(new Date());
 		}
 	}
-
 
 	showHeader = () => {
 		return (
@@ -135,10 +137,10 @@ class RemindersReport extends Component {
 				{/* <View style={[{ flex: 1 }]}>
 					<Text style={[styles.headerItem]}>Frequency</Text>
 				</View> */}
-				<View style={[{ flex: 1.5 }]}>
+				{/* <View style={[{ flex: 1.5 }]}>
 					<Text style={[styles.headerItem]}>Reminder Date</Text>
-				</View>
-				<View style={[{ flex: 1.5 }]}>
+				</View> */}
+				<View style={[{ flex: 2 }]}>
 					<Text style={[styles.headerItem]}>Custom Reminder</Text>
 				</View>
 			</View>
@@ -164,10 +166,10 @@ class RemindersReport extends Component {
 				{/* <View style={{ flex: 1 }}>
 					<Text style={[styles.baseItem]}>{item.frequency}</Text>
 				</View> */}
-				<View style={{ flex: 1.5 }}>
+				{/* <View style={{ flex: 1.5 }}>
 					<Text style={[styles.baseItem]}>{moment.tz(new Date(item.reminder_date), moment.tz.guess()).format('ddd Do MMM YYYY') + ' ('+item.frequency+')'}</Text>
-				</View>
-				<View style={{ flex: 1.5 }}>
+				</View> */}
+				<View style={{ flex: 2 }}>
 					<TouchableHighlight
 						style={styles.currentInventory}
 						onPress={() => this.showDateTimePicker(item)}
@@ -267,8 +269,8 @@ class RemindersReport extends Component {
 		return (
 			<View style={{ flex: 1, flexDirection: 'column' }}>
 				<View style={{ flex: .15 }}>
-					{/* <DateFilter /> */}
-					<TouchableHighlight
+					<DateFilter />
+					{/* <TouchableHighlight
 						style={styles.currentInventory}
 						onPress={() => this.showDatePickerFilter()}
 						underlayColor='#18376A'>
@@ -280,7 +282,7 @@ class RemindersReport extends Component {
 						isVisible={this.state.isDatePickerFilterVisible}
 						onConfirm={this.handleDatePickedFilter}
 						onCancel={this.hideDatePickerFilter}
-					/>
+					/> */}
 				</View>
 				<View style={{ flex: .85, backgroundColor: 'white', marginLeft: 10, marginRight: 10 }}>
 					{this.displayReminders()}

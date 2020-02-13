@@ -1,4 +1,3 @@
-
 import {
 	ADD_PRODUCT_TO_ORDER, CLEAR_ORDER, REMOVE_PRODUCT,
 	SET_PRODUCT_QUANTITY, SET_ORDER_CHANNEL, SET_ORDER_FLOW,
@@ -41,11 +40,11 @@ const orderReducer = (state = initialState, action) => {
 
 					if (product.hasOwnProperty('discount')) {
 						if (product.type === 'Percentage') {
-							product.finalAmount = (product.quantity * product.unitPrice) - Number(product.discount);
+							product.finalAmount = ((product.quantity * product.unitPrice) * Number(product.discount)) / 100;
 						}
 
 						if (product.type === 'Flat') {
-							product.finalAmount = (product.quantity * product.unitPrice) * Number(product.discount) / 100;
+							product.finalAmount = (product.quantity * product.unitPrice) - Number(product.discount);
 						}
 					}
 

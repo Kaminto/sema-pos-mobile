@@ -247,7 +247,9 @@ class OrderItems extends Component {
 									</TouchableHighlight>
 								</View>
 								<View style={{ flex: .6, height: 40, textAlign: 'center' }} >
-									{this.qtyValue()}
+									<View style={{ flex: .5, alignSelf: 'center' }}>
+										{this.qtyValue()}
+									</View>
 								</View>
 								<View style={{ flex: .2, height: 40 }}>
 									<TouchableHighlight style={{ flex: 1 }}

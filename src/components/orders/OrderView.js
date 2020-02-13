@@ -27,7 +27,7 @@ class OrderView extends Component {
 	}
 
 	componentDidMount() {
-		this.props.navigation.setParams({ customerName: this.props.selectedCustomer.name });
+		// this.props.navigation.setParams({ customerName: this.props.selectedCustomer.name });
 	}
 
 	componentWillUnmount() {

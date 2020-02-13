@@ -12,8 +12,6 @@ const widthQuanityModal = 1000;
 const heightQuanityModal = 500;
 const inputTextWidth = 400;
 
-
-
 class PaymentDescription extends Component {
 	render() {
 		return (
