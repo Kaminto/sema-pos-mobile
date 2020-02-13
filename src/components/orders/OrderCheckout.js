@@ -350,6 +350,7 @@ class OrderCheckout extends Component {
 								fontSize: 20
 							}}
 							keyboardType="number-pad"
+							onChangeText={(value) => this.setEmptiesReturned(value,item)}
 							underlineColorAndroid="transparent"
 							placeholder="0"
 							value={item.emptiesReturned}
@@ -363,6 +364,7 @@ class OrderCheckout extends Component {
 								fontSize: 20
 							}}
 							keyboardType="number-pad"
+							onChangeText={(value) => this.setEmptiesDamaged(value,item)}
 							underlineColorAndroid="transparent"
 							placeholder="0"
 							value={item.emptiesDamaged}
@@ -376,6 +378,7 @@ class OrderCheckout extends Component {
 								fontSize: 20
 							}}
 							keyboardType="number-pad"
+							onChangeText={(value) => this.setRefillPending(value,item)}
 							underlineColorAndroid="transparent"
 							placeholder="0"
 							value={item.refillPending}
@@ -387,6 +390,105 @@ class OrderCheckout extends Component {
 			return (<View />);
 		}
 	}
+
+
+	setEmptiesReturned = (emptiesReturned, item) => {
+	console.log('emptiesReturned', emptiesReturned);
+	console.log('item', item);
+		let refillPending = '';
+		if (!item.hasOwnProperty('refillPending')) {
+			return;
+		}
+
+		if (item.hasOwnProperty('refillPending')) {
+			refillPending = item.refillPending;
+		}
+
+		let emptiesDamaged = '';
+		if (!item.hasOwnProperty('emptiesDamaged')) {
+			return;
+		}
+
+		if (item.hasOwnProperty('emptiesDamaged')) {
+			emptiesDamaged = item.emptiesDamaged;
+		}
+
+		let notes = '';
+		if (!item.hasOwnProperty('notes')) {
+			return;
+		}
+
+		if (item.hasOwnProperty('notes')) {
+			notes = item.notes;
+		}
+
+		this.props.orderActions.AddNotesToProduct(item.product, notes, emptiesReturned, refillPending, emptiesDamaged);
+
+	};
+
+	setEmptiesDamaged = (emptiesDamaged, item) => {
+		let refillPending = '';
+		if (!item.hasOwnProperty('refillPending')) {
+			return;
+		}
+
+		if (item.hasOwnProperty('refillPending')) {
+			refillPending = item.refillPending;
+		}
+
+		let emptiesReturned = '';
+		if (!item.hasOwnProperty('emptiesReturned')) {
+			return;
+		}
+
+		if (item.hasOwnProperty('emptiesReturned')) {
+			emptiesReturned = item.emptiesReturned;
+		}
+
+		let notes = '';
+		if (!item.hasOwnProperty('notes')) {
+			return;
+		}
+
+		if (item.hasOwnProperty('notes')) {
+			notes = item.notes;
+		}
+
+		this.props.orderActions.AddNotesToProduct(item.product, notes, emptiesReturned, refillPending, emptiesDamaged);
+	};
+
+	setRefillPending = (refillPending, item) => {
+		let emptiesReturned = '';
+		if (!item.hasOwnProperty('emptiesReturned')) {
+			return;
+		}
+
+		if (item.hasOwnProperty('emptiesReturned')) {
+			emptiesReturned = item.emptiesReturned;
+		}
+
+		let emptiesDamaged = '';
+		if (!item.hasOwnProperty('emptiesDamaged')) {
+			return;
+		}
+
+		if (item.hasOwnProperty('emptiesDamaged')) {
+			emptiesDamaged = item.emptiesDamaged;
+		}
+
+		let notes = '';
+		if (!item.hasOwnProperty('notes')) {
+			return;
+		}
+
+		if (item.hasOwnProperty('notes')) {
+			notes = item.notes;
+		}
+
+		this.props.orderActions.AddNotesToProduct(item.product, notes, emptiesReturned, refillPending, emptiesDamaged);
+
+	};
+
 
 	paymentTypesRow = (item, index, separators) => {
 
