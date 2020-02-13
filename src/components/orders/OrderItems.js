@@ -282,6 +282,7 @@ class OrderItems extends Component {
 	}
 
 	qtyValue() {
+		
 		let qty = '';
 
 		if (!this.state.selectedItem.hasOwnProperty('quantity')) {
@@ -300,7 +301,7 @@ class OrderItems extends Component {
 					fontSize: 24
 				}}
 				keyboardType="number-pad"
-				onChangeText={(value) => this.changeQuantity}
+				onChangeText={(value) => this.changeQuantity(value)}
 				value={qty}
 				underlineColorAndroid="transparent"
 				placeholder="Quantity"
@@ -682,6 +683,7 @@ class OrderItems extends Component {
 	};
 
 	changeQuantity = value => {
+		console.log('value',value)
 		let unitPrice = this.getItemPrice(this.state.selectedItem.product);
 		if (Number(value) > Number(this.state.selectedItem.quantity)) {
 			this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, Number(value), unitPrice);
