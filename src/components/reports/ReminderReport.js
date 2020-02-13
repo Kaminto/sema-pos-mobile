@@ -230,7 +230,7 @@ class RemindersReport extends Component {
 	filterDate(data) {
 		let filteredItems = data.filter((item) => {
 			if (!item.customReminderDate) {
-				if (this.formateDate(item.reminder_date) === this.formateDate(this.state.filterDate)) {
+				if (this.formateDate(item.reminder_date) === this.formateDate(this.props.dateFilter.startDate)) {
 					return true;
 				} else {
 					return false;
@@ -238,7 +238,7 @@ class RemindersReport extends Component {
 			}
 
 			if (item.customReminderDate) {
-				if (this.formateDate(item.customReminderDate) === this.formateDate(this.state.filterDate)) {
+				if (this.formateDate(item.customReminderDate) === this.formateDate(this.props.dateFilter.startDate)) {
 					return true;
 				} else {
 					return false;
@@ -265,6 +265,7 @@ class RemindersReport extends Component {
 	render() {
 		console.log('customerReminder', this.props.customerReminder);
 		console.log(this.state.filterDate);
+		console.log(this.props.dateFilter.startDate);
 		//this.setState({ filterDate: this.props.dateFilter.startDate })
 		return (
 			<View style={{ flex: 1, flexDirection: 'column' }}>
