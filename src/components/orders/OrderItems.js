@@ -282,7 +282,7 @@ class OrderItems extends Component {
 	}
 
 	qtyValue() {
-		
+
 		let qty = '';
 
 		if (!this.state.selectedItem.hasOwnProperty('quantity')) {
@@ -295,6 +295,7 @@ class OrderItems extends Component {
 
 		return (
 			<TextInput
+				// ref={input => { this.changeQuantity(input) }}
 				style={{
 					textAlign: 'center',
 					height: 50,
@@ -304,7 +305,7 @@ class OrderItems extends Component {
 				onChangeText={(value) => this.changeQuantity(value)}
 				value={qty}
 				underlineColorAndroid="transparent"
-				placeholder="Quantity"
+				placeholder='Quantity'
 			/>
 		)
 	}
@@ -685,7 +686,6 @@ class OrderItems extends Component {
 	changeQuantity = value => {
 		let unitPrice = this.getItemPrice(this.state.selectedItem.product);
 		if (Number(value) != 0) {
-			console.log('moredd')
 			this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, Number(value), unitPrice);
 			this.setState({
 				accumulator: Number(value)
