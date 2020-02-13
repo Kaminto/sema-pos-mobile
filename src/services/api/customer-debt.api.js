@@ -96,7 +96,7 @@ class CustomerDebtApi {
 				});
 		});
     }
-    
+
 	deleteCustomerDebt(customerDebt) {
 		let options = {
 			method: 'DELETE',
@@ -111,7 +111,7 @@ class CustomerDebtApi {
 		};
 		return new Promise((resolve, reject) => {
 			fetch(
-				this._url + 'sema/customer_debt/' + customerDebt.customerDebtId,
+				this._url + 'sema/customer_debt/' + customerDebt.customer_debt_id,
 				options
 			)
 				.then(response => {
@@ -143,7 +143,7 @@ class CustomerDebtApi {
 		};
 		return new Promise((resolve, reject) => {
 			fetch(
-				this._url + 'sema/customer_debt/' + customerDebt.customerDebtId,
+				this._url + 'sema/customer_debt/' + customerDebt.customer_debt_id,
 				options
 			)
 				.then(response => {
