@@ -30,7 +30,7 @@ export function GetSalesReportData(beginDate, endDate) {
 				console.log('salesData', salesData)
 				dispatch({
 					type: SALES_REPORT_FROM_ORDERS,
-					data: { salesData: { ...salesData, totalDebt: filteredDebt.reduce((total, item) => { return (total + item.due_amount) }, 0) } }
+					data: { salesData: { ...salesData.finalData, totalDebt: filteredDebt.reduce((total, item) => { return (total + item.due_amount) }, 0) } }
 				});
 			})
 			.catch(error => {
