@@ -54,8 +54,8 @@ class CustomerDebtRealm {
     updateCustomerDebt(customerDebt) {
         try {
             realm.write(() => {
-                let customerDebtObj = realm.objects('CustomerDebt').filtered(`id = "${customerDebt.customerDebtId}"`);
-                customerDebtObj[0].customerDebtId = customerDebt.customerDebtId;
+                let customerDebtObj = realm.objects('CustomerDebt').filtered(`id = "${customerDebt.customer_debt_id}"`);
+                customerDebtObj[0].customer_debt_id = customerDebt.customer_debt_id;
                 customerDebtObj[0].name = customerDebt.name;
                 customerDebtObj[0].active = customerDebt.active;
                 customerDebtObj[0].description = customerDebt.description;
@@ -86,7 +86,7 @@ class CustomerDebtRealm {
         console.log(isSelected);
         try {
             realm.write(() => {
-                let customerDebtObj = realm.objects('CustomerDebt').filtered(`id = "${customerDebt.customerDebtId}"`);
+                let customerDebtObj = realm.objects('CustomerDebt').filtered(`id = "${customerDebt.customer_debt_id}"`);
                 customerDebtObj[0].isSelected = isSelected;
 
             })
@@ -99,7 +99,7 @@ class CustomerDebtRealm {
     synched(customerDebt) {
         try {
             realm.write(() => {
-                let customerDebtObj = realm.objects('CustomerDebt').filtered(`id = "${customerDebt.customerDebtId}"`);
+                let customerDebtObj = realm.objects('CustomerDebt').filtered(`id = "${customerDebt.customer_debt_id}"`);
                 customerDebtObj[0].active = true;
                 customerDebtObj[0].syncAction = null;
             })
@@ -114,7 +114,7 @@ class CustomerDebtRealm {
         try {
             realm.write(() => {
                 let customerDebts = realm.objects('CustomerDebt');
-                let deleteCustomerDebt = customerDebts.filtered(`id = "${customerDebt.customerDebtId}"`);
+                let deleteCustomerDebt = customerDebts.filtered(`id = "${customerDebt.customer_debt_id}"`);
                 realm.delete(deleteCustomerDebt);
             })
 
@@ -127,7 +127,7 @@ class CustomerDebtRealm {
         try {
             realm.write(() => {
                 realm.write(() => {
-                    let customerDebtObj = realm.objects('CustomerDebt').filtered(`id = "${customerDebt.customerDebtId}"`);
+                    let customerDebtObj = realm.objects('CustomerDebt').filtered(`id = "${customerDebt.customer_debt_id}"`);
                     customerDebtObj[0].syncAction = 'delete';
                 })
             })
@@ -145,7 +145,7 @@ class CustomerDebtRealm {
                     customerDebts.forEach(obj => {
                         realm.create('CustomerDebt', {
                             customer_account_id: customer_account_id ? customer_account_id : null,
-                            customerDebtId: uuidv1(),
+                            customer_debt_id: uuidv1(),
                             due_amount: obj.amount,
                             syncAction: obj.syncAction ? obj.syncAction : 'CREATE',
                             created_at: new Date(),
