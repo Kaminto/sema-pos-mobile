@@ -57,12 +57,15 @@ class SelectedCustomerDetails extends React.Component {
 		return (
 			<>
 				<View style={styles.commandBarContainer}>
-					<View style={{ flexDirection: 'column', flex: 1.5, height: 100 }}>
-						<Text style={[styles.selectedCustomerText, { fontSize: 18 }]}>
+					<View style={{ flexDirection: 'column', flex: 1.5, height: 100, paddingLeft: 10 }}>
+						<Text style={[styles.selectedCustomerText, { fontSize: 20 }]}>
 							{this.getName()} . {this.getPhone()}
 						</Text>
-						<Text style={[styles.selectedCustomerText, { fontSize: 18 }]}>
-							Last Purchase {CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId) === 'N/A' ? 'N.A' : CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId).lastPurchaseDate }
+						{/* <Text style={[styles.selectedCustomerText, { fontSize: 18 }]}>
+							Last Purchase Date: {CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId) === 'N/A' ? 'N.A' : CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId).lastPurchaseDate }
+						</Text> */}
+						<Text style={styles.selectedCustomerText}>
+							Reminder Date:  {CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId) === 'N/A' ? 'N/A' : CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId).reminder_date }
 						</Text>
 						<View style={styles.completeOrder}>
 							<TouchableHighlight
@@ -78,14 +81,11 @@ class SelectedCustomerDetails extends React.Component {
 						<Text style={styles.selectedCustomerText}>
 							Customer Wallet: {this.props.topupTotal - this.getCreditPurchases()}
 						</Text>
-						<Text style={styles.selectedCustomerText}>
-							Reminder:  {CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId) === 'N/A' ? 'N/A' : CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId).reminder_date }
-						
-						</Text>
-						<View style={styles.completeOrder}>
+
+						<View style={[styles.completeOrder, {marginLeft: 10}]}>
 							<TouchableHighlight
 								onPress={() => this.props.navigation.navigate('CustomerWallet')}>
-								<Text style={styles.buttonText}>Topup Wallet</Text>
+								<Text style={[styles.buttonText, {marginLeft: 10}]}>Topup Wallet</Text>
 							</TouchableHighlight>
 						</View>
 					</View>
@@ -154,7 +154,7 @@ class SelectedCustomerDetails extends React.Component {
 
 	getLastPurchaseDate(id) {
 		console.log(id);
-		console.log('lastPurchaseDate', CustomerReminderRealm.getCustomerReminderById(id));		
+		console.log('lastPurchaseDate', CustomerReminderRealm.getCustomerReminderById(id));
 		if (CustomerReminderRealm.getCustomerReminderById(id).length > 0) {
 			console.log('ty', CustomerReminderRealm.getCustomerReminderById(id)[0].lastPurchaseDate)
 			return CustomerReminderRealm.getCustomerReminderById(id)[0].lastPurchaseDate;

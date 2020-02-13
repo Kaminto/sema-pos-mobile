@@ -115,7 +115,7 @@ class OrderCheckout extends Component {
 					coverScreen={true}
 					position={"center"} ref={"modal7"}
 					isDisabled={this.state.isDisabled}>
-					{/* <ScrollView> */}
+					<ScrollView>
 						<View style={{ flex: 1, paddingLeft: 10 }}>
 							<View style={{ flex: 1, flexDirection: 'row', height: 50 }}>
 								<View style={{ flex: 1, flexDirection: 'row' }}>
@@ -150,7 +150,7 @@ class OrderCheckout extends Component {
 								/>
 							</View>
 						</View>
-					{/* </ScrollView> */}
+					</ScrollView>
 				</Modal>
 
 				<Modal
@@ -340,14 +340,14 @@ class OrderCheckout extends Component {
 		if (item.product.description.includes('refill')) {
 			return (
 				<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
-					<View style={{ flex: 1, flexDirection: 'row' }}>
+					<View style={{ flex: 1, height: 45, flexDirection: 'row' }}>
 						<Text style={[{ textAlign: 'left', fontSize: 20, paddingLeft: 10 }, styles.baseItem]}>{item.product.description}</Text>
 					</View>
 					<View style={[{ flex: 1 }]}>
 						<TextInput
 							style={{
 								textAlign: 'center',
-								height: 40,
+								height: 45,
 								fontSize: 20
 							}}
 							keyboardType="number-pad"
@@ -360,7 +360,7 @@ class OrderCheckout extends Component {
 						<TextInput
 							style={{
 								textAlign: 'center',
-								height: 40,
+								height: 45,
 								fontSize: 20
 							}}
 							keyboardType="number-pad"
@@ -373,7 +373,7 @@ class OrderCheckout extends Component {
 						<TextInput
 							style={{
 								textAlign: 'center',
-								height: 40,
+								height: 45,
 								fontSize: 20
 							}}
 							keyboardType="number-pad"

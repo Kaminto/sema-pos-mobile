@@ -23,7 +23,6 @@ import CustomerDebtsSync from './sync/customer-debt.sync';
 
 class Synchronization {
 
-
 	constructor() {
 	}
 

@@ -175,8 +175,6 @@ class CustomerApi {
     }
 
 
-
-
 }
 
 export default new CustomerApi();
