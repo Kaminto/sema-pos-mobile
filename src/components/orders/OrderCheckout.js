@@ -901,12 +901,17 @@ class OrderCheckout extends Component {
 			const rpIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("loan");
 
 			if (rpIndex >= 0) {
+				console.log('-rpIndex-', rpIndex);
 				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) + Number(this.props.selectedPaymentTypes[rpIndex].amount);
+				console.log('-this.props.selectedCustomer.dueAmount-', this.props.selectedCustomer.dueAmount);
 				CustomerRealm.updateCustomerDueAmount(
 					this.props.selectedCustomer,
 					this.props.selectedCustomer.dueAmount
 				);
 				this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
+				this.props.customerActions.setCustomers(
+					CustomerRealm.getAllCustomer()
+				);
 			}
 
 
