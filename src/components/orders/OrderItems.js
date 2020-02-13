@@ -683,28 +683,14 @@ class OrderItems extends Component {
 	};
 
 	changeQuantity = value => {
-		console.log('value',value)
 		let unitPrice = this.getItemPrice(this.state.selectedItem.product);
-		if (Number(value) > Number(this.state.selectedItem.quantity)) {
+		if (Number(value) != 0) {
+			console.log('moredd')
 			this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, Number(value), unitPrice);
 			this.setState({
 				accumulator: Number(value)
 			})
 		}
-
-		if (Number(value) < Number(this.state.selectedItem.quantity)) {
-			this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, Number(this.state.selectedItem.quantity) - Number(value), unitPrice);
-
-			this.setState({
-				accumulator: Number(this.state.selectedItem.quantity) - Number(value)
-			})
-		}
-
-		if (Number(value) <= 0) {
-			this.props.orderActions.RemoveProductFromOrder(this.state.selectedItem.product, unitPrice);
-
-		}
-
 	};
 
 	discountRows = (item, index, separators) => {
