@@ -386,7 +386,9 @@ const styles = StyleSheet.create({
 	},
 
 	headerBackground: {
-		backgroundColor: 'white'
+		backgroundColor: '#f1f1f1',
+		borderColor: '#CCC',
+		padding: 5
 	},
 	totalItem: {
 		fontWeight: "bold",

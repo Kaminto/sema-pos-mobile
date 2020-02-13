@@ -15,7 +15,7 @@ class DateFilter extends Component {
 		let currentDate = new Date();
 		this.state = {currentDate :new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() )};
 		this.maxDate = new Date( this.state.currentDate.getTime() + 30 * dayInMilliseconds );
-		this.minDate = new Date( this.state.currentDate.getTime() - 7 * dayInMilliseconds );
+		this.minDate = new Date( this.state.currentDate.getTime() - 2 * dayInMilliseconds );
 		// this.minDate = new Date( this.maxDate.getTime() - 7 * dayInMilliseconds );
 		console.log( "DateFilter - maxDate = " + this.maxDate.toString());
 		console.log( "DateFilter - minDate = " + this.minDate.toString());

@@ -529,7 +529,7 @@ class OrderItems extends Component {
 					<Text style={[styles.baseItem, {textAlign: 'center'}]}>{item.quantity}</Text>
 				</View>
 				<View style={[{ flex: 2 }]}>
-					<Text numberOfLines={1} style={[styles.baseItem]}>
+					<Text numberOfLines={1} style={[styles.baseItem, {textAlign: 'right', paddingRight: 5}]}>
 						{this.getCurrency(item)} {this.getDiscountPrice((item.quantity * this.getItemPrice(item.product)), item)}</Text>
 				</View>
 			</View>
@@ -761,7 +761,7 @@ class OrderItems extends Component {
 					<Text style={[styles.headerItem]}>{i18n.t('quantity')}</Text>
 				</View>
 				<View style={[{ flex: 2 }]}>
-					<Text style={[styles.headerItem]}>{i18n.t('charge')}</Text>
+					<Text style={[styles.headerItem, {textAlign: 'center'}]}>{i18n.t('charge')}</Text>
 				</View>
 			</View>
 		);

@@ -18,19 +18,19 @@ export function GetSalesReportData(beginDate, endDate) {
 	return dispatch => {
 		getSalesData(beginDate, endDate)
 			.then(salesData => {
-				const customerDebts = CustomerDebtRealm.getCustomerDebts();
-				console.log('customerDebts', customerDebts);
-				const filteredDebt = customerDebts.filter(debt =>
-					moment
-						.tz(new Date(debt.created_at), moment.tz.guess())
-						.isBetween(beginDate, endDate)
-				);
-				console.log('filteredDebt', filteredDebt);
-				console.log('filteredDebt-', filteredDebt.reduce((total, item) => { return (total + item.due_amount) }, 0));
+				// const customerDebts = CustomerDebtRealm.getCustomerDebts();
+				// console.log('customerDebts', customerDebts);
+				// const filteredDebt = customerDebts.filter(debt =>
+				// 	moment
+				// 		.tz(new Date(debt.created_at), moment.tz.guess())
+				// 		.isBetween(beginDate, endDate)
+				// );
+				// console.log('filteredDebt', filteredDebt);
+				// console.log('filteredDebt-', filteredDebt.reduce((total, item) => { return (total + item.due_amount) }, 0));
 				console.log('salesData', salesData)
 				dispatch({
 					type: SALES_REPORT_FROM_ORDERS,
-					data: { salesData: { ...salesData, totalDebt: filteredDebt.reduce((total, item) => { return (total + item.due_amount) }, 0) } }
+					data: { salesData: { ...salesData } }
 				});
 			})
 			.catch(error => {

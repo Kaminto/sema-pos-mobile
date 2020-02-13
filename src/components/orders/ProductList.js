@@ -52,7 +52,6 @@ class ProductList extends Component {
 					this.getItemBackground(index),
 					{
 						flex: 1,
-						padding: 5,
 						height: this.props.viewWidth / 4,
 						width: this.props.viewWidth / 4
 					}

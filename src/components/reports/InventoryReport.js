@@ -210,19 +210,19 @@ class InventoryReport extends Component {
 
 	getInventoryData() {
 		if (this.props.inventoryData.salesAndProducts.salesItems.length > 0){
-		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
-			if (this.props.dateFilter.startDate == this.startDate && this.props.dateFilter.endDate == this.endDate) {
-				return  this.props.inventoryData.salesAndProducts.salesItems;
+			if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
+				if (this.props.dateFilter.startDate == this.startDate && this.props.dateFilter.endDate == this.endDate) {
+					return  this.props.inventoryData.salesAndProducts.salesItems;
+				} else {
+					// Get new data
+					this.startDate = this.props.dateFilter.startDate;
+					this.endDate = this.props.dateFilter.endDate;
+					this.updateReport();
+					return this.props.inventoryData.salesAndProducts.salesItems;
+				}
 			} else {
-				// Get new data
-				this.startDate = this.props.dateFilter.startDate;
-				this.endDate = this.props.dateFilter.endDate;
-				this.updateReport();
 				return this.props.inventoryData.salesAndProducts.salesItems;
 			}
-		} else {
-			return this.props.inventoryData.salesAndProducts.salesItems;
-		}
 	}
 	}
 
