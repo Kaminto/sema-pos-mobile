@@ -8,8 +8,6 @@ import {
     UIManager,
     Alert
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import PropTypes from 'prop-types';
 
 import { FloatingAction } from "react-native-floating-action";
 
@@ -33,6 +31,7 @@ import * as PaymentTypesActions from "../actions/PaymentTypesActions";
 
 import PaymentModal from './paymentModal';
 const anonymousId = '9999999-9999-9999-9999-9999999';
+import DoubleClick from 'react-native-double-click';
 
 class CustomerList extends Component {
     constructor(props) {
@@ -47,7 +46,8 @@ class CustomerList extends Component {
             salesChannelValue: '',
             customerTypeValue: '',
             hasScrolled: false
-        };
+		};
+		this.handleClick = this.handleClick.bind(this);
     }
     componentDidMount() {
         this.props.navigation.setParams({ isCustomerSelected: false });
@@ -71,7 +71,11 @@ class CustomerList extends Component {
             'customerId1',
             this.onScrollCustomerTo.bind(this)
         );
-    }
+	}
+
+	handleClick() {
+		Alert.alert('This is awesome \n Double tap succeed');
+	  }
 
     searchCustomer = (searchText) => {
         this.props.customerActions.SearchCustomers(searchText);
@@ -194,12 +198,16 @@ class CustomerList extends Component {
                     ListHeaderComponent={this.showHeader}
                     extraData={this.state.refresh}
                     renderItem={({ item, index, separators }) => (
-                        <TouchableHighlight
-                            onPress={() => this.onPressItem(item)}
-                            onShowUnderlay={separators.highlight}
-                            onHideUnderlay={separators.unhighlight}>
-                            {this.getRow(item, index, separators)}
-                        </TouchableHighlight>
+                        // <TouchableHighlight
+                        //     onPress={() => this.onPressItem(item)}
+                        //     onShowUnderlay={separators.highlight}
+                        //     onHideUnderlay={separators.unhighlight}>
+                        //     {this.getRow(item, index, separators)}
+						// </TouchableHighlight>
+						<DoubleClick onClick={() => this.onPressItem(item)}>
+							{this.getRow(item, index, separators)}
+						</DoubleClick>
+
                     )}
                     keyExtractor={item => item.customerId}
                     initialNumToRender={50}

@@ -1847,6 +1847,7 @@ class PosStorage {
 	stringify(jsObject) {
 		return JSON.stringify(jsObject);
 	}
+
 	parseJson(jsonString) {
 		if (typeof jsonString === 'string') {
 			return JSON.parse(jsonString);

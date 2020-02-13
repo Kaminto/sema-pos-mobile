@@ -137,11 +137,11 @@ const getSalesData = (beginDate, endDate) => {
 								Number(lineItem.quantity),
 							totalSales: parseFloat(lineItem.price_total),
 							litersPerSku: Number(
-								lineItem.product.unitPerProduct
-								// lineItem.litersPerSku
+								// lineItem.product.unitPerProduct
+								lineItem.litersPerSku
 							),
 							totalLiters:
-								Number(lineItem.product.unitPerProduct) *
+								Number(lineItem.litersPerSku) *
 								Number(lineItem.quantity),
 							isNew: true
 						};
@@ -158,14 +158,14 @@ const getSalesData = (beginDate, endDate) => {
 					product.quantity += Number(lineItem.quantity);
 					product.totalSales += parseFloat(lineItem.price_total);
 					product.totalLiters +=
-						Number(lineItem.product.unitPerProduct) *
+						Number(lineItem.litersPerSku) *
 						Number(lineItem.quantity);
 
 					final.salesItems[productIndex] = product;
 				}
 
 				final.totalLiters +=
-					Number(lineItem.product.unitPerProduct) *
+					Number(lineItem.litersPerSku) *
 					Number(lineItem.quantity);
 				final.totalSales += parseFloat(lineItem.price_total);
 				return final;
