@@ -31,9 +31,31 @@ class OrderTotal extends Component {
 
 	getAmount = () => {
 		if (this.props.products.length > 0) {
-			return this.props.products.reduce((total, item) => {
-				return total + item.finalAmount;
-			}, 0);
+			let totalAmount = 0;
+			for (let i of this.props.products) {
+				if (i.product.description === 'discount') {
+					console.log('finalAmount', i.product.description);
+					totalAmount = totalAmount - i.finalAmount;
+				}
+				 else if (i.product.description === 'delivery') {
+					console.log('finalAmount', i.product.description);
+					totalAmount = totalAmount + i.finalAmount;
+				} else {
+					totalAmount = totalAmount + i.finalAmount;
+				}
+			}
+			return totalAmount;
+
+			// return this.props.products.reduce((total, item) => {
+
+			// 	if (item.product.description === 'discount') {
+			// 		console.log('finalAmount', item.product.description);
+			// 		return total - item.finalAmount;
+			// 	} else {
+			// 		return total + item.finalAmount;
+			// 	}
+
+			// }, 0);
 		}
 		return 0;
 	};

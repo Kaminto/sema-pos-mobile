@@ -721,10 +721,24 @@ class OrderCheckout extends Component {
 			// If this is a loan payoff then the loan payment is negative the loan amount due
 			return this.calculateAmountDue();
 		} else {
-			return this.props.products.reduce((total, item) => {
-				return total + item.finalAmount;
+			let totalAmount = 0;
+			for (let i of this.props.products) {
+				if (i.product.description === 'discount') {
+					console.log('finalAmount', i.product.description);
+					totalAmount = totalAmount - i.finalAmount;
+				}
+				 else if (i.product.description === 'delivery') {
+					console.log('finalAmount', i.product.description);
+					totalAmount = totalAmount + i.finalAmount;
+				} else {
+					totalAmount = totalAmount + i.finalAmount;
+				}
+			}
+			return totalAmount;
+			// return this.props.products.reduce((total, item) => {
+			// 	return total + item.finalAmount;
 
-			}, 0);
+			// }, 0);
 		}
 	}
 

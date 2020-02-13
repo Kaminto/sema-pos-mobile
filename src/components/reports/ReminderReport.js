@@ -228,7 +228,7 @@ class RemindersReport extends Component {
 	filterDate(data) {
 		let filteredItems = data.filter((item) => {
 			if (!item.customReminderDate) {
-				if (this.formateDate(item.reminder_date) === this.formateDate(this.state.filterDate)) {
+				if (this.formateDate(item.reminder_date) === this.formateDate(this.props.dateFilter.startDate)) {
 					return true;
 				} else {
 					return false;
@@ -236,7 +236,7 @@ class RemindersReport extends Component {
 			}
 
 			if (item.customReminderDate) {
-				if (this.formateDate(item.customReminderDate) === this.formateDate(this.state.filterDate)) {
+				if (this.formateDate(item.customReminderDate) === this.formateDate(this.props.dateFilter.startDate)) {
 					return true;
 				} else {
 					return false;
@@ -263,12 +263,13 @@ class RemindersReport extends Component {
 	render() {
 		console.log('customerReminder', this.props.customerReminder);
 		console.log(this.state.filterDate);
+		console.log(this.props.dateFilter.startDate);
 		//this.setState({ filterDate: this.props.dateFilter.startDate })
 		return (
 			<View style={{ flex: 1, flexDirection: 'column' }}>
 				<View style={{ flex: .15 }}>
-					{/* <DateFilter /> */}
-					<TouchableHighlight
+					<DateFilter />
+					{/* <TouchableHighlight
 						style={styles.currentInventory}
 						onPress={() => this.showDatePickerFilter()}
 						underlayColor='#18376A'>
@@ -280,7 +281,7 @@ class RemindersReport extends Component {
 						isVisible={this.state.isDatePickerFilterVisible}
 						onConfirm={this.handleDatePickedFilter}
 						onCancel={this.hideDatePickerFilter}
-					/>
+					/> */}
 				</View>
 				<View style={{ flex: .85, backgroundColor: 'white', marginLeft: 10, marginRight: 10 }}>
 					{this.displayReminders()}
