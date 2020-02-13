@@ -685,10 +685,17 @@ class OrderItems extends Component {
 	changeQuantity = value => {
 		let unitPrice = this.getItemPrice(this.state.selectedItem.product);
 		if (Number(value) != 0) {
-			console.log('moredd')
 			this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, Number(value), unitPrice);
 			this.setState({
 				accumulator: Number(value)
+			})
+		}
+
+		if (!value) {
+			console.log('empty');
+			this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, '', unitPrice);
+			this.setState({
+				accumulator: ''
 			})
 		}
 	};
