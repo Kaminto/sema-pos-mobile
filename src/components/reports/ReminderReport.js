@@ -32,7 +32,6 @@ class RemindersReport extends Component {
 		this.reminderDate = null;
 	}
 	componentDidMount() {
-		this.props.reportActions.getRemindersReport(this.props.dateFilter.currentDate);
 	}
 
 	showDateTimePicker = (reminder) => {
@@ -92,32 +91,8 @@ class RemindersReport extends Component {
 
 
 	getReminders(filterDate) {
-		this.props.reportActions.getRemindersReport(filterDate);
 	}
 
-	getRemindersData() {
-		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
-			this.reminderDate = this.props.dateFilter.startDate;
-
-			if (this.props.dateFilter.endDate == this.reminderDate) {
-				// this.getReminders(this.reminderDate);
-				// return this.props.reminderData;
-				this.props.reportActions.getRemindersReport(this.reminderDate);
-
-			} else {
-				this.reminderDate = this.props.dateFilter.startDate;
-				// this.getReminders(this.reminderDate);
-				// return this.props.reminderData;
-				this.props.reportActions.getRemindersReport(this.reminderDate);
-			}
-
-		} else {
-			// console.log("LASTTRY");
-			// this.getReminders(new Date());
-			// return this.props.reminderData;
-			this.props.reportActions.getRemindersReport(new Date());
-		}
-	}
 
 	showHeader = () => {
 		return (

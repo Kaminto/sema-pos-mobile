@@ -6,7 +6,8 @@ export const InventorySchema = {
         kiosk_id: { type: 'int' },
         product_id: 'string',
 		quantity: 'int',
-		notDispatched: { type: 'int', optional: true },
+        notDispatched: { type: 'int', optional: true },
+        
         active: { type: 'bool', optional: true },
         syncAction: { type: 'string', optional: true },
         created_at: 'date',
