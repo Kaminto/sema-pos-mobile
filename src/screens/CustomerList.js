@@ -6,7 +6,7 @@ import {
     TouchableHighlight,
     StyleSheet,
     UIManager,
-    Alert
+	Alert
 } from 'react-native';
 
 import { FloatingAction } from "react-native-floating-action";
@@ -47,7 +47,9 @@ class CustomerList extends Component {
             customerTypeValue: '',
             hasScrolled: false
 		};
-		this.handleClick = this.handleClick.bind(this);
+
+		this.onPressItem = this.onPressItem.bind(this);
+		this.onLongPressItem = this.onLongPressItem.bind(this);
     }
     componentDidMount() {
         this.props.navigation.setParams({ isCustomerSelected: false });
@@ -72,10 +74,6 @@ class CustomerList extends Component {
             this.onScrollCustomerTo.bind(this)
         );
 	}
-
-	handleClick() {
-		Alert.alert('This is awesome \n Double tap succeed');
-	  }
 
     searchCustomer = (searchText) => {
         this.props.customerActions.SearchCustomers(searchText);
@@ -194,19 +192,17 @@ class CustomerList extends Component {
                     ref={ref => {
                         this.flatListRef = ref;
                     }}
-                    data={this.prepareData()}
+					data={this.prepareData()}
                     ListHeaderComponent={this.showHeader}
                     extraData={this.state.refresh}
                     renderItem={({ item, index, separators }) => (
-                        // <TouchableHighlight
-                        //     onPress={() => this.onPressItem(item)}
-                        //     onShowUnderlay={separators.highlight}
-                        //     onHideUnderlay={separators.unhighlight}>
-                        //     {this.getRow(item, index, separators)}
-						// </TouchableHighlight>
-						<DoubleClick onClick={() => this.onPressItem(item)}>
-							{this.getRow(item, index, separators)}
-						</DoubleClick>
+                        <TouchableHighlight
+							onLongPress={() => this.onLongPressItem(item)}
+							onPress={() => this.onPressItem(item)}
+                            onShowUnderlay={separators.highlight}
+                            onHideUnderlay={separators.unhighlight}>
+                            {this.getRow(item, index, separators)}
+						</TouchableHighlight>
 
                     )}
                     keyExtractor={item => item.customerId}
@@ -374,21 +370,6 @@ class CustomerList extends Component {
             : false;
     }
 
-    onLongPressItem = (item, event) => {
-        this.setState({ refresh: !this.state.refresh });
-        let actions = [i18n.t('edit'), i18n.t('delete')];
-        this.props.customerActions.CustomerSelected(item);
-        // if (!this._isAnonymousCustomer(item)) {
-        if (event && event.target) {
-            UIManager.showPopupMenu(
-                event.target,
-                actions,
-                this.onPopupError,
-                this.onPopupEvent.bind(this)
-            );
-        }
-        // }
-    };
     onPopupEvent(eventName, index) {
         if (eventName !== 'itemSelected') return;
         if (index === 0) {
@@ -449,7 +430,7 @@ class CustomerList extends Component {
         console.log('onPopupError');
     }
 
-    onPressItem = item => {
+    onLongPressItem = item => {
         this.props.customerActions.CustomerSelected(item);
         this.setState({ refresh: !this.state.refresh });
         this.props.customerActions.setCustomerEditStatus(true);
@@ -458,6 +439,18 @@ class CustomerList extends Component {
         this.props.navigation.setParams({ customerName: item.name });
         this.props.navigation.setParams({ 'title': item.name });
         Events.trigger('onOrder', { customer: item });
+	};
+
+	onPressItem = item => {
+        this.props.customerActions.CustomerSelected(item);
+        this.setState({ refresh: !this.state.refresh });
+        this.props.customerActions.setCustomerEditStatus(true);
+        this.props.navigation.setParams({ isCustomerSelected: true });
+        this.props.navigation.setParams({ isDueAmount: item.dueAmount });
+        this.props.navigation.setParams({ customerName: item.name });
+        this.props.navigation.setParams({ 'title': item.name });
+		Events.trigger('onOrder', { customer: item });
+		this.props.navigation.navigate('OrderView');
     };
 
     showHeader = () => {
@@ -554,7 +547,6 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(CustomerList);
-
 
 
 const styles = StyleSheet.create({

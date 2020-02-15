@@ -796,7 +796,6 @@ const styles = StyleSheet.create({
 	},
 
 	inputText: {
-		fontSize: 24,
 		alignSelf: 'center',
 		borderWidth: 2,
 		borderRadius: 8,
@@ -806,7 +805,6 @@ const styles = StyleSheet.create({
 	},
 
 	phoneInputText: {
-		fontSize: 24,
 		backgroundColor: 'white',
 		margin: 5,
 		paddingRight: 5

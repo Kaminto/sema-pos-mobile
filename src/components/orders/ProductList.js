@@ -17,8 +17,10 @@ import randomMC from 'random-material-color';
 
 class ProductList extends Component {
 	constructor(props) {
-		// slowlog(this, /.*/);
 		super(props);
+
+		this.onPressItem = this.onPressItem.bind(this);
+
 	}
 
 	componentDidMount() {

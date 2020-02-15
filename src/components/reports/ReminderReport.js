@@ -201,6 +201,10 @@ class RemindersReport extends Component {
 		} else {
 
 			return (
+				<View>
+				{this.prepareData().length?
+
+          (
 				<FlatList
 					ListHeaderComponent={this.showHeader}
 					extraData={this.state.refresh}
@@ -213,7 +217,16 @@ class RemindersReport extends Component {
 						</TouchableHighlight>
 					)}
 					keyExtractor={item => `${item.customerId}${item.receipt}`}
-				/>
+				/>)
+				:
+				(
+				  <View style={styles.emptyListStyle}>
+					<Text style={styles.emptyMessageStyle}>No Reminders Available.</Text>
+				  </View>
+				)
+		}
+		</View>
+
 			)
 		}
 	}
@@ -419,5 +432,15 @@ const styles = StyleSheet.create({
 	},
 	selectedBackground: {
 		backgroundColor: '#9AADC8'
-	}
+	},
+
+	emptyListStyle: {
+		flex: 1,
+		justifyContent: 'center'
+	  },
+	  emptyMessageStyle: {
+		textAlign: 'center',
+		fontWeight: 'bold',
+		fontSize: 18
+		}
 });

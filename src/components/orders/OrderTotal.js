@@ -1,15 +1,11 @@
 import React, { Component } from "react"
-import { View, Text, FlatList, ScrollView, TouchableHighlight, StyleSheet } from "react-native";
+import { View, Text,  StyleSheet } from "react-native";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as OrderActions from "../../actions/OrderActions";
-import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
-import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import * as Utilities from "../../services/Utilities";
 import * as ToolbarActions from '../../actions/ToolBarActions';
 import i18n from "../../app/i18n";
-import Modal from 'react-native-modalbox';
-import ToggleSwitch from 'toggle-switch-react-native';
 
 class OrderTotal extends Component {
 
@@ -46,16 +42,6 @@ class OrderTotal extends Component {
 			}
 			return totalAmount;
 
-			// return this.props.products.reduce((total, item) => {
-
-			// 	if (item.product.description === 'discount') {
-			// 		console.log('finalAmount', item.product.description);
-			// 		return total - item.finalAmount;
-			// 	} else {
-			// 		return total + item.finalAmount;
-			// 	}
-
-			// }, 0);
 		}
 		return 0;
 	};

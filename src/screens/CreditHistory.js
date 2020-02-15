@@ -265,12 +265,7 @@ class CreditHistory extends Component {
 
     onPressItem = item => {
         console.log('_onPressItem', item);
-        // this.props.customerActions.CustomerSelected(item);
-        // this.setState({ refresh: !this.state.refresh });
-        // this.props.customerActions.setCustomerEditStatus(true);
-        // this.props.navigation.setParams({ isCustomerSelected: true });
-        // this.props.navigation.setParams({ customerName: item.name });
-        // Events.trigger('onOrder', { customer: item });
+
     };
 
     customerCreditPaymentTypeReceipts() {

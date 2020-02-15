@@ -11,9 +11,11 @@ import * as ProductActions from './src/actions/ProductActions';
 import * as ToolbarActions from './src/actions/ToolBarActions';
 import * as receiptActions from './src/actions/ReceiptActions';
 
-import { useScreens } from 'react-native-screens';
+import { enableScreens } from 'react-native-screens';
+// import 'react-native-gesture-handler';
 
-useScreens();
+
+enableScreens();
 
 
 const MainApp = createAppContainer(JibuRouter);

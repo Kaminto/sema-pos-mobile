@@ -36,6 +36,8 @@ class OrderItems extends Component {
 			swipeToClose: true,
 			sliderValue: 0.3,
 		};
+
+		this.onPressItem = this.onPressItem.bind(this);
 	}
 
 	render() {

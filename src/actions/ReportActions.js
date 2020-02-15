@@ -458,14 +458,4 @@ const getRemindersAction = () => {
 	});
 };
 
-const filterReminders = (reminders, date) => {
-	console.log("This is in FILTERS" + Object.keys(reminders));
-	let filteredReminders = reminders.filter(reminder => {
-		return reminder.reminder_date == moment(date).add(1, 'days').format("YYYY-MM-DD");
-	});
-
-	console.table(filteredReminders);
-	return filteredReminders;
-};
-
 

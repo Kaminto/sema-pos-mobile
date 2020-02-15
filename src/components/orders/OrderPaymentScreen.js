@@ -31,6 +31,10 @@ import Events from 'react-native-simple-events';
 const uuidv1 = require('uuid/v1');
 
 class PaymentDescription extends Component {
+	shouldComponentUpdate(nextProps, nextState){
+		return (nextProps.title !== this.props.title || nextProps.total !== this.props.total);
+	}
+
 	render() {
 		return (
 			<View style={[{ flex: 1, flexDirection: 'row', marginTop: '1%' }]}>

@@ -167,7 +167,7 @@ class CustomSidebarMenu extends Component {
     try {
       this.setState({ isLoading: true });
       Synchronization.synchronize().then(syncResult => {
-        console.log("syncResult", syncResult);
+        // console.log("syncResult", syncResult);
         this.setState({ isLoading: false });
 
         this.props.customerActions.setCustomers(

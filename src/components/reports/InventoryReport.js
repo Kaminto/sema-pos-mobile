@@ -39,7 +39,7 @@ class InventoryEdit extends Component {
 								style={[styles.inventoryInput, { flex: .5, paddingRight: 40, marginRight: 20 }]}
 								underlineColorAndroid='transparent'
 								onSubmitEditing={() => this.props.okMethod(this.props.wastageName, this.state.inventoryQuantity)}
-								keyboardType='decimal-pad'
+								keyboardType='number-pad'
 								onChangeText={this.onChangeText.bind(this)}
 								value={this.state.inventoryQuantity}
 								ref={this.quantityInput}
@@ -123,7 +123,6 @@ class InventoryReport extends Component {
 						<FlatList
 							style={{ flex: .5 }}
 							data={this.getInventoryData()}
-							// data={this.props.inventoryData}
 							extraData={this.state.refresh}
 							ListHeaderComponent={this.showHeader}
 							renderItem={({ item, index, separators }) => (
@@ -209,7 +208,7 @@ class InventoryReport extends Component {
 	}
 
 	getInventoryData() {
-		if (this.props.inventoryData.salesAndProducts.salesItems.length > 0){
+		// if (this.props.inventoryData.salesAndProducts.salesItems.length > 0){
 			if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
 				if (this.props.dateFilter.startDate == this.startDate && this.props.dateFilter.endDate == this.endDate) {
 					return  this.props.inventoryData.salesAndProducts.salesItems;
@@ -223,7 +222,7 @@ class InventoryReport extends Component {
 			} else {
 				return this.props.inventoryData.salesAndProducts.salesItems;
 			}
-	}
+	// }
 	}
 
 	getTotalSales() {

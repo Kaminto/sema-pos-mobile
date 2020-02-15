@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { View, Alert, Text, TextInput, Button, FlatList, ScrollView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
+import { View, Alert, Text, TextInput, Button, FlatList, SafeAreaView, ScrollView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as OrderActions from "../../actions/OrderActions";
@@ -135,6 +135,7 @@ class OrderCheckout extends Component {
 								style={{
 									flex: 1
 								}}>
+									<SafeAreaView style={{flex: 1}}>
 								<FlatList
 									data={this.props.products}
 									ListHeaderComponent={this.showBottlesHeader}
@@ -147,6 +148,7 @@ class OrderCheckout extends Component {
 									keyExtractor={item => item.product.description}
 									initialNumToRender={50}
 								/>
+								</SafeAreaView>
 							</View>
 						</View>
 					</ScrollView>
@@ -178,20 +180,6 @@ class OrderCheckout extends Component {
 									marginRight: 20
 								}}>
 
-								<View style={{ flex: 1, flexDirection: 'row' }}>
-									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
-								</View>
-
-								<FlatList
-									data={this.props.paymentTypes}
-									renderItem={({ item, index, separators }) => (
-										this.paymentTypesRow(item, index, separators)
-									)}
-									extraData={this.props.selectedPaymentTypes}
-									numColumns={2}
-									contentContainerStyle={styles.container}
-								/>
-
 								<Card
 									containerStyle={{ backgroundColor: '#ABC1DE' }}>
 
@@ -221,6 +209,20 @@ class OrderCheckout extends Component {
 										/>
 									</View>
 								</Card>
+
+								<View style={{ flex: 1, flexDirection: 'row' }}>
+									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
+								</View>
+
+								<FlatList
+									data={this.props.paymentTypes}
+									renderItem={({ item, index, separators }) => (
+										this.paymentTypesRow(item, index, separators)
+									)}
+									extraData={this.props.selectedPaymentTypes}
+									numColumns={2}
+									contentContainerStyle={styles.container}
+								/>
 
 								<View style={{ flex: 1, flexDirection: 'row' }}>
 									<View style={{ flex: 1 }}>
@@ -507,7 +509,7 @@ class OrderCheckout extends Component {
 				isSelectedAvailable = true;
 			}
 		}
-
+		if (item.name != 'loan' && item.name != 'credit') {
 		return (
 			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
 				<View style={{ flex: 1, height: 45 }}>
@@ -536,6 +538,7 @@ class OrderCheckout extends Component {
 				</View>
 			</View>
 		);
+							}
 	};
 
 	showTextInput(item) {
@@ -547,15 +550,15 @@ class OrderCheckout extends Component {
 						<TextInput
 							underlineColorAndroid="transparent"
 							onChangeText={(textValue) => {
-								if (Number(textValue) > Number(this.calculateOrderDue())) {
-									Alert.alert(
-										'Notice. ',
-										`Amount can not be greater that ${this.calculateOrderDue()}`,
-										[{ text: 'OK', onPress: () => { } }],
-										{ cancelable: false }
-									);
-									return;
-								}
+								// if (Number(textValue) > Number(this.calculateOrderDue())) {
+								// 	Alert.alert(
+								// 		'Notice. ',
+								// 		`Amount can not be greater that ${this.calculateOrderDue()}`,
+								// 		[{ text: 'OK', onPress: () => { } }],
+								// 		{ cancelable: false }
+								// 	);
+								// 	return;
+								// }
 
 								if (this.props.selectedPaymentTypes.length >= 0) {
 									const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
@@ -1020,7 +1023,7 @@ class OrderCheckout extends Component {
 
 			Alert.alert(
 				'SEMA',
-				'Payment Made',
+				'The sale has been recorded.',
 				[{
 					text: 'OK',
 					onPress: () => {

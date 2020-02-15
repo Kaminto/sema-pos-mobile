@@ -21,6 +21,8 @@ class ProductListScreen extends Component {
 		}
 	}
 
+
+
 	componentDidMount() {
 		this.setState({
 			salesChannel: SalesChannelRealm.getSalesChannelFromId(this.props.selectedCustomer.salesChannelId)

@@ -56,7 +56,7 @@ class ReceiptPaymentTypeRealm {
             realm.write(() => {
                 let receiptPaymentTypeObj = realm.objects('ReceiptPaymentType').filtered(`receipt_payment_type_id = "${receiptPaymentType.receipt_payment_type_id}"`);
                 receiptPaymentTypeObj[0].id = receiptPaymentType.id;
-                receiptPaymentTypeObj[0].name = receiptPaymentType.name;
+				receiptPaymentTypeObj[0].name = receiptPaymentType.name;
                 receiptPaymentTypeObj[0].active = receiptPaymentType.active;
                 receiptPaymentTypeObj[0].description = receiptPaymentType.description;
                 receiptPaymentTypeObj[0].syncAction = receiptPaymentType.syncAction;

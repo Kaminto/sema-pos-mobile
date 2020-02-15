@@ -75,7 +75,7 @@ class PaymentModal extends Component {
 								this.paymentTypesRow(item, index, separators)
 							)}
 							extraData={this.props.selectedDebtPaymentTypes}
-							numColumns={2}
+							numColumns={1}
 							contentContainerStyle={styles.container}
 						/>
 					<Card>
@@ -85,12 +85,12 @@ class PaymentModal extends Component {
 								this.calculateAmountDue()
 							)}
 						/>
-						<PaymentDescription
+						{/* <PaymentDescription
 											title={`${i18n.t('customer-wallet')}:`}
 											total={Utilities.formatCurrency(
 												this.currentCredit()
 											)}
-										/>
+										/> */}
 										</Card>
 
 						<View style={styles.completeOrder}>
@@ -249,8 +249,6 @@ class PaymentModal extends Component {
 
 	}
 
-
-
 	paymentTypesRow = (item, index, separators) => {
 
 		let isSelectedAvailable = false;
@@ -270,7 +268,7 @@ class PaymentModal extends Component {
 			}
 		}
 
-		if (item.name != "loan") {
+		if (item.name != "loan" && item.name != "credit") {
 			return (
 				<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
 					<View style={{ flex: 1, height: 50 }}>
@@ -403,13 +401,13 @@ class PaymentModal extends Component {
 		console.log('textValue', textValue);
 		console.log('selectedType', this.state.selectedType);
 		if (Number(textValue) > Number(this.calculateOrderDue())) {
-			Alert.alert(
-				'Notice. ',
-				`Amount can not be greater that ${this.calculateOrderDue()}`,
-				[{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-				{ cancelable: false }
-			);
-			return;
+			// Alert.alert(
+			// 	'Notice. ',
+			// 	`Amount can not be greater that ${this.calculateOrderDue()}`,
+			// 	[{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+			// 	{ cancelable: false }
+			// );
+			// return;
 		}
 
 		if (this.props.selectedDebtPaymentTypes.length >= 0) {
@@ -502,6 +500,41 @@ class PaymentModal extends Component {
 
 		return true;
 	};
+
+	// addCredit = () => {
+    //     console.log('Number(this.state.topup)', Number(this.state.topup))
+    //     if (Number(this.state.topup) === 0) {
+    //         Alert.alert(
+    //             'Notice',
+    //             'Top Up should be more than 0',
+    //             [{
+    //                 text: 'OK',
+    //                 onPress: () => {
+
+    //                 }
+    //             }],
+    //             { cancelable: false }
+    //         );
+    //         return;
+    //     }
+
+
+    //     console.log(this.state.topup);
+    //     console.log(this.props.selectedCustomer);
+
+    //     CreditRealm.createCredit(
+    //         this.props.selectedCustomer.customerId,
+    //         Number(this.state.topup),
+    //         Number(this.state.topup)
+    //     );
+    //     this.setState({ topup: "" });
+    //     console.log(this.state.topup);
+    //     console.log(CreditRealm.getAllCredit());
+    //     this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
+    //     this.props.topUpActions.setTopUpTotal(
+    //         this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
+    //     );
+    // }
 
 	getCancelButton() {
 		return (
