@@ -389,36 +389,4 @@ export const initializeInventoryData = () => {
 	};
 };
 
-export function getRemindersReport(date) {
-
-	return (dispatch) => {
-		getRemindersAction().then((remindersdata) => {
-
-			let rem = filterReminders(remindersdata, date);
-
-			dispatch({ type: REMINDER_REPORT, data: { reminderdata: rem } });
-		}).catch((error) => {
-
-			dispatch({ type: REMINDER_REPORT, data: { reminderdata: [] } });
-		});
-	};
-}
-
-const getRemindersAction = () => {
-	return new Promise(async (resolve, reject) => {
-		let reminders = PosStorage.getRemindersPos();
-		resolve(reminders);
-	});
-};
-
-const filterReminders = (reminders, date) => {
-	console.log("This is in FILTERS" + Object.keys(reminders));
-	let filteredReminders = reminders.filter(reminder => {
-		return reminder.reminder_date == moment(date).add(1, 'days').format("YYYY-MM-DD");
-	});
-
-	console.table(filteredReminders);
-	return filteredReminders;
-};
-
 

@@ -25,7 +25,8 @@ class InventoryEdit extends Component {
 	}
 
 	componentDidUpdate() {
-		this.state.inventoryQuantity = this.props.quantity;
+		console.log('updated');
+		//this.state.inventoryQuantity = this.props.quantity;
 	}
 
 	render() {
@@ -57,7 +58,11 @@ class InventoryEdit extends Component {
 						</View>
 						<View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
 							<View style={{ backgroundColor: "#2858a7", borderRadius: 10, flex: .3 }}>
-								<TouchableHighlight underlayColor='#c0c0c0' onPress={() => this.props.okMethod(this.props.wastageName, this.state.inventoryQuantity)}>
+								<TouchableHighlight underlayColor='#c0c0c0' onPress={() => {
+									console.log('this.props.wastageName', this.props.wastageName);
+									console.log('this.state.inventoryQuantity', this.state.inventoryQuantity);
+									this.props.okMethod(this.props.wastageName, this.state.inventoryQuantity);
+									}}>
 									<Text style={styles.buttonText}>{i18n.t('ok')}</Text>
 								</TouchableHighlight>
 							</View>
@@ -236,23 +241,12 @@ class InventoryReport extends Component {
 	};
 
 	getInventoryData() {
-		console.log('dateFilter', this.props.dateFilter);
-		console.log('startDate', this.formatDate(this.startDate));
-		console.log('endDate', this.formatDate(this.endDate));
-		console.log('checkmate1', this.props.wastageData);
-
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
 			if (this.formatDate(this.props.dateFilter.startDate) == this.formatDate(this.startDate) && this.formatDate(this.props.dateFilter.endDate) == this.formatDate(this.endDate)) {
-				console.log('is same');
 				return this.props.wastageData.salesAndProducts.salesItems;
 			} else {
-				console.log('is different');
 				this.startDate = this.props.dateFilter.startDate;
 				this.endDate = this.props.dateFilter.endDate;
-				console.log('dateFilter-DIFFE', this.props.dateFilter);
-				console.log('startDate-DIFFE', this.startDate);
-				console.log('endDate-DIFFE', this.endDate);
-				console.log('products-products', this.props.products);
 				this.props.wastageActions.GetInventoryReportData(this.startDate, this.endDate, this.props.products);
 				return this.props.wastageData.salesAndProducts.salesItems;
 				// getWastageData(this.startDate, this.endDate, getMrps(this.props.products))
@@ -266,58 +260,6 @@ class InventoryReport extends Component {
 			}
 		}
 
-
-
-		// 	if (this.props.wastageData.salesAndProducts.salesItems.length > 0){
-		// 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
-		// 			if (this.props.dateFilter.startDate == this.startDate && this.props.dateFilter.endDate == this.endDate) {
-		// 				return  this.props.wastageData.salesAndProducts.salesItems;
-		// 			} else {
-		// 				// Get new data
-		// 				this.startDate = this.props.dateFilter.startDate;
-		// 				this.endDate = this.props.dateFilter.endDate;
-		// 				this.updateReport();
-		// 				return this.props.wastageData.salesAndProducts.salesItems;
-		// 			}
-		// 		} else {
-		// 			return this.props.wastageData.salesAndProducts.salesItems;
-		// 		}
-		// }else {
-		// 	console.log('not there currentl');
-		// 	this.updateReport();
-		// }
-
-	}
-
-	getInventoryDatau() {
-		console.log('dateFilter12', this.props.dateFilter);
-		console.log('inventoryData', this.props.wastageData);
-		// if (this.props.wastageData.salesAndProducts.salesItems.length > 0){
-		// 	if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
-		// 		if (this.props.dateFilter.startDate == this.startDate && this.props.dateFilter.endDate == this.endDate) {
-		// 			return  this.props.wastageData.salesAndProducts.salesItems;
-		// 		} else {
-		// 			// Get new data
-		//if (this.props.wastageData.salesAndProducts.hasOwnProperty("salesItems")) {
-		if (this.props.wastageData.hasOwnProperty("salesAndProducts")) {
-			console.log('here')
-			this.startDate = this.props.dateFilter.startDate;
-			this.endDate = this.props.dateFilter.endDate;
-			this.updateReport();
-			return this.props.wastageData.salesAndProducts.salesItems;
-		} else {
-			console.log('not here')
-			this.startDate = this.props.dateFilter.startDate;
-			this.endDate = this.props.dateFilter.endDate;
-			this.updateReport();
-
-		}
-
-		// 			}
-		// 		} else {
-		// 			return this.props.wastageData.salesAndProducts.salesItems;
-		// 		}
-		// }
 	}
 
 	getTotalSales() {
@@ -429,6 +371,8 @@ class InventoryReport extends Component {
 					this.props.wastageData.inventory.currentProductSkus[index].kiosk_id = this.props.settings.siteId;
 					this.props.wastageData.inventory.currentProductSkus[index].createdDate = new Date(this.props.wastageData.inventory.date);
 					this.props.wastageData.inventory.currentProductSkus[index].closingStockId = uuidv1();
+					console.log('inventory-data',this.props.wastageData.inventory);
+					console.log('wastage-Date', this.props.wastageData.inventory.date);
 					PosStorage.addOrUpdateInventoryItem(this.props.wastageData.inventory, this.props.wastageData.inventory.date);
 					// InventroyRealm.createInventory(this.props.settings.siteId, wastageName, update, this.props.dateFilter.startDate);
 					// this.props.inventoryActions.setInventory(
@@ -444,11 +388,14 @@ class InventoryReport extends Component {
 	}
 
 	onOkEditCurrentSku(wastageName, newQuantity) {
+		console.log('newQuantity',newQuantity);
+		console.log('wastageName',wastageName);
 		this.setState({ currentSkuEdit: "" });
 		let update = null;
 		if (newQuantity.trim().length > 0) {
 			update = parseInt(newQuantity);
 		}
+		console.log('update',update); 
 		if (!isNaN(update)) {
 			for (let index = 0; index < this.props.wastageData.inventory.currentProductSkus.length; index++) {
 				if (this.props.wastageData.inventory.currentProductSkus[index].wastageName === wastageName) {
@@ -458,6 +405,8 @@ class InventoryReport extends Component {
 					this.props.wastageData.inventory.currentProductSkus[index].kiosk_id = this.props.settings.siteId;
 					this.props.wastageData.inventory.currentProductSkus[index].createdDate = new Date(this.props.wastageData.inventory.date);
 					this.props.wastageData.inventory.currentProductSkus[index].closingStockId = uuidv1();
+					console.log('inventory-data',this.props.wastageData.inventory);
+					console.log('wastage-Date', this.props.wastageData.inventory.date);
 					PosStorage.addOrUpdateInventoryItem(this.props.wastageData.inventory, this.props.wastageData.inventory.date);
 					// InventroyRealm.createInventory(this.props.settings.siteId, wastageName, update, this.props.dateFilter.startDate);
 					// this.props.inventoryActions.setInventory(
@@ -497,12 +446,6 @@ class InventoryReport extends Component {
 		);
 	};
 
-
-	updateReport() {
-		console.log('dateFilter2', this.props.dateFilter);
-		this.props.wastageActions.GetInventoryReportData(this.startDate, this.endDate, this.props.products);
-		return this.props.wastageData.salesAndProducts.salesItems;
-	}
 
 	getCurrentInventory(item) {
 		return (
@@ -570,12 +513,9 @@ class InventoryReport extends Component {
 	getTotalForSkuDisplayNotDispatched(item) {
 		if (!item.litersPerSku || item.litersPerSku === 'N/A') return '-';
 		let current = this.getNotDispatchedSkuForDisplay(true, item);
-		console.log('-current', current);
 		if (current == '-') return '-';
 		let previous = this.getNotDispatchedSkuForDisplay(false, item);
-		console.log('-previous', previous);
 		if (previous == '-') return '-';
-		console.log('(current - previous)', (current - previous));
 		return `${((current - previous) * item.litersPerSku).toFixed(2)} L`;
 	}
 
@@ -585,7 +525,6 @@ class InventoryReport extends Component {
 			let valid = false;
 			for (let index = 0; index < this.props.wastageData.salesAndProducts.salesItems.length; index++) {
 				let inventoryItem = this.getTotalForSkuDisplay(this.props.wastageData.salesAndProducts.salesItems[index]);
-				console.log('inventoryItem', inventoryItem)
 				if (inventoryItem != '-') {
 					valid = true;
 					result += parseFloat(inventoryItem);
@@ -610,8 +549,7 @@ class InventoryReport extends Component {
 			let valid = false;
 			for (let index = 0; index < this.props.wastageData.salesAndProducts.salesItems.length; index++) {
 				let inventoryItem = this.getTotalForSkuDisplayNotDispatched(this.props.wastageData.salesAndProducts.salesItems[index]);
-				console.log('inventoryItem--]', inventoryItem)
-				if (inventoryItem != '-') {
+					if (inventoryItem != '-') {
 					valid = true;
 					result += parseFloat(inventoryItem);
 				}
