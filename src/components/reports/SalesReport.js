@@ -90,7 +90,6 @@ class SalesReport extends Component {
 
 	getSalesData() {
 		let sales = [];
-		let temp = [];
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
 			if (this.props.dateFilter.startDate == this.startDate && this.props.dateFilter.endDate == this.endDate) {
 				//return this.props.salesData.salesItems;

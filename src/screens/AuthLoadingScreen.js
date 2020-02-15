@@ -14,6 +14,7 @@ import * as TopUpActions from '../actions/TopUpActions';
 import * as InventoryActions from '../actions/InventoryActions';
 import * as NetworkActions from '../actions/NetworkActions';
 import * as AuthActions from '../actions/AuthActions';
+import * as WastageActions from "../actions/WastageActions";
 import * as SettingsActions from '../actions/SettingsActions';
 import * as ProductActions from '../actions/ProductActions';
 import * as receiptActions from '../actions/ReceiptActions';
@@ -90,6 +91,10 @@ class AuthLoadingScreen extends React.Component {
         });
     }
 
+    subtractDays = (theDate, days) => {
+		return new Date(theDate.getTime() - days * 24 * 60 * 60 * 1000);
+	};
+
     loadSyncedData() {
         this.posStorage.loadLocalData();
         // this.posStorage.initialLocalDb();
@@ -100,6 +105,8 @@ class AuthLoadingScreen extends React.Component {
             CreditRealm.getAllCredit()
         );
 
+        this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
+	
 
         this.props.inventoryActions.setInventory(
             InventroyRealm.getAllInventory()
@@ -168,6 +175,7 @@ function mapStateToProps(state, props) {
     return {
         network: state.networkReducer.network,
         settings: state.settingsReducer.settings,
+        products: state.productReducer.products,
         discounts: state.discountReducer.discounts
     };
 }
@@ -177,6 +185,7 @@ function mapDispatchToProps(dispatch) {
         networkActions: bindActionCreators(NetworkActions, dispatch),
         settingsActions: bindActionCreators(SettingsActions, dispatch),
         customerActions: bindActionCreators(CustomerActions, dispatch),
+        wastageActions: bindActionCreators(WastageActions, dispatch),
         topUpActions: bindActionCreators(TopUpActions, dispatch),
         authActions: bindActionCreators(AuthActions, dispatch),
         inventoryActions: bindActionCreators(InventoryActions, dispatch),

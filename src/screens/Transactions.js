@@ -247,7 +247,7 @@ class TransactionDetail extends Component {
 
 				</View>
 				<View style={styles.receiptStats}>
-					{this.props.item.active && (
+					{this.props.item.syncAction === 'DELETE' && (
 						<Text style={styles.receiptStatusText}>
 							{'Deleted'.toUpperCase()}
 						</Text>
@@ -547,32 +547,34 @@ class Transactions extends Component {
 	}
 
 	deleteReceipt(item, updatedFields) {
-		this.props.receiptActions.updateRemoteReceipt(
-			item.index,
-			updatedFields
-		);
+		console.log(item);
+		console.log(updatedFields);
+		// this.props.receiptActions.updateRemoteReceipt(
+		// 	item.index,
+		// 	updatedFields
+		// );
 
-		PosStorage.updateLoggedReceipt(item.id, updatedFields);
+		// PosStorage.updateLoggedReceipt(item.id, updatedFields);
 
-		PosStorage.updatePendingSale(item.id);
+		// PosStorage.updatePendingSale(item.id);
 
-		// Take care of customer due amount
-		if (item.amountLoan) {
-			item.customerAccount.dueAmount -= item.amountLoan;
+		// // Take care of customer due amount
+		// if (item.amountLoan) {
+		// 	item.customerAccount.dueAmount -= item.amountLoan;
 
-			CustomerRealm.updateCustomer(
-				item.customerAccount,
-				item.customerAccount.phoneNumber,
-				item.customerAccount.name,
-				item.customerAccount.address,
-				item.customerAccount.salesChannelId,
-				item.customerAccount.customerTypeId,
-				item.customerAccount.frequency,
-				item.customerAccount.secondPhoneNumber
-			);
-		}
+		// 	CustomerRealm.updateCustomer(
+		// 		item.customerAccount,
+		// 		item.customerAccount.phoneNumber,
+		// 		item.customerAccount.name,
+		// 		item.customerAccount.address,
+		// 		item.customerAccount.salesChannelId,
+		// 		item.customerAccount.customerTypeId,
+		// 		item.customerAccount.frequency,
+		// 		item.customerAccount.secondPhoneNumber
+		// 	);
+		// }
 
-		this.setState({ refresh: !this.state.refresh });
+		// this.setState({ refresh: !this.state.refresh });
 	}
 
 	renderReceipt({ item, index }) {
