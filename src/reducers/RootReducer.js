@@ -15,6 +15,7 @@ import inventoryReducer from "./InventoryReducer";
 import discountReducer from "./DiscountReducer";
 import paymentTypesReducer from './PaymentTypesReducer';
 import customerReminderReducer from './CustomerReminderReducer';
+import wastageReducer from './WastageReducer';
 
 // Combine all the reducers
 const RootReducer = combineReducers({
@@ -34,6 +35,7 @@ const RootReducer = combineReducers({
 	discountReducer,
 	paymentTypesReducer,
 	customerReminderReducer,
+	wastageReducer
 });
 
 export default RootReducer;

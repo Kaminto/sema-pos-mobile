@@ -198,15 +198,16 @@ class CustomerList extends Component {
                     ListHeaderComponent={this.showHeader}
                     extraData={this.state.refresh}
                     renderItem={({ item, index, separators }) => (
-                        // <TouchableHighlight
-                        //     onPress={() => this.onPressItem(item)}
-                        //     onShowUnderlay={separators.highlight}
-                        //     onHideUnderlay={separators.unhighlight}>
-                        //     {this.getRow(item, index, separators)}
-						// </TouchableHighlight>
-						<DoubleClick onClick={() => this.onPressItem(item)}>
+                        <TouchableHighlight
+                            onPress={() => this.onPressItem(item)}
+                            onShowUnderlay={separators.highlight}
+                            onHideUnderlay={separators.unhighlight}>
+                            {this.getRow(item, index, separators)}
+                            {/* <DoubleClick >
 							{this.getRow(item, index, separators)}
-						</DoubleClick>
+						</DoubleClick> */}
+						</TouchableHighlight>
+						
 
                     )}
                     keyExtractor={item => item.customerId}

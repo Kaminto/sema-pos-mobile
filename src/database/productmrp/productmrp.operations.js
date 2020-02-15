@@ -46,6 +46,8 @@ class ProductMRPRealm {
         return this.productMRP = productMrpDict;
     }
 
+    
+
     getProductMrpKey(productMrp) {
 		return '' + productMrp.productId + '-' + productMrp.salesChannelId; // ProductId and salesChannelId are unique key
     }
