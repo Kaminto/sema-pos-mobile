@@ -211,7 +211,6 @@ class CustomerRealm {
                     realm.create('Customer', obj);
                 });
             });
-
         } catch (e) {
             console.log("Error on creation", e);
         }
