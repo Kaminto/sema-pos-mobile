@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
+// if (process.env.NODE_ENV === 'development') {
+// 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+// 	whyDidYouRender(React);
+//   }
 import { View, Text,  StyleSheet } from "react-native";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -16,10 +16,11 @@ class OrderTotal extends Component {
 		super(props);
 	}
 
-	static whyDidYouRender = true;
+	//static whyDidYouRender = true;
 
     shouldComponentUpdate( nextProps,nextState) {
-        return nextProps !== this.props;
+		//return nextProps !== this.props;
+		return true;
     }
 
 	render() {

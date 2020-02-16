@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
+// if (process.env.NODE_ENV === 'development') {
+// 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+// 	whyDidYouRender(React);
+//   }
 import { View, Alert, Text, TextInput, Button, FlatList, ScrollView, SafeAreaView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -57,10 +57,11 @@ class OrderCheckout extends Component {
 	}
 
 
-	static whyDidYouRender = true;
+	//static whyDidYouRender = true;
 
     shouldComponentUpdate( nextProps,nextState) {
-        return nextProps !== this.props;
+	   // return nextProps !== this.props;
+	   return true;
     }
 
 
@@ -531,7 +532,7 @@ class OrderCheckout extends Component {
 			}
 		}
 
-		if(item.name != 'loan' && item.name != 'credit'){
+		//if(item.name != 'loan' && item.name != 'credit'){
 
 		return (
 			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
@@ -561,7 +562,7 @@ class OrderCheckout extends Component {
 				</View>
 			</View>
 		);
-							}
+							//}
 	};
 
 	showTextInput(item) {
