@@ -9,8 +9,6 @@ import InventroyRealm from './inventory/inventory.operations';
 import CreditRealm from './credit/credit.operations';
 import realm from './init';
 
-
-
 const uuidv1 = require('uuid/v1');
 
 const versionKey = '@Sema:VersionKey';
@@ -193,19 +191,14 @@ class PosStorage {
 
 		InventroyRealm.initialise();
 		CreditRealm.initialise();
-		console.log(keyArray);
 		this.multiSet(keyArray)
 			.then(rows => {
-				console.log('Affected : ' + rows);
 				return true;
 
 			})
 			.catch(error => {
-				console.log(error);
 				return false;
 			});
-		// let insertedRows = this.multInsert(keyArray);
-		// console.log('Affected : ' + insertedRows);
 		return 'Local DB Initialised';
 
 	}
@@ -237,7 +230,6 @@ class PosStorage {
 
 
 		let results = this.getMany(keyArray);
-		console.log('results', results);
 
 		this.customersKeys = this.parseJson(
 			results[0][1]
@@ -387,7 +379,6 @@ class PosStorage {
 			else
 				realm.create('SemaRealm', { id: key, data: value });
 		}
-		console.log(count);
 		return { rows: count };
 
 	}
@@ -409,7 +400,6 @@ class PosStorage {
 						else
 							realm.create('SemaRealm', { id: key, data: value });
 					}
-					console.log(count);
 					resolve({ rows: count });
 				} catch (error) {
 					reject(error);
@@ -471,7 +461,7 @@ class PosStorage {
 
 		this.multiSet(keyArray)
 			.then(rows => {
-				console.log('Affected Rows: ' + rows);
+
 			})
 			.catch(error => {
 				console.log('PosStorage:clearDataOnly: Error: ' + error);
@@ -515,7 +505,6 @@ class PosStorage {
 
 		this.multiSet(keyArray)
 			.then(rows => {
-				console.log('Affected rows ' + rows);
 			})
 			.catch(error => {
 				console.log('PosStorage:clearDataOnly: Error: ' + error);
@@ -602,180 +591,12 @@ class PosStorage {
 
 		this.multiSet(keyArray)
 			.then(rows => {
-				console.log('Affected rows ' + rows);
 			})
 			.catch(error => {
 				console.log('PosStorage:createCustomer: Error: ' + error);
 			});
 		return newCustomer;
 	}
-
-	//Reminder Module
-
-	// addReminder(reminder) {
-	// 	let reminderKey = reminderDataKey + '_' + reminder.id;
-	// 	console.log("This is the reminderKey=>" + reminderKey);
-	// 	this.reminderDataKeys.push(reminderKey);
-	// 	this.reminders.push(reminder);
-	// 	console.log(this.reminders);
-	// 	console.table(this.reminders);
-	// 	let keyArray = [
-	// 		[reminderKey, this.stringify(reminder)],
-	// 		[reminderDataKey, this.stringify(this.reminderDataKeys)]
-	// 	];
-	// 	console.log("ADDING A REMINDER TO POSSTORAGE" + reminder);
-	// 	this.multiSet(keyArray).then(error => {
-	// 		console.log("BIGANYE,ADDING REMINDER" + console.log(error));
-	// 	});
-
-	// 	//   this.setKey(reminderDataKey,this.stringify(this.reminders));
-	// }
-
-	// getRemindersPos() {
-	// 	//	    let filtered_receipts = this.getRemindersByDate()
-	// 	//console.log("Communications getReminders->"+reminderArray);
-	// 	let rem = [];
-	// 	this.reminders = this.loadReminders();//.then(reminda =>{ return reminda;});
-	// 	//console.log("BLOODY HELL"+this.reminders);
-	// 	//.then(reminders =>{return rem = reminders;});
-	// 	rem.push(this.reminders);
-	// 	//console.log("CURRENT REMINDERS=>"+ this.reminders);
-	// 	//let rem = this.reminders.filter(reminder => reminder.reminder_date == moment(date).add('days',1).format("YYYY-MM-DD"));
-	// 	//console.log("ZI REMINDER ==>"+ this.reminders);
-	// 	return this.reminders;
-	// }
-
-	// loadReminders() {
-	// 	console.log("loadRemindersFromKeys. No of reminders: " + this.reminders.length);
-	// 	return new Promise((resolve, reject) => {
-	// 		try {
-	// 			let that = this;
-	// 			this.multiGet(this.reminderDataKeys)
-	// 				.then(results => {
-	// 					that.reminders = results.map(resarray => {
-	// 						return that.parseJson(resarray[1]);
-	// 					});
-	// 					resolve(that.reminders);
-
-	// 				});
-	// 		} catch (error) {
-	// 			reject(error);
-	// 		}
-	// 	});
-
-
-
-
-	// }
-
-	// setReminderDate(customer, customerFrequency, receiptDate) {
-	// 	let reminder_date = moment(receiptDate).add(customerFrequency, 'day').format("YYYY-MM-DD");
-	// 	console.log('Setting reminderDate ===>' + reminder_date);
-	// 	customer.reminder_date = reminder_date;
-	// 	let key = this.makeCustomerKey(customer);
-	// 	customer.syncAction = "update";
-	// 	//customer.reminder_date = reminder_date;
-	// 	console.log(customer);
-	// 	this.pendingCustomers.push(key);
-
-	// 	let keyArray = [
-	// 		[key, this.stringify(customer)], // Customer keys
-	// 		[pendingCustomersKey, this.stringify(this.pendingCustomers)] // Array pending customer
-	// 	];
-	// 	this.multiSet(keyArray).then(error => {
-	// 		if (error) {
-	// 			console.log("PosStorage:updateCustomer: Error: " + error);
-	// 		}
-	// 	});
-
-	// }
-
-	// New reminder module.
-
-	addReminder(reminder) {
-		let reminderKey = reminderDataKey + '_' + reminder.id;
-		console.log("This is the reminderKey=>" + reminderKey);
-		this.reminderDataKeys.push(reminderKey);
-		this.reminders.push(reminder);
-		console.log(this.reminders);
-		console.table(this.reminders);
-		let keyArray = [
-			[reminderKey, this.stringify(reminder)],
-			[reminderDataKey, this.stringify(this.reminderDataKeys)]
-		];
-		console.log("ADDING A REMINDER TO POSSTORAGE" + reminder);
-		this.multiSet(keyArray).then(error => {
-			console.log("BIGANYE,ADDING REMINDER" + console.log(error));
-		});
-
-		//   this.setKey(reminderDataKey,this.stringify(this.reminders));
-	}
-
-	getRemindersPos() {
-		//	    let filtered_receipts = this.getRemindersByDate()
-		//console.log("Communications getReminders->"+reminderArray);
-		let rem = [];
-		this.reminders = this.loadReminders();//.then(reminda =>{ return reminda;});
-		//console.log("BLOODY HELL"+this.reminders);
-		//.then(reminders =>{return rem = reminders;});
-		rem.push(this.reminders);
-		//console.log("CURRENT REMINDERS=>"+ this.reminders);
-		//let rem = this.reminders.filter(reminder => reminder.reminder_date == moment(date).add('days',1).format("YYYY-MM-DD"));
-		//console.log("ZI REMINDER ==>"+ this.reminders);
-		return this.reminders;
-	}
-
-	loadReminders() {
-		console.log("loadRemindersFromKeys. No of reminders: " + this.reminders.length);
-		return new Promise((resolve, reject) => {
-			try {
-				let that = this;
-				this.multiGet(this.reminderDataKeys)
-					.then(results => {
-						that.reminders = results.map(resarray => {
-							return that.parseJson(resarray[1]);
-						});
-						resolve(that.reminders);
-
-					});
-			} catch (error) {
-				reject(error);
-			}
-		});
-
-	}
-
-	setReminderDate(customer, customerFrequency, receiptDate) {
-		let reminder_date = moment(receiptDate).add(customerFrequency, 'day').format("YYYY-MM-DD");
-		console.log('Setting reminderDate ===>' + reminder_date);
-		customer.reminder_date = reminder_date;
-		let key = this.makeCustomerKey(customer);
-		customer.syncAction = "update";
-		//customer.reminder_date = reminder_date;
-		console.log(customer);
-		this.pendingCustomers.push(key);
-
-		let keyArray = [
-			[key, this.stringify(customer)], // Customer keys
-			[pendingCustomersKey, this.stringify(this.pendingCustomers)] // Array pending customer
-		];
-		this.multiSet(keyArray).then(error => {
-			if (error) {
-				console.log("PosStorage:updateCustomer: Error: " + error);
-			}
-		});
-
-
-
-	}
-
-
-	mergeReminders(remoteReminders) {
-
-
-	}
-
-	//// Tests
 
 	deleteCustomer(customer) {
 		let key = this.makeCustomerKey(customer);
@@ -797,7 +618,6 @@ class PosStorage {
 
 			this.multiSet(keyArray)
 				.then(rows => {
-					console.log('Affected rows: ' + rows);
 				})
 				.catch(error => {
 					console.log('PosStorage:deleteCustomer: Error: ' + error);
@@ -833,7 +653,6 @@ class PosStorage {
 			);
 		}
 
-		console.log('THE CUSTOMER REMINDER DATE===>' + customer.reminder_date);
 		this.pendingCustomers.push(key);
 
 		let keyArray = [
@@ -843,7 +662,6 @@ class PosStorage {
 
 		this.multiSet(keyArray)
 			.then(rows => {
-				console.log('Affected rows ' + rows);
 			})
 			.catch(error => {
 				console.log('PosStorage:updateCustomer: Error: ' + error);
@@ -851,9 +669,6 @@ class PosStorage {
 	}
 
 	addRemoteCustomers(customerArray) {
-		console.log(
-			'PosStorage:addCustomers: No existing customers no need to merge....'
-		);
 		this.customers = [];
 		let keyValueArray = [];
 		let keyArray = [];
@@ -872,7 +687,6 @@ class PosStorage {
 
 		this.multiSet(keyValueArray)
 			.then(rows => {
-				console.log('Affected rows: ' + rows);
 			})
 			.catch(error => {
 				console.log('PosStorage:addCustomers: Error: ' + error);
@@ -881,10 +695,6 @@ class PosStorage {
 
 	// Merge new customers into existing ones
 	mergeCustomers(remoteCustomers) {
-		console.log(
-			'PosStorage:mergeCustomers Number of remote customers: ' +
-			remoteCustomers.length
-		);
 		let newCustomersAdded = remoteCustomers.length > 0 ? true : false;
 		if (this.customers.length == 0) {
 			this.addRemoteCustomers(remoteCustomers);
@@ -893,12 +703,6 @@ class PosStorage {
 				updated: newCustomersAdded
 			};
 		} else {
-			// Need to merge webCustomers with existing and pending customers
-			console.log(
-				'PosStorage:mergeCustomers. Merging ' +
-				remoteCustomers.length +
-				' web Customers into existing and pending customers'
-			);
 			let webCustomersToUpdate = [];
 			let isPendingModified = false;
 			remoteCustomers.forEach(remoteCustomer => {
@@ -911,33 +715,18 @@ class PosStorage {
 						remoteCustomer.customerId
 					);
 					if (localCustomer) {
-						console.log(
-							'PostStorage - mergeCustomers. Local Date ' +
-							new Date(localCustomer.updatedDate) +
-							' Remote Date ' +
-							remoteCustomer.updatedDate
-						);
 					}
 					if (
 						localCustomer &&
 						remoteCustomer.updatedDate >
 						new Date(localCustomer.updatedDate)
 					) {
-						// remoteCustomer is the latest
-						console.log(
-							'PostStorage - mergeCustomers. Remote customer ' +
-							remoteCustomer.name +
-							' is later:'
-						);
+
 						webCustomersToUpdate.push(remoteCustomer);
 						this.pendingCustomers.splice(pendingIndex, 1);
 						isPendingModified = true;
 					} else {
-						console.log(
-							'PostStorage - mergeCustomers. Local customer ' +
-							localCustomer.name +
-							' is later:'
-						);
+
 					}
 				} else {
 					webCustomersToUpdate.push(remoteCustomer);
@@ -995,7 +784,6 @@ class PosStorage {
 
 							this.multiSet(keyArray)
 								.then(rows => {
-									console.log('Affected rows ' + rows);
 								})
 								.catch(error => {
 									console.log(
@@ -1039,10 +827,7 @@ class PosStorage {
 	}
 
 	loadCustomersFromKeys() {
-		console.log(
-			'loadCustomersFromKeys. No of customers: ' +
-			this.customersKeys.length
-		);
+
 		return new Promise((resolve, reject) => {
 			try {
 				let that = this;
@@ -1061,11 +846,6 @@ class PosStorage {
 
 
 	loadCustomersFromKeys2() {
-		console.log(
-			'loadCustomersFromKeys. No of customers: ',
-			this.customersKeys.length
-		);
-
 		let that = this;
 		let results = this.getMany(this.customersKeys);
 		return that.customers = results.map(result => {
@@ -1074,10 +854,6 @@ class PosStorage {
 	}
 
 	loadProductsFromKeys2() {
-		console.log(
-			'loadProductsFromKeys. No of products: ', this.productsKeys.lenght
-		);
-
 		let that = this;
 		let results = this.getMany(this.productsKeys);
 		return that.products = results.map(result => {
@@ -1088,7 +864,6 @@ class PosStorage {
 
 
 	removePendingCustomer(customerKey) {
-		console.log('PostStorage:removePendingCustomer');
 		const index = this.pendingCustomers.indexOf(customerKey);
 		if (index > -1) {
 			this.pendingCustomers.splice(index, 1);
@@ -1098,7 +873,6 @@ class PosStorage {
 
 			this.multiSet(keyArray)
 				.then(rows => {
-					console.log('Affected rows: ' + rows);
 				})
 				.catch(error => {
 					console.log(
@@ -1121,35 +895,22 @@ class PosStorage {
 	}
 
 	getCustomers() {
-		console.log('PosStorage: getCustomers. Count ' + this.customers.length);
 		return this.customers;
 	}
 
 	getReceipts() {
-		console.log('PosStorage: getReceipts. Count ' + this.receipts.length);
 		return this.receipts;
 	}
 
 	getPendingCustomers() {
-		console.log(
-			'PosStorage: getPendingCustomers. Count ' +
-			this.pendingCustomers.length
-		);
 		return this.pendingCustomers;
 	}
 
 	getSales() {
-		console.log('PosStorage: getSales. Count ' + this.salesKeys.length);
 		return this.salesKeys;
 	}
 
 	getFilteredSales(beginDate, endDate) {
-		console.log(
-			'PosStorage: getFilteredSales. between ' +
-			beginDate.toString() +
-			' and ' +
-			endDate.toString()
-		);
 		return this.salesKeys.filter(receipt => {
 			return moment
 				.tz(new Date(receipt.saleDateTime), moment.tz.guess())
@@ -1183,8 +944,6 @@ class PosStorage {
 					this.removeItem(oldest.saleKey)
 						.then(resp => {
 							Events.trigger('RemoveLocalReceipt', saleDateKey);
-							console.log(resp);
-							console.log('Removed ' + oldest.saleKey);
 						})
 						.catch(error => {
 							console.log(error);
@@ -1192,8 +951,6 @@ class PosStorage {
 						});
 				}
 			}
-
-			console.log('receiptreceiptreceipt', receipt)
 
 			this.pendingSales.push(saleItemKey + saleDateKey);
 			let keyArray = [
@@ -1204,7 +961,6 @@ class PosStorage {
 
 			this.multiSet(keyArray)
 				.then(rows => {
-					console.log('Entries' + rows);
 					resolve(saleItemKey + saleDateKey);
 				})
 				.catch(error => {
@@ -1214,7 +970,6 @@ class PosStorage {
 	}
 
 	loadSale(saleKey) {
-		console.log('PosStorage:loadSale');
 		return new Promise((resolve, reject) => {
 			this.getKey(saleKey.saleKey)
 				.then(sale => {
@@ -1225,7 +980,6 @@ class PosStorage {
 	}
 
 	localOrders() {
-		console.log('PosStorage:loadSalesReceipts');
 		return new Promise((resolve, reject) => {
 			let results = [];
 			let sales = this.pendingSales;
@@ -1248,7 +1002,6 @@ class PosStorage {
 
 
 	loadSalesReceipts(lastSalesSyncDate) {
-		console.log('PosStorage:loadSalesReceipts');
 		return new Promise((resolve, reject) => {
 			let results = [];
 			let sales = this.pendingSales;
@@ -1273,7 +1026,6 @@ class PosStorage {
 	}
 
 	removePendingSale(saleKey, saleId) {
-		console.log('PostStorage:removePendingSale');
 		const index = this.pendingSales.indexOf(saleKey);
 		if (index > -1) {
 			this.pendingSales.splice(index, 1);
@@ -1283,8 +1035,6 @@ class PosStorage {
 
 			this.multiSet(keyArray)
 				.then(rows => {
-					console.log('Affected rows ' + rows);
-
 					Events.trigger('RemoveLocalReceipt', saleId);
 				})
 				.catch(error => {
@@ -1297,8 +1047,6 @@ class PosStorage {
 
 	// Update a pending sale
 	updatePendingSale(saleKey) {
-		console.log('PostStorage:updatePendingSale');
-
 		if (!saleKey.startsWith(saleItemKey)) {
 			saleKey = `${saleItemKey}${saleKey}`;
 		}
@@ -1328,14 +1076,10 @@ class PosStorage {
 	}
 
 	getProducts() {
-		console.log('PosStorage: getProducts. Count ' + this.products.length);
 		return this.products;
 	}
 
 	loadProductsFromKeys() {
-		console.log(
-			'loadProductsFromKeys. No of products: ' + this.productsKeys.length
-		);
 		return new Promise((resolve, reject) => {
 			try {
 				let that = this;
@@ -1413,20 +1157,16 @@ class PosStorage {
 	}
 
 	getSettings() {
-		console.log('PosStorage: getSettings.');
 		return this.settings;
 	}
 
 	loadSettings() {
-		console.log('PosStorage:loadSettings');
 		let settings = realm.objectForPrimaryKey('SemaRealm', settingsKey);
 		if (settings) {
-			console.log(this.parseJson(settings.data));
 			return this.parseJson(settings.data);
 		}
 
 		if (!settings) {
-			console.log(this.settings);
 			return this.settings;
 		}
 
@@ -1451,7 +1191,6 @@ class PosStorage {
 		// Currently the token is good for one day (24 hours)
 		let expirationDate = new Date();
 		expirationDate.setTime(expirationDate.getTime() + 22 * 60 * 60 * 1000);
-		console.log('Token will expire at: ' + expirationDate.toString());
 		this.setKey(tokenExpirationKey, expirationDate.toISOString());
 		this.tokenExpiration = expirationDate;
 	}
@@ -1484,7 +1223,6 @@ class PosStorage {
 	}
 
 	loadSalesChannels() {
-		console.log('PosStorage:loadSalesChannels');
 		return new Promise((resolve, reject) => {
 			this.getKey(salesChannelsKey)
 				.then(salesChannels => {
@@ -1498,7 +1236,6 @@ class PosStorage {
 	}
 
 	loadProductMrps() {
-		console.log('PosStorage:loadProductMrps');
 		return new Promise((resolve, reject) => {
 			this.getKey(productMrpsKey)
 				.then(productMrps => {
@@ -1631,17 +1368,13 @@ class PosStorage {
 	}
 
 	addOrUpdateInventoryItem(inventory, inventoryDate) {
-		console.log('inventory', inventory);
-		console.log('PosStorage: getInventoryItem');
 		if (typeof inventoryDate == 'string') {
 			inventoryDate = new Date(inventoryDate);
 		}
 
 		return new Promise((resolve, reject) => {
 			let inventoryKey = this._makeInventoryKey(inventoryDate);
-			console.log('inventoryKey', inventoryKey);
 			let existing = this._getInventoryItemKey(inventoryDate);
-			console.log('existing', existing);
 			if (existing != null) {
 				this.setKey(inventoryKey, this.stringify(inventory)).then(
 					error => {
@@ -1653,9 +1386,6 @@ class PosStorage {
 					}
 				);
 			} else {
-				console.log('existing', existing);
-				console.log('inventoryDate', inventoryDate);
-				console.log('inventoryKey', inventoryKey);
 				this.inventoriesKeys.push({
 					inventoryDate: inventoryDate,
 					inventoryKey: inventoryKey
@@ -1675,8 +1405,7 @@ class PosStorage {
 
 						this.removeItem(oldest.inventoryKey)
 							.then(data => {
-								console.log(data);
-								console.log('Removed ' + oldest.inventoryKey);
+
 							})
 							.catch(error => {
 								console.log(error);
@@ -1693,7 +1422,6 @@ class PosStorage {
 
 				this.multiSet(keyArray)
 					.then(rows => {
-						console.log(rows);
 						resolve(true);
 					})
 					.catch(error => {
@@ -1706,7 +1434,7 @@ class PosStorage {
 	getInventoryItem(inventoryDate) {
 		return new Promise(resolve => {
 			let key = this._getInventoryItemKey(inventoryDate);
-			console.log('key',key);
+
 			if (key != null) {
 				this.getKey(key)
 					.then(item => {
@@ -1726,7 +1454,6 @@ class PosStorage {
 
 	addRemoteReceipts(receipts) {
 		this.receipts = this.getReceipts();
-		console.log(this.receipts);
 		let temp = [...this.receipts, ...receipts];
 		let toBeSaved = this.removeDuplicates(temp, 'id');
 		return this.setKey(remoteReceiptsKey, this.stringify(toBeSaved)).then(
@@ -1754,7 +1481,6 @@ class PosStorage {
 	loadRemoteReceipts() {
 		return this.getKey(remoteReceiptsKey).then(receipts => {
 			this.receipts = JSON.parse(receipts);
-			console.log('receipts', this.receipts);
 			return this.receipts;
 		});
 	}
@@ -1766,7 +1492,6 @@ class PosStorage {
 				if (!receipts) return;
 
 				receipts = receipts.map(receipt => {
-					console.log(receiptId, receipt.id);
 					if (receipt.id === receiptId) {
 						receipt = {
 							...receipt,
@@ -1801,7 +1526,6 @@ class PosStorage {
 
 	// Return existing inventory item key or null
 	_getInventoryItemKey(inventoryDate) {
-		console.log('PosStorage:getInventoryItem');
 		let inventoryKey = this._makeInventoryKey(inventoryDate);
 		for (let index = 0; index < this.inventoriesKeys.length; index++) {
 			if (this.inventoriesKeys[index].inventoryKey == inventoryKey) {
@@ -1812,12 +1536,8 @@ class PosStorage {
 	}
 
 	loadInventoryFromKeys() {
-		console.log('loadInventoryFromKeys. No of inventory: ', this.inventoriesKeys);
-
-		console.log(this.inventoriesKeys.map(key => key.inventoryKey));
 		let that = this;
 		let results = this.getMany(this.inventoriesKeys.map(key => key.inventoryKey));
-		console.log('loadInventoryFromKeys. No of inventory results: ', results.map(key => JSON.parse(key[1])));
 
 		return that.inventory = results.map(result => {
 			return that.parseJson(result[1]);
@@ -1826,14 +1546,12 @@ class PosStorage {
 	}
 
 	getInventory() {
-		console.log('InventroyRealm: Inventory. Count ' + this.inventory.length);
 		return this.inventory;
 	}
 
 
 
 	_makeInventoryKey(date) {
-		console.log('PosStorage._makeInventoryKey' + date);
 		return (
 			inventoryItemKey +
 			date.getFullYear() +
@@ -1865,9 +1583,7 @@ class PosStorage {
 	}
 
 	async setKey(key, stringValue) {
-		// console.log(
-		// 	'Pos Storage:setKey() Key: ' + key + ' Value: ' + stringValue
-		// );
+
 		return await this.setItem(key, stringValue);
 	}
 

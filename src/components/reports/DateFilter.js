@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Text, View, Image, TouchableHighlight, StyleSheet } from 'react-native';
+import { Text, View, TouchableHighlight, StyleSheet } from 'react-native';
 import { bindActionCreators } from "redux";
 import * as reportActions from "../../actions/ReportActions";
 import { connect } from "react-redux";
 import Icon from 'react-native-vector-icons/Ionicons';
-
-import i18n from '../../app/i18n';
 
 const dayInMilliseconds =  24*60*60*1000;
 
@@ -22,13 +20,9 @@ class DateFilter extends Component {
 		this.props.reportActions.setReportFilter( this.state.currentDate, new Date( this.state.currentDate.getTime() + dayInMilliseconds));
 	}
 
-
 	render() {
 		return (
 			<View style={styles.filterContainer}>
-				{/* <View style={styles.filterItemContainer}>
-				<Text style={{fontSize:20}}>{i18n.t('daily-data')}</Text>
-				</View> */}
 				<View style={styles.filterItemContainer}>
 					{this.getPreviousButton()}
 				</View>
@@ -105,7 +99,6 @@ class DateFilter extends Component {
 		const beginDate = this.state.currentDate;
 		const endDate = new Date( beginDate.getTime() + dayInMilliseconds );
 		this.props.reportActions.setReportFilter( beginDate, endDate );
-		console.log( "Filter-From " + beginDate.toDateString() + " to " + endDate.toDateString());
 	}
 }
 

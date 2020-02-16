@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+}
 import { Dimensions, View, Animated } from "react-native";
 import ProductList from "./ProductList";
 import { connect } from "react-redux";
@@ -8,7 +12,6 @@ import SalesChannelRealm from '../../database/sales-channels/sales-channels.oper
 class ProductListScreen extends Component {
 	constructor(props) {
 		super(props);
-		// slowlog(this, /.*/);
 		let { height, width } = Dimensions.get('window');
 		// Empirically we know that this view has flex of 1 and the view beside it,
 		// (OrderSummaryScreen has a flex of .6 This makes the width of this view 1/1.6 * screen width
@@ -20,6 +23,8 @@ class ProductListScreen extends Component {
 			fadeAnim: new Animated.Value(-this.viewWidth)  // Initial value for sliding in from left
 		}
 	}
+
+
 
 	componentDidMount() {
 		this.setState({
@@ -35,6 +40,12 @@ class ProductListScreen extends Component {
 			).start();
 		});
 	}
+
+	static whyDidYouRender = true;
+
+    shouldComponentUpdate( nextProps,nextState) {
+        return nextProps !== this.props;
+    }
 
 	render() {
 		let { fadeAnim } = this.state;

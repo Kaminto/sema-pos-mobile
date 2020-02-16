@@ -8,7 +8,6 @@ export const CUSTOMERS_TYPE_SEARCH = 'CUSTOMERS_TYPE_SEARCH';
 export const CUSTOMERS_PAYMENT_TYPE_SEARCH = 'CUSTOMERS_PAYMENT_TYPE_SEARCH';
 
 export function CustomerSelected(customer) {
-	console.log("CustomerSelected - action", customer);
 	const data = customer;
 	return (dispatch) => {
 		dispatch({ type: CUSTOMER_SELECTED, data: data });
@@ -16,27 +15,19 @@ export function CustomerSelected(customer) {
 }
 
 export function setCustomers(customers) {
-	// console.log("setCustomers - action. No of customers " + customers.length);
-
 	return (dispatch) => { dispatch({ type: CUSTOMERS_SET, data: customers }) };
 
 }
 
 export function SearchCustomers(searchString) {
-	// console.log("SearchCustomers - action. Search is " + searchString);
-
 	return (dispatch) => { dispatch({ type: CUSTOMERS_SEARCH, data: searchString }) };
 }
 
 export function SearchCustomersChannel(channelFilterString) {
-	// console.log("SearchCustomers - action. Search is " + searchString);
-
 	return (dispatch) => { dispatch({ type: CUSTOMERS_CHANNEL_SEARCH, data: channelFilterString }) };
 }
 
 export function SearchCustomerTypes(customerTypeFilter) {
-	// console.log("SearchCustomers - action. Search is " + searchString);
-
 	return (dispatch) => { dispatch({ type: CUSTOMERS_TYPE_SEARCH, data: customerTypeFilter }) };
 }
 
@@ -46,6 +37,5 @@ export function SearchPaymentType(paymentTypeFilter) {
 
 
 export function setCustomerEditStatus(status) {
-	console.log(status);
 	return (dispatch) => { dispatch({ type: CUSTOMER_EDIT, data: status }) };
 }

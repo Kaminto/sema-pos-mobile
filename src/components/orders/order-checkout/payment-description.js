@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
 import * as OrderActions from "../../../actions/OrderActions";
-import * as CustomerBarActions from '../../../actions/CustomerBarActions';
 import * as CustomerActions from '../../../actions/CustomerActions';
 import * as PaymentTypesActions from "../../../actions/PaymentTypesActions";
 import { bindActionCreators } from "redux";
@@ -10,7 +9,6 @@ import { connect } from "react-redux";
 
 const widthQuanityModal = 1000;
 const heightQuanityModal = 500;
-const inputTextWidth = 400;
 
 class PaymentDescription extends Component {
 	render() {
@@ -43,7 +41,6 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
 	return {
 		orderActions: bindActionCreators(OrderActions, dispatch),
-		customerBarActions: bindActionCreators(CustomerBarActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
 		paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch)
 	};

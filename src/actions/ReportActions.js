@@ -2,7 +2,6 @@ import PosStorage from '../database/PosStorage';
 import ProductMRPRealm from '../database/productmrp/productmrp.operations';
 import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
 import OrderRealm from '../database/orders/orders.operations';
-import { REMOVE_PRODUCT } from './OrderActions';
 import moment from 'moment-timezone';
 
 export const SALES_REPORT_FROM_ORDERS = 'SALES_REPORT_FROM_ORDERS';
@@ -13,28 +12,21 @@ export const REMINDER_REPORT = 'REMINDER_REPORT';
 export const ADD_REMINDER = 'ADD_REMINDER';
 
 export function GetSalesReportData(beginDate, endDate) {
-	// console.log('GetSalesReportData - action');
-
 	return dispatch => {
 		getSalesData(beginDate, endDate)
 			.then(salesData => {
 				const customerDebts = CustomerDebtRealm.getCustomerDebts();
-				console.log('customerDebts', customerDebts);
 				const filteredDebt = customerDebts.filter(debt =>
 					moment
 						.tz(new Date(debt.created_at), moment.tz.guess())
 						.isBetween(beginDate, endDate)
 				);
-				console.log('filteredDebt', filteredDebt);
-				console.log('filteredDebt-', filteredDebt.reduce((total, item) => { return (total + item.due_amount) }, 0));
-				console.log('salesData', salesData)
 				dispatch({
 					type: SALES_REPORT_FROM_ORDERS,
 					data: { salesData: { ...salesData, totalDebt: filteredDebt.reduce((total, item) => { return (total + item.due_amount) }, 0) } }
 				});
 			})
 			.catch(error => {
-				console.log('GetSalesReportData - Error ' + error);
 				dispatch({
 					type: SALES_REPORT_FROM_ORDERS,
 					data: { salesData: [] }
@@ -44,14 +36,12 @@ export function GetSalesReportData(beginDate, endDate) {
 }
 
 export function setReportType(reportType) {
-	// console.log('setReportType - action');
 	return dispatch => {
 		dispatch({ type: REPORT_TYPE, data: reportType });
 	};
 }
 
 export function setReportFilter(startDate, endDate) {
-	// console.log('setReportFilter - action');
 	return dispatch => {
 		dispatch({
 			type: REPORT_FILTER,
@@ -63,14 +53,11 @@ export function setReportFilter(startDate, endDate) {
 const getSalesData = (beginDate, endDate) => {
 	return new Promise(async (resolve, reject) => {
 		const orders = OrderRealm.getAllOrder();
-		console.log('beginDate-', beginDate, 'endDate-', endDate);
-		console.log('orders', orders);
 		const filteredReceipts = orders.filter(receipt =>
 			moment
 				.tz(new Date(receipt.created_at), moment.tz.guess())
 				.isBetween(beginDate, endDate)
 		);
-		console.log('filteredReceipts', filteredReceipts);
 		const allReceiptLineItems = filteredReceipts.reduce(
 			(lineItems, receipt) => {
 				receipt.receipt_line_items = receipt.receipt_line_items.map(
@@ -94,14 +81,12 @@ const getSalesData = (beginDate, endDate) => {
 						return item;
 					}
 				);
-				console.log('receipt', receipt);
 				lineItems.push(...receipt.receipt_line_items);
 
 				return lineItems;
 			},
 			[]
 		);
-		console.log('allReceiptLineItems', allReceiptLineItems);
 		if (!allReceiptLineItems.length) {
 			return resolve({ totalLiters: 0, totalSales: 0, totalDebt: 0, salesItems: [] });
 		}
@@ -173,15 +158,10 @@ const getSalesData = (beginDate, endDate) => {
 
 const getMrps = products => {
 	let productMrp = ProductMRPRealm.getFilteredProductMRP();
-	console.log('productMrp', productMrp);
-	console.log('Object.keys', Object.keys(productMrp));
 	let ids = Object.keys(productMrp).map(key => productMrp[key].productId);
-	console.log('idsids', ids);
 
 	let matchProducts = products.filter(prod => ids.includes(prod.productId));
-	console.log('matchProducts', matchProducts);
 	let waterProducts = matchProducts.filter(prod => 3 === prod.categoryId);
-	console.log('waterProducts', waterProducts);
 	return waterProducts;
 };
 
@@ -189,7 +169,6 @@ export function GetInventoryReportData(beginDate, endDate, products) {
 	return dispatch => {
 		getInventoryData(beginDate, endDate, getMrps(products))
 			.then(inventoryData => {
-				console.log('inventoryData', inventoryData);
 				dispatch({
 					type: INVENTORY_REPORT,
 					data: { inventoryData: inventoryData }
@@ -205,11 +184,9 @@ export function GetInventoryReportData(beginDate, endDate, products) {
 }
 
 export const getInventoryData = (beginDate, endDate, products) => {
-	console.log('beginDate-', beginDate, 'endDate-', endDate);
 	return new Promise((resolve, reject) => {
 		getSalesData(beginDate, endDate)
 			.then(salesData => {
-				console.log('salesData', salesData);
 				getInventoryItem(beginDate, products)
 					.then(inventorySettings => {
 						let inventoryData = createInventory(
@@ -312,7 +289,6 @@ const getInventoryItem = (beginDate, products) => {
 
 		const promiseYesterday = PosStorage.getInventoryItem(yesterday);
 		Promise.all([promiseToday, promiseYesterday]).then(inventoryResults => {
-			console.log('inventoryResults', inventoryResults);
 			if (inventoryResults[0] != null) {
 				if (inventoryResults[1]) {
 					inventoryResults[0].previousProductSkus = inventoryResults[1].currentProductSkus;
@@ -444,16 +420,6 @@ const getRemindersAction = () => {
 		let reminders = PosStorage.getRemindersPos();
 		resolve(reminders);
 	});
-};
-
-const filterReminders = (reminders, date) => {
-	console.log("This is in FILTERS" + Object.keys(reminders));
-	let filteredReminders = reminders.filter(reminder => {
-		return reminder.reminder_date == moment(date).add(1, 'days').format("YYYY-MM-DD");
-	});
-
-	console.table(filteredReminders);
-	return filteredReminders;
 };
 
 

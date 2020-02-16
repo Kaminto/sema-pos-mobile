@@ -51,9 +51,6 @@ const paymentTypesReducer = (state = initialState, action) => {
             return newState;
         case UPDATE_SELECTED_PAYMENT_TYPES:
             newState = { ...state };
-            console.log('selectedPaymentType', action.data.selectedPaymentType);
-            console.log('index', action.data.index);
-            console.log('data.index', newState.selectedPaymentTypes[action.data.index]);
             newState.selectedPaymentTypes[action.data.index] = action.data.selectedPaymentType;
             return newState;
         case REMOVE_SELECTED_PAYMENT_TYPES:
@@ -67,15 +64,10 @@ const paymentTypesReducer = (state = initialState, action) => {
             return newState;
         case SET_SELECTED_DEBT_PAYMENT_TYPES:
             newState = { ...state };
-            console.log('selectedDebtPaymentType', action.data);
             newState.selectedDebtPaymentTypes.push(action.data);
-            console.log('newState', newState);
             return newState;
         case UPDATE_SELECTED_DEBT_PAYMENT_TYPES:
             newState = { ...state };
-            console.log('selectedDebtPaymentType', action.data.selectedDebtPaymentType);
-            console.log('index', action.data.index);
-            console.log('data.index', newState.selectedDebtPaymentTypes[action.data.index]);
             newState.selectedDebtPaymentTypes[action.data.index] = action.data.selectedDebtPaymentType;
             return newState;
         case REMOVE_SELECTED_DEBT_PAYMENT_TYPES:

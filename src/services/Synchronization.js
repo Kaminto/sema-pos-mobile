@@ -27,7 +27,6 @@ class Synchronization {
 	}
 
 	initialize(lastCustomerSync, lastProductSync, lastSalesSync, lastCreditSync, lastInventorySync) {
-		console.log('Synchronization:initialize');
 		this.lastCustomerSync = lastCustomerSync;
 		this.lastProductSync = lastProductSync;
 		this.lastSalesSync = lastSalesSync;
@@ -39,12 +38,10 @@ class Synchronization {
 	}
 
 	setConnected(isConnected) {
-		console.log('Synchronization:setConnected - ' + isConnected);
 		this.isConnected = isConnected;
 	}
 
 	scheduleSync() {
-		console.log('Synchronization:scheduleSync - Starting synchronization');
 		let timeoutX = 10000; // Sync after 10 seconds
 		if (this.firstSyncId != null) {
 			clearTimeout(this.firstSyncId);
@@ -66,14 +63,11 @@ class Synchronization {
 
 		let that = this;
 		this.firstSyncId = setTimeout(() => {
-			console.log('Synchronizing...');
 			//that.doSynchronize();
 			that.synchronize();
 		}, timeoutX);
 
 		let syncInterval = PosStorage.getGetSyncInterval();
-		console.log('Synchronization interval (ms)' + syncInterval);
-
 		//Sync sales separately every two minutes
 		setInterval(() => {
 			this.synchronizeSales();
@@ -122,15 +116,12 @@ class Synchronization {
 			//Synchronize receipts
 			this.synchReceipts();
 		} else {
-			console.log(
-				"Communications:doSynchronize - Won't sync - Network not connected"
-			);
+
 		}
 	}
 
 	synchronize() {
 		let syncResult = { status: 'success', error: '' };
-		console.log('setter', SettingRealm.getAllSetting());
 		return new Promise(resolve => {
 			try {
 				this._refreshToken()
@@ -145,14 +136,10 @@ class Synchronization {
 							promiseCustomerTypes,
 							promisePaymentTypes
 						]).then(values => {
-							console.log(
-								'synchronize - SalesChannels and Customer Types: ',
-								values
-							);
 
 							const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts().then(
 								customerDebtSync => {
-									console.log("customerDebtSync", customerDebtSync);
+
 									// syncResult.customers = customerSync;
 									// return customerSync;
 								}
@@ -160,7 +147,7 @@ class Synchronization {
 
 							const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes().then(
 								recieptPaymentTypesSync => {
-									console.log("recieptPaymentTypesSync", recieptPaymentTypesSync);
+
 									// syncResult.customers = customerSync;
 									// return customerSync;
 								}
@@ -168,7 +155,7 @@ class Synchronization {
 
 							const promiseCustomers = CustomerSync.synchronizeCustomers().then(
 								customerSync => {
-									console.log("customerSync", customerSync);
+
 									syncResult.customers = customerSync;
 									return customerSync;
 								}
@@ -176,9 +163,6 @@ class Synchronization {
 
 							const promiseTopUps = CreditSync.synchronizeCredits().then(
 								topUpSync => {
-									console.log("topUpSync", topUpSync);
-									// console.log('topUpSync', topUpSync);
-									//this.updateLastTopUpSync()
 									syncResult.topups = topUpSync;
 									return topUpSync;
 								}
@@ -186,9 +170,6 @@ class Synchronization {
 
 							const promiseInventory = InventorySync.synchronizeInventory(this.lastInventorySync).then(
 								inventorySync => {
-									console.log("inventorySync", inventorySync);
-									// console.log('topUpSync', topUpSync);
-									//this.updateInventorySync();
 									syncResult.inventory = inventorySync;
 									return inventorySync;
 								}
@@ -197,7 +178,6 @@ class Synchronization {
 
 							const promiseProducts = ProductSync.synchronizeProducts().then(
 								productSync => {
-									console.log("productSync", productSync);
 									syncResult.products = productSync;
 									return productSync;
 								}
@@ -206,7 +186,6 @@ class Synchronization {
 							const promiseProductMrps = ProductMRPSync.synchronizeProductMrps(
 								lastProductSync
 							).then(productMrpSync => {
-								console.log("productMrpSync", productMrpSync);
 								syncResult.productMrps = productMrpSync;
 								return productMrpSync;
 							});
@@ -214,7 +193,6 @@ class Synchronization {
 							let settings = SettingRealm.getAllSetting();
 							const promiseOrders = OrderSync.synchronizeSales(settings.siteId).then(
 								saleSync => {
-									console.log('saleSync',saleSync);
 									syncResult.sales = saleSync;
 									return saleSync;
 								}
@@ -222,7 +200,6 @@ class Synchronization {
 
 							const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId).then(
 								discountSync => {
-									console.log('discountSync',discountSync);
 									syncResult.discounts = discountSync;
 									return discountSync;
 								}
@@ -276,14 +253,11 @@ class Synchronization {
 						syncResult.error = error;
 						syncResult.status = 'failure';
 						resolve(syncResult);
-						console.log(error);
 					});
 			} catch (error) {
-				console.log('error', error);
 				syncResult.error = error;
 				syncResult.status = 'failure';
 				resolve(syncResult);
-				console.log(error);
 			}
 		});
 	}
@@ -291,7 +265,6 @@ class Synchronization {
 
 	synchronizeSales() {
 		return new Promise(resolve => {
-			console.log('Synchronization:synchronizeSales - Begin');
 			PosStorage.loadSalesReceipts(this.lastSalesSync)
 				.then(salesReceipts => {
 					resolve({
@@ -302,19 +275,12 @@ class Synchronization {
 
 						Communications.createReceipt(receipt.sale)
 							.then(result => {
-								console.log(
-									'Synchronization:synchronizeSales - success: '
-								);
 								PosStorage.removePendingSale(
 									receipt.key,
 									receipt.sale.id
 								);
 							})
 							.catch(error => {
-								console.log(
-									'Synchronization:synchronizeSales Create receipt failed: error-' +
-									error
-								);
 								if (error === 400) {
 									// This is unre-coverable... remove the pending sale
 									PosStorage.removePendingSale(
@@ -327,9 +293,6 @@ class Synchronization {
 				})
 				.catch(error => {
 					resolve({ error: error, localReceipts: null });
-					console.log(
-						'Synchronization.synchronizeSales - error ', error
-					);
 				});
 		});
 	}
@@ -400,8 +363,6 @@ class Synchronization {
 		date.setMinutes(date.getMinutes() - 12);
 		Communications.getReceiptsBySiteIdAndDate(settings.siteId, date).then(
 			json => {
-				console.log(JSON.stringify(json));
-				console.log('receipt json', json);
 				if (json) {
 					PosStorage.addRemoteReceipts(json).then(saved => {
 						Events.trigger('ReceiptsFetched', saved);
@@ -418,7 +379,6 @@ class Synchronization {
 		let settings = SettingRealm.getAllSetting();
 		Communications.getReceiptsBySiteIdAndDate(settings.siteId, date).then(
 			json => {
-				console.log('receipt json', json);
 				PosStorage.addRemoteReceipts(json).then(saved => {
 					Events.trigger('ReceiptsFetched', saved);
 				});
@@ -438,14 +398,9 @@ class Synchronization {
 				settings.token.length === 0 ||
 				currentDateTime > tokenExpirationDate
 			) {
-				// Either user has previously logged out or its time for a new token
-				console.log(
-					'No token or token has expired - Getting a new one'
-				);
 				Communications.login()
 					.then(result => {
 						if (result.status === 200) {
-							console.log('New token Acquired');
 							SettingRealm.saveSettings(
 								settings.semaUrl,
 								settings.site,
@@ -462,16 +417,9 @@ class Synchronization {
 						resolve();
 					})
 					.catch(result => {
-						console.log(
-							'Failed- status ' +
-							result.status +
-							' ' +
-							result.response
-						);
 						reject(result.response);
 					});
 			} else {
-				console.log('Existing token is valid');
 				resolve();
 			}
 		});

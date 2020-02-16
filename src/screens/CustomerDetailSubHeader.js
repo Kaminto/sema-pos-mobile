@@ -16,6 +16,7 @@ import PaymentTypeRealm from '../database/payment_types/payment_types.operations
 import CustomerReminderRealm from '../database/customer-reminder/customer-reminder.operations';
 
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import * as CustomerActions from '../actions/CustomerActions';
 import * as TopUpActions from '../actions/TopUpActions';
@@ -65,7 +66,12 @@ class SelectedCustomerDetails extends React.Component {
 							Last Purchase Date: {CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId) === 'N/A' ? 'N.A' : CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId).lastPurchaseDate }
 						</Text> */}
 						<Text style={styles.selectedCustomerText}>
-							Reminder Date:  {CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId) === 'N/A' ? 'N/A' : CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId).reminder_date }
+								<Ionicons
+										name='md-alarm'
+										size={24}
+										color='black'
+									/> :
+									  {CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId) === ' N/A' ? ' N/A' : CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId).reminder_date }
 						</Text>
 						<View style={styles.completeOrder}>
 							<TouchableHighlight
@@ -125,7 +131,6 @@ class SelectedCustomerDetails extends React.Component {
 
 
 	modalOnClose() {
-		console.log('Modal closed here')
 		PaymentTypeRealm.resetSelected();
 		this.props.paymentTypesActions.resetSelectedDebt();
 		this.props.paymentTypesActions.setPaymentTypes(
@@ -137,15 +142,11 @@ class SelectedCustomerDetails extends React.Component {
 	};
 
 	getCreditPurchases() {
-		console.log(this.props.creditSales);
 		return this.props.creditSales.reduce((total, item) => { return (total + item.amount) }, 0)
 	}
 
 	getReminder(id) {
-		console.log(id);
-		console.log('op', CustomerReminderRealm.getCustomerReminderById(id));
 		if (CustomerReminderRealm.getCustomerReminderById(id).length > 0) {
-			console.log('der',CustomerReminderRealm.getCustomerReminderById(id)[0].reminder_date);
 			return CustomerReminderRealm.getCustomerReminderById(id)[0].reminder_date;
 		} else {
 			return 'N/A';
@@ -153,10 +154,7 @@ class SelectedCustomerDetails extends React.Component {
 	}
 
 	getLastPurchaseDate(id) {
-		console.log(id);
-		console.log('lastPurchaseDate', CustomerReminderRealm.getCustomerReminderById(id));
 		if (CustomerReminderRealm.getCustomerReminderById(id).length > 0) {
-			console.log('ty', CustomerReminderRealm.getCustomerReminderById(id)[0].lastPurchaseDate)
 			return CustomerReminderRealm.getCustomerReminderById(id)[0].lastPurchaseDate;
 		} else {
 			return 'N/A';
@@ -166,7 +164,6 @@ class SelectedCustomerDetails extends React.Component {
 
 
 	getName() {
-		console.log('balanceCredit', this.props.balanceCredit);
 		if (this.props.selectedCustomer.hasOwnProperty('name')) {
 			return this.props.selectedCustomer.name;
 		} else {
@@ -240,14 +237,16 @@ const styles = StyleSheet.create({
 		height: 70,
 		elevation: 10,
 		alignSelf: 'center',
-		width: '80%',
+		width: '85%',
 		justifyContent: 'center',
 		color: 'white',
 		paddingBottom: 20
 	},
+
 	modalPayment: {
 		backgroundColor: 'white',
 	},
+
 	modal3: {
 		width: '70%',
 		height: 400,
@@ -262,6 +261,7 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		color: 'black'
 	},
+
 	completeOrder: {
 		backgroundColor: '#2858a7',
 		borderRadius: 5,

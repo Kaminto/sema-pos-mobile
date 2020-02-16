@@ -42,15 +42,12 @@ class CustomerReminderRealm {
 
 
     createCustomerReminder(customerReminder) {
-        console.log('customerReminder-', customerReminder);
         try {
             realm.write(() => {
                 let customerReminderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerReminder').filtered(`customer_account_id = "${customerReminder.customer_account_id}"`))));
-                console.log('customerReminderObj', customerReminderObj);
+
                 if (customerReminderObj.length > 0) {
                     let customerReminderUpdateObj = realm.objects('CustomerReminder').filtered(`customer_account_id = "${customerReminder.customer_account_id}"`);
-
-                    console.log('treminder existsp');
                     customerReminderUpdateObj[0].frequency = customerReminder.avg;
                     customerReminderUpdateObj[0].phoneNumber = customerReminder.phoneNumber,
                         customerReminderUpdateObj[0].address = customerReminder.address,
@@ -60,7 +57,6 @@ class CustomerReminderRealm {
                     customerReminderUpdateObj[0].syncAction = 'UPDATE';
                     customerReminderUpdateObj[0].updated_at = new Date();
                 } else {
-                    console.log('reminder doesnt exists0');
                     const ObjSave = {
                         reminderId: uuidv1(),
                         customer_account_id: customerReminder.customer_account_id,
@@ -74,7 +70,6 @@ class CustomerReminderRealm {
                         syncAction: 'CREATE',
                         created_at: new Date(),
                     };
-                    console.log('ObjSave', ObjSave);
                     realm.create('CustomerReminder', ObjSave);
                 }
                 // realm.create('CustomerReminder', customerReminder);
@@ -85,7 +80,6 @@ class CustomerReminderRealm {
     }
 
     setCustomReminder(customer_account_id, customReminderDate) {
-        console.log('customerReminder-', customReminderDate);
         try {
             realm.write(() => {
                 let customerReminderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerReminder').filtered(`customer_account_id = "${customer_account_id}"`))));
@@ -102,10 +96,8 @@ class CustomerReminderRealm {
     }
 
     getCustomerReminderById(customer_account_id) {
-        console.log('customer_account_id-', customer_account_id);
-        //return Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerReminder').filtered(`customer_account_id = "${customer_account_id}"`))));
         let reminder = Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerReminder').filtered(`customer_account_id = "${customer_account_id}"`))));
-        
+
         if (reminder.length > 0) {
             reminder = reminder.map(element=>{
                 return {
@@ -118,12 +110,11 @@ class CustomerReminderRealm {
                     .format('dddd Do MMMM YYYY')
                 }
             });
-            console.log('reminder', reminder);
 			return reminder[0];
 		} else {
 			return 'N/A';
 		}
-   
+
     }
 
     updateCustomerReminder(customerReminder) {
@@ -158,7 +149,6 @@ class CustomerReminderRealm {
     }
 
     isSelected(customerReminder, isSelected) {
-        console.log(isSelected);
         try {
             realm.write(() => {
                 let customerReminderObj = realm.objects('CustomerReminder').filtered(`id = "${customerReminder.customerReminderId}"`);
@@ -212,8 +202,6 @@ class CustomerReminderRealm {
     }
 
     createManyCustomerReminder(customerReminders, customer_account_id) {
-        console.log('customerReminders', customerReminders);
-        console.log('customer_account_id', customer_account_id);
         try {
             realm.write(() => {
                 if (customer_account_id) {

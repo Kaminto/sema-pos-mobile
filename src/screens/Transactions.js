@@ -306,9 +306,7 @@ class Transactions extends Component {
 	componentDidMount() {
 		this.props.navigation.setParams({ paymentTypeValue: 'all' });
 		this.props.navigation.setParams({ checkPaymentTypefilter: this.checkPaymentTypefilter });
-		console.log(
-			'CustomerDetails:componentDidMount - filter: ' + this.props.filter
-		);
+
 		Events.on(
 			'ScrollCustomerTo',
 			'customerId1',
@@ -317,7 +315,6 @@ class Transactions extends Component {
 	}
 
 	checkPaymentTypefilter = (searchText) => {
-		console.log(searchText)
 		this.props.navigation.setParams({ paymentTypeValue: searchText });
 		this.props.customerActions.SearchPaymentType(searchText);
 	};
@@ -327,7 +324,7 @@ class Transactions extends Component {
 	}
 
 	onScrollCustomerTo(data) {
-		console.log('onScrollCustomerTo');
+
 	}
 
 	setSelected(item) {
@@ -341,7 +338,6 @@ class Transactions extends Component {
 	});
 
 	shouldComponentUpdate(nextProps, nextState) {
-		console.log('onScrollCustomerTo');
 		return true;
 	}
 
@@ -383,8 +379,6 @@ class Transactions extends Component {
 	}
 
 	render() {
-
-		console.log('props -', this.props);
 		return (
 			<View style={{ flex: 1 }}>
 				{this.getTransactionDetail()}
@@ -547,8 +541,6 @@ class Transactions extends Component {
 	}
 
 	deleteReceipt(item, updatedFields) {
-		console.log(item);
-		console.log(updatedFields);
 		// this.props.receiptActions.updateRemoteReceipt(
 		// 	item.index,
 		// 	updatedFields
@@ -600,7 +592,6 @@ class Transactions extends Component {
 	}
 
 	showHeader = () => {
-		console.log('Displaying header');
 		return (
 			<View
 				style={[
@@ -641,11 +632,7 @@ class SearchWatcher extends React.Component {
 
 	// TODO: Use states instead of setTimeout
 	searchEvent() {
-		console.log('SearchWatcher');
-
 		let that = this;
-		console.log(that.props.parent.props.paymentTypeFilter);
-		console.log(that.props.parent.state.paymentTypeFilter);
 
 		setTimeout(() => {
 			if (

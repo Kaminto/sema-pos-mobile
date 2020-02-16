@@ -6,8 +6,6 @@ class DiscountRealm {
         this.discount = [];
     }
 
-
-
     truncate() {
         try {
             realm.write(() => {
@@ -92,7 +90,7 @@ class DiscountRealm {
                    // console.log('element',element);
                     element.isSelected = false;
                 })
-                
+
 
             })
 
@@ -103,7 +101,6 @@ class DiscountRealm {
     }
 
     isSelected(discount,isSelected) {
-        console.log(isSelected);
         try {
             realm.write(() => {
                 let discountObj = realm.objects('Discount').filtered(`id = "${discount.id}"`);

@@ -81,8 +81,8 @@ class OrderSync {
                                         sku:  localOrder.receipt_line_items[i].sku,
                                         notes:  localOrder.receipt_line_items[i].notes
                                     })
-                        
-                        
+
+
                                 }
                                 localOrder.products = products;
 
@@ -129,7 +129,7 @@ class OrderSync {
 
                         if (inLocal.length > 0 && inRemote.length > 0) {
 
-                            inLocal.forEach(localOrder => {                                
+                            inLocal.forEach(localOrder => {
                                 if (localOrder.active === true && localOrder.syncAction === 'delete') {
                                     OrderApi.deleteOrder(
                                         localOrder

@@ -14,24 +14,15 @@ export const ADD_REMINDER = 'ADD_REMINDER';
 const getSalesData = (beginDate, endDate) => {
 	return new Promise(async (resolve, reject) => {
 		const loggedReceipts = OrderRealm.getAllOrder();
-		console.log('beginDate-', beginDate, 'endDate-', endDate);
-		console.log('loggedReceipts', loggedReceipts);
 		const filteredReceipts = loggedReceipts.filter(receipt =>
 			moment
 				.tz(new Date(receipt.created_at), moment.tz.guess())
 				.isBetween(beginDate, endDate)
 		);
-		console.log('filteredReceipts', filteredReceipts);
 		const allReceiptLineItems = filteredReceipts.reduce(
 			(lineItems, receipt) => {
-				console.log('receipt', receipt);
-				// We only show data for active receipts
-				//if (!receipt.active) return lineItems;
-
-				//if (!receipt.isLocal) {
 				receipt.receipt_line_items = receipt.receipt_line_items.map(
 					item => {
-						console.log('item', item);
 						item.product = {
 							active: item.product.active,
 							categoryId: item.product.category_id,
@@ -51,21 +42,12 @@ const getSalesData = (beginDate, endDate) => {
 						return item;
 					}
 				);
-				// } else {
-				// 	// Get rid of the image property from the product of pending receipt line items
-				// 	// too heavy to carry around. We're not using it here anyway
-				// 	receipt.receipt_line_items.forEach(item => {
-				// 		delete item.product.base64encodedImage;
-				// 	});
-				// }
-				console.log('receipt', receipt);
 				lineItems.push(...receipt.receipt_line_items);
 
 				return lineItems;
 			},
 			[]
 		);
-		console.log('allReceiptLineItems', allReceiptLineItems);
 		if (!allReceiptLineItems.length) {
 			return resolve({ totalLiters: 0, totalSales: 0, totalDebt: 0, salesItems: [] });
 		}
@@ -131,22 +113,16 @@ const getSalesData = (beginDate, endDate) => {
 
 		finalData.mapping.clear();
 		delete finalData.mapping;
-		console.log('finalData', finalData);
 		resolve({ ...finalData});
 	});
 };
 
 export const getMrps = products => {
 	let productMrp = ProductMRPRealm.getFilteredProductMRP();
-	console.log('productMrp', productMrp);
-	console.log('Object.keys', Object.keys(productMrp));
 	let ids = Object.keys(productMrp).map(key => productMrp[key].productId);
-	console.log('idsids', ids);
 
 	let matchProducts = products.filter(prod => ids.includes(prod.productId));
-	console.log('matchProducts', matchProducts);
 	let waterProducts = matchProducts.filter(prod => 3 === prod.categoryId);
-	console.log('waterProducts', waterProducts);
 	return waterProducts;
 };
 
@@ -169,12 +145,9 @@ export function GetInventoryReportData(beginDate, endDate, products) {
 }
 
 export const getWastageData = (beginDate, endDate, products) => {
-	console.log('beginDate-', beginDate, 'endDate-', endDate);
-	console.log('products', products);
 	return new Promise((resolve, reject) => {
 		getSalesData(beginDate, endDate)
 			.then(salesData => {
-				console.log('salesData', salesData);
 				getInventoryItem(beginDate, products)
 					.then(inventorySettings => {
 						let inventoryData = createInventory(
@@ -277,7 +250,6 @@ const getInventoryItem = (beginDate, products) => {
 
 		const promiseYesterday = PosStorage.getInventoryItem(yesterday);
 		Promise.all([promiseToday, promiseYesterday]).then(inventoryResults => {
-			console.log('inventoryResults', inventoryResults);
 			if (inventoryResults[0] != null) {
 				if (inventoryResults[1]) {
 					inventoryResults[0].previousProductSkus = inventoryResults[1].currentProductSkus;

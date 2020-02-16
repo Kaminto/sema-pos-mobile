@@ -152,9 +152,6 @@ class Login extends Component {
 			this.setState({ isLoading: true });
 			Synchronization.synchronize().then(syncResult => {
 				this.setState({ isLoading: false });
-				console.log(
-					'Synchronization-result: ', syncResult
-				);
 
 				Synchronization.getLatestSales();
 				this.loadSyncedData();
@@ -199,7 +196,6 @@ class Login extends Component {
 
 		Communications.login()
 			.then(result => {
-				console.log('Passed - status' + result.status + ' ', result.response);
 				if (result.status === 200) {
 					let oldSettings = { ...SettingRealm.getAllSetting() };
 					SettingRealm.saveSettings(
@@ -230,7 +226,6 @@ class Login extends Component {
 
 
 					if (this.isSiteIdDifferent(result.response.data.kiosk.id, oldSettings.siteId)) {
-						console.log('different site id Sync');
 						this.onSynchronize();
 						this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
 						this.setState({ isLoading: false });
@@ -238,7 +233,6 @@ class Login extends Component {
 					}
 
 					if (!this.isSiteIdDifferent(result.response.data.kiosk.id, oldSettings.siteId)) {
-						console.log('same site id load data');
 						this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
 						this.setState({ isLoading: false });
 						this.props.navigation.navigate('App');
@@ -260,7 +254,6 @@ class Login extends Component {
 				}
 			})
 			.catch(result => {
-				console.log('Failed- status ', result.status + ' ', result.response.message);
 				this.setState({ isLoading: false });
 				Alert.alert(
 					i18n.t('network-connection'),
@@ -293,7 +286,6 @@ class Login extends Component {
             OrderRealm.getAllOrder()
         );
 
-		console.log('getDiscounts', DiscountRealm.getDiscounts());
         this.props.discountActions.setDiscounts(
             DiscountRealm.getDiscounts()
         );
@@ -320,9 +312,6 @@ class Login extends Component {
 
 
 	getDefaultUILanguage() {
-		console.log(
-			`CURRENT UI LANGUAGE IS ${this.props.settings.uiLanguage.iso_code}`
-		);
 		return this.props.settings.uiLanguage.iso_code;
 	}
 
@@ -425,18 +414,9 @@ const styles = StyleSheet.create({
 		fontSize: 24,
 		color: 'white',
 		textAlign: 'center',
-		// paddingTop:10,
 		paddingLeft: 30,
 		paddingRight: 30
-		// paddingBottom:10
 	},
-	// inputText: {
-	// 	fontSize: inputFontHeight,
-	// 	alignSelf: 'center',
-	// 	backgroundColor: 'white',
-	// 	width: inputTextWidth,
-	// 	margin: marginTextInput
-	// },
 	labelText: {
 		fontSize: inputFontHeight,
 		alignSelf: 'flex-end',

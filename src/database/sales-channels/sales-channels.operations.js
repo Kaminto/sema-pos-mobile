@@ -4,18 +4,18 @@ class SalesChannelRealm {
     constructor() {
         this.salesChannels = Object.values(JSON.parse(JSON.stringify(realm.objects('SalesChannel'))));
     }
- 
+
     truncate() {
         try {
-            realm.write(() => { 
+            realm.write(() => {
                 realm.delete(realm.objects('SalesChannel'));
             })
         } catch (e) {
             console.log("Error on creation", e);
         }
     }
- 
- 
+
+
     getSalesChannels() {
         return this.salesChannels = Object.values(JSON.parse(JSON.stringify(realm.objects('SalesChannel'))));
     }
@@ -58,7 +58,7 @@ class SalesChannelRealm {
 		}
 		return null;
     }
-    
+
     getSalesChannelFromId(id) {
 		for (let i = 0; i < this.salesChannels.length; i++) {
 			if (this.salesChannels[i].id === id) {
@@ -67,9 +67,8 @@ class SalesChannelRealm {
 		}
 		return null;
 	}
- 
+
     createManySalesChannel(salesChannels) {
-        console.log('salesChannels', salesChannels)
         try {
             realm.write(() => {
                 salesChannels.forEach(obj => {

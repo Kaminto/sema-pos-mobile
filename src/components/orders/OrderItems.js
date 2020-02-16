@@ -1,9 +1,12 @@
 import React, { Component } from "react";
-import { View, Text, Button, ScrollView, FlatList, Switch, Image, TextInput, Dimensions, TouchableHighlight, StyleSheet } from "react-native";
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
+import { View, Text, ScrollView, FlatList, TextInput, Dimensions, TouchableHighlight, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
-import * as ToolbarActions from '../../actions/ToolBarActions';
 import * as DiscountActions from '../../actions/DiscountActions';
 
 import i18n from "../../app/i18n";
@@ -17,14 +20,12 @@ import ToggleSwitch from 'toggle-switch-react-native';
 const { height, width } = Dimensions.get('window');
 const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
-const inputTextWidth = 400;
 
 const inputFontHeight = Math.round((24 * height) / 752);
 
 class OrderItems extends Component {
 	constructor(props) {
 		super(props);
-		// slowlog(this, /.*/);
 		this.state = {
 			selectedItem: {},
 			accumulator: 0,
@@ -36,7 +37,15 @@ class OrderItems extends Component {
 			swipeToClose: true,
 			sliderValue: 0.3,
 		};
+
+		this.onPressItem = this.onPressItem.bind(this);
 	}
+
+	static whyDidYouRender = true;
+
+    shouldComponentUpdate( nextProps,nextState) {
+        return nextState !== this.state;
+    }
 
 	render() {
 
@@ -695,7 +704,6 @@ class OrderItems extends Component {
 		}
 
 		if (!value) {
-			console.log('empty');
 			this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, '', unitPrice);
 			this.setState({
 				accumulator: ''
@@ -853,7 +861,6 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
 	return {
 		orderActions: bindActionCreators(OrderActions, dispatch),
-		toolbarActions: bindActionCreators(ToolbarActions, dispatch),
 		discountActions: bindActionCreators(DiscountActions, dispatch),
 	};
 }

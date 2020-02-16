@@ -45,22 +45,8 @@ class CustomerEdit extends Component {
 		this.secondPhoneNumber = React.createRef();
 		this.name = React.createRef();
 		this.address = React.createRef();
-		// this.customerChannel = React.createRef();
 		this.customerType = React.createRef();
 		this.frequency = React.createRef();
-
-		// this.salesChannels = SalesChannelRealm.getSalesChannelsForDisplay();
-		// this.channelOptions = this.salesChannels.map(channel => {
-		// 	console.log(channel);
-		// 	return channel.displayName;
-		// });
-
-		// this.salesChannelOptions = this.salesChannels.map(channel => {
-		// 	var rObj = {};
-		// 	rObj.label = channel.displayName;
-		// 	rObj.value = channel.id;
-		// 	return rObj;
-		// });
 
 		this.customerTypes = CustomerTypeRealm.getCustomerTypesForDisplay(this.saleschannelid);
 		this.customerTypeOptions = this.customerTypes.map(customerType => {
@@ -81,7 +67,6 @@ class CustomerEdit extends Component {
 	}
 
 	componentDidMount() {
-		console.log('CustomerEdit = Mounted' + this.props.isEdit);
 		if (this.props.isEdit) {
 			this.props.navigation.setParams({ isEdit: true });
 		} else {
@@ -292,7 +277,6 @@ class CustomerEdit extends Component {
 	}
 
 	onChangeName = text => {
-		console.log(text);
 		this.setState({
 			name: text
 		});
@@ -313,11 +297,9 @@ class CustomerEdit extends Component {
 	}
 
 	getName(me) {
-		console.log(me.props);
 		if (me.props.isEdit) {
 			return me.props.selectedCustomer.name;
 		} else {
-			console.log("me.props");
 			return 'wee';
 		}
 	}
@@ -487,24 +469,6 @@ class CustomerEdit extends Component {
 			);
 		}
 		return test;
-	}
-
-	changeCustomerTypeList(value) {
-		let tindex = 0;
-		if (value === 'Direct') {
-			tindex = 2;
-		} else if (value === 'Reseller') {
-			tindex = 3;
-		} else if (value === 'Water Club') {
-			tindex = 4;
-		}
-		this.saleschannelid = tindex;
-		console.log("Adams" + this.saleschannelid);
-		this.setState({ salescid: tindex });
-		this.customerTypes = CustomerTypeRealm.getCustomerTypesForDisplay(tindex);
-		this.customerTypeOptions = this.customerTypes.map(customerType => {
-			return customerType.displayName;
-		});
 	}
 
 	onMakeSale() {
@@ -796,7 +760,6 @@ const styles = StyleSheet.create({
 	},
 
 	inputText: {
-		fontSize: 24,
 		alignSelf: 'center',
 		borderWidth: 2,
 		borderRadius: 8,
@@ -806,7 +769,6 @@ const styles = StyleSheet.create({
 	},
 
 	phoneInputText: {
-		fontSize: 24,
 		backgroundColor: 'white',
 		margin: 5,
 		paddingRight: 5

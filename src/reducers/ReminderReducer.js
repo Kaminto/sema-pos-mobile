@@ -7,7 +7,6 @@ let initialState = {
 };
 
 const reminderReducer = (state = initialState, action) => {
-    console.log("reminderReducer:" + action.type);
     let newState;
     switch(action.type){
     case ADD_REMINDER:

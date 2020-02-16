@@ -16,15 +16,6 @@ class SalesReport extends Component {
 		this.endDate = null;
 	}
 
-	componentDidMount() {
-		console.log("SalesReport - componentDidMount");
-		// this.props.reportActions.GetSalesReportData( this.startDate, this.endDate);
-	}
-
-	componentWillUnmount() {
-		console.log("SalesReport - componentWillUnmount");
-	}
-
 	render() {
 		return (
 			<View style={{ flex: 1 }}>
@@ -92,9 +83,7 @@ class SalesReport extends Component {
 		let sales = [];
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
 			if (this.props.dateFilter.startDate == this.startDate && this.props.dateFilter.endDate == this.endDate) {
-				//return this.props.salesData.salesItems;
 				sales = this.props.salesData.salesItems;
-				//return this.removeDuplicates(this.props.salesData.salesItems, "id");
 			} else {
 				// Get new data
 				this.startDate = this.props.dateFilter.startDate;
@@ -103,7 +92,6 @@ class SalesReport extends Component {
 				sales = this.props.salesData.salesItems;
 			}
 		} else {
-			//return this.props.salesData.salesItems;
 			sales = this.props.salesData.salesItems;
 		}
 		return sales;
@@ -202,7 +190,6 @@ class SalesReport extends Component {
 	}
 
 	getRow = (item) => {
-		console.log("SalesReport - getRow");
 		return (
 			<View style={[{ flex: 1, flexDirection: 'row', alignItems: 'center' }, styles.rowBackground]}>
 				<View style={[{ flex: 1 }]}>
@@ -222,7 +209,6 @@ class SalesReport extends Component {
 	};
 
 	getPaymentRow = (item) => {
-		console.log("SalesReport - getPaymentRow");
 		return (
 			<View style={[{ flex: 1, flexDirection: 'row', alignItems: 'center' }, styles.rowBackground]}>
 

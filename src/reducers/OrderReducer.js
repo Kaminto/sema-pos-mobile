@@ -8,7 +8,6 @@ import {
 let initialState = { products: [], channel: { salesChannel: 'direct' }, flow: { page: 'products' }, payment: { cash: 0, credit: 0, mobile: 0 }, discounts: [] };
 
 const orderReducer = (state = initialState, action) => {
-	console.log("orderReducer: " + action.type);
 	let newState;
 	switch (action.type) {
 		case SET_PRODUCT_NOTES:
@@ -32,7 +31,6 @@ const orderReducer = (state = initialState, action) => {
 			for (let product of newState.products) {
 				if (product.product.productId === action.data.product.productId) {
 					product.quantity += action.data.quantity;
-
 
 					if (!product.hasOwnProperty('discount')) {
 						product.finalAmount = (Number(product.quantity)) * Number(product.unitPrice);

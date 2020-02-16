@@ -53,11 +53,9 @@ export default realm = new Realm({
         CustomerDebtSchema,
         CustomerReminderSchema
     ],
-    schemaVersion: 72,
+    schemaVersion: 73,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
-        console.log('newRealm', newRealm)
-        console.log('oldRealm', oldRealm)
         if (oldRealm.schemaVersion < 1) {
             const oldObjects = oldRealm.objects('InventoryInventorySynDate');
             const newObjects = newRealm.objects('InventoryInventorySynDate');

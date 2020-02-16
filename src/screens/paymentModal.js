@@ -1,10 +1,7 @@
 import React, { Component } from "react"
-import { View, Alert, Text, TextInput, Button, FlatList, ScrollView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
+import { View, Alert, Text, TextInput, FlatList, ScrollView, TouchableHighlight, StyleSheet } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as OrderActions from "../actions/OrderActions";
-import * as CustomerBarActions from '../actions/CustomerBarActions';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
 import * as receiptActions from '../actions/ReceiptActions';
@@ -16,19 +13,16 @@ import i18n from "../app/i18n";
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
 
-import PaymentMethod from '../components/orders/order-checkout/payment-method';
 import PaymentDescription from '../components/orders/order-checkout/payment-description';
 
 import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
 import SettingRealm from '../database/settings/settings.operations';
 import CustomerRealm from '../database/customers/customer.operations';
-import OrderRealm from '../database/orders/orders.operations';
 
-import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_payment_types.operations';
 import * as Utilities from "../services/Utilities";
-const widthQuanityModal = '100%';
+const widthQuanityModal = '80%';
 const heightQuanityModal = 400;
-const inputTextWidth = 400;
+
 import moment from 'moment-timezone';
 
 class PaymentModal extends Component {
@@ -75,7 +69,7 @@ class PaymentModal extends Component {
 								this.paymentTypesRow(item, index, separators)
 							)}
 							extraData={this.props.selectedDebtPaymentTypes}
-							numColumns={2}
+							numColumns={3}
 							contentContainerStyle={styles.container}
 						/>
 					<Card>
@@ -91,7 +85,7 @@ class PaymentModal extends Component {
 												this.currentCredit()
 											)}
 										/>
-										</Card>
+					</Card>
 
 						<View style={styles.completeOrder}>
 							<View style={{ justifyContent: 'center', height: 50 }}>
@@ -119,12 +113,10 @@ class PaymentModal extends Component {
 
 
 	getCreditPurchases() {
-		console.log('customerCreditPaymentTypeReceipts', this.customerCreditPaymentTypeReceipts());
 		return this.customerCreditPaymentTypeReceipts().reduce((total, item) => { return (total + item.amount) }, 0)
 	}
 
 	currentCredit() {
-		console.log('topupTotal', this.totalTopUp());
 		return this.totalTopUp() - this.getCreditPurchases();
 	}
 
@@ -158,8 +150,6 @@ class PaymentModal extends Component {
                     ? 1
                     : -1;
             });
-
-            console.log('topups', topups);
             return topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
         } else {
             return [];
@@ -170,13 +160,10 @@ class PaymentModal extends Component {
 	customerCreditPaymentTypeReceipts() {
 		let receiptsPaymentTypes = [...this.compareCreditPaymentTypes()];
 		let customerReceipt = [...this.getCustomerRecieptData()];
-		console.log(receiptsPaymentTypes);
-		console.log(customerReceipt);
 		let finalCustomerReceiptsPaymentTypes = [];
 
 		for (let receiptsPaymentType of receiptsPaymentTypes) {
 			const rpIndex = customerReceipt.map(function (e) { return e.id }).indexOf(receiptsPaymentType.receipt_id);
-			console.log(rpIndex);
 			if (rpIndex >= 0) {
 				receiptsPaymentType.receipt = receiptsPaymentTypes[rpIndex];
 				finalCustomerReceiptsPaymentTypes.push(receiptsPaymentType);
@@ -249,8 +236,6 @@ class PaymentModal extends Component {
 
 	}
 
-
-
 	paymentTypesRow = (item, index, separators) => {
 
 		let isSelectedAvailable = false;
@@ -262,7 +247,6 @@ class PaymentModal extends Component {
 		}
 
 		if (this.props.selectedDebtPaymentTypes.length === 0) {
-			console.log('--item--', item);
 			if (item.name === 'cash') {
 				PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
 				this.props.paymentTypesActions.setSelectedDebtPaymentTypes({ ...item, created_at: new Date(), isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
@@ -270,7 +254,7 @@ class PaymentModal extends Component {
 			}
 		}
 
-		if (item.name != "loan") {
+		if (item.name != "loan" && item.name != "credit") {
 			return (
 				<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
 					<View style={{ flex: 1, height: 50 }}>
@@ -290,7 +274,6 @@ class PaymentModal extends Component {
 									/>}
 									checked={item.isSelected || isSelectedAvailable}
 									onPress={() => {
-										console.log('press');
 										this.checkBoxType(item);
 									}}
 								/>
@@ -313,13 +296,10 @@ class PaymentModal extends Component {
 						<TextInput
 							underlineColorAndroid="transparent"
 							onChangeText={(textValue) => {
-								console.log('textValue', textValue);
-								console.log('selectedType', this.state.selectedType);
 								this.valuePaymentChange(textValue,itemIndex);
 							}
 							}
 							onFocus={(text) => {
-								console.log(item)
 								this.setState({
 									selectedType: item
 								});
@@ -336,24 +316,19 @@ class PaymentModal extends Component {
 	}
 
 	checkBoxType = (item) => {
-		console.log('selectedDebtPaymentTypes', this.props.selectedDebtPaymentTypes);
+			const itemIndex = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(item.id);
 
-		const itemIndex = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(item.id);
-		console.log(itemIndex);
 		if (itemIndex >= 0) {
 
 			let secondItemObj = this.props.selectedDebtPaymentTypes.filter(obj => obj.id != item.id).map(function (e) { return e.id });
-			console.log('secondItemObj', secondItemObj);
 
 			if (secondItemObj.length > 0) {
 				const seconditemIndex2 = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(secondItemObj[0]);
-				console.log('seconditemIndex2', seconditemIndex2);
 				this.props.paymentTypesActions.updateSelectedDebtPaymentType({ ...this.props.selectedDebtPaymentTypes[seconditemIndex2], amount: Number(this.calculateOrderDue()) }, seconditemIndex2);
 
 				PaymentTypeRealm.isSelected(item, false);
 				this.props.paymentTypesActions.removeSelectedDebtPaymentType(item, itemIndex);
 				this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
-				console.log(this.props.selectedDebtPaymentTypes);
 			}
 
 			if (secondItemObj.length === 0) {
@@ -369,7 +344,6 @@ class PaymentModal extends Component {
 				`You cannot select more than two payment methods.`,
 				[{
 					text: 'OK', onPress: () => {
-						console.log('OK Pressed');
 						this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
 					}
 				}],
@@ -394,28 +368,22 @@ class PaymentModal extends Component {
 
 
 		this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
-		console.log(this.props.selectedDebtPaymentTypes);
-		console.log('getPaymentTypes', PaymentTypeRealm.getPaymentTypes());
-		//this.showTextInput(item);
 	};
 
 	valuePaymentChange = (textValue, itemIndex) => {
-		console.log('textValue', textValue);
-		console.log('selectedType', this.state.selectedType);
 		if (Number(textValue) > Number(this.calculateOrderDue())) {
-			Alert.alert(
-				'Notice. ',
-				`Amount can not be greater that ${this.calculateOrderDue()}`,
-				[{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-				{ cancelable: false }
-			);
-			return;
+			// Alert.alert(
+			// 	'Notice. ',
+			// 	`Amount can not be greater that ${this.calculateOrderDue()}`,
+			// 	[{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+			// 	{ cancelable: false }
+			// );
+			// return;
 		}
 
 		if (this.props.selectedDebtPaymentTypes.length >= 0) {
 			const itemIndex2 = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
 			let secondItemObj = this.props.selectedDebtPaymentTypes.filter(obj => obj.id != this.state.selectedType.id).map(function (e) { return e.id });
-			console.log('secondItemObj', secondItemObj);
 
 			if (itemIndex2 >= 0) {
 				this.props.selectedDebtPaymentTypes[itemIndex].amount = Number(textValue);
@@ -427,12 +395,10 @@ class PaymentModal extends Component {
 
 			if (secondItemObj.length > 0) {
 				const seconditemIndex2 = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(secondItemObj[0]);
-				console.log('seconditemIndex2', seconditemIndex2);
 				this.props.selectedDebtPaymentTypes[seconditemIndex2].amount = Number(this.calculateOrderDue()) - Number(textValue);
 				this.props.paymentTypesActions.updateSelectedDebtPaymentType({ ...this.props.selectedDebtPaymentTypes[seconditemIndex2], amount: Number(this.calculateOrderDue()) - Number(textValue) }, seconditemIndex2);
 			}
 		}
-		console.log('selectedDebtPaymentTypes', this.props.selectedDebtPaymentTypes);
 
 		this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
 
@@ -440,7 +406,6 @@ class PaymentModal extends Component {
 
 	clearLoan = () => {
 		const creditIndex = this.props.selectedDebtPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
-		console.log('creditIndex', creditIndex);
 		if (creditIndex >= 0) {
 			if (Number(this.props.selectedDebtPaymentTypes[creditIndex].amount) > Number(this.props.selectedCustomer.dueAmount)) {
 				Alert.alert(
@@ -458,8 +423,6 @@ class PaymentModal extends Component {
 				return;
 			}
 		}
-
-		console.log(this.props.selectedDebtPaymentTypes.length);
 		if (this.props.selectedDebtPaymentTypes.length > 0) {
 			CustomerDebtRealm.createManyCustomerDebt(this.props.selectedDebtPaymentTypes, this.props.selectedCustomer.customerId);
 			this.props.paymentTypesActions.setCustomerPaidDebt(
@@ -468,12 +431,10 @@ class PaymentModal extends Component {
 		}
 
 		if (this.props.selectedDebtPaymentTypes.length >= 0) {
-			console.log('selectedDebtPaymentTypes', this.props.selectedDebtPaymentTypes)
 			let amountPaid = this.props.selectedDebtPaymentTypes.reduce((total, item) => {
-				console.log('amount Paid', item.amount);
 				return (total + item.amount);
-			}, 0)
-			console.log('amount Paid', amountPaid);
+			}, 0);
+
 			if (amountPaid >= 0) {
 				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - Number(amountPaid);
 				CustomerRealm.updateCustomerDueAmount(

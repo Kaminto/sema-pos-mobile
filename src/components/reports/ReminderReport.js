@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, TouchableHighlight, Button, Alert, FlatList } from 'react-native';
+import { Text, View, StyleSheet, TouchableHighlight, Alert, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as reportActions from "../../actions/ReportActions";
 import * as customerActions from '../../actions/CustomerActions';
-import * as customerBarActions from "../../actions/CustomerBarActions";
-import * as toolBarActions from "../../actions/ToolBarActions";
 import * as orderActions from "../../actions/OrderActions";
 import * as reminderActions from "../../actions/ReminderActions.js";
 import CustomerReminderRealm from '../../database/customer-reminder/customer-reminder.operations';
@@ -13,7 +11,6 @@ import * as CustomerReminderActions from '../../actions/CustomerReminderActions'
 import DateFilter from './ReminderDateFilter';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from 'moment-timezone';
-import i18n from '../../app/i18n';
 
 class RemindersReport extends Component {
 	constructor(props) {
@@ -30,8 +27,6 @@ class RemindersReport extends Component {
 		};
 
 		this.reminderDate = null;
-	}
-	componentDidMount() {
 	}
 
 	showDateTimePicker = (reminder) => {
@@ -67,8 +62,6 @@ class RemindersReport extends Component {
 			[{
 				text: 'OK',
 				onPress: () => {
-					console.log('OK Pressed');
-					console.log(this.state.selectedReminder);
 					CustomerReminderRealm.setCustomReminder(this.state.selectedReminder.customer_account_id, new Date(date))
 					this.props.customerReminderActions.setCustomerReminders(
 						CustomerReminderRealm.getCustomerReminders()
@@ -79,7 +72,6 @@ class RemindersReport extends Component {
 			}, {
 				text: 'Cancel',
 				onPress: () => {
-					console.log('Cancel Pressed')
 					this.hideDateTimePicker();
 				},
 				style: 'cancel',
@@ -88,10 +80,6 @@ class RemindersReport extends Component {
 		);
 
 	};
-
-
-	getReminders(filterDate) {
-	}
 
 
 	showHeader = () => {
@@ -109,12 +97,6 @@ class RemindersReport extends Component {
 				<View style={[{ flex: 2 }]}>
 					<Text style={[styles.headerItem]}>Last Purchase Date</Text>
 				</View>
-				{/* <View style={[{ flex: 1 }]}>
-					<Text style={[styles.headerItem]}>Frequency</Text>
-				</View> */}
-				{/* <View style={[{ flex: 1.5 }]}>
-					<Text style={[styles.headerItem]}>Reminder Date</Text>
-				</View> */}
 				<View style={[{ flex: 2 }]}>
 					<Text style={[styles.headerItem]}>Custom Reminder</Text>
 				</View>
@@ -123,7 +105,6 @@ class RemindersReport extends Component {
 	};
 
 	getRow = (item, index, separators) => {
-		console.log('index', index);
 		return (
 			<View style={{ flex: 1, flexDirection: 'row', height: 50, alignItems: 'center' }}>
 				<View style={{ flex: 2 }}>
@@ -138,12 +119,6 @@ class RemindersReport extends Component {
 				<View style={{ flex: 2 }}>
 					<Text style={[styles.baseItem]}>{moment.tz(item.lastPurchaseDate, moment.tz.guess()).format('ddd Do MMM YYYY')}</Text>
 				</View>
-				{/* <View style={{ flex: 1 }}>
-					<Text style={[styles.baseItem]}>{item.frequency}</Text>
-				</View> */}
-				{/* <View style={{ flex: 1.5 }}>
-					<Text style={[styles.baseItem]}>{moment.tz(new Date(item.reminder_date), moment.tz.guess()).format('ddd Do MMM YYYY') + ' ('+item.frequency+')'}</Text>
-				</View> */}
 				<View style={{ flex: 2 }}>
 					<TouchableHighlight
 						style={styles.currentInventory}
@@ -176,6 +151,10 @@ class RemindersReport extends Component {
 		} else {
 
 			return (
+				<View>
+				{this.prepareData().length?
+
+          (
 				<FlatList
 					ListHeaderComponent={this.showHeader}
 					extraData={this.state.refresh}
@@ -188,13 +167,21 @@ class RemindersReport extends Component {
 						</TouchableHighlight>
 					)}
 					keyExtractor={item => `${item.customerId}${item.receipt}`}
-				/>
+				/>)
+				:
+				(
+				  <View style={styles.emptyListStyle}>
+					<Text style={styles.emptyMessageStyle}>No Reminders Available.</Text>
+				  </View>
+				)
+		}
+		</View>
+
 			)
 		}
 	}
 
 	prepareData() {
-		console.log('-iop-', this.filterDate(this.props.customerReminder));
 		return this.filterDate(this.props.customerReminder);
 	}
 
@@ -238,10 +225,6 @@ class RemindersReport extends Component {
 	}
 
 	render() {
-		console.log('customerReminder', this.props.customerReminder);
-		console.log(this.state.filterDate);
-		console.log(this.props.dateFilter.startDate);
-		//this.setState({ filterDate: this.props.dateFilter.startDate })
 		return (
 			<View style={{ flex: 1, flexDirection: 'column' }}>
 				<View style={{ flex: .15 }}>
@@ -275,7 +258,6 @@ function mapStateToProps(state, props) {
 		reminderData: state.reportReducer.reminderData,
 		selectedCustomer: state.customerReducer.selectedCustomer,
 		orderProducts: state.orderReducer.products,
-		showView: state.customerBarReducer.showView,
 		products: state.productReducer.products,
 		dateFilter: state.reportReducer.dateFilter,
 		receipts: state.receiptReducer.receipts,
@@ -287,8 +269,6 @@ function mapDispatchToProps(dispatch) {
 	return {
 		reportActions: bindActionCreators(reportActions, dispatch),
 		customerActions: bindActionCreators(customerActions, dispatch),
-		toolbarActions: bindActionCreators(toolBarActions, dispatch),
-		customerBarActions: bindActionCreators(customerBarActions, dispatch),
 		reminderActions: bindActionCreators(reminderActions, dispatch),
 		orderActions: bindActionCreators(orderActions, dispatch),
 		customerReminderActions: bindActionCreators(CustomerReminderActions, dispatch),
@@ -343,9 +323,6 @@ const styles = StyleSheet.create({
 	currentInventory: {
 		marginRight: 2,
 		marginLeft: 2,
-		// marginTop:2,
-		// paddingTop:2,
-		// paddingBottom:2,
 		backgroundColor: '#2858a7',
 		borderRadius: 5,
 		borderWidth: 1,
@@ -394,5 +371,15 @@ const styles = StyleSheet.create({
 	},
 	selectedBackground: {
 		backgroundColor: '#9AADC8'
-	}
+	},
+
+	emptyListStyle: {
+		flex: 1,
+		justifyContent: 'center'
+	  },
+	  emptyMessageStyle: {
+		textAlign: 'center',
+		fontWeight: 'bold',
+		fontSize: 18
+		}
 });

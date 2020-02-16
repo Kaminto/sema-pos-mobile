@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+}
 import {
     View,
     Text,
@@ -6,7 +10,7 @@ import {
     TouchableHighlight,
     StyleSheet,
     UIManager,
-    Alert
+	Alert
 } from 'react-native';
 
 import { FloatingAction } from "react-native-floating-action";
@@ -20,7 +24,6 @@ import { bindActionCreators } from 'redux';
 import Modal from 'react-native-modalbox';
 
 import CustomerRealm from '../database/customers/customer.operations';
-import OrderRealm from '../database/orders/orders.operations';
 import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
 import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
 import Events from 'react-native-simple-events';
@@ -30,8 +33,6 @@ import PaymentTypeRealm from '../database/payment_types/payment_types.operations
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
 
 import PaymentModal from './paymentModal';
-const anonymousId = '9999999-9999-9999-9999-9999999';
-import DoubleClick from 'react-native-double-click';
 
 class CustomerList extends Component {
     constructor(props) {
@@ -47,7 +48,9 @@ class CustomerList extends Component {
             customerTypeValue: '',
             hasScrolled: false
 		};
-		this.handleClick = this.handleClick.bind(this);
+
+		this.onPressItem = this.onPressItem.bind(this);
+		this.onLongPressItem = this.onLongPressItem.bind(this);
     }
     componentDidMount() {
         this.props.navigation.setParams({ isCustomerSelected: false });
@@ -73,9 +76,12 @@ class CustomerList extends Component {
         );
 	}
 
-	handleClick() {
-		Alert.alert('This is awesome \n Double tap succeed');
-	  }
+
+	static whyDidYouRender = true;
+
+	shouldComponentUpdate( nextProps,nextState) {
+        return nextProps !== this.props;
+    }
 
     searchCustomer = (searchText) => {
         this.props.customerActions.SearchCustomers(searchText);
@@ -194,20 +200,17 @@ class CustomerList extends Component {
                     ref={ref => {
                         this.flatListRef = ref;
                     }}
-                    data={this.prepareData()}
+					data={this.prepareData()}
                     ListHeaderComponent={this.showHeader}
                     extraData={this.state.refresh}
                     renderItem={({ item, index, separators }) => (
                         <TouchableHighlight
-                            onPress={() => this.onPressItem(item)}
+							onLongPress={() => this.onLongPressItem(item)}
+							onPress={() => this.onPressItem(item)}
                             onShowUnderlay={separators.highlight}
                             onHideUnderlay={separators.unhighlight}>
                             {this.getRow(item, index, separators)}
-                            {/* <DoubleClick >
-							{this.getRow(item, index, separators)}
-						</DoubleClick> */}
 						</TouchableHighlight>
-						
 
                     )}
                     keyExtractor={item => item.customerId}
@@ -375,21 +378,6 @@ class CustomerList extends Component {
             : false;
     }
 
-    onLongPressItem = (item, event) => {
-        this.setState({ refresh: !this.state.refresh });
-        let actions = [i18n.t('edit'), i18n.t('delete')];
-        this.props.customerActions.CustomerSelected(item);
-        // if (!this._isAnonymousCustomer(item)) {
-        if (event && event.target) {
-            UIManager.showPopupMenu(
-                event.target,
-                actions,
-                this.onPopupError,
-                this.onPopupEvent.bind(this)
-            );
-        }
-        // }
-    };
     onPopupEvent(eventName, index) {
         if (eventName !== 'itemSelected') return;
         if (index === 0) {
@@ -447,10 +435,10 @@ class CustomerList extends Component {
     }
 
     onPopupError() {
-        console.log('onPopupError');
+
     }
 
-    onPressItem = item => {
+    onLongPressItem = item => {
         this.props.customerActions.CustomerSelected(item);
         this.setState({ refresh: !this.state.refresh });
         this.props.customerActions.setCustomerEditStatus(true);
@@ -459,6 +447,18 @@ class CustomerList extends Component {
         this.props.navigation.setParams({ customerName: item.name });
         this.props.navigation.setParams({ 'title': item.name });
         Events.trigger('onOrder', { customer: item });
+	};
+
+	onPressItem = item => {
+        this.props.customerActions.CustomerSelected(item);
+        this.setState({ refresh: !this.state.refresh });
+        this.props.customerActions.setCustomerEditStatus(true);
+        this.props.navigation.setParams({ isCustomerSelected: true });
+        this.props.navigation.setParams({ isDueAmount: item.dueAmount });
+        this.props.navigation.setParams({ customerName: item.name });
+        this.props.navigation.setParams({ 'title': item.name });
+		Events.trigger('onOrder', { customer: item });
+		this.props.navigation.navigate('OrderView');
     };
 
     showHeader = () => {
@@ -555,7 +555,6 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(CustomerList);
-
 
 
 const styles = StyleSheet.create({

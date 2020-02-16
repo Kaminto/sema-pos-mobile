@@ -39,10 +39,10 @@ class NavigationDrawerStructure extends Component {
                 <TouchableOpacity onPress={this.toggleDrawer.bind(this)}>
                     <Icon
                         name='md-menu'
-                        size={25}
+                        size={30}
                         color="white"
                         style={{
-                            width: 25, height: 25, marginLeft: 10
+                            width: 30, height: 30, marginLeft: 10
                         }}
                     />
                 </TouchableOpacity>
@@ -209,7 +209,6 @@ const ListCustomerStack = createStackNavigator({
                                     marginRight: 20,
                                 }}
                                 onPress={() => {
-                                    console.log(navigation);
                                     navigation.setParams({ isCustomerSelected: false });
                                     navigation.setParams({ customerName: '' });
                                     navigation.navigate('EditCustomer');
@@ -232,7 +231,6 @@ const ListCustomerStack = createStackNavigator({
                                     marginRight: 20,
                                 }}
                                 onPress={() => {
-                                    console.log(navigation);
                                     navigation.setParams({ isCustomerSelected: false });
                                     navigation.setParams({ customerName: '' });
                                     navigation.navigate('OrderView');

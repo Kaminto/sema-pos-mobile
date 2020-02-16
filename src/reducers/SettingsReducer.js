@@ -4,7 +4,6 @@ let initialState = {settings:{semaUrl:"", site:"", user:"", password:"", uiLangu
 
 const settingsReducer = (state = initialState, action) => {
 	let newState;
-	console.log("settingsReducer: " +action.type);
 	switch (action.type) {
 		case SET_SETTINGS:
 			newState = {...state};

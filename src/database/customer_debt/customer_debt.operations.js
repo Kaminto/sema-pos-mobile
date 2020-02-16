@@ -83,7 +83,6 @@ class CustomerDebtRealm {
     }
 
     isSelected(customerDebt, isSelected) {
-        console.log(isSelected);
         try {
             realm.write(() => {
                 let customerDebtObj = realm.objects('CustomerDebt').filtered(`id = "${customerDebt.customer_debt_id}"`);
@@ -137,8 +136,6 @@ class CustomerDebtRealm {
     }
 
     createManyCustomerDebt(customerDebts, customer_account_id) {
-        console.log('customerDebts', customerDebts);
-        console.log('customer_account_id', customer_account_id);
         try {
             realm.write(() => {
                 if (customer_account_id) {

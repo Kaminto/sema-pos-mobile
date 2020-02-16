@@ -42,11 +42,6 @@ class DebitHistory extends Component {
     }
 
     render() {
-        console.log(this.props.receiptsPaymentTypes);
-        console.log(this.props.paymentTypes);
-        console.log(this.comparePaymentTypes());
-        console.log(this.comparePaymentTypeReceipts());
-        console.log(this.getCustomerRecieptData());
         return (
             <View style={{ backgroundColor: '#fff', width: '100%', height: '100%' }}>
 
@@ -91,9 +86,7 @@ class DebitHistory extends Component {
     }
 
     onChangeTopup = topup => {
-        console.log(topup);
         this.setState({ topup });
-        //this.props.parent.forceUpdate();
     };
 
     getCancelButton() {
@@ -123,13 +116,6 @@ class DebitHistory extends Component {
     };
 
     prepareTopUpData() {
-        // Used for enumerating receipts
-        //console.log("here selectedCustomer", this.props.selectedCustomer);
-        console.log(this.getCustomerRecieptData())
-        console.log(this.props.receiptsPaymentTypes);
-        console.log(this.props.paymentTypes);
-        console.log(this.comparePaymentTypes())
-        console.log(this.comparePaymentTypeReceipts());
         return this.comparePaymentTypeReceipts();
 
     }
@@ -137,13 +123,10 @@ class DebitHistory extends Component {
     comparePaymentTypeReceipts() {
         let receiptsPaymentTypes = [...this.comparePaymentTypes()];
         let customerReceipt = [...this.getCustomerRecieptData()];
-        console.log(receiptsPaymentTypes);
-        console.log(customerReceipt);
         let finalCustomerReceiptsPaymentTypes = [];
 
         for (let receiptsPaymentType of receiptsPaymentTypes) {
             const rpIndex = customerReceipt.map(function (e) { return e.id }).indexOf(receiptsPaymentType.receipt_id);
-            console.log(rpIndex);
             if (rpIndex >= 0) {
                 receiptsPaymentType.receipt = receiptsPaymentTypes[rpIndex];
                 finalCustomerReceiptsPaymentTypes.push(receiptsPaymentType);
@@ -190,14 +173,13 @@ class DebitHistory extends Component {
 
     getCustomerRecieptData() {
         // Used for enumerating receipts
-        //console.log("here selectedCustomer", this.props.selectedCustomer);
 
         if (this.props.receipts.length > 0) {
             const totalCount = this.props.receipts.length;
 
             let salesLogs = [...new Set(this.props.receipts)];
             let remoteReceipts = salesLogs.map((receipt, index) => {
-                //console.log("customerAccount", receipt.customer_account);
+
                 return {
                     active: receipt.active,
                     id: receipt.id,
@@ -265,7 +247,6 @@ class DebitHistory extends Component {
     };
 
     showHeader = () => {
-        console.log('Displaying header');
         return (
             <View
                 style={[
@@ -287,18 +268,6 @@ class DebitHistory extends Component {
                 </View>
             </View>
         );
-    };
-
-
-
-    onPressItem = item => {
-        console.log('_onPressItem', item);
-        // this.props.customerActions.CustomerSelected(item);
-        // this.setState({ refresh: !this.state.refresh });
-        // this.props.customerActions.setCustomerEditStatus(true);
-        // this.props.navigation.setParams({ isCustomerSelected: true });
-        // this.props.navigation.setParams({ customerName: item.name });
-        // Events.trigger('onOrder', { customer: item });
     };
 
 

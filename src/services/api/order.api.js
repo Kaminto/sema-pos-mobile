@@ -126,31 +126,31 @@ class OrderApi {
 
 	// Sends the kiosk ID, the logged receipts and the list of IDs that the client already
 	// has to the API
-	sendLoggedReceipts(siteId, receipts, exceptionList) {
-		let options = {
-			method: 'PUT',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + this._token
-			},
-			body: JSON.stringify({
-				receipts,
-				exceptionList
-			})
-		};
+	// sendLoggedReceipts(siteId, receipts, exceptionList) {
+	// 	let options = {
+	// 		method: 'PUT',
+	// 		headers: {
+	// 			Accept: 'application/json',
+	// 			'Content-Type': 'application/json',
+	// 			Authorization: 'Bearer ' + this._token
+	// 		},
+	// 		body: JSON.stringify({
+	// 			receipts,
+	// 			exceptionList
+	// 		})
+	// 	};
 
-		let url = `sema/site/receipts/${siteId}?date=${moment
-			.tz(new Date(Date.now()), moment.tz.guess())
-			.format('YYYY-MM-DD')}`;
-		console.log(this._url + url);
-		return fetch(this._url + url, options)
-			.then(response => response.json())
-			.catch(error => {
-				console.log('Communications:sendUpdatedReceipts: ' + error);
-				throw error;
-			});
-	}
+	// 	let url = `sema/site/receipts/${siteId}?date=${moment
+	// 		.tz(new Date(Date.now()), moment.tz.guess())
+	// 		.format('YYYY-MM-DD')}`;
+	// 	console.log(this._url + url);
+	// 	return fetch(this._url + url, options)
+	// 		.then(response => response.json())
+	// 		.catch(error => {
+	// 			console.log('Communications:sendUpdatedReceipts: ' + error);
+	// 			throw error;
+	// 		});
+	// }
 
 }
 

@@ -56,7 +56,7 @@ class ReceiptPaymentTypeRealm {
             realm.write(() => {
                 let receiptPaymentTypeObj = realm.objects('ReceiptPaymentType').filtered(`receipt_payment_type_id = "${receiptPaymentType.receipt_payment_type_id}"`);
                 receiptPaymentTypeObj[0].id = receiptPaymentType.id;
-                receiptPaymentTypeObj[0].name = receiptPaymentType.name;
+				receiptPaymentTypeObj[0].name = receiptPaymentType.name;
                 receiptPaymentTypeObj[0].active = receiptPaymentType.active;
                 receiptPaymentTypeObj[0].description = receiptPaymentType.description;
                 receiptPaymentTypeObj[0].syncAction = receiptPaymentType.syncAction;
@@ -91,7 +91,6 @@ class ReceiptPaymentTypeRealm {
     }
 
     isSelected(receiptPaymentType, isSelected) {
-        console.log(isSelected);
         try {
             realm.write(() => {
                 let receiptPaymentTypeObj = realm.objects('ReceiptPaymentType').filtered(`id = "${receiptPaymentType.id}"`);
@@ -150,8 +149,6 @@ class ReceiptPaymentTypeRealm {
     }
 
     createManyReceiptPaymentType(receiptPaymentTypes, receiptId) {
-        console.log('receiptPaymentTypes', receiptPaymentTypes);
-        console.log('receiptId', receiptId);
         try {
             realm.write(() => {
                 if (receiptId) {
@@ -181,8 +178,6 @@ class ReceiptPaymentTypeRealm {
     }
 
        createManyReceiptPaymentType(receiptPaymentTypes, receiptId) {
-        console.log('receiptPaymentTypes', receiptPaymentTypes);
-        console.log('receiptId', receiptId);
         try {
             realm.write(() => {
                 if (receiptId) {

@@ -1,10 +1,13 @@
-import React, { Component } from "react"
-import { View, Alert, Text, TextInput, Button, FlatList, ScrollView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
+import React, { Component } from "react";
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
+import { View, Alert, Text, TextInput, Button, FlatList, ScrollView, SafeAreaView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as OrderActions from "../../actions/OrderActions";
 import Modal from 'react-native-modalbox';
-import * as CustomerBarActions from '../../actions/CustomerBarActions';
 import * as CustomerReminderActions from '../../actions/CustomerReminderActions';
 import * as CustomerActions from '../../actions/CustomerActions';
 import * as PaymentTypesActions from "../../actions/PaymentTypesActions";
@@ -30,13 +33,11 @@ import moment from 'moment-timezone';
 const uuidv1 = require('uuid/v1');
 const widthQuanityModal = '70%';
 const heightQuanityModal = 540;
-const inputTextWidth = 400;
 
 class OrderCheckout extends Component {
 
 	constructor(props) {
 		super(props);
-		// slowlog(this, /.*/);
 		this.saleSuccess = false;
 		this.state = {
 			isWalkIn: true,
@@ -52,7 +53,16 @@ class OrderCheckout extends Component {
 			receiptDate: new Date(),
 			selectedPaymentType: "Cash",
 		};
+	this.onPay = this.onPay.bind(this);
 	}
+
+
+	static whyDidYouRender = true;
+
+    shouldComponentUpdate( nextProps,nextState) {
+        return nextProps !== this.props;
+    }
+
 
 	showDateTimePicker = () => {
 		this.setState({ isDateTimePickerVisible: true });
@@ -96,7 +106,6 @@ class OrderCheckout extends Component {
 			}
 			return false;
 		});
-		console.log('isRefill', isRefill);
 
 		return (
 			<View style={styles.container}>
@@ -177,22 +186,7 @@ class OrderCheckout extends Component {
 									marginLeft: 20,
 									marginRight: 20
 								}}>
-
-								<View style={{ flex: 1, flexDirection: 'row' }}>
-									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
-								</View>
-
-								<FlatList
-									data={this.props.paymentTypes}
-									renderItem={({ item, index, separators }) => (
-										this.paymentTypesRow(item, index, separators)
-									)}
-									extraData={this.props.selectedPaymentTypes}
-									numColumns={2}
-									contentContainerStyle={styles.container}
-								/>
-
-								<Card
+									<Card
 									containerStyle={{ backgroundColor: '#ABC1DE' }}>
 
 									<View style={{ flex: 1, flexDirection: 'row' }}>
@@ -221,6 +215,20 @@ class OrderCheckout extends Component {
 										/>
 									</View>
 								</Card>
+
+								<View style={{ flex: 1, flexDirection: 'row' }}>
+									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
+								</View>
+
+								<FlatList
+									data={this.props.paymentTypes}
+									renderItem={({ item, index, separators }) => (
+										this.paymentTypesRow(item, index, separators)
+									)}
+									extraData={this.props.selectedPaymentTypes}
+									numColumns={3}
+									contentContainerStyle={styles.container}
+								/>
 
 								<View style={{ flex: 1, flexDirection: 'row' }}>
 									<View style={{ flex: 1 }}>
@@ -391,10 +399,7 @@ class OrderCheckout extends Component {
 		}
 	}
 
-
 	setEmptiesReturned = (emptiesReturned, item) => {
-		console.log('emptiesReturned', emptiesReturned);
-		console.log('item', item);
 		let refillPending = '';
 		if (!item.hasOwnProperty('refillPending')) {
 			return;
@@ -526,6 +531,8 @@ class OrderCheckout extends Component {
 			}
 		}
 
+		if(item.name != 'loan' && item.name != 'credit'){
+
 		return (
 			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
 				<View style={{ flex: 1, height: 45 }}>
@@ -554,6 +561,7 @@ class OrderCheckout extends Component {
 				</View>
 			</View>
 		);
+							}
 	};
 
 	showTextInput(item) {
@@ -599,8 +607,6 @@ class OrderCheckout extends Component {
 										// update loan payment if it exists edit it:- if it doesnt exist create new loan payment
 										// and update the currently editted payment type
 										const loanIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("loan");
-										console.log("loanIndex", loanIndex);
-										
 
 										if (loanIndex >= 0) {
 											console.log("o12", this.props.selectedPaymentTypes[loanIndex].amount);
@@ -620,8 +626,6 @@ class OrderCheckout extends Component {
 										}
 
 										const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
-										//let secondItemObj = this.props.selectedPaymentTypes.filter(obj => obj.id != this.state.selectedType.id).map(function (e) { return e.id });
-										console.log('itemIndex2-',itemIndex2)
 										if (itemIndex2 >= 0) {
 											this.props.selectedPaymentTypes[itemIndex].amount = Number(textValue);
 											this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
@@ -1343,7 +1347,6 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
 	return {
 		orderActions: bindActionCreators(OrderActions, dispatch),
-		customerBarActions: bindActionCreators(CustomerBarActions, dispatch),
 		receiptActions: bindActionCreators(receiptActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
 		paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch),
@@ -1421,7 +1424,9 @@ const styles = StyleSheet.create({
 	completeOrderBtn: {
 		backgroundColor: '#2858a7',
 		bottom: 0,
-		marginBottom: 0
+		marginTop: '1%',
+		marginBottom: 0,
+		// position: 'absolute'
 	},
 
 	modal3: {

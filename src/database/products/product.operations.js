@@ -35,7 +35,7 @@ class ProductsRealm {
         })
     }
 
-   
+
 
     getProducts() {
         return Object.values(JSON.parse(JSON.stringify(realm.objects('Product'))));
@@ -63,7 +63,6 @@ class ProductsRealm {
 
     createProducts(kiosk_id, product_id, quantity, filterDate) {
         let existingProducts = this.getProducts().filter(product => this.formatDay(product.created_at) === this.formatDay(filterDate) && product.product_id === product_id);
-        console.log('existingProducts', existingProducts)
         const now = new Date();
         if (existingProducts.length === 0) {
             const newProducts = {
@@ -153,7 +152,6 @@ class ProductsRealm {
     }
 
     createManyProducts(products) {
-        console.log('products', products)
         try {
             realm.write(() => {
                 products.forEach(obj => {
