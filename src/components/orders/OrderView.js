@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
+// if (process.env.NODE_ENV === 'development') {
+// 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+// 	whyDidYouRender(React);
+//   }
 import { View, StyleSheet } from 'react-native';
 import ProductListScreen from './ProductListScreen';
 import OrderSummaryScreen from "./OrderSummaryScreen";
@@ -16,11 +16,11 @@ class OrderView extends Component {
 	constructor(props) {
 		super(props);
 	}
-	static whyDidYouRender = true;
+	// static whyDidYouRender = true;
 
-    shouldComponentUpdate( nextProps,nextState) {
-        return nextProps !== this.props;
-    }
+    // shouldComponentUpdate( nextProps,nextState) {
+    //     return nextProps !== this.props;
+    // }
 
 	render() {
 		return (

@@ -151,6 +151,45 @@ const ListCustomerStack = createStackNavigator({
 
                         )}
                     </View>
+					<View
+                        style={{
+                            marginTop: 12,
+                            flex: 1
+                        }}>
+                        {navigation.getParam('isCustomerSelected') && (
+                            <Icon
+                                name='md-cart'
+                                size={30}
+                                color="white"
+                                style={{
+                                    marginRight: 20,
+                                }}
+                                onPress={() => {
+                                    navigation.setParams({ isCustomerSelected: false });
+                                    navigation.setParams({ customerName: '' });
+                                    navigation.navigate('OrderView');
+                                }}
+                            />
+
+                        )}
+                    </View>
+					<View
+                        style={{
+                            marginTop: 12,
+                            flex: 1
+                        }}>
+                        {navigation.getParam('isCustomerSelected') && (
+							  <Icon
+							  name='md-more'
+							  size={30}
+							  color="white"
+							  style={{
+								  marginRight: 20,
+							  }}
+						  />
+						)}
+					</View>
+
 
 					<View
                         style={{
@@ -217,28 +256,7 @@ const ListCustomerStack = createStackNavigator({
                         )}
                     </View>
 
-                    <View
-                        style={{
-                            marginTop: 12,
-                            flex: 1
-                        }}>
-                        {navigation.getParam('isCustomerSelected') && (
-                            <Icon
-                                name='md-cart'
-                                size={30}
-                                color="white"
-                                style={{
-                                    marginRight: 20,
-                                }}
-                                onPress={() => {
-                                    navigation.setParams({ isCustomerSelected: false });
-                                    navigation.setParams({ customerName: '' });
-                                    navigation.navigate('OrderView');
-                                }}
-                            />
 
-                        )}
-                    </View>
 
                     <View>
                         <Input

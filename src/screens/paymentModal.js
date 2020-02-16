@@ -40,9 +40,8 @@ class PaymentModal extends Component {
 	render() {
 		const state = this.state;
 		return (
-			// <View style={styles.modal3}>
-				<ScrollView>
-					<View
+			<ScrollView>
+				<View
 						style={{
 							flex: 1,
 							marginTop: 0,
@@ -72,7 +71,7 @@ class PaymentModal extends Component {
 							numColumns={3}
 							contentContainerStyle={styles.container}
 						/>
-					<Card>
+					<Card style={{ flex: 1 }}>
 						<PaymentDescription
 							title={`${i18n.t('previous-amount-due')}:`}
 							total={Utilities.formatCurrency(
@@ -104,9 +103,6 @@ class PaymentModal extends Component {
 						</View>
 					</View>
 				</ScrollView>
-
-
-			// </View>
 
 		);
 	}
@@ -510,7 +506,6 @@ function mapStateToProps(state, props) {
 		selectedPaymentTypes: state.paymentTypesReducer.selectedPaymentTypes,
 		selectedDebtPaymentTypes: state.paymentTypesReducer.selectedDebtPaymentTypes,
 		selectedDiscounts: state.orderReducer.discounts,
-		flow: state.orderReducer.flow,
 		receiptsPaymentTypes: state.paymentTypesReducer.receiptsPaymentTypes,
 		receipts: state.receiptReducer.receipts,
 		payment: state.orderReducer.payment,
@@ -525,7 +520,6 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
 	return {
 		orderActions: bindActionCreators(OrderActions, dispatch),
-		customerBarActions: bindActionCreators(CustomerBarActions, dispatch),
 		receiptActions: bindActionCreators(receiptActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
 		paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch),

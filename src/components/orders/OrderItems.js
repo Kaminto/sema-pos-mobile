@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
+// if (process.env.NODE_ENV === 'development') {
+// 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+// 	whyDidYouRender(React);
+//   }
 import { View, Text, ScrollView, FlatList, TextInput, Dimensions, TouchableHighlight, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -40,12 +40,6 @@ class OrderItems extends Component {
 
 		this.onPressItem = this.onPressItem.bind(this);
 	}
-
-	static whyDidYouRender = true;
-
-    shouldComponentUpdate( nextProps,nextState) {
-        return nextState !== this.state;
-    }
 
 	render() {
 
@@ -530,7 +524,7 @@ class OrderItems extends Component {
 
 	getRow = (item) => {
 		return (
-			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
+			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white', padding: 5 }}>
 				<View style={[{ flex: 2 }]}>
 					<Text style={[styles.baseItem, styles.leftMargin]}>{item.product.description}</Text>
 				</View>

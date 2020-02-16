@@ -72,20 +72,14 @@ class Login extends Component {
 
 		this.state = {
 			language: '',
-			user: "administrator",
-			password: "Let'sGrow",
+			user: "",
+			password: "",
 			selectedLanguage: {},
 			isLoading: false
 		};
 
 		this.onShowLanguages = this.onShowLanguages.bind(this);
 		this.onLanguageSelected = this.onLanguageSelected.bind(this);
-	}
-
-	componentDidMount() {
-	}
-
-	componentDidUpdate() {
 	}
 
 	render() {

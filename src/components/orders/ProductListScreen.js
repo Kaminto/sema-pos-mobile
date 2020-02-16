@@ -24,6 +24,11 @@ class ProductListScreen extends Component {
 		}
 	}
 
+	static whyDidYouRender = true;
+
+	shouldComponentUpdate( nextProps,nextState) {
+        return nextState !== this.state;
+    }
 
 
 	componentDidMount() {
