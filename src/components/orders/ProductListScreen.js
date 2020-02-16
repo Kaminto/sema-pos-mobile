@@ -44,10 +44,11 @@ class ProductListScreen extends Component {
 	static whyDidYouRender = true;
 
     shouldComponentUpdate( nextProps,nextState) {
-        return nextProps !== this.props;
+        //return nextProps !== this.props;
     }
 
 	render() {
+		console.log('jyu');
 		let { fadeAnim } = this.state;
 		if (this.state.salesChannel) {
 			return (

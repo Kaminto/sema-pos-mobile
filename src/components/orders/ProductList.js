@@ -28,7 +28,7 @@ class ProductList extends Component {
 	static whyDidYouRender = true;
 
 	shouldComponentUpdate( nextProps,nextState) {
-        return nextProps !== this.props;
+       // return nextProps !== this.props;
     }
 
 	render() {
