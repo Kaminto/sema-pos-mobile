@@ -585,8 +585,14 @@ class OrderCheckout extends Component {
 									let totalAmountPaid = this.props.selectedPaymentTypes.reduce((total, item) => { return (total + item.amount) }, 0);
 									console.log('totalAmountPaid', totalAmountPaid);
 									console.log('deduct',this.props.selectedPaymentTypes[itemIndex].amount)
-									totalAmountPaid = totalAmountPaid - this.props.selectedPaymentTypes[itemIndex].amount;
-									totalAmountPaid = totalAmountPaid + Number(textValue);
+									
+									if(this.props.selectedPaymentTypes[itemIndex].amount == 0){
+										totalAmountPaid = totalAmountPaid - Number(textValue);
+									}else{
+										totalAmountPaid = totalAmountPaid - this.props.selectedPaymentTypes[itemIndex].amount;
+										totalAmountPaid = totalAmountPaid + Number(textValue);
+									}
+									
 									console.log('totalAmountPaid2', totalAmountPaid);
 
 									if (totalAmountPaid < this.calculateOrderDue()) {
@@ -594,10 +600,14 @@ class OrderCheckout extends Component {
 										// and update the currently editted payment type
 										const loanIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("loan");
 										console.log("loanIndex", loanIndex);
+										
 
 										if (loanIndex >= 0) {
-											this.props.selectedPaymentTypes[loanIndex].amount = this.calculateOrderDue() - totalAmountPaid;
-											this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[loanIndex], amount: this.calculateOrderDue() - totalAmountPaid }, loanIndex);
+											console.log("o12", this.props.selectedPaymentTypes[loanIndex].amount);
+											console.log("textValue", Number(textValue));
+											console.log("loan Value", this.props.selectedPaymentTypes[loanIndex].amount - Number(textValue));
+											//this.props.selectedPaymentTypes[loanIndex].amount = this.props.selectedPaymentTypes[loanIndex].amount - Number(textValue);
+											this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[loanIndex], amount: this.props.selectedPaymentTypes[loanIndex].amount - Number(textValue) }, loanIndex);
 
 										} else {
 											const pickLoanIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("loan");
