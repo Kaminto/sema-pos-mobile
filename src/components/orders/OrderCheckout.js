@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
+// if (process.env.NODE_ENV === 'development') {
+// 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+// 	whyDidYouRender(React);
+//   }
 import { View, Alert, Text, TextInput, Button, FlatList, ScrollView, SafeAreaView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -57,10 +57,11 @@ class OrderCheckout extends Component {
 	}
 
 
-	static whyDidYouRender = true;
+	//static whyDidYouRender = true;
 
     shouldComponentUpdate( nextProps,nextState) {
-        return nextProps !== this.props;
+	   // return nextProps !== this.props;
+	   return true;
     }
 
 
@@ -531,7 +532,7 @@ class OrderCheckout extends Component {
 			}
 		}
 
-		if(item.name != 'loan' && item.name != 'credit'){
+		//if(item.name != 'loan' && item.name != 'credit'){
 
 		return (
 			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
@@ -561,7 +562,7 @@ class OrderCheckout extends Component {
 				</View>
 			</View>
 		);
-							}
+							//}
 	};
 
 	showTextInput(item) {
@@ -593,8 +594,14 @@ class OrderCheckout extends Component {
 									let totalAmountPaid = this.props.selectedPaymentTypes.reduce((total, item) => { return (total + item.amount) }, 0);
 									console.log('totalAmountPaid', totalAmountPaid);
 									console.log('deduct',this.props.selectedPaymentTypes[itemIndex].amount)
-									totalAmountPaid = totalAmountPaid - this.props.selectedPaymentTypes[itemIndex].amount;
-									totalAmountPaid = totalAmountPaid + Number(textValue);
+									
+									if(this.props.selectedPaymentTypes[itemIndex].amount == 0){
+										totalAmountPaid = totalAmountPaid - Number(textValue);
+									}else{
+										totalAmountPaid = totalAmountPaid - this.props.selectedPaymentTypes[itemIndex].amount;
+										totalAmountPaid = totalAmountPaid + Number(textValue);
+									}
+									
 									console.log('totalAmountPaid2', totalAmountPaid);
 
 									if (totalAmountPaid < this.calculateOrderDue()) {
@@ -603,8 +610,11 @@ class OrderCheckout extends Component {
 										const loanIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("loan");
 
 										if (loanIndex >= 0) {
-											this.props.selectedPaymentTypes[loanIndex].amount = this.calculateOrderDue() - totalAmountPaid;
-											this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[loanIndex], amount: this.calculateOrderDue() - totalAmountPaid }, loanIndex);
+											console.log("o12", this.props.selectedPaymentTypes[loanIndex].amount);
+											console.log("textValue", Number(textValue));
+											console.log("loan Value", this.props.selectedPaymentTypes[loanIndex].amount - Number(textValue));
+											//this.props.selectedPaymentTypes[loanIndex].amount = this.props.selectedPaymentTypes[loanIndex].amount - Number(textValue);
+											this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[loanIndex], amount: this.props.selectedPaymentTypes[loanIndex].amount - Number(textValue) }, loanIndex);
 
 										} else {
 											const pickLoanIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("loan");
