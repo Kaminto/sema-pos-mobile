@@ -563,6 +563,10 @@ class OrderCheckout extends Component {
 						<TextInput
 							underlineColorAndroid="transparent"
 							onChangeText={(textValue) => {
+
+								console.log('-item-', item);
+								console.log('-selectedType-', this.state.selectedType);
+
 								if (Number(textValue) > Number(this.calculateOrderDue())) {
 									Alert.alert(
 										'Notice. ',
@@ -577,8 +581,11 @@ class OrderCheckout extends Component {
 
 
 									let totalAmountPaid = this.props.selectedPaymentTypes.reduce((total, item) => { return (total + item.amount) }, 0);
+									console.log('totalAmountPaid', totalAmountPaid);
+									console.log('deduct',this.props.selectedPaymentTypes[itemIndex].amount)
 									totalAmountPaid = totalAmountPaid - this.props.selectedPaymentTypes[itemIndex].amount;
 									totalAmountPaid = totalAmountPaid + Number(textValue);
+									console.log('totalAmountPaid2', totalAmountPaid);
 
 									if (totalAmountPaid < this.calculateOrderDue()) {
 										// update loan payment if it exists edit it:- if it doesnt exist create new loan payment
@@ -600,7 +607,6 @@ class OrderCheckout extends Component {
 										}
 
 										const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
-
 										if (itemIndex2 >= 0) {
 											this.props.selectedPaymentTypes[itemIndex].amount = Number(textValue);
 											this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
