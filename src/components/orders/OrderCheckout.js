@@ -350,7 +350,7 @@ class OrderCheckout extends Component {
 								fontSize: 20
 							}}
 							keyboardType="number-pad"
-							onChangeText={(value) => this.setEmptiesReturned(value,item)}
+							onChangeText={(value) => this.setEmptiesReturned(value, item)}
 							underlineColorAndroid="transparent"
 							placeholder="0"
 							value={item.emptiesReturned}
@@ -364,7 +364,7 @@ class OrderCheckout extends Component {
 								fontSize: 20
 							}}
 							keyboardType="number-pad"
-							onChangeText={(value) => this.setEmptiesDamaged(value,item)}
+							onChangeText={(value) => this.setEmptiesDamaged(value, item)}
 							underlineColorAndroid="transparent"
 							placeholder="0"
 							value={item.emptiesDamaged}
@@ -378,7 +378,7 @@ class OrderCheckout extends Component {
 								fontSize: 20
 							}}
 							keyboardType="number-pad"
-							onChangeText={(value) => this.setRefillPending(value,item)}
+							onChangeText={(value) => this.setRefillPending(value, item)}
 							underlineColorAndroid="transparent"
 							placeholder="0"
 							value={item.refillPending}
@@ -393,8 +393,8 @@ class OrderCheckout extends Component {
 
 
 	setEmptiesReturned = (emptiesReturned, item) => {
-	console.log('emptiesReturned', emptiesReturned);
-	console.log('item', item);
+		console.log('emptiesReturned', emptiesReturned);
+		console.log('item', item);
 		let refillPending = '';
 		if (!item.hasOwnProperty('refillPending')) {
 			return;
@@ -501,10 +501,28 @@ class OrderCheckout extends Component {
 		}
 
 		if (this.props.selectedPaymentTypes.length === 0) {
-			if (item.name === 'cash') {
-				PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
-				this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(), isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
-				isSelectedAvailable = true;
+			if (this.currentCredit() > 0) {
+				if (this.currentCredit() > this.calculateOrderDue()) {
+					if (item.name === 'credit') {
+						PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
+						this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(), isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
+						isSelectedAvailable = true;
+					}
+				}
+
+				if (this.currentCredit() < this.calculateOrderDue()) {
+					if (item.name === 'credit') {
+						PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
+						this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(), isSelected: item.isSelected === true ? false : true, amount: this.currentCredit() });
+						isSelectedAvailable = true;
+					}
+				}
+			} else {
+				if (item.name === 'cash') {
+					PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
+					this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(), isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
+					isSelectedAvailable = true;
+				}
 			}
 		}
 
@@ -547,6 +565,10 @@ class OrderCheckout extends Component {
 						<TextInput
 							underlineColorAndroid="transparent"
 							onChangeText={(textValue) => {
+
+								console.log('-item-', item);
+								console.log('-selectedType-', this.state.selectedType);
+
 								if (Number(textValue) > Number(this.calculateOrderDue())) {
 									Alert.alert(
 										'Notice. ',
@@ -558,22 +580,77 @@ class OrderCheckout extends Component {
 								}
 
 								if (this.props.selectedPaymentTypes.length >= 0) {
-									const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
-									let secondItemObj = this.props.selectedPaymentTypes.filter(obj => obj.id != this.state.selectedType.id).map(function (e) { return e.id });
 
-									if (itemIndex2 >= 0) {
-										this.props.selectedPaymentTypes[itemIndex].amount = Number(textValue);
-										this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
-										this.setState({
-											selectedType: { ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }
-										});
+
+									let totalAmountPaid = this.props.selectedPaymentTypes.reduce((total, item) => { return (total + item.amount) }, 0);
+									console.log('totalAmountPaid', totalAmountPaid);
+									console.log('deduct',this.props.selectedPaymentTypes[itemIndex].amount)
+									totalAmountPaid = totalAmountPaid - this.props.selectedPaymentTypes[itemIndex].amount;
+									totalAmountPaid = totalAmountPaid + Number(textValue);
+									console.log('totalAmountPaid2', totalAmountPaid);
+
+									if (totalAmountPaid < this.calculateOrderDue()) {
+										// update loan payment if it exists edit it:- if it doesnt exist create new loan payment
+										// and update the currently editted payment type
+										const loanIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("loan");
+										console.log("loanIndex", loanIndex);
+
+										if (loanIndex >= 0) {
+											this.props.selectedPaymentTypes[loanIndex].amount = this.calculateOrderDue() - totalAmountPaid;
+											this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[loanIndex], amount: this.calculateOrderDue() - totalAmountPaid }, loanIndex);
+
+										} else {
+											const pickLoanIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("loan");
+											if (pickLoanIndex >= 0) {
+												PaymentTypeRealm.isSelected(this.props.paymentTypes[pickLoanIndex], this.props.paymentTypes[pickLoanIndex].isSelected === true ? false : true);
+												this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[pickLoanIndex], created_at: new Date(), isSelected: this.props.paymentTypes[pickLoanIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() - totalAmountPaid });
+
+											}
+
+										}
+
+										const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
+										//let secondItemObj = this.props.selectedPaymentTypes.filter(obj => obj.id != this.state.selectedType.id).map(function (e) { return e.id });
+										console.log('itemIndex2-',itemIndex2)
+										if (itemIndex2 >= 0) {
+											this.props.selectedPaymentTypes[itemIndex].amount = Number(textValue);
+											this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
+											this.setState({
+												selectedType: { ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }
+											});
+										}else{
+											PaymentTypeRealm.isSelected(this.state.selectedType, this.state.selectedType.isSelected === true ? false : true);
+											this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.state.selectedType, created_at: new Date(), isSelected: this.state.selectedType.isSelected === true ? false : true, amount:  Number(textValue) });
+
+										}
+
+
 									}
 
-									if (secondItemObj.length > 0) {
-										const seconditemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(secondItemObj[0]);
-										this.props.selectedPaymentTypes[seconditemIndex2].amount = Number(this.calculateOrderDue()) - Number(textValue);
-										this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[seconditemIndex2], amount: Number(this.calculateOrderDue()) - Number(textValue) }, seconditemIndex2);
+									if (totalAmountPaid >= this.calculateOrderDue()) {
+										//add balance to jibu wallet
+										// and update the currently editted payment type
+										console.log('Amount Paid is high')
+
 									}
+
+
+									// const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
+									// let secondItemObj = this.props.selectedPaymentTypes.filter(obj => obj.id != this.state.selectedType.id).map(function (e) { return e.id });
+
+									// if (itemIndex2 >= 0) {
+									// 	this.props.selectedPaymentTypes[itemIndex].amount = Number(textValue);
+									// 	this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
+									// 	this.setState({
+									// 		selectedType: { ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }
+									// 	});
+									// }
+
+									// if (secondItemObj.length > 0) {
+									// 	const seconditemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(secondItemObj[0]);
+									// 	this.props.selectedPaymentTypes[seconditemIndex2].amount = Number(this.calculateOrderDue()) - Number(textValue);
+									// 	this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[seconditemIndex2], amount: Number(this.calculateOrderDue()) - Number(textValue) }, seconditemIndex2);
+									// }
 								}
 
 								this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
@@ -618,10 +695,10 @@ class OrderCheckout extends Component {
 			return;
 		}
 
-		if (this.props.selectedPaymentTypes.length === 2) {
+		if (this.props.selectedPaymentTypes.length === 3) {
 			Alert.alert(
 				'Payment',
-				`You cannot select more than two payment methods.`,
+				`You cannot select more than three payment methods.`,
 				[{
 					text: 'OK', onPress: () => {
 						this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
@@ -829,7 +906,7 @@ class OrderCheckout extends Component {
 					console.log('finalAmount', i.product.description);
 					totalAmount = totalAmount - i.finalAmount;
 				}
-				 else if (i.product.description === 'delivery') {
+				else if (i.product.description === 'delivery') {
 					console.log('finalAmount', i.product.description);
 					totalAmount = totalAmount + i.finalAmount;
 				} else {
@@ -1088,7 +1165,7 @@ class OrderCheckout extends Component {
 				lastPurchaseDate: new Date(lastDay)
 			});
 		}
-			return final;
+		return final;
 	}
 
 
