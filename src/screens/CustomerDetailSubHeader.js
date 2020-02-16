@@ -125,7 +125,6 @@ class SelectedCustomerDetails extends React.Component {
 
 
 	modalOnClose() {
-		console.log('Modal closed here')
 		PaymentTypeRealm.resetSelected();
 		this.props.paymentTypesActions.resetSelectedDebt();
 		this.props.paymentTypesActions.setPaymentTypes(
@@ -137,15 +136,11 @@ class SelectedCustomerDetails extends React.Component {
 	};
 
 	getCreditPurchases() {
-		console.log(this.props.creditSales);
 		return this.props.creditSales.reduce((total, item) => { return (total + item.amount) }, 0)
 	}
 
 	getReminder(id) {
-		console.log(id);
-		console.log('op', CustomerReminderRealm.getCustomerReminderById(id));
 		if (CustomerReminderRealm.getCustomerReminderById(id).length > 0) {
-			console.log('der',CustomerReminderRealm.getCustomerReminderById(id)[0].reminder_date);
 			return CustomerReminderRealm.getCustomerReminderById(id)[0].reminder_date;
 		} else {
 			return 'N/A';
@@ -153,10 +148,7 @@ class SelectedCustomerDetails extends React.Component {
 	}
 
 	getLastPurchaseDate(id) {
-		console.log(id);
-		console.log('lastPurchaseDate', CustomerReminderRealm.getCustomerReminderById(id));
 		if (CustomerReminderRealm.getCustomerReminderById(id).length > 0) {
-			console.log('ty', CustomerReminderRealm.getCustomerReminderById(id)[0].lastPurchaseDate)
 			return CustomerReminderRealm.getCustomerReminderById(id)[0].lastPurchaseDate;
 		} else {
 			return 'N/A';
@@ -166,7 +158,6 @@ class SelectedCustomerDetails extends React.Component {
 
 
 	getName() {
-		console.log('balanceCredit', this.props.balanceCredit);
 		if (this.props.selectedCustomer.hasOwnProperty('name')) {
 			return this.props.selectedCustomer.name;
 		} else {

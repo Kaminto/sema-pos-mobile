@@ -209,7 +209,6 @@ const ListCustomerStack = createStackNavigator({
                                     marginRight: 20,
                                 }}
                                 onPress={() => {
-                                    console.log(navigation);
                                     navigation.setParams({ isCustomerSelected: false });
                                     navigation.setParams({ customerName: '' });
                                     navigation.navigate('EditCustomer');
@@ -232,7 +231,6 @@ const ListCustomerStack = createStackNavigator({
                                     marginRight: 20,
                                 }}
                                 onPress={() => {
-                                    console.log(navigation);
                                     navigation.setParams({ isCustomerSelected: false });
                                     navigation.setParams({ customerName: '' });
                                     navigation.navigate('OrderView');

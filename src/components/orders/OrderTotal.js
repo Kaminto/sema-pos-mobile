@@ -4,16 +4,12 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as OrderActions from "../../actions/OrderActions";
 import * as Utilities from "../../services/Utilities";
-import * as ToolbarActions from '../../actions/ToolBarActions';
 import i18n from "../../app/i18n";
 
 class OrderTotal extends Component {
 
 	constructor(props) {
 		super(props);
-		// slowlog(this, /.*/);
-		this.state = {
-		};
 	}
 
 	render() {
@@ -30,11 +26,9 @@ class OrderTotal extends Component {
 			let totalAmount = 0;
 			for (let i of this.props.products) {
 				if (i.product.description === 'discount') {
-					console.log('finalAmount', i.product.description);
 					totalAmount = totalAmount - i.finalAmount;
 				}
 				 else if (i.product.description === 'delivery') {
-					console.log('finalAmount', i.product.description);
 					totalAmount = totalAmount + i.finalAmount;
 				} else {
 					totalAmount = totalAmount + i.finalAmount;
@@ -62,8 +56,7 @@ function mapStateToProps(state, props) {
 }
 function mapDispatchToProps(dispatch) {
 	return {
-		orderActions: bindActionCreators(OrderActions, dispatch),
-		toolbarActions: bindActionCreators(ToolbarActions, dispatch)
+		orderActions: bindActionCreators(OrderActions, dispatch)
 	};
 }
 

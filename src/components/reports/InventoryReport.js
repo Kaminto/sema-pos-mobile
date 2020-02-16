@@ -8,12 +8,6 @@ import { connect } from "react-redux";
 import DateFilter from "./DateFilter";
 import PosStorage from "../../database/PosStorage";
 
-import InventroyRealm from "../../database/inventory/inventory.operations";
-
-import {
-	getWastageData,
-	getMrps
-} from '../../actions/WastageActions';
 
 import i18n from '../../app/i18n';
 const uuidv1 = require('uuid/v1');
@@ -25,8 +19,6 @@ class InventoryEdit extends Component {
 	}
 
 	componentDidUpdate() {
-		console.log('updated');
-		//this.state.inventoryQuantity = this.props.quantity;
 	}
 
 	render() {
@@ -59,8 +51,6 @@ class InventoryEdit extends Component {
 						<View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
 							<View style={{ backgroundColor: "#2858a7", borderRadius: 10, flex: .3 }}>
 								<TouchableHighlight underlayColor='#c0c0c0' onPress={() => {
-									console.log('this.props.wastageName', this.props.wastageName);
-									console.log('this.state.inventoryQuantity', this.state.inventoryQuantity);
 									this.props.okMethod(this.props.wastageName, this.state.inventoryQuantity);
 									}}>
 									<Text style={styles.buttonText}>{i18n.t('ok')}</Text>
@@ -97,7 +87,6 @@ class InventoryEdit extends Component {
 	}
 
 }
-const dayInMilliseconds = 24 * 60 * 60 * 1000;
 
 class InventoryReport extends Component {
 	constructor(props) {
@@ -115,16 +104,6 @@ class InventoryReport extends Component {
 	addDays = (theDate, days) => {
 		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
 	};
-
-	componentDidMount() {
-		console.log("InventoryReport - componentDidMount");
-		//	this.props.wastageActions.GetInventoryReportData(this.startDate, this.endDate, this.props.products);
-
-	}
-
-	componentWillUnmount() {
-		console.log("InventoryReport - componentWillUnmount");
-	}
 
 	render() {
 		return (
@@ -230,8 +209,6 @@ class InventoryReport extends Component {
 
 	formatDate = (date) => {
 		var someDate = new Date(date);
-		var numberOfDaysToAdd = 6;
-		//someDate.setDate(someDate.getDate() + numberOfDaysToAdd);
 		var dd = someDate.getDate();
 		var mm = someDate.getMonth() + 1;
 		var y = someDate.getFullYear();
@@ -248,14 +225,6 @@ class InventoryReport extends Component {
 				this.endDate = this.props.dateFilter.endDate;
 				this.props.wastageActions.GetInventoryReportData(this.startDate, this.endDate, this.props.products);
 				return this.props.wastageData.salesAndProducts.salesItems;
-				// getWastageData(this.startDate, this.endDate, getMrps(this.props.products))
-				// 	.then(inventoryData => {
-				// 		console.log('getWastageData', inventoryData);
-
-				// 	}).catch(error => {
-				// 		console.log('getWastageData-error', error);
-
-				// 	})
 			}
 		}
 
@@ -304,9 +273,7 @@ class InventoryReport extends Component {
 
 				{this.getCurrentInventory(item)}
 				{this.getCurrentNotDispatched(item)}
-				{/* <View style={[{ flex: .7 }]}>
-					<Text style={[styles.rowItemCenter]}>0</Text>
-				</View> */}
+
 				<InventoryEdit
 					type="wastageName"
 					skuToShow={this.state.currentSkuEdit}
@@ -370,13 +337,7 @@ class InventoryReport extends Component {
 					this.props.wastageData.inventory.currentProductSkus[index].kiosk_id = this.props.settings.siteId;
 					this.props.wastageData.inventory.currentProductSkus[index].createdDate = new Date(this.props.wastageData.inventory.date);
 					this.props.wastageData.inventory.currentProductSkus[index].closingStockId = uuidv1();
-					console.log('inventory-data',this.props.wastageData.inventory);
-					console.log('wastage-Date', this.props.wastageData.inventory.date);
 					PosStorage.addOrUpdateInventoryItem(this.props.wastageData.inventory, this.props.wastageData.inventory.date);
-					// InventroyRealm.createInventory(this.props.settings.siteId, wastageName, update, this.props.dateFilter.startDate);
-					// this.props.inventoryActions.setInventory(
-					// 	InventroyRealm.getAllInventory()
-					// );
 					break;
 				}
 			}
@@ -387,14 +348,11 @@ class InventoryReport extends Component {
 	}
 
 	onOkEditCurrentSku(wastageName, newQuantity) {
-		console.log('newQuantity',newQuantity);
-		console.log('wastageName',wastageName);
 		this.setState({ currentSkuEdit: "" });
 		let update = null;
 		if (newQuantity.trim().length > 0) {
 			update = parseInt(newQuantity);
 		}
-		console.log('update',update); 
 		if (!isNaN(update)) {
 			for (let index = 0; index < this.props.wastageData.inventory.currentProductSkus.length; index++) {
 				if (this.props.wastageData.inventory.currentProductSkus[index].wastageName === wastageName) {
@@ -404,13 +362,7 @@ class InventoryReport extends Component {
 					this.props.wastageData.inventory.currentProductSkus[index].kiosk_id = this.props.settings.siteId;
 					this.props.wastageData.inventory.currentProductSkus[index].createdDate = new Date(this.props.wastageData.inventory.date);
 					this.props.wastageData.inventory.currentProductSkus[index].closingStockId = uuidv1();
-					console.log('inventory-data',this.props.wastageData.inventory);
-					console.log('wastage-Date', this.props.wastageData.inventory.date);
 					PosStorage.addOrUpdateInventoryItem(this.props.wastageData.inventory, this.props.wastageData.inventory.date);
-					// InventroyRealm.createInventory(this.props.settings.siteId, wastageName, update, this.props.dateFilter.startDate);
-					// this.props.inventoryActions.setInventory(
-					// 	InventroyRealm.getAllInventory()
-					// );
 					break;
 				}
 			}
@@ -428,12 +380,8 @@ class InventoryReport extends Component {
 					<Text style={[styles.headerItem, styles.leftMargin]}>PRODUCT</Text>
 				</View>
 				<View style={[{ flex: 1 }]}>
-					{/* <Text style={[styles.headerItemCenter]}>{i18n.t('quantity')}</Text> */}
 					<Text style={[styles.headerItemCenter]}>QUANTITY SOLD</Text>
 				</View>
-				{/* <View style={[{ flex: 1 }]}>
-					<Text style={[styles.headerItemCenter]}>{i18n.t('total-liters').toUpperCase()}</Text>
-				</View> */}
 				<View style={[{ width: 20 }]} />
 				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('closing-stock').toUpperCase()}</Text>
@@ -535,8 +483,7 @@ class InventoryReport extends Component {
 				return '-';
 			}
 		} catch (error) {
-			console.log(JSON.stringify(this.props.wastageData));
-			console.log("getTotalInventory " + error);
+
 		}
 		return '-';
 	}
@@ -559,8 +506,7 @@ class InventoryReport extends Component {
 				return '-';
 			}
 		} catch (error) {
-			console.log(JSON.stringify(this.props.wastageData));
-			console.log("getTotalNotDispatched " + error);
+
 		}
 		return '-';
 	}

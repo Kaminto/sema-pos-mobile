@@ -115,7 +115,6 @@ class CreditRealm {
     hardDeleteCredit(credit) {
         try {
             realm.write(() => {
-                console.log("credit", credit);
                 let credits = realm.objects('Credit');
                 let deleteCredit = credits.filtered(`topUpId = "${credit.topUpId}"`);
                 realm.delete(deleteCredit);
@@ -141,7 +140,6 @@ class CreditRealm {
     }
 
     createManycredits(credits) {
-        console.log('credits', credits)
         try {
             realm.write(() => {
                 credits.forEach(obj => {

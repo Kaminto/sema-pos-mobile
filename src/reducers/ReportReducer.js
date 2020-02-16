@@ -16,7 +16,6 @@ let initialState = {
 };
 
 const reportReducer = (state = initialState, action) => {
-	// console.log('reportReducer: ' + action.type);
 
 	let newState;
 	switch (action.type) {

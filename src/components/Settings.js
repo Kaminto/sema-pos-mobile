@@ -106,7 +106,6 @@ class SettingsButton extends Component {
 	}
 	showEnabled() {
 		if (this.props.enableFn()) {
-			console.log('Enabled - ' + this.props.label);
 			return (
 				<TouchableHighlight
 					underlayColor="#c0c0c0"
@@ -115,7 +114,6 @@ class SettingsButton extends Component {
 				</TouchableHighlight>
 			);
 		} else {
-			console.log('Disabled - ' + this.props.label);
 			return <Text style={[styles.buttonText]}>{this.props.label}</Text>;
 		}
 	}
@@ -124,7 +122,6 @@ class SettingsButton extends Component {
 class Settings extends Component {
 	constructor(props) {
 		let setting = PosStorage.getSettings();
-		console.log(setting);
 		super(props);
 		// this.url = React.createRef();
 		// this.site = React.createRef();
@@ -359,10 +356,7 @@ class Settings extends Component {
 			this.setState({ isLoading: true });
 			Synchronization.synchronize().then(syncResult => {
 				this.setState({ isLoading: false });
-				console.log(
-					'Synchronization-result: ' + JSON.stringify(syncResult)
-				);
-				// let foo = this._getSyncResults(syncResult);
+
 				Alert.alert(
 					i18n.t('sync-results'),
 					this._getSyncResults(syncResult),
@@ -428,7 +422,6 @@ class Settings extends Component {
 		} catch (error) {}
 	}
 	onClearAll() {
-		console.log('Settings:onClearAll');
 		let alertMessage = i18n.t('clear-all-data');
 		Alert.alert(
 			alertMessage,
@@ -483,12 +476,6 @@ class Settings extends Component {
 			let message = i18n.t('successful-connection');
 			Communications.login()
 				.then(result => {
-					console.log(
-						'Passed - status' +
-							result.status +
-							' ' +
-							JSON.stringify(result.response)
-					);
 					if (result.status === 200) {
 						this.saveSettings(
 							"http://142.93.115.206:3006/",
@@ -542,18 +529,10 @@ class Settings extends Component {
 										date
 									)
 										.then(json => {
-											console.log('ORIGINAL');
-											console.log(JSON.stringify(json));
-											console.log('END');
 
 											PosStorage.addRemoteReceipts(
 												json
 											).then(saved => {
-												console.log('SAVED');
-												console.log(
-													JSON.stringify(saved)
-												);
-												console.log('END');
 												Events.trigger(
 													'ReceiptsFetched',
 													saved
@@ -590,12 +569,6 @@ class Settings extends Component {
 					}
 				})
 				.catch(result => {
-					console.log(
-						'Failed- status ' +
-							result.status +
-							' ' +
-							result.response.message
-					);
 					this.setState({ animating: false });
 					Alert.alert(
 						i18n.t('network-connection'),
@@ -606,7 +579,6 @@ class Settings extends Component {
 				});
 		} catch (error) {
 			this.setState({ animating: false });
-			console.log(JSON.stringify(error));
 		}
 	}
 
@@ -658,9 +630,6 @@ class Settings extends Component {
 	}
 
 	getDefaultUILanguage() {
-		console.log(
-			`CURRENT UI LANGUAGE IS ${this.props.settings.uiLanguage.name}`
-		);
 		return this.props.settings.uiLanguage.name;
 	}
 
@@ -682,9 +651,6 @@ class Settings extends Component {
 				)[0]
 			},
 			() => {
-				console.log(
-					`Selected language is ${this.state.selectedLanguage.name}`
-				);
 				i18n.locale = this.state.selectedLanguage.iso_code;
 				Events.trigger('SalesChannelsUpdated', {});
 				this.onSaveSettings();

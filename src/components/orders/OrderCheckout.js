@@ -1,10 +1,9 @@
 import React, { Component } from "react"
-import { View, Alert, Text, TextInput, Button, FlatList, SafeAreaView, ScrollView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
+import { View, Alert, Text, TextInput, Button, FlatList, SafeAreaView, ScrollView, TouchableHighlight, StyleSheet } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as OrderActions from "../../actions/OrderActions";
 import Modal from 'react-native-modalbox';
-import * as CustomerBarActions from '../../actions/CustomerBarActions';
 import * as CustomerReminderActions from '../../actions/CustomerReminderActions';
 import * as CustomerActions from '../../actions/CustomerActions';
 import * as PaymentTypesActions from "../../actions/PaymentTypesActions";
@@ -36,7 +35,6 @@ class OrderCheckout extends Component {
 
 	constructor(props) {
 		super(props);
-		// slowlog(this, /.*/);
 		this.saleSuccess = false;
 		this.state = {
 			isWalkIn: true,
@@ -96,7 +94,6 @@ class OrderCheckout extends Component {
 			}
 			return false;
 		});
-		console.log('isRefill', isRefill);
 
 		return (
 			<View style={styles.container}>
@@ -220,7 +217,7 @@ class OrderCheckout extends Component {
 										this.paymentTypesRow(item, index, separators)
 									)}
 									extraData={this.props.selectedPaymentTypes}
-									numColumns={2}
+									numColumns={3}
 									contentContainerStyle={styles.container}
 								/>
 
@@ -395,8 +392,6 @@ class OrderCheckout extends Component {
 
 
 	setEmptiesReturned = (emptiesReturned, item) => {
-	console.log('emptiesReturned', emptiesReturned);
-	console.log('item', item);
 		let refillPending = '';
 		if (!item.hasOwnProperty('refillPending')) {
 			return;
@@ -829,11 +824,9 @@ class OrderCheckout extends Component {
 			let totalAmount = 0;
 			for (let i of this.props.products) {
 				if (i.product.description === 'discount') {
-					console.log('finalAmount', i.product.description);
 					totalAmount = totalAmount - i.finalAmount;
 				}
 				 else if (i.product.description === 'delivery') {
-					console.log('finalAmount', i.product.description);
 					totalAmount = totalAmount + i.finalAmount;
 				} else {
 					totalAmount = totalAmount + i.finalAmount;
@@ -1006,9 +999,8 @@ class OrderCheckout extends Component {
 			const rpIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("loan");
 
 			if (rpIndex >= 0) {
-				console.log('-rpIndex-', rpIndex);
 				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) + Number(this.props.selectedPaymentTypes[rpIndex].amount);
-				console.log('-this.props.selectedCustomer.dueAmount-', this.props.selectedCustomer.dueAmount);
+
 				CustomerRealm.updateCustomerDueAmount(
 					this.props.selectedCustomer,
 					this.props.selectedCustomer.dueAmount
@@ -1259,7 +1251,6 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
 	return {
 		orderActions: bindActionCreators(OrderActions, dispatch),
-		customerBarActions: bindActionCreators(CustomerBarActions, dispatch),
 		receiptActions: bindActionCreators(receiptActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
 		paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch),

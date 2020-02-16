@@ -53,7 +53,6 @@ export function setDelivery(delivery) {
 
 
 export function setSelectedDebtPaymentTypes(selectedDebtPaymentTypes) {
-    console.log('selectedDebtPaymentTypes', selectedDebtPaymentTypes)
     return (dispatch) => { dispatch({ type: SET_SELECTED_DEBT_PAYMENT_TYPES, data: selectedDebtPaymentTypes }) };
 }
 

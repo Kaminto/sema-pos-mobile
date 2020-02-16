@@ -8,7 +8,6 @@ import SalesChannelRealm from '../../database/sales-channels/sales-channels.oper
 class ProductListScreen extends Component {
 	constructor(props) {
 		super(props);
-		// slowlog(this, /.*/);
 		let { height, width } = Dimensions.get('window');
 		// Empirically we know that this view has flex of 1 and the view beside it,
 		// (OrderSummaryScreen has a flex of .6 This makes the width of this view 1/1.6 * screen width

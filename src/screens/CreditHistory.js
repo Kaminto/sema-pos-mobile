@@ -32,13 +32,9 @@ class CreditHistory extends Component {
         };
     }
     componentDidMount() {
-        console.log(this.prepareTopUpData());
         this.props.topUpActions.setTopUpTotal(
             this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
         );
-    }
-
-    componentWillUnmount() {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -98,9 +94,7 @@ class CreditHistory extends Component {
     }
 
     onChangeTopup = topup => {
-        console.log(topup);
         this.setState({ topup });
-        //this.props.parent.forceUpdate();
     };
 
     getCancelButton() {
@@ -120,7 +114,6 @@ class CreditHistory extends Component {
     };
 
     addCredit = () => {
-        console.log('Number(this.state.topup)', Number(this.state.topup))
         if (Number(this.state.topup) === 0) {
             Alert.alert(
                 'Notice',
@@ -134,11 +127,7 @@ class CreditHistory extends Component {
                 { cancelable: false }
             );
             return;
-        }
-
-
-        console.log(this.state.topup);
-        console.log(this.props.selectedCustomer);
+		}
 
         CreditRealm.createCredit(
             this.props.selectedCustomer.customerId,
@@ -146,8 +135,6 @@ class CreditHistory extends Component {
             Number(this.state.topup)
         );
         this.setState({ topup: "" });
-        console.log(this.state.topup);
-        console.log(CreditRealm.getAllCredit());
         this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
         this.props.topUpActions.setTopUpTotal(
             this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
@@ -184,8 +171,6 @@ class CreditHistory extends Component {
                     ? 1
                     : -1;
             });
-
-            console.log('topups', topups);
             return topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
         } else {
             return [];
@@ -231,7 +216,6 @@ class CreditHistory extends Component {
     };
 
     showHeader = () => {
-        console.log('Displaying header');
         return (
             <View
                 style={[
@@ -263,21 +247,14 @@ class CreditHistory extends Component {
         );
     };
 
-    onPressItem = item => {
-        console.log('_onPressItem', item);
-
-    };
 
     customerCreditPaymentTypeReceipts() {
 		let receiptsPaymentTypes = [...this.compareCreditPaymentTypes()];
 		let customerReceipt = [...this.getCustomerRecieptData()];
-		console.log(receiptsPaymentTypes);
-		console.log(customerReceipt);
 		let finalCustomerReceiptsPaymentTypes = [];
 
 		for (let receiptsPaymentType of receiptsPaymentTypes) {
 			const rpIndex = customerReceipt.map(function (e) { return e.id }).indexOf(receiptsPaymentType.receipt_id);
-			console.log(rpIndex);
 			if (rpIndex >= 0) {
 				receiptsPaymentType.receipt = receiptsPaymentTypes[rpIndex];
 				finalCustomerReceiptsPaymentTypes.push(receiptsPaymentType);
@@ -323,14 +300,12 @@ class CreditHistory extends Component {
 
     getCustomerRecieptData() {
         // Used for enumerating receipts
-        //console.log("here selectedCustomer", this.props.selectedCustomer);
 
         if (this.props.receipts.length > 0) {
             const totalCount = this.props.receipts.length;
 
             let salesLogs = [...new Set(this.props.receipts)];
             let remoteReceipts = salesLogs.map((receipt, index) => {
-                //console.log("customerAccount", receipt.customer_account);
                 return {
                     active: receipt.active,
                     id: receipt.id,

@@ -46,16 +46,11 @@ class OrderRealm {
     }
 
     getOrdersByDate(date) {
-        console.log(date);
-        console.log(moment(date).format(
-            'YYYY-MM-DD'
-        ));
         return new Promise(resolve => {
 
 
             try {
                 let orderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('Order'))));
-                console.log(orderObj);
                 let orderObj2 = orderObj.map(
                     item => {
                         return {
@@ -64,11 +59,7 @@ class OrderRealm {
                             )
                         }
                     });
-                console.log(orderObj2);
-                // return orderObj2;
-                // return orderObj2.filter(r => r.created_at === moment(date).format(
-                //     'YYYY-MM-DD'
-                // ));
+
                 resolve(orderObj2.filter(r => r.created_at === moment(date).format(
                     'YYYY-MM-DD'
                 )));
@@ -137,7 +128,6 @@ class OrderRealm {
         newOrder.uuid = newOrder.receiptId;
         let receipt_line_items = [];
         for (let i in receipt.products) {
-            console.log(receipt.products[i]);
             receipt_line_items.push({
                 currency_code: newOrder.currency_code,
                 price_total: receipt.products[i].price_total,
@@ -162,8 +152,6 @@ class OrderRealm {
 
         }
         newOrder.receipt_line_items = JSON.stringify(receipt_line_items);
-        console.log('receipt-receipt-receipt', receipt);
-        console.log('newOrder-newOrder-newOrder', newOrder);
         try {
             realm.write(() => {
                 realm.create('Order', newOrder);
@@ -236,7 +224,6 @@ class OrderRealm {
     hardDeleteOrder(order) {
         try {
             realm.write(() => {
-                console.log("order", order);
                 let orders = realm.objects('Order');
                 let deleteOrder = orders.filtered(`orderId = "${order.orderId}"`);
                 realm.delete(deleteOrder);
@@ -262,7 +249,6 @@ class OrderRealm {
     }
 
     createManyOrders(orders) {
-        console.log('orders', orders)
         try {
             realm.write(() => {
                 orders.forEach(obj => {

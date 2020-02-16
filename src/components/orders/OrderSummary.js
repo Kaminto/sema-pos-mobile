@@ -1,7 +1,6 @@
 import React, { Component } from "react"
-import { View, Text, FlatList, TouchableHighlight, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { bindActionCreators } from "redux";
-import * as ProductActions from "../../actions/ProductActions";
 import * as OrderActions from "../../actions/OrderActions";
 import { connect } from "react-redux";
 import i18n from "../../app/i18n";
@@ -19,15 +18,12 @@ class OrderSummary extends Component {
 		);
 	}
 	getTotalOrders = () => {
-		return this.props.products.reduce((total, item) => {			
+		return this.props.products.reduce((total, item) => {
 			if (item.product.description != 'discount' && item.product.description != 'delivery' ) {
-				console.log(item.product.description != 'discount');
-				console.log('qitem-', item.product.description);
 				return (total + item.quantity);
 			}else{
 				return (total + 0);
 			}
-			//return (total + item.quantity);
 		}, 0);
 	};
 }

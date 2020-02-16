@@ -1,8 +1,4 @@
 import React, { Component } from "react";
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
 import { View, StyleSheet } from 'react-native';
 import ProductListScreen from './ProductListScreen';
 import OrderSummaryScreen from "./OrderSummaryScreen";
@@ -10,14 +6,11 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
 import * as CustomerActions from '../../actions/CustomerActions';
-import Events from "react-native-simple-events";
+
 
 class OrderView extends Component {
 	constructor(props) {
-
 		super(props);
-
-		// slowlog(this, /.*/);
 	}
 
 	render() {
@@ -31,7 +24,6 @@ class OrderView extends Component {
 	}
 
 	componentDidMount() {
-		// this.props.navigation.setParams({ customerName: this.props.selectedCustomer.name });
 	}
 
 	componentWillUnmount() {

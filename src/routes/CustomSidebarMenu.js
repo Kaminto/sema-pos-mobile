@@ -8,12 +8,10 @@ import * as CustomerActions from '../actions/CustomerActions';
 import * as NetworkActions from '../actions/NetworkActions';
 import * as SettingsActions from '../actions/SettingsActions';
 import * as ProductActions from '../actions/ProductActions';
-import * as ToolbarActions from '../actions/ToolBarActions';
 import * as receiptActions from '../actions/ReceiptActions';
 import * as AuthActions from '../actions/AuthActions';
 import CustomerRealm from '../database/customers/customer.operations';
 import SettingRealm from '../database/settings/settings.operations';
-import PosStorage from '../database/PosStorage';
 import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
 import i18n from '../app/i18n';
@@ -111,7 +109,6 @@ class CustomSidebarMenu extends Component {
                   global.currentScreenIndex = key;
 
                   if (item.screenToNavigate === 'LogOut') {
-                    console.log(item.screenToNavigate);
                     this.onLogout();
                   }
 
@@ -119,7 +116,6 @@ class CustomSidebarMenu extends Component {
                     this.props.navigation.navigate(item.screenToNavigate);
                   }
                   if (item.screenToNavigate === 'Sync') {
-                    console.log(item.screenToNavigate);
                     this.onSynchronize();
                   }
 
@@ -141,9 +137,7 @@ class CustomSidebarMenu extends Component {
   }
 
   onLogout = () => {
-    this.props.toolbarActions.SetLoggedIn(false);
     let settings = SettingRealm.getAllSetting();
-    console.log(settings);
 
     // // Save with empty token - This will force username/password validation
     SettingRealm.saveSettings(
@@ -159,7 +153,6 @@ class CustomSidebarMenu extends Component {
     this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
     //As we are not going to the Login, the reason no reason to disable the token
     Communications.setToken('');
-    // this.props.toolbarActions.ShowScreen('settings');
     this.props.navigation.navigate('Login');
   };
 
@@ -167,7 +160,6 @@ class CustomSidebarMenu extends Component {
     try {
       this.setState({ isLoading: true });
       Synchronization.synchronize().then(syncResult => {
-        // console.log("syncResult", syncResult);
         this.setState({ isLoading: false });
 
         this.props.customerActions.setCustomers(
@@ -225,7 +217,6 @@ class CustomSidebarMenu extends Component {
         ) {
           return i18n.t('data-is-up-to-date');
         } else {
-          // console.log('syncResult', syncResult);
           return `${syncResult.customers.updatedCustomers} ${i18n.t(
             'customers-updated'
           )}
@@ -250,8 +241,6 @@ function mapStateToProps(state, props) {
     selectedCustomer: state.customerReducer.selectedCustomer,
     customers: state.customerReducer.customers,
     network: state.networkReducer.network,
-    showView: state.customerBarReducer.showView,
-    showScreen: state.toolBarReducer.showScreen,
     settings: state.settingsReducer.settings,
     receipts: state.receiptReducer.receipts,
     remoteReceipts: state.receiptReducer.remoteReceipts,
@@ -265,7 +254,6 @@ function mapDispatchToProps(dispatch) {
     customerActions: bindActionCreators(CustomerActions, dispatch),
     productActions: bindActionCreators(ProductActions, dispatch),
     networkActions: bindActionCreators(NetworkActions, dispatch),
-    toolbarActions: bindActionCreators(ToolbarActions, dispatch),
     settingsActions: bindActionCreators(SettingsActions, dispatch),
     receiptActions: bindActionCreators(receiptActions, dispatch),
     authActions: bindActionCreators(AuthActions, dispatch)

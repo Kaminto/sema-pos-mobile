@@ -8,7 +8,6 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-
 import * as CustomerActions from '../actions/CustomerActions';
 import * as TopUpActions from '../actions/TopUpActions';
 import * as InventoryActions from '../actions/InventoryActions';
@@ -85,7 +84,6 @@ class AuthLoadingScreen extends React.Component {
         }
 
         NetInfo.isConnected.fetch().then(isConnected => {
-            console.log('Network is ' + (isConnected ? 'online' : 'offline'));
             this.props.networkActions.NetworkConnection(isConnected);
             Synchronization.setConnected(isConnected);
         });
@@ -106,7 +104,7 @@ class AuthLoadingScreen extends React.Component {
         );
 
         this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
-	
+
 
         this.props.inventoryActions.setInventory(
             InventroyRealm.getAllInventory()
@@ -117,7 +115,7 @@ class AuthLoadingScreen extends React.Component {
         this.props.receiptActions.setRemoteReceipts(
             this.posStorage.getRemoteReceipts()
         );
-        console.log('PaymentTypeRealm', PaymentTypeRealm.getPaymentTypes());
+
         this.props.receiptActions.setReceipts(
             OrderRealm.getAllOrder()
         );
@@ -125,7 +123,7 @@ class AuthLoadingScreen extends React.Component {
         this.props.paymentTypesActions.setPaymentTypes(
             PaymentTypeRealm.getPaymentTypes()
         );
-        console.log('ReceiptPaymentTypeRealm.getReceiptPaymentTypes', ReceiptPaymentTypeRealm.getReceiptPaymentTypes());
+
         this.props.paymentTypesActions.setRecieptPaymentTypes(
             ReceiptPaymentTypeRealm.getReceiptPaymentTypes()
         );
@@ -133,15 +131,11 @@ class AuthLoadingScreen extends React.Component {
         this.props.customerReminderActions.setCustomerReminders(
             CustomerReminderRealm.getCustomerReminders()
         );
-        
-
-        console.log('getCustomerDebts', CustomerDebtRealm.getCustomerDebts());
 
         this.props.paymentTypesActions.setCustomerPaidDebt(
             CustomerDebtRealm.getCustomerDebts()
         );
 
-        console.log('getDiscounts', DiscountRealm.getDiscounts());
         this.props.discountActions.setDiscounts(
             DiscountRealm.getDiscounts()
         );

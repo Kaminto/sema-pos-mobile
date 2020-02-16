@@ -204,7 +204,6 @@ class CustomerRealm {
     }
 
     createManyCustomers(customers) {
-        console.log('customers', customers)
         try {
             realm.write(() => {
                 customers.forEach(obj => {

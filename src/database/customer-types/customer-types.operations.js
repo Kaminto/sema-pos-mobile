@@ -81,7 +81,6 @@ class CustomerTypeRealm {
 
 
     createManyCustomerTypes(customerTypes) {
-        console.log('customerTypes', customerTypes)
         try {
             realm.write(() => {
                 customerTypes.forEach(obj => {

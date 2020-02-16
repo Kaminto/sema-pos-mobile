@@ -85,7 +85,6 @@ class ReminderRealm {
     }
 
     isSelected(reminder, isSelected) {
-        console.log(isSelected);
         try {
             realm.write(() => {
                 let reminderObj = realm.objects('Reminder').filtered(`id = "${reminder.reminderId}"`);
@@ -139,8 +138,6 @@ class ReminderRealm {
     }
 
     createManyReminder(reminders, customer_account_id) {
-        console.log('reminders', reminders);
-        console.log('customer_account_id', customer_account_id);
         try {
             realm.write(() => {
                 if (customer_account_id) {

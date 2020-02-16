@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, Button, ScrollView, FlatList, Switch, Image, TextInput, Dimensions, TouchableHighlight, StyleSheet } from "react-native";
+import { View, Text, ScrollView, FlatList, TextInput, Dimensions, TouchableHighlight, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
@@ -17,14 +17,12 @@ import ToggleSwitch from 'toggle-switch-react-native';
 const { height, width } = Dimensions.get('window');
 const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
-const inputTextWidth = 400;
 
 const inputFontHeight = Math.round((24 * height) / 752);
 
 class OrderItems extends Component {
 	constructor(props) {
 		super(props);
-		// slowlog(this, /.*/);
 		this.state = {
 			selectedItem: {},
 			accumulator: 0,
@@ -697,7 +695,6 @@ class OrderItems extends Component {
 		}
 
 		if (!value) {
-			console.log('empty');
 			this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, '', unitPrice);
 			this.setState({
 				accumulator: ''

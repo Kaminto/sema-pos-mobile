@@ -20,7 +20,6 @@ import { bindActionCreators } from 'redux';
 import Modal from 'react-native-modalbox';
 
 import CustomerRealm from '../database/customers/customer.operations';
-import OrderRealm from '../database/orders/orders.operations';
 import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
 import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
 import Events from 'react-native-simple-events';
@@ -30,8 +29,6 @@ import PaymentTypeRealm from '../database/payment_types/payment_types.operations
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
 
 import PaymentModal from './paymentModal';
-const anonymousId = '9999999-9999-9999-9999-9999999';
-import DoubleClick from 'react-native-double-click';
 
 class CustomerList extends Component {
     constructor(props) {
@@ -427,7 +424,7 @@ class CustomerList extends Component {
     }
 
     onPopupError() {
-        console.log('onPopupError');
+
     }
 
     onLongPressItem = item => {

@@ -18,9 +18,7 @@ import { bindActionCreators } from 'redux';
 import Events from 'react-native-simple-events';
 
 import * as ToolbarActions from '../actions/ToolBarActions';
-import ModalDropdown from 'react-native-modal-dropdown';
 import PosStorage from '../database/PosStorage';
-import CreditRealm from '../database/credit/credit.operations';
 import CustomerRealm from '../database/customers/customer.operations';
 import SettingRealm from '../database/settings/settings.operations';
 
@@ -29,7 +27,6 @@ import * as PaymentTypesActions from "../actions/PaymentTypesActions";
 
 import * as CustomerActions from '../actions/CustomerActions';
 import * as TopUpActions from '../actions/TopUpActions';
-import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
 import * as reportActions from '../actions/ReportActions';
 import * as receiptActions from '../actions/ReceiptActions';
 
@@ -166,9 +163,6 @@ class CustomerDetails extends Component {
 
 	}
 	componentDidMount() {
-		console.log(
-			'CustomerDetails:componentDidMount - filter: ' + this.props.filter
-		);
 		Events.on(
 			'ScrollCustomerTo',
 			'customerId1',
@@ -186,10 +180,7 @@ class CustomerDetails extends Component {
 	}
 
 	onScrollCustomerTo(data) {
-		console.log('onScrollCustomerTo');
-		// Commented onto scrollToItem requires getItemLayout and getItemLayout fails with
-		// searches. Expect since not all items are rendered on sea
-		// this.flatListRef.scrollToItem({animated: false, item: data.customer, viewPosition:0.5});
+
 	}
 	getItemLayout = (data, index) => ({
 		length: 50,
@@ -198,7 +189,6 @@ class CustomerDetails extends Component {
 	});
 
 	shouldComponentUpdate(nextProps, nextState) {
-		console.log('onScrollCustomerTo');
 		return true;
 	}
 
@@ -206,8 +196,6 @@ class CustomerDetails extends Component {
 	render() {
 		return (
 			<View style={{ flex: 1, backgroundColor: '#fff', flexDirection: 'column' }}>
-
-				{/* <View style={[styles.leftToolbar]}> */}
 				<SelectedCustomerDetails
 					paymentTypesActions={this.props.paymentTypesActions}
 					creditSales={this.customerCreditPaymentTypeReceipts()}
@@ -215,7 +203,6 @@ class CustomerDetails extends Component {
 					topupTotal={this.totalTopUp()}
 					selectedCustomer={this.props.selectedCustomer}
 				/>
-				{/* </View> */}
 
 				{this.getTransactionDetail()}
 			</View>
@@ -254,7 +241,6 @@ class CustomerDetails extends Component {
 					: -1;
 			});
 
-			console.log('topups', topups);
 			return topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
 		} else {
 			return [];
@@ -265,13 +251,10 @@ class CustomerDetails extends Component {
 	customerCreditPaymentTypeReceipts() {
 		let receiptsPaymentTypes = [...this.compareCreditPaymentTypes()];
 		let customerReceipt = [...this.getCustomerRecieptData()];
-		console.log(receiptsPaymentTypes);
-		console.log(customerReceipt);
 		let finalCustomerReceiptsPaymentTypes = [];
 
 		for (let receiptsPaymentType of receiptsPaymentTypes) {
 			const rpIndex = customerReceipt.map(function (e) { return e.id }).indexOf(receiptsPaymentType.receipt_id);
-			console.log(rpIndex);
 			if (rpIndex >= 0) {
 				receiptsPaymentType.receipt = receiptsPaymentTypes[rpIndex];
 				finalCustomerReceiptsPaymentTypes.push(receiptsPaymentType);
@@ -317,15 +300,12 @@ class CustomerDetails extends Component {
 
 
 	getCustomerRecieptData() {
-		// Used for enumerating receipts
-		//console.log("here selectedCustomer", this.props.selectedCustomer);
 
 		if (this.props.receipts.length > 0) {
 			const totalCount = this.props.receipts.length;
 
 			let salesLogs = [...new Set(this.props.receipts)];
 			let remoteReceipts = salesLogs.map((receipt, index) => {
-				//console.log("customerAccount", receipt.customer_account);
 				return {
 					active: receipt.active,
 					id: receipt.id,
@@ -401,8 +381,6 @@ class CustomerDetails extends Component {
 	}
 
 	prepareData() {
-		// Used for enumerating receipts
-		//console.log("here selectedCustomer", this.props.selectedCustomer);
 
 		if (this.props.receipts.length > 0) {
 			const totalCount = this.props.receipts.length;
@@ -552,7 +530,6 @@ class CustomerDetails extends Component {
 	}
 
 	showHeader = () => {
-		console.log('Displaying header');
 		return (
 			<View
 				style={[
@@ -701,7 +678,6 @@ class TransactionDetail extends Component {
 
 
 	render() {
-		console.log("Payment Stuffs" + this.props.item.paymentTypes);
 		const receiptLineItems = this.props.item.receiptLineItems.map((lineItem, idx) => {
 			return (
 				<ReceiptLineItem
@@ -717,8 +693,6 @@ class TransactionDetail extends Component {
 			);
 		});
 		let paymentTypes;
-		console.log('item', this.props.item);
-		console.log('paymentTypes', this.props.item.paymentTypes);
 		if (this.props.item.paymentTypes) {
 			paymentTypes = this.props.item.paymentTypes.map((paymentItem, idx) => {
 				return (

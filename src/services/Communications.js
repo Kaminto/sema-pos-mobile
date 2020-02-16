@@ -165,30 +165,22 @@ class Communications {
 	}
 
 	login() {
-		console.log("loginin");
 		let options = {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',
 				'Content-Type': 'application/json'
 			},
-			// body: JSON.stringify({
-			// 	usernameOrEmail: this._user,
-			// 	password: this._password
-			// })
 			body: JSON.stringify({
 				usernameOrEmail: "administrator",
 				password: "Let'sGrow"
 			})
 		};
-		console.log(this._url);
+
 		return new Promise((resolve, reject) => {
 			try {
-				console.log('hereh heresettings.semaUrl');
 				fetch(this._url + 'sema/login', options)
 					.then(response => {
-						console.log("Status " + response.status);
-						console.log("responseresponse " + response);
 						if (response.status == 200) {
 							response
 								.json()
@@ -199,11 +191,6 @@ class Communications {
 									});
 								})
 								.catch(error => {
-									console.log(
-										error +
-										' INNER ' +
-										JSON.stringify(error)
-									);
 									reject({
 										status: response.status,
 										response: error
@@ -216,7 +203,7 @@ class Communications {
 							} else if (response.status === 404) {
 								reason = '- Service URL not found ';
 							}
-							console.log(reason);
+
 							reject({
 								status: response.status,
 								response: {
@@ -228,8 +215,6 @@ class Communications {
 						}
 					})
 					.catch(error => {
-
-						console.log(error + ' OUTER ' + JSON.stringify(error));
 						reject({
 							status: 418,
 							response: error

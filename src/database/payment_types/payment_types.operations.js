@@ -75,7 +75,7 @@ class PaymentTypeRealm {
                 paymentTypeObj.forEach(element=>{
                    // console.log('element',element);
                     element.isSelected = false;
-                })             
+                })
             })
         } catch (e) {
             console.log("Error on creation", e);
@@ -84,8 +84,6 @@ class PaymentTypeRealm {
     }
 
     isSelected(paymentType,isSelected) {
-        console.log(isSelected);
-        console.log(paymentType);
         try {
             realm.write(() => {
                 let paymentTypeObj = realm.objects('PaymentType').filtered(`id = "${paymentType.id}"`);
