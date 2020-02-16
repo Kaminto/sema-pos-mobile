@@ -41,6 +41,13 @@ class OrderItems extends Component {
 		this.onPressItem = this.onPressItem.bind(this);
 	}
 
+	//static whyDidYouRender = true;
+
+    shouldComponentUpdate( nextProps,nextState) {
+		//return nextState !== this.state;
+		return true;
+    }
+
 	render() {
 
 		const state = this.state;

@@ -16,11 +16,12 @@ class OrderView extends Component {
 	constructor(props) {
 		super(props);
 	}
-	// static whyDidYouRender = true;
+	//static whyDidYouRender = true;
 
-    // shouldComponentUpdate( nextProps,nextState) {
-    //     return nextProps !== this.props;
-    // }
+    shouldComponentUpdate( nextProps,nextState) {
+		//return nextProps !== this.props;
+		return true;
+    }
 
 	render() {
 		return (
