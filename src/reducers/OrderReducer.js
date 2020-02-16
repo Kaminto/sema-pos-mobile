@@ -32,7 +32,6 @@ const orderReducer = (state = initialState, action) => {
 				if (product.product.productId === action.data.product.productId) {
 					product.quantity += action.data.quantity;
 
-
 					if (!product.hasOwnProperty('discount')) {
 						product.finalAmount = (Number(product.quantity)) * Number(product.unitPrice);
 					}

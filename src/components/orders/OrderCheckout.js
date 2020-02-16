@@ -1,5 +1,9 @@
-import React, { Component } from "react"
-import { View, Alert, Text, TextInput, Button, FlatList, ScrollView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
+import React, { Component } from "react";
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
+import { View, Alert, Text, TextInput, Button, FlatList, ScrollView, SafeAreaView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as OrderActions from "../../actions/OrderActions";
@@ -29,13 +33,11 @@ import moment from 'moment-timezone';
 const uuidv1 = require('uuid/v1');
 const widthQuanityModal = '70%';
 const heightQuanityModal = 540;
-const inputTextWidth = 400;
 
 class OrderCheckout extends Component {
 
 	constructor(props) {
 		super(props);
-		// slowlog(this, /.*/);
 		this.saleSuccess = false;
 		this.state = {
 			isWalkIn: true,
@@ -51,7 +53,16 @@ class OrderCheckout extends Component {
 			receiptDate: new Date(),
 			selectedPaymentType: "Cash",
 		};
+	this.onPay = this.onPay.bind(this);
 	}
+
+
+	static whyDidYouRender = true;
+
+    shouldComponentUpdate( nextProps,nextState) {
+        return nextProps !== this.props;
+    }
+
 
 	showDateTimePicker = () => {
 		this.setState({ isDateTimePickerVisible: true });
@@ -387,7 +398,6 @@ class OrderCheckout extends Component {
 			return (<View />);
 		}
 	}
-
 
 	setEmptiesReturned = (emptiesReturned, item) => {
 		let refillPending = '';

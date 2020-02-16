@@ -16,6 +16,7 @@ import PaymentTypeRealm from '../database/payment_types/payment_types.operations
 import CustomerReminderRealm from '../database/customer-reminder/customer-reminder.operations';
 
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import * as CustomerActions from '../actions/CustomerActions';
 import * as TopUpActions from '../actions/TopUpActions';
@@ -65,7 +66,12 @@ class SelectedCustomerDetails extends React.Component {
 							Last Purchase Date: {CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId) === 'N/A' ? 'N.A' : CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId).lastPurchaseDate }
 						</Text> */}
 						<Text style={styles.selectedCustomerText}>
-							Reminder Date:  {CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId) === 'N/A' ? 'N/A' : CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId).reminder_date }
+								<Ionicons
+										name='md-alarm'
+										size={24}
+										color='black'
+									/> :
+									  {CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId) === ' N/A' ? ' N/A' : CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId).reminder_date }
 						</Text>
 						<View style={styles.completeOrder}>
 							<TouchableHighlight

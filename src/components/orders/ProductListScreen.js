@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+}
 import { Dimensions, View, Animated } from "react-native";
 import ProductList from "./ProductList";
 import { connect } from "react-redux";
@@ -36,6 +40,12 @@ class ProductListScreen extends Component {
 			).start();
 		});
 	}
+
+	static whyDidYouRender = true;
+
+    shouldComponentUpdate( nextProps,nextState) {
+        return nextProps !== this.props;
+    }
 
 	render() {
 		let { fadeAnim } = this.state;

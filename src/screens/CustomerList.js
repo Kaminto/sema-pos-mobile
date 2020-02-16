@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+}
 import {
     View,
     Text,
@@ -71,6 +75,13 @@ class CustomerList extends Component {
             this.onScrollCustomerTo.bind(this)
         );
 	}
+
+
+	static whyDidYouRender = true;
+
+	shouldComponentUpdate( nextProps,nextState) {
+        return nextProps !== this.props;
+    }
 
     searchCustomer = (searchText) => {
         this.props.customerActions.SearchCustomers(searchText);

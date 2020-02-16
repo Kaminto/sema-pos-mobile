@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
 import {
 	View,
 	Text,
@@ -21,8 +25,11 @@ class ProductList extends Component {
 		this.onPressItem = this.onPressItem.bind(this);
 	}
 
-	componentDidMount() {
-	}
+	static whyDidYouRender = true;
+
+	shouldComponentUpdate( nextProps,nextState) {
+        return nextProps !== this.props;
+    }
 
 	render() {
 		return (
@@ -39,6 +46,7 @@ class ProductList extends Component {
 					)}
 					keyExtractor={item => item.productId}
 					numColumns={4}
+
 					horizontal={false}
 				/>
 			</View>

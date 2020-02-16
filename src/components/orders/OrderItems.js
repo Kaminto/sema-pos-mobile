@@ -1,9 +1,12 @@
 import React, { Component } from "react";
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
 import { View, Text, ScrollView, FlatList, TextInput, Dimensions, TouchableHighlight, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
-import * as ToolbarActions from '../../actions/ToolBarActions';
 import * as DiscountActions from '../../actions/DiscountActions';
 
 import i18n from "../../app/i18n";
@@ -37,6 +40,12 @@ class OrderItems extends Component {
 
 		this.onPressItem = this.onPressItem.bind(this);
 	}
+
+	static whyDidYouRender = true;
+
+    shouldComponentUpdate( nextProps,nextState) {
+        return nextState !== this.state;
+    }
 
 	render() {
 
@@ -852,7 +861,6 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
 	return {
 		orderActions: bindActionCreators(OrderActions, dispatch),
-		toolbarActions: bindActionCreators(ToolbarActions, dispatch),
 		discountActions: bindActionCreators(DiscountActions, dispatch),
 	};
 }

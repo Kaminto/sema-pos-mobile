@@ -6,7 +6,6 @@ import {
 	FlatList,
 	Image,
 	TouchableOpacity,
-	TouchableHighlight,
 	Alert,
 	ToastAndroid,
 	ScrollView,
@@ -21,8 +20,6 @@ import * as ToolbarActions from '../actions/ToolBarActions';
 import PosStorage from '../database/PosStorage';
 import CustomerRealm from '../database/customers/customer.operations';
 import SettingRealm from '../database/settings/settings.operations';
-
-import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
 
 import * as CustomerActions from '../actions/CustomerActions';
@@ -347,7 +344,7 @@ class CustomerDetails extends Component {
 		if (this.state.selected) {
 			return (
 
-				<View style={{ flex: .75, flexDirection: 'row', paddingTop: 20, width: '80%', alignSelf: 'center' }}>
+				<View style={{ flex: .75, flexDirection: 'row', paddingTop: 20, width: '85%', alignSelf: 'center' }}>
 					<View style={{ flex: .3, backgroundColor: '#f1f1f1', borderRightWidth: 4, borderRightColor: '#CCC' }}>
 						<FlatList
 							data={this.prepareData()}
