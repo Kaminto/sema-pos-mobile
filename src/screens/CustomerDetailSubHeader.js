@@ -231,14 +231,16 @@ const styles = StyleSheet.create({
 		height: 70,
 		elevation: 10,
 		alignSelf: 'center',
-		width: '80%',
+		width: '85%',
 		justifyContent: 'center',
 		color: 'white',
 		paddingBottom: 20
 	},
+
 	modalPayment: {
 		backgroundColor: 'white',
 	},
+
 	modal3: {
 		width: '70%',
 		height: 400,
@@ -253,6 +255,7 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		color: 'black'
 	},
+
 	completeOrder: {
 		backgroundColor: '#2858a7',
 		borderRadius: 5,
