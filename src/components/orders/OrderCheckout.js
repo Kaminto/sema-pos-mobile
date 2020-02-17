@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-// if (process.env.NODE_ENV === 'development') {
-// 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-// 	whyDidYouRender(React);
-//   }
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
 import { View, Alert, Text, TextInput, Button, FlatList, ScrollView, SafeAreaView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -34,7 +34,7 @@ const uuidv1 = require('uuid/v1');
 const widthQuanityModal = '70%';
 const heightQuanityModal = 540;
 
-class OrderCheckout extends Component {
+class OrderCheckout extends React.PureComponent {
 
 	constructor(props) {
 		super(props);
@@ -57,12 +57,7 @@ class OrderCheckout extends Component {
 	}
 
 
-	//static whyDidYouRender = true;
-
-    shouldComponentUpdate( nextProps,nextState) {
-	   // return nextProps !== this.props;
-	   return true;
-    }
+	static whyDidYouRender = true;
 
 
 	showDateTimePicker = () => {
@@ -124,7 +119,7 @@ class OrderCheckout extends Component {
 					coverScreen={true}
 					position={"center"} ref={"modal7"}
 					isDisabled={this.state.isDisabled}>
-					{/* <ScrollView> */}
+					<ScrollView>
 						<View style={{ flex: 1, paddingLeft: 10 }}>
 							<View style={{ flex: 1, flexDirection: 'row', height: 50 }}>
 								<View style={{ flex: 1, flexDirection: 'row' }}>
@@ -159,17 +154,17 @@ class OrderCheckout extends Component {
 								/>
 							</View>
 						</View>
-					{/* </ScrollView> */}
+					</ScrollView>
 				</Modal>
 
 				<Modal
-					style={styles.modal}
+					style={styles.modal3}
 					coverScreen={true}
 					position={"center"} ref={"modal6"}
 					onClosed={() => this.modalOnClose()}
 					isDisabled={this.state.isDisabled}>
 
-					{/* <ScrollView> */}
+					<ScrollView>
 						<View style={{ flex: 1, padding: 0, margin: 0 }}>
 							<View
 								style={{
@@ -331,7 +326,7 @@ class OrderCheckout extends Component {
 								</View>
 							</View>
 						</View>
-					{/* </ScrollView> */}
+					</ScrollView>
 				</Modal>
 
 
@@ -548,7 +543,7 @@ class OrderCheckout extends Component {
 			}
 		}
 
-		//if(item.name != 'loan' && item.name != 'credit'){
+		if(item.name != 'loan' && item.name != 'credit'){
 
 		return (
 			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
@@ -578,7 +573,7 @@ class OrderCheckout extends Component {
 				</View>
 			</View>
 		);
-							//}
+							}
 	};
 
 	showTextInput(item) {
@@ -593,16 +588,6 @@ class OrderCheckout extends Component {
 
 								console.log('-item-', item);
 								console.log('-selectedType-', this.state.selectedType);
-
-								if (Number(textValue) > Number(this.calculateOrderDue())) {
-									Alert.alert(
-										'Notice. ',
-										`Amount can not be greater that ${this.calculateOrderDue()}`,
-										[{ text: 'OK', onPress: () => { } }],
-										{ cancelable: false }
-									);
-									return;
-								}
 
 								if (this.props.selectedPaymentTypes.length >= 0) {
 
@@ -661,7 +646,8 @@ class OrderCheckout extends Component {
 									if (totalAmountPaid >= this.calculateOrderDue()) {
 										//add balance to jibu wallet
 										// and update the currently editted payment type
-										console.log('Amount Paid is high')
+										console.log('Amount Paid is high');
+
 
 									}
 
@@ -920,6 +906,7 @@ class OrderCheckout extends Component {
 
 
 	onCompleteOrder = () => {
+		// if
 		let receipt = null;
 		let price_total = 0;
 		let totalAmount = 0;
@@ -991,41 +978,6 @@ class OrderCheckout extends Component {
 			receipt.totalAmount = totalAmount;
 			receipt.cogs = cogs_total;
 
-		// Check loan payoff
-		let payoff = 0;
-		try {
-			if (this.props.payment.hasOwnProperty('cashToDisplay')) {
-				payoff = parseFloat(this.props.payment.cashToDisplay);
-			} else if (this.props.payment.hasOwnProperty('mobileToDisplay')) {
-				payoff = parseFloat(this.props.payment.mobileToDisplay);
-			}
-			if (payoff > price_total) {
-				// User is paying of loan amount
-				payoff -= price_total;
-				if (payoff > this.props.selectedCustomer.dueAmount) {
-					// Overpayment... this is an error
-					Alert.alert(
-						i18n.t('over-due-amount-title'),
-						i18n.t('over-due-amount-text') +
-						this.props.selectedCustomer.dueAmount,
-						[
-							{
-								text: 'OK',
-								onPress: () => { }
-							}
-						],
-						{ cancelable: false }
-					);
-
-					//return false;
-					payoff = 0;
-				}
-			} else {
-				payoff = 0;
-			}
-		} catch (err) {
-
-		}
 		if (receipt != null) {
 			const creditIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
 
@@ -1079,6 +1031,8 @@ class OrderCheckout extends Component {
 					CustomerRealm.getAllCustomer()
 				);
 			}
+
+			// if()
 
 
 
@@ -1381,6 +1335,7 @@ const styles = StyleSheet.create({
 	},
 
 	modal2: {
+
 		height: 300,
 		width: '65%',
 		padding: 5,
@@ -1402,7 +1357,6 @@ const styles = StyleSheet.create({
 	},
 
 	modal3: {
-		flex: 1,
 		justifyContent: 'center',
 		width: widthQuanityModal,
 		height: heightQuanityModal,

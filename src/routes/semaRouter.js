@@ -138,7 +138,8 @@ const ListCustomerStack = createStackNavigator({
                             marginTop: 12,
                             flex: 1
                         }}>
-                        {navigation.getParam('isCustomerSelected') && navigation.getParam('isDueAmount') > 0 && (
+							{/* && navigation.getParam('isDueAmount') > 0 */}
+                        {navigation.getParam('isCustomerSelected')  && (
                             <Icons
                                 name='balance-scale'
                                 size={28}

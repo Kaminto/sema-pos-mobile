@@ -80,10 +80,6 @@ class CustomerList extends Component {
 
 	static whyDidYouRender = true;
 
-	shouldComponentUpdate( nextProps,nextState) {
-        return (nextProps !== this.props || nextState !== this.state);
-    }
-
     searchCustomer = (searchText) => {
         this.props.customerActions.SearchCustomers(searchText);
     };
