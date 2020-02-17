@@ -185,11 +185,6 @@ class CustomerDetails extends React.PureComponent {
 		index
 	});
 
-	shouldComponentUpdate(nextProps, nextState) {
-		return true;
-	}
-
-
 	render() {
 		return (
 			<View style={{ flex: 1, backgroundColor: '#fff', flexDirection: 'column' }}>

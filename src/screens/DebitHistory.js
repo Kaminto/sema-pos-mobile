@@ -29,17 +29,6 @@ class DebitHistory extends React.PureComponent {
             hasScrolled: false
         };
     }
-    componentDidMount() {
-
-    }
-
-    componentWillUnmount() {
-
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return true;
-    }
 
     render() {
         return (

@@ -58,7 +58,7 @@ class SelectedCustomerDetails extends React.PureComponent {
 		return (
 			<>
 				<View style={styles.commandBarContainer}>
-					<View style={{ flexDirection: 'column', flex: 1.5, height: 100, paddingLeft: 10 }}>
+					<View style={{ flexDirection: 'column', flex: 1, height: 100, paddingLeft: 10 }}>
 						<Text style={[styles.selectedCustomerText, { fontSize: 20 }]}>
 							{this.getName()} . {this.getPhone()}
 						</Text>
@@ -83,7 +83,7 @@ class SelectedCustomerDetails extends React.PureComponent {
 
 					</View>
 
-					<View style={{ flexDirection: 'column', flex: 1.5, height: 100, paddingLeft: 20 }}>
+					<View style={{ flexDirection: 'column', flex: 1, height: 100, paddingLeft: 20 }}>
 						<View style={styles.completeOrder}>
 							<TouchableHighlight
 								onPress={() => this.props.navigation.navigate('OrderView')}>

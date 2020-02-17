@@ -1,6 +1,4 @@
-import { NativeModules } from 'react-native'
-
-
+import { NativeModules } from 'react-native';
 import ProductsRealm from "../database/products/product.operations";
 
 const IntlPolyFill = require('intl');

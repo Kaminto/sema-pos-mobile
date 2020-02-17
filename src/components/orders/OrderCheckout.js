@@ -33,7 +33,7 @@ import * as Utilities from "../../services/Utilities";
 import moment from 'moment-timezone';
 const uuidv1 = require('uuid/v1');
 const widthQuanityModal = '70%';
-const heightQuanityModal = 540;
+const heightQuanityModal = 500;
 
 class OrderCheckout extends React.PureComponent {
 
@@ -186,11 +186,12 @@ class OrderCheckout extends React.PureComponent {
 									marginRight: 20
 								}}>
 								<Card
-									containerStyle={{ backgroundColor: '#ABC1DE' }}>
+									containerStyle={{ backgroundColor: '#ABC1DE', color: 'white' }}>
 
 									<View style={{ flex: 1, flexDirection: 'row' }}>
 										{this.getSaleAmount()}
 										<PaymentDescription
+											style={{ color: 'white' }}
 											title={`${i18n.t('customer-wallet')}:`}
 											total={Utilities.formatCurrency(
 												this.currentCredit()
@@ -1574,7 +1575,7 @@ const styles = StyleSheet.create({
 	completeOrderBtn: {
 		backgroundColor: '#2858a7',
 		bottom: 0,
-		marginTop: '5%',
+		marginTop: '3%',
 		marginBottom: 0,
 		// position: 'absolute'
 	},

@@ -4,6 +4,7 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator, createMaterialTopTabNavigator } from 'react-navigation-tabs';
+import createNativeStackNavigator from 'react-native-screens/createNativeStackNavigator';
 import CustomerList from '../screens/CustomerList';
 import CustomerEdit from '../screens/CustomerEdit';
 import CustomerDetails from '../screens/CustomerDetails';
@@ -137,7 +138,7 @@ const ListCustomerStack = createStackNavigator({
                         {navigation.getParam('isCustomerSelected')  && (
                             <Icons
                                 name='balance-scale'
-                                size={28}
+                                size={25}
                                 color="white"
                                 style={{
                                     marginRight: 20,
@@ -155,7 +156,7 @@ const ListCustomerStack = createStackNavigator({
                         {navigation.getParam('isCustomerSelected') && (
                             <Icon
                                 name='md-cart'
-                                size={30}
+                                size={25}
                                 color="white"
                                 style={{
                                     marginRight: 20,
@@ -177,7 +178,7 @@ const ListCustomerStack = createStackNavigator({
                         {navigation.getParam('isCustomerSelected') && (
 							  <Icon
 							  name='md-more'
-							  size={30}
+							  size={25}
 							  color="white"
 							  style={{
 								  marginRight: 20,
@@ -196,14 +197,14 @@ const ListCustomerStack = createStackNavigator({
 
                             <Icon
                                 name='md-information-circle-outline'
-                                size={30}
+                                size={25}
                                 color="white"
                                 style={{
                                     marginRight: 20,
                                 }}
                                 onPress={() => {
-                                    // navigation.setParams({ isCustomerSelected: false });
-                                    // navigation.setParams({ customerName: '' });
+                                    navigation.setParams({ isCustomerSelected: false });
+                                    navigation.setParams({ customerName: '' });
                                     navigation.navigate('CustomerDetails');
                                 }}
 
@@ -220,7 +221,7 @@ const ListCustomerStack = createStackNavigator({
                         {navigation.getParam('isCustomerSelected') && (
                             <Icon
                                 name='md-trash'
-                                size={30}
+                                size={25}
                                 color="white"
                                 style={{
                                     marginRight: 20,
@@ -238,7 +239,7 @@ const ListCustomerStack = createStackNavigator({
                         {navigation.getParam('isCustomerSelected') && (
                             <Icon
                                 name='md-create'
-                                size={30}
+                                size={25}
                                 color="white"
                                 style={{
                                     marginRight: 20,
@@ -252,8 +253,6 @@ const ListCustomerStack = createStackNavigator({
                         )}
                     </View>
 
-
-
                     <View>
                         <Input
                             onChangeText={navigation.getParam('searchCustomer')}
@@ -262,25 +261,6 @@ const ListCustomerStack = createStackNavigator({
 							inputStyle={{ flex: .8, color: 'white'}}
                         />
                     </View>
-
-                    {/* <View
-                        style={{
-                            marginTop: 12,
-                            flex: 1
-                        }}>
-                          <Picker
-								mode="dropdown"
-								placeholder="Start Year"
-                                selectedValue={navigation.getParam('salesChannelValue')}
-                                style={{ height: 50, width: 150, color: 'white', alignContent: 'flex-end' }}
-                                onValueChange={navigation.getParam('checkfilter')}>
-                                <Picker.Item label="All Channels" value="all" />
-                                <Picker.Item label="Direct" value="direct" />
-                                <Picker.Item label="Reseller" value="reseller" />
-                                <Picker.Item label="Water Club" value="water club" />
-                            </Picker>
-
-                    </View> */}
 
                     <View
                         style={{

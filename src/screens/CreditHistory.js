@@ -62,7 +62,7 @@ class CreditHistory extends React.PureComponent {
                             extraData={this.state.refresh}
                             renderItem={({ item, index, separators }) => (
                                 <TouchableHighlight
-                                    onPress={() => this.onPressItem(item)}
+                                    // onPress={() => this.onPressItem(item)}
                                     onShowUnderlay={separators.highlight}
                                     onHideUnderlay={separators.unhighlight}>
                                     {this.getRow(item, index, separators)}

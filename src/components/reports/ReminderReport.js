@@ -229,19 +229,6 @@ class RemindersReport extends React.PureComponent {
 			<View style={{ flex: 1, flexDirection: 'column' }}>
 				<View style={{ flex: .15, flexDirection: 'row' }}>
 					<DateFilter />
-					{/* <TouchableHighlight
-						style={[styles.currentInventory, {flex:.5}]}
-						onPress={() => this.showDatePickerFilter()}
-						underlayColor='#18376A'>
-						<Text style={[styles.currentInventoryText]}>
-							{moment.tz(new Date(this.state.filterDate), moment.tz.guess()).format('ddd Do MMM YYYY')}
-						</Text>
-					</TouchableHighlight>
-					<DateTimePicker
-						isVisible={this.state.isDatePickerFilterVisible}
-						onConfirm={this.handleDatePickedFilter}
-						onCancel={this.hideDatePickerFilter}
-					/> */}
 				</View>
 				<View style={{ flex: .85, backgroundColor: 'white', marginLeft: 10, marginRight: 10 }}>
 					{this.displayReminders()}
