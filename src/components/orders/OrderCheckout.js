@@ -44,6 +44,8 @@ class OrderCheckout extends React.PureComponent {
 			isWalkIn: true,
 			isDisabled: false,
 			swipeToClose: true,
+			loanPaid: 0,
+			topUpExpected: 0,
 			sliderValue: 0.3,
 			selectedPaymentTypes: [],
 			selectedType: {},
@@ -54,11 +56,16 @@ class OrderCheckout extends React.PureComponent {
 			receiptDate: new Date(),
 			selectedPaymentType: "Cash",
 		};
-	this.onPay = this.onPay.bind(this);
+		this.onPay = this.onPay.bind(this);
 	}
 
 
-	static whyDidYouRender = true;
+	//static whyDidYouRender = true;
+
+	shouldComponentUpdate(nextProps, nextState) {
+		// return nextProps !== this.props;
+		return true;
+	}
 
 
 	showDateTimePicker = () => {
@@ -183,7 +190,7 @@ class OrderCheckout extends React.PureComponent {
 									marginLeft: 20,
 									marginRight: 20
 								}}>
-									<Card
+								<Card
 									containerStyle={{ backgroundColor: '#ABC1DE' }}>
 
 									<View style={{ flex: 1, flexDirection: 'row' }}>
@@ -286,7 +293,7 @@ class OrderCheckout extends React.PureComponent {
 										<TouchableHighlight underlayColor='#c0c0c0'
 											onPress={() => this.onBottles()}>
 											<Text
-												style={{ padding: 10, margin: 10, borderRadius: 5, color: 'white', backgroundColor: '#036', textAlign: 'center', alignSelf: 'flex-end' }}>Empty Bottles Returned</Text>
+												style={{ padding: 10, margin: 10, borderRadius: 5, color: 'white', backgroundColor: '#036', textAlign: 'center', alignSelf: 'flex-end' }}>Bottles returned</Text>
 										</TouchableHighlight>
 									)}
 
@@ -329,6 +336,7 @@ class OrderCheckout extends React.PureComponent {
 						</View>
 					</ScrollView>
 				</Modal>
+
 
 			</View>
 
@@ -573,7 +581,7 @@ class OrderCheckout extends React.PureComponent {
 				</View>
 			</View>
 		);
-							}
+		//}
 	};
 
 	showTextInput(item) {
@@ -586,18 +594,18 @@ class OrderCheckout extends React.PureComponent {
 							underlineColorAndroid="transparent"
 							onChangeText={(textValue) => {
 
-								console.log('-item-', item);
-								console.log('-selectedType-', this.state.selectedType);
+								console.log('item', item);
+								console.log('selectedType', this.state.selectedType);
 
 								if (this.props.selectedPaymentTypes.length >= 0) {
 
 									let totalAmountPaid = this.props.selectedPaymentTypes.reduce((total, item) => { return (total + item.amount) }, 0);
 									console.log('totalAmountPaid', totalAmountPaid);
-									console.log('deduct',this.props.selectedPaymentTypes[itemIndex].amount)
+									console.log('deduct', this.props.selectedPaymentTypes[itemIndex].amount)
 
-									if(this.props.selectedPaymentTypes[itemIndex].amount == 0){
+									if (this.props.selectedPaymentTypes[itemIndex].amount == 0) {
 										totalAmountPaid = totalAmountPaid - Number(textValue);
-									}else{
+									} else {
 										totalAmountPaid = totalAmountPaid - this.props.selectedPaymentTypes[itemIndex].amount;
 										totalAmountPaid = totalAmountPaid + Number(textValue);
 									}
@@ -633,9 +641,9 @@ class OrderCheckout extends React.PureComponent {
 											this.setState({
 												selectedType: { ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }
 											});
-										}else{
+										} else {
 											PaymentTypeRealm.isSelected(this.state.selectedType, this.state.selectedType.isSelected === true ? false : true);
-											this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.state.selectedType, created_at: new Date(), isSelected: this.state.selectedType.isSelected === true ? false : true, amount:  Number(textValue) });
+											this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.state.selectedType, created_at: new Date(), isSelected: this.state.selectedType.isSelected === true ? false : true, amount: Number(textValue) });
 
 										}
 
@@ -646,37 +654,106 @@ class OrderCheckout extends React.PureComponent {
 										//add balance to jibu wallet
 										// and update the currently editted payment type
 										console.log('Amount Paid is high');
-										if(totalAmountPaid - this.calculateOrderDue() >  0){
+										if (this.calculateAmountDue() == 0) {
+											console.log('Due Amount less');
+											console.log('totalAmountPaid', totalAmountPaid);
+											console.log('calculateOrderDue', this.calculateOrderDue());
+											console.log('Number(textValue)', Number(textValue));
+											console.log('topUpExpected', Number(totalAmountPaid - this.calculateOrderDue()));
+
+											this.setState({ topUpExpected: Number(totalAmountPaid - this.calculateOrderDue()) })
 											const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
 											if (itemIndex2 >= 0) {
-												this.props.selectedPaymentTypes[itemIndex].amount = this.calculateOrderDue();
-												this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex2], amount: this.calculateOrderDue() }, itemIndex2);
+												this.props.selectedPaymentTypes[itemIndex].amount = Number(textValue);
+												this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
 												this.setState({
-													selectedType: { ...this.props.selectedPaymentTypes[itemIndex2], amount: this.calculateOrderDue() }
+													selectedType: { ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }
 												});
 
-												CreditRealm.createCredit(
-													this.props.selectedCustomer.customerId,
-													Number(totalAmountPaid - this.calculateOrderDue()),
-													Number(totalAmountPaid - this.calculateOrderDue())
-												);
-												this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
-												this.props.topUpActions.setTopUpTotal(
-													this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
-												);
-
-
-											}else{
-												// PaymentTypeRealm.isSelected(this.state.selectedType, this.state.selectedType.isSelected === true ? false : true);
-												// this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.state.selectedType, created_at: new Date(), isSelected: this.state.selectedType.isSelected === true ? false : true, amount:  Number(textValue) });
-
 											}
+
+											// if (totalAmountPaid - this.calculateOrderDue() > 0) {
+											// 	const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
+											// 	if (itemIndex2 >= 0) {
+											// 		this.props.selectedPaymentTypes[itemIndex].amount = Number(textValue);
+											// 		this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
+											// 		this.setState({
+											// 			selectedType: { ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }
+											// 		});
+
+											// 		CreditRealm.createCredit(
+											// 			this.props.selectedCustomer.customerId,
+											// 			Number(totalAmountPaid - this.calculateOrderDue()),
+											// 			Number(totalAmountPaid - this.calculateOrderDue())
+											// 		);
+											// 		this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
+											// 		this.props.topUpActions.setTopUpTotal(
+											// 			this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
+											// 		);
+
+
+											// 	} else {
+											// 		// PaymentTypeRealm.isSelected(this.state.selectedType, this.state.selectedType.isSelected === true ? false : true);
+											// 		// this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.state.selectedType, created_at: new Date(), isSelected: this.state.selectedType.isSelected === true ? false : true, amount:  Number(textValue) });
+
+											// 	}
+											// }
 										}
 
+										if (this.calculateAmountDue() > 0) {
+											console.log('Due Amount more');
+											console.log('totalAmountPaid', totalAmountPaid);
+											console.log('calculateOrderDue', this.calculateOrderDue());
+											console.log('Number(textValue)', Number(textValue));
+											console.log('topUpExpected', Number(totalAmountPaid - this.calculateOrderDue()));
+
+											let postToLoan = Number(totalAmountPaid - this.calculateOrderDue());
+
+											if (postToLoan > this.calculateAmountDue()) {
+												this.setState({ loanPaid: this.calculateAmountDue() });
+												this.setState({ topUpExpected: postToLoan - this.calculateAmountDue() })
+											}
+
+											if (postToLoan < this.calculateAmountDue()) {
+												this.setState({ loanPaid: postToLoan });
+											}
+
+											const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
+											if (itemIndex2 >= 0) {
+												this.props.selectedPaymentTypes[itemIndex].amount = Number(textValue);
+												this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
+												this.setState({
+													selectedType: { ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }
+												});
+
+											}
+
+										}
 
 
 									}
 
+									// paid < amount due
+									// paid > amount due
+									// - h
+
+
+									// const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
+									// let secondItemObj = this.props.selectedPaymentTypes.filter(obj => obj.id != this.state.selectedType.id).map(function (e) { return e.id });
+
+									// if (itemIndex2 >= 0) {
+									// 	this.props.selectedPaymentTypes[itemIndex].amount = Number(textValue);
+									// 	this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
+									// 	this.setState({
+									// 		selectedType: { ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }
+									// 	});
+									// }
+
+									// if (secondItemObj.length > 0) {
+									// 	const seconditemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(secondItemObj[0]);
+									// 	this.props.selectedPaymentTypes[seconditemIndex2].amount = Number(this.calculateOrderDue()) - Number(textValue);
+									// 	this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[seconditemIndex2], amount: Number(this.calculateOrderDue()) - Number(textValue) }, seconditemIndex2);
+									// }
 								}
 
 								this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
@@ -1019,6 +1096,8 @@ class OrderCheckout extends React.PureComponent {
 				OrderRealm.getAllOrder()
 			);
 
+			console.log('topUpExpected', this.state.topUpExpected);
+			console.log('loanPaid', this.state.loanPaid);
 
 			this.saveCustomerFrequency(OrderRealm.getAllOrder().filter(r => r.customer_account_id === this.props.selectedCustomer.customerId));
 			this.props.customerReminderActions.setCustomerReminders(
@@ -1041,7 +1120,26 @@ class OrderCheckout extends React.PureComponent {
 				);
 			}
 
-			// if()
+			if (this.state.loanPaid > 0) {
+				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) + Number(this.state.loanPaid);
+				console.log('-this.props.selectedCustomer.dueAmount-', this.props.selectedCustomer.dueAmount);
+				CustomerRealm.updateCustomerDueAmount(
+					this.props.selectedCustomer,
+					this.props.selectedCustomer.dueAmount
+				);
+			}
+
+			if (this.state.topUpExpected > 0) {
+				CreditRealm.createCredit(
+					this.props.selectedCustomer.customerId,
+					Number(this.state.topUpExpected),
+					Number(this.state.topUpExpected)
+				);
+				this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
+				this.props.topUpActions.setTopUpTotal(
+					this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
+				);
+			}
 
 
 
