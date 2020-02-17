@@ -34,7 +34,7 @@ import * as PaymentTypesActions from "../actions/PaymentTypesActions";
 
 import PaymentModal from './paymentModal';
 
-class CustomerList extends Component {
+class CustomerList extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -49,8 +49,8 @@ class CustomerList extends Component {
             hasScrolled: false
 		};
 
-		this.onPressItem = this.onPressItem.bind(this);
-		this.onLongPressItem = this.onLongPressItem.bind(this);
+		// this.onPressItem = this.onPressItem.bind(this);
+		// this.onLongPressItem = this.onLongPressItem.bind(this);
 	}
 
     componentDidMount() {
@@ -181,10 +181,6 @@ class CustomerList extends Component {
         offset: 50 * index,
         index
     });
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return true;
-    }
 
     render() {
         return (

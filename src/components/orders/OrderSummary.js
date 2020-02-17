@@ -9,14 +9,9 @@ import * as OrderActions from "../../actions/OrderActions";
 import { connect } from "react-redux";
 import i18n from "../../app/i18n";
 
-class OrderSummary extends Component {
+class OrderSummary extends React.PureComponent {
 
 	static whyDidYouRender = true;
-
-    shouldComponentUpdate( nextProps,nextState) {
-		//return nextProps !== this.props;
-		return true;
-    }
 
 	render() {
 		return (

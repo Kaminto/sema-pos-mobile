@@ -10,18 +10,13 @@ import * as OrderActions from "../../actions/OrderActions";
 import * as Utilities from "../../services/Utilities";
 import i18n from "../../app/i18n";
 
-class OrderTotal extends Component {
+class OrderTotal extends React.PureComponent {
 
 	constructor(props) {
 		super(props);
 	}
 
 	static whyDidYouRender = true;
-
-    shouldComponentUpdate( nextProps,nextState) {
-		//return nextProps !== this.props;
-		return true;
-    }
 
 	render() {
 		return (

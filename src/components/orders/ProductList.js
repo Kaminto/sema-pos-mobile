@@ -19,18 +19,13 @@ import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 import randomMC from 'random-material-color';
 
-class ProductList extends Component {
+class ProductList extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.onPressItem = this.onPressItem.bind(this);
 	}
 
 	static whyDidYouRender = true;
-
-	shouldComponentUpdate( nextProps,nextState) {
-	   // return nextProps !== this.props;
-	   return true;
-    }
 
 	render() {
 		return (

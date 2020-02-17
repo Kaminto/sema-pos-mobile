@@ -383,7 +383,6 @@ export default connect(
 )(CreditHistory);
 
 
-
 const styles = StyleSheet.create({
     baseItem: {
         fontSize: 18,

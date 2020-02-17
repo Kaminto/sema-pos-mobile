@@ -88,15 +88,22 @@ class SelectedCustomerDetails extends React.Component {
 							Customer Wallet: {this.props.topupTotal - this.getCreditPurchases()}
 						</Text>
 
+						<Text style={styles.selectedCustomerText}>
+							Loan Balance:  {this.props.selectedCustomer.dueAmount}
+						</Text>
+
 						<View style={[styles.completeOrder, {marginLeft: 10}]}>
 							<TouchableHighlight
 								onPress={() => this.props.navigation.navigate('CustomerWallet')}>
-								<Text style={[styles.buttonText, {marginLeft: 10}]}>Topup Wallet</Text>
+								<Text style={[styles.buttonText, {marginLeft: 10}]}>Topup Wallet / Loan Repayment</Text>
 							</TouchableHighlight>
 						</View>
 					</View>
 
 					<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
+						<Text style={styles.selectedCustomerText}>
+							Customer Wallet: {this.props.topupTotal - this.getCreditPurchases()}
+						</Text>
 						<Text style={styles.selectedCustomerText}>
 							Loan Balance:  {this.props.selectedCustomer.dueAmount}
 						</Text>
@@ -105,7 +112,7 @@ class SelectedCustomerDetails extends React.Component {
 								onPress={() => {
 									this.refs.modal6.open();
 								}}>
-								<Text style={styles.buttonText}>Loan Repayment</Text>
+								<Text style={styles.buttonText}>Topup Wallet / Loan Repayment</Text>
 							</TouchableHighlight>
 						</View>
 					</View>

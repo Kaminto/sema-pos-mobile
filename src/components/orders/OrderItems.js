@@ -23,7 +23,7 @@ const heightQuanityModal = 500;
 
 const inputFontHeight = Math.round((24 * height) / 752);
 
-class OrderItems extends Component {
+class OrderItems extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -42,11 +42,6 @@ class OrderItems extends Component {
 	}
 
 	static whyDidYouRender = true;
-
-    shouldComponentUpdate( nextProps,nextState) {
-		//return nextState !== this.state;
-		return true;
-    }
 
 	render() {
 

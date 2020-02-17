@@ -195,7 +195,7 @@ class TransactionDetail extends Component {
 						receiptActions={this.props.receiptActions}
 						remoteReceipts={this.props.receipts}
 						item={lineItem}
-						key={lineItem.id.toString()}
+						key={lineItem.id}
 						lineItemIndex={idx}
 						products={this.props.products}
 						handleUpdate={this.handleUpdate.bind(this)}
@@ -212,7 +212,7 @@ class TransactionDetail extends Component {
 				return (
 
 					<PaymentTypeItem
-				    	key={paymentItem.id.toString()}
+				    	key={paymentItem.id}
 					    item={paymentItem}
 					    lineItemIndex={idx}
 					/>

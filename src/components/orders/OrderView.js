@@ -12,16 +12,11 @@ import * as OrderActions from "../../actions/OrderActions";
 import * as CustomerActions from '../../actions/CustomerActions';
 
 
-class OrderView extends Component {
+class OrderView extends React.PureComponent {
 	constructor(props) {
 		super(props);
 	}
 	static whyDidYouRender = true;
-
-    shouldComponentUpdate( nextProps,nextState) {
-		//return nextProps !== this.props;
-		return true;
-    }
 
 	render() {
 		return (
