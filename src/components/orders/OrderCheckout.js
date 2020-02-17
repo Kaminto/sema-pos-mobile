@@ -60,12 +60,7 @@ class OrderCheckout extends React.PureComponent {
 	}
 
 
-	//static whyDidYouRender = true;
-
-	shouldComponentUpdate(nextProps, nextState) {
-		// return nextProps !== this.props;
-		return true;
-	}
+	static whyDidYouRender = true;
 
 
 	showDateTimePicker = () => {
@@ -514,7 +509,6 @@ class OrderCheckout extends React.PureComponent {
 
 	};
 
-
 	paymentTypesRow = (item, index, separators) => {
 
 		let isSelectedAvailable = false;
@@ -581,7 +575,7 @@ class OrderCheckout extends React.PureComponent {
 				</View>
 			</View>
 		);
-		//}
+		}
 	};
 
 	showTextInput(item) {
@@ -671,36 +665,7 @@ class OrderCheckout extends React.PureComponent {
 												});
 
 											}
-
-											// if (totalAmountPaid - this.calculateOrderDue() > 0) {
-											// 	const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
-											// 	if (itemIndex2 >= 0) {
-											// 		this.props.selectedPaymentTypes[itemIndex].amount = Number(textValue);
-											// 		this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
-											// 		this.setState({
-											// 			selectedType: { ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }
-											// 		});
-
-											// 		CreditRealm.createCredit(
-											// 			this.props.selectedCustomer.customerId,
-											// 			Number(totalAmountPaid - this.calculateOrderDue()),
-											// 			Number(totalAmountPaid - this.calculateOrderDue())
-											// 		);
-											// 		this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
-											// 		this.props.topUpActions.setTopUpTotal(
-											// 			this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
-											// 		);
-
-
-											// 	} else {
-											// 		// PaymentTypeRealm.isSelected(this.state.selectedType, this.state.selectedType.isSelected === true ? false : true);
-											// 		// this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.state.selectedType, created_at: new Date(), isSelected: this.state.selectedType.isSelected === true ? false : true, amount:  Number(textValue) });
-
-											// 	}
-											// }
-										}
-
-										if (this.calculateAmountDue() > 0) {
+										} else if (this.calculateAmountDue() > 0) {
 											console.log('Due Amount more');
 											console.log('totalAmountPaid', totalAmountPaid);
 											console.log('calculateOrderDue', this.calculateOrderDue());
@@ -733,27 +698,7 @@ class OrderCheckout extends React.PureComponent {
 
 									}
 
-									// paid < amount due
-									// paid > amount due
-									// - h
 
-
-									// const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
-									// let secondItemObj = this.props.selectedPaymentTypes.filter(obj => obj.id != this.state.selectedType.id).map(function (e) { return e.id });
-
-									// if (itemIndex2 >= 0) {
-									// 	this.props.selectedPaymentTypes[itemIndex].amount = Number(textValue);
-									// 	this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
-									// 	this.setState({
-									// 		selectedType: { ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }
-									// 	});
-									// }
-
-									// if (secondItemObj.length > 0) {
-									// 	const seconditemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(secondItemObj[0]);
-									// 	this.props.selectedPaymentTypes[seconditemIndex2].amount = Number(this.calculateOrderDue()) - Number(textValue);
-									// 	this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[seconditemIndex2], amount: Number(this.calculateOrderDue()) - Number(textValue) }, seconditemIndex2);
-									// }
 								}
 
 								this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
@@ -1140,6 +1085,46 @@ class OrderCheckout extends React.PureComponent {
 					this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
 				);
 			}
+
+			// Data
+			// let customerwalletvalue:
+			// let salesamountdue:
+			// let loanbalance:
+			// let amountPaid.
+			// let totalamountdue.
+
+			// amountPaid = cash + bank + wallet + cheque;
+
+			// if (amountpaid > totalAmountdue) {
+			// 	total
+
+			// } else if (amountpaid < totalAmountdue) {
+
+			// }
+
+			// if (loanbalance > 0) {
+			// 	if (amountpaid > salesamountdue) {
+
+			// 	}
+
+			// }
+
+			// if(customerwalletvalue > 0 && customerwalletvalue <= salesamountdue){
+			// 	// amountpaid > 0
+			// 	// record payment as credit
+			// 	// amountpaid = amountpaid + credit
+			// 	// record (salesamountdue - customerwalletvalue) as loan
+
+			// } else if (customerwalletvalue > 0 && customerwalletvalue >= salesamountdue) {
+			// 	// record payment as credit
+			// 	// amountpaid > 0 -- topup credit
+			// }
+
+
+			//Actions:
+			//Topup wallet
+			//Clear loan
+			//Add loan
 
 
 

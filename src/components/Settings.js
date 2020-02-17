@@ -42,7 +42,7 @@ const supportedUILanguages = [
 	{ name: 'Français', iso_code: 'fr' }
 ];
 
-class SettingsProperty extends Component {
+class SettingsProperty extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -119,7 +119,7 @@ class SettingsButton extends Component {
 	}
 }
 
-class Settings extends Component {
+class Settings extends React.PureComponent {
 	constructor(props) {
 		let setting = PosStorage.getSettings();
 		super(props);

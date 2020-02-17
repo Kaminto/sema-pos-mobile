@@ -15,7 +15,7 @@ import SettingRealm from '../database/settings/settings.operations';
 import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
 import i18n from '../app/i18n';
-class CustomSidebarMenu extends Component {
+class CustomSidebarMenu extends React.PureComponent {
   constructor() {
     super();
 

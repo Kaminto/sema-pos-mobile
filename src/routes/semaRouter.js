@@ -28,7 +28,7 @@ import Icons from 'react-native-vector-icons/FontAwesome';
 
 import i18n from '../app/i18n';
 
-class NavigationDrawerStructure extends Component {
+class NavigationDrawerStructure extends React.PureComponent {
     toggleDrawer = () => {
         this.props.navigationProps.toggleDrawer();
 	};

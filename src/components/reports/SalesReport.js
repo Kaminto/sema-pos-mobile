@@ -9,7 +9,7 @@ const moment = require('moment');
 
 import i18n from '../../app/i18n';
 
-class SalesReport extends Component {
+class SalesReport extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.startDate = null;

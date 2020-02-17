@@ -10,7 +10,7 @@ import { connect } from "react-redux";
 const widthQuanityModal = 1000;
 const heightQuanityModal = 500;
 
-class PaymentDescription extends Component {
+class PaymentDescription extends React.PureComponent {
 	render() {
 		return (
 			<View style={[{ flex: 1, flexDirection: 'row', marginTop: '1%' }]}>

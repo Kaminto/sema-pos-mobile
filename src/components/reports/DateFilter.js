@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 const dayInMilliseconds =  24*60*60*1000;
 
-class DateFilter extends Component {
+class DateFilter extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		let currentDate = new Date();

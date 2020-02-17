@@ -319,6 +319,12 @@ class CustomerList extends React.PureComponent {
                             {item.dueAmount.toFixed(2)}
                         </Text>
                     </View>
+					<View style={{ flex: 1 }}>
+                        <Text style={[styles.baseItem]}>
+                            {item.dueAmount.toFixed(2)}
+                        </Text>
+                    </View>
+
 
                 </View>
             );
@@ -478,6 +484,9 @@ class CustomerList extends React.PureComponent {
                 <View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem]}>{i18n.t('balance')}</Text>
                 </View>
+				<View style={[{ flex: 1 }]}>
+                    <Text style={[styles.headerItem]}>Wallet</Text>
+                </View>
 
             </View>
         );
@@ -493,7 +502,7 @@ class CustomerList extends React.PureComponent {
     };
 }
 
-class SearchWatcher extends React.Component {
+class SearchWatcher extends React.PureComponent {
     render() {
 
         return this.searchEvent();
@@ -519,6 +528,7 @@ class SearchWatcher extends React.Component {
         return null;
     }
 }
+
 function mapStateToProps(state, props) {
     return {
         selectedCustomer: state.customerReducer.selectedCustomer,

@@ -11,7 +11,7 @@ const widthQuanityModal = 1000;
 const heightQuanityModal = 500;
 
 
-class PaymentMethod extends Component {
+class PaymentMethod extends React.PureComponent {
 	render() {
 		return (
 			<View style={styles.checkBoxRow}>

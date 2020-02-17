@@ -29,7 +29,7 @@ import PaymentModal from './paymentModal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modalbox';
 
-class SelectedCustomerDetails extends React.Component {
+class SelectedCustomerDetails extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.saleSuccess = false;
@@ -195,7 +195,6 @@ function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		toolbarActions: bindActionCreators(ToolbarActions, dispatch),
 		topUpActions: bindActionCreators(TopUpActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
 		reportActions: bindActionCreators(reportActions, dispatch),

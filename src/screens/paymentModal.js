@@ -26,7 +26,7 @@ const heightQuanityModal = 300;
 
 import moment from 'moment-timezone';
 
-class PaymentModal extends Component {
+class PaymentModal extends React.PureComponent {
 
 	constructor(props) {
 		super(props);

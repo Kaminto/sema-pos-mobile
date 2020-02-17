@@ -42,13 +42,6 @@ class ProductListScreen extends React.PureComponent {
 		});
 	}
 
-	//static whyDidYouRender = true;
-
-    shouldComponentUpdate( nextProps,nextState) {
-		//return nextProps !== this.props;
-		return true;
-    }
-
 	render() {
 		console.log('jyu');
 		let { fadeAnim } = this.state;

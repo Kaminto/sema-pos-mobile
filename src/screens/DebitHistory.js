@@ -18,7 +18,7 @@ import { bindActionCreators } from 'redux';
 import SettingRealm from '../database/settings/settings.operations';
 import SelectedCustomerDetails from './CustomerDetailSubHeader';
 
-class DebitHistory extends Component {
+class DebitHistory extends React.PureComponent {
     constructor(props) {
         super(props);
 

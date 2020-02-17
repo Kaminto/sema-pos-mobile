@@ -23,7 +23,7 @@ import * as CustomerActions from '../actions/CustomerActions';
 
 import i18n from '../app/i18n';
 
-class CustomerEdit extends Component {
+class CustomerEdit extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.state = {

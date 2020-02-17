@@ -32,7 +32,7 @@ import SelectedCustomerDetails from './CustomerDetailSubHeader';
 import i18n from '../app/i18n';
 import moment from 'moment-timezone';
 
-class ReceiptLineItem extends Component {
+class ReceiptLineItem extends React.PureComponent {
 	constructor(props) {
 		super(props);
 	}
@@ -120,7 +120,7 @@ class ReceiptLineItem extends Component {
 	};
 }
 
-class PaymentTypeItem extends Component {
+class PaymentTypeItem extends React.PureComponent {
 	constructor(props) {
 		super(props);
 	}
@@ -145,7 +145,7 @@ class PaymentTypeItem extends Component {
 	}
 }
 
-class CustomerDetails extends Component {
+class CustomerDetails extends React.PureComponent {
 	constructor(props) {
 		super(props);
 
@@ -595,7 +595,7 @@ class CustomerDetails extends Component {
 
 }
 
-class TransactionDetail extends Component {
+class TransactionDetail extends React.PureComponent {
 	constructor(props) {
 		super(props);
 

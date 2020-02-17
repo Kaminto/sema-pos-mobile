@@ -20,7 +20,7 @@ import CreditRealm from '../database/credit/credit.operations';
 import SettingRealm from '../database/settings/settings.operations';
 import i18n from '../app/i18n';
 import SelectedCustomerDetails from './CustomerDetailSubHeader';
-class CreditHistory extends Component {
+class CreditHistory extends React.PureComponent {
     constructor(props) {
         super(props);
 

@@ -12,7 +12,7 @@ import DateFilter from './ReminderDateFilter';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from 'moment-timezone';
 
-class RemindersReport extends Component {
+class RemindersReport extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.state = {
