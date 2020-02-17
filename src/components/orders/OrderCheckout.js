@@ -17,6 +17,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import i18n from "../../app/i18n";
 import Icon from 'react-native-vector-icons/Ionicons';
+import CreditRealm from '../../database/credit/credit.operations';
 import CustomerTypeRealm from '../../database/customer-types/customer-types.operations';
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
@@ -591,7 +592,6 @@ class OrderCheckout extends React.PureComponent {
 
 								if (this.props.selectedPaymentTypes.length >= 0) {
 
-
 									let totalAmountPaid = this.props.selectedPaymentTypes.reduce((total, item) => { return (total + item.amount) }, 0);
 									console.log('totalAmountPaid', totalAmountPaid);
 									console.log('deduct',this.props.selectedPaymentTypes[itemIndex].amount)
@@ -647,6 +647,33 @@ class OrderCheckout extends React.PureComponent {
 										//add balance to jibu wallet
 										// and update the currently editted payment type
 										console.log('Amount Paid is high');
+										if(totalAmountPaid - this.calculateOrderDue() >  0){
+											const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
+											if (itemIndex2 >= 0) {
+												this.props.selectedPaymentTypes[itemIndex].amount = this.calculateOrderDue();
+												this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex2], amount: this.calculateOrderDue() }, itemIndex2);
+												this.setState({
+													selectedType: { ...this.props.selectedPaymentTypes[itemIndex2], amount: this.calculateOrderDue() }
+												});
+
+												CreditRealm.createCredit(
+													this.props.selectedCustomer.customerId,
+													Number(totalAmountPaid - this.calculateOrderDue()),
+													Number(totalAmountPaid - this.calculateOrderDue())
+												); 
+												this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
+												this.props.topUpActions.setTopUpTotal(
+													this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
+												);
+
+
+											}else{
+												// PaymentTypeRealm.isSelected(this.state.selectedType, this.state.selectedType.isSelected === true ? false : true);
+												// this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.state.selectedType, created_at: new Date(), isSelected: this.state.selectedType.isSelected === true ? false : true, amount:  Number(textValue) });
+	
+											}
+										}
+
 
 
 									}
