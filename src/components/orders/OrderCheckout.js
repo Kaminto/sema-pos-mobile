@@ -286,7 +286,7 @@ class OrderCheckout extends React.PureComponent {
 										<TouchableHighlight underlayColor='#c0c0c0'
 											onPress={() => this.onBottles()}>
 											<Text
-												style={{ padding: 10, margin: 10, borderRadius: 5, color: 'white', backgroundColor: '#036', textAlign: 'center', alignSelf: 'flex-end' }}>Bottles returned</Text>
+												style={{ padding: 10, margin: 10, borderRadius: 5, color: 'white', backgroundColor: '#036', textAlign: 'center', alignSelf: 'flex-end' }}>Empty Bottles Returned</Text>
 										</TouchableHighlight>
 									)}
 
@@ -329,7 +329,6 @@ class OrderCheckout extends React.PureComponent {
 						</View>
 					</ScrollView>
 				</Modal>
-
 
 			</View>
 
@@ -660,7 +659,7 @@ class OrderCheckout extends React.PureComponent {
 													this.props.selectedCustomer.customerId,
 													Number(totalAmountPaid - this.calculateOrderDue()),
 													Number(totalAmountPaid - this.calculateOrderDue())
-												); 
+												);
 												this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
 												this.props.topUpActions.setTopUpTotal(
 													this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
@@ -670,7 +669,7 @@ class OrderCheckout extends React.PureComponent {
 											}else{
 												// PaymentTypeRealm.isSelected(this.state.selectedType, this.state.selectedType.isSelected === true ? false : true);
 												// this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.state.selectedType, created_at: new Date(), isSelected: this.state.selectedType.isSelected === true ? false : true, amount:  Number(textValue) });
-	
+
 											}
 										}
 
@@ -678,23 +677,6 @@ class OrderCheckout extends React.PureComponent {
 
 									}
 
-
-									// const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
-									// let secondItemObj = this.props.selectedPaymentTypes.filter(obj => obj.id != this.state.selectedType.id).map(function (e) { return e.id });
-
-									// if (itemIndex2 >= 0) {
-									// 	this.props.selectedPaymentTypes[itemIndex].amount = Number(textValue);
-									// 	this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
-									// 	this.setState({
-									// 		selectedType: { ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }
-									// 	});
-									// }
-
-									// if (secondItemObj.length > 0) {
-									// 	const seconditemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(secondItemObj[0]);
-									// 	this.props.selectedPaymentTypes[seconditemIndex2].amount = Number(this.calculateOrderDue()) - Number(textValue);
-									// 	this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[seconditemIndex2], amount: Number(this.calculateOrderDue()) - Number(textValue) }, seconditemIndex2);
-									// }
 								}
 
 								this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());

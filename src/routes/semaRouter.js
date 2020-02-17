@@ -56,33 +56,29 @@ const CreditHistoryStack = createStackNavigator({
     CreditHistory: {
 		screen: CreditHistory
     },
-},
+  },
     {
         headerMode: 'none',
-		initialRouteName: 'CreditHistory',
-		title: 'Customer Wallet'
+		initialRouteName: 'CreditHistory'
     });
 
 const CustomerTransactionStack = createStackNavigator({
     Transaction: {
         screen: CustomerDetails
     },
-},
+  },
     {
         headerMode: 'none',
-        initialRouteName: 'Transaction',
-        // navigationOptions: { headerTitle: 'Header title' },
+        initialRouteName: 'Transaction'
     });
 
 const TabNavigator = createBottomTabNavigator({
-    // const TabNavigator = createMaterialTopTabNavigator({
     Transaction: CustomerTransactionStack,
     CustomerWallet: CreditHistoryStack
-    // ,Debit: DebitHistoryStack
 },
     {
         initialRouteName: 'Transaction',
-        headerMode: 'none',
+        headerMode: 'screen',
         swipeEnabled: true,
         animationEnabled: true,
         tabBarOptions: {
@@ -97,8 +93,7 @@ const TabNavigator = createBottomTabNavigator({
                 fontSize: 18,
                 textTransform: 'uppercase'
             },
-        },
-        // navigationOptions: { headerTitle: 'Header title' },
+        }
     });
 
 
@@ -207,8 +202,8 @@ const ListCustomerStack = createStackNavigator({
                                     marginRight: 20,
                                 }}
                                 onPress={() => {
-                                    navigation.setParams({ isCustomerSelected: false });
-                                    navigation.setParams({ customerName: '' });
+                                    // navigation.setParams({ isCustomerSelected: false });
+                                    // navigation.setParams({ customerName: '' });
                                     navigation.navigate('CustomerDetails');
                                 }}
 
