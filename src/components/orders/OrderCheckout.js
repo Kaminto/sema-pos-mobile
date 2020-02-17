@@ -2,7 +2,7 @@ import React, { Component } from "react";
 if (process.env.NODE_ENV === 'development') {
 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
 	whyDidYouRender(React);
-  }
+}
 import { View, Alert, Text, TextInput, Button, FlatList, ScrollView, SafeAreaView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -551,40 +551,84 @@ class OrderCheckout extends React.PureComponent {
 			}
 		}
 
-		if(item.name != 'loan' && item.name != 'credit'){
+		if (item.name != 'loan' && item.name != 'credit') {
 
-		return (
-			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
-				<View style={{ flex: 1, height: 45 }}>
-					<View style={styles.checkBoxRow}>
-						<View style={[{ flex: 1 }]}>
-							<CheckBox
-								title={item.description}
-								checkedIcon={<Icon
-									name="md-checkbox"
-									size={20}
-									color="black"
-								/>}
-								uncheckedIcon={<Icon
-									name="md-square-outline"
-									size={20}
-									color="black"
-								/>}
-								checked={item.isSelected || isSelectedAvailable}
-								onPress={() => {
-									this.checkBoxType(item);
-								}}
-							/>
+			return (
+				<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
+					<View style={{ flex: 1, height: 45 }}>
+						<View style={styles.checkBoxRow}>
+							<View style={[{ flex: 1 }]}>
+								<CheckBox
+									title={item.description}
+									checkedIcon={<Icon
+										name="md-checkbox"
+										size={20}
+										color="black"
+									/>}
+									uncheckedIcon={<Icon
+										name="md-square-outline"
+										size={20}
+										color="black"
+									/>}
+									checked={item.isSelected || isSelectedAvailable}
+									onPress={() => {
+										this.checkBoxType(item);
+									}}
+								/>
+							</View>
+							<View style={[{ flex: 1 }]}>{this.showTextInput(item)}</View>
 						</View>
-						<View style={[{ flex: 1 }]}>{this.showTextInput(item)}</View>
 					</View>
 				</View>
-			</View>
-		);
-		//}
+			);
+		}
 	};
 
 	showTextInput(item) {
+		if (this.props.selectedPaymentTypes.length >= 0) {
+			const itemIndex = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(item.id);
+			if (itemIndex >= 0) {
+				if (this.props.selectedPaymentTypes[itemIndex].isSelected) {
+					return (
+						<TextInput
+							underlineColorAndroid="transparent"
+							onChangeText={(textValue) => {
+
+								console.log('item', item);
+								console.log('selectedType', this.state.selectedType);
+
+								if (this.props.selectedPaymentTypes.length >= 0) {
+									const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
+									if (itemIndex2 >= 0) {
+										this.props.selectedPaymentTypes[itemIndex].amount = Number(textValue);
+										this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
+										this.setState({
+											selectedType: { ...this.props.selectedPaymentTypes[itemIndex2], amount: Number(textValue) }
+										});
+									}
+								}
+
+								this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
+
+							}
+							}
+							onFocus={(text) => {
+								this.setState({
+									selectedType: item
+								});
+							}
+							}
+							keyboardType="numeric"
+							value={(this.props.selectedPaymentTypes[itemIndex].amount).toString()}
+							style={[styles.cashInput]}
+						/>
+					);
+				}
+			}
+		}
+	}
+
+	showTextInput22(item) {
 		if (this.props.selectedPaymentTypes.length >= 0) {
 			const itemIndex = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(item.id);
 			if (itemIndex >= 0) {
@@ -777,7 +821,9 @@ class OrderCheckout extends React.PureComponent {
 	}
 
 	checkBoxType = (item) => {
+		console.log('item', item);
 		const itemIndex = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(item.id);
+		console.log('itemIndex', itemIndex)
 		if (itemIndex >= 0) {
 
 			let secondItemObj = this.props.selectedPaymentTypes.filter(obj => obj.id != item.id).map(function (e) { return e.id });
@@ -812,7 +858,6 @@ class OrderCheckout extends React.PureComponent {
 			return;
 		}
 
-
 		this.setState({
 			checkedType: { ...item, isSelected: item.isSelected === true ? false : true }
 		});
@@ -828,26 +873,6 @@ class OrderCheckout extends React.PureComponent {
 		this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
 	};
 
-	valuePaymentChange = textValue => {
-
-		if (this.props.selectedPaymentTypes.length >= 0) {
-
-			if (this.props.selectedPaymentTypes.length === 0) {
-				const itemIndex = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
-				if (itemIndex >= 0) {
-					this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex], amount: Number(textValue) }, itemIndex);
-				}
-			}
-
-			if (this.props.selectedPaymentTypes.length > 0) {
-				const itemIndex = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
-				if (itemIndex >= 0) {
-					this.props.paymentTypesActions.updateSelectedPaymentType({ ...this.props.selectedPaymentTypes[itemIndex], amount: Number(textValue) }, itemIndex);
-				}
-			}
-
-		}
-	};
 
 	modalOnClose() {
 		PaymentTypeRealm.resetSelected();
@@ -857,13 +882,13 @@ class OrderCheckout extends React.PureComponent {
 	}
 
 	getSaleAmount() {
-			return (
-				<PaymentDescription
-					styles={{ fontWeight: 'bold' }}
-					title={`${i18n.t('sale-amount-due')}: `}
-					total={Utilities.formatCurrency(this.calculateOrderDue())}
-				/>
-			);
+		return (
+			<PaymentDescription
+				styles={{ fontWeight: 'bold' }}
+				title={`${i18n.t('sale-amount-due')}: `}
+				total={Utilities.formatCurrency(this.calculateOrderDue())}
+			/>
+		);
 	}
 
 	getCancelButton() {
@@ -970,99 +995,224 @@ class OrderCheckout extends React.PureComponent {
 
 
 	calculateOrderDue() {
-			let totalAmount = 0;
-			for (let i of this.props.products) {
-				if (i.product.description === 'discount') {
-					console.log('finalAmount', i.product.description);
-					totalAmount = totalAmount - i.finalAmount;
-				}
-				else if (i.product.description === 'delivery') {
-					console.log('finalAmount', i.product.description);
-					totalAmount = totalAmount + i.finalAmount;
-				} else {
-					totalAmount = totalAmount + i.finalAmount;
-				}
+		let totalAmount = 0;
+		for (let i of this.props.products) {
+			if (i.product.description === 'discount') {
+				console.log('finalAmount', i.product.description);
+				totalAmount = totalAmount - i.finalAmount;
 			}
-			return totalAmount;
+			else if (i.product.description === 'delivery') {
+				console.log('finalAmount', i.product.description);
+				totalAmount = totalAmount + i.finalAmount;
+			} else {
+				totalAmount = totalAmount + i.finalAmount;
+			}
+		}
+		return totalAmount;
 	}
 
 	calculateAmountDue() {
 		return this.props.selectedCustomer.dueAmount;
 	}
 
-
 	onCompleteOrder = () => {
+		console.log(this.props.selectedPaymentTypes);
+		let totalAmountPaid = this.props.selectedPaymentTypes.reduce((total, item) => { return (total + item.amount) }, 0);
+
+		if (this.currentCredit() > this.calculateOrderDue()) {
+			// if credit is more than order due:- make normal payment
+			// add credit payment type to selected payments
+			// if it has some payment type top up wallet
+			const creditIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("credit");
+			if (creditIndex >= 0) {
+				this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[creditIndex], created_at: new Date(), isSelected: this.props.paymentTypes[creditIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() });
+
+			}
+
+			if (totalAmountPaid > 0) {
+				CreditRealm.createCredit(
+					this.props.selectedCustomer.customerId,
+					Number(totalAmountPaid),
+					Number(totalAmountPaid)
+				);
+				this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
+				this.props.topUpActions.setTopUpTotal(
+					this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
+				);
+			}
+			this.saveOrder(true);
+
+		}
+
+		if (this.currentCredit() < this.calculateOrderDue()) {
+			// if credit is less than order due:- 
+			// compare totalPaid with order due
+			if (totalAmountPaid > this.calculateOrderDue()) {
+				//compare amount due
+				if (this.calculateAmountDue() === 0) {
+					//top up wallet
+					CreditRealm.createCredit(
+						this.props.selectedCustomer.customerId,
+						Number(totalAmountPaid),
+						Number(totalAmountPaid)
+					);
+					this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
+					this.props.topUpActions.setTopUpTotal(
+						this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
+					);
+					this.saveOrder(true);
+				}
+
+				if (this.calculateAmountDue() > 0) {
+					//clear loan and topup wallet if there is any balance
+					let postToLoan = Number(totalAmountPaid - this.calculateOrderDue());
+					if (postToLoan > this.calculateAmountDue()) {
+						// clear loan balance and topup wallet	
+						// this.setState({ loanPaid: this.calculateAmountDue() });
+						// this.setState({ topUpExpected: postToLoan - this.calculateAmountDue() })
+						this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - Number(this.calculateAmountDue());
+						console.log('-this.props.selectedCustomer.dueAmount-', this.props.selectedCustomer.dueAmount);
+						CustomerRealm.updateCustomerDueAmount(
+							this.props.selectedCustomer,
+							this.props.selectedCustomer.dueAmount
+						);
+						this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
+						this.props.customerActions.setCustomers(
+							CustomerRealm.getAllCustomer()
+						);
+
+						CreditRealm.createCredit(
+							this.props.selectedCustomer.customerId,
+							Number(postToLoan - this.calculateAmountDue()),
+							Number(postToLoan - this.calculateAmountDue())
+						);
+						this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
+						this.props.topUpActions.setTopUpTotal(
+							this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
+						);
+						this.saveOrder(true);
+					}
+
+					if (postToLoan < this.calculateAmountDue()) {
+						// clear loan balance
+						///this.setState({ loanPaid: postToLoan });
+						this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - postToLoan;
+						console.log('-this.props.selectedCustomer.dueAmount-', this.props.selectedCustomer.dueAmount);
+						CustomerRealm.updateCustomerDueAmount(
+							this.props.selectedCustomer,
+							this.props.selectedCustomer.dueAmount
+						);
+						this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
+						this.props.customerActions.setCustomers(
+							CustomerRealm.getAllCustomer()
+						);
+						this.saveOrder(true);
+					}
+
+				}
+			}
+
+			if (totalAmountPaid < this.calculateOrderDue()) {
+				//add loan payment type to reducer
+				//add loan to dueAmount
+
+				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) + (this.calculateOrderDue() - totalAmountPaid);
+				console.log('-this.props.selectedCustomer.dueAmount-', this.props.selectedCustomer.dueAmount);
+				CustomerRealm.updateCustomerDueAmount(
+					this.props.selectedCustomer,
+					this.props.selectedCustomer.dueAmount
+				);
+				this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
+				this.props.customerActions.setCustomers(
+					CustomerRealm.getAllCustomer()
+				);
+
+				const loanIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("loan");
+				if (loanIndex >= 0) {
+					this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[loanIndex], created_at: new Date(), isSelected: this.props.paymentTypes[loanIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() - totalAmountPaid });
+
+				}
+				this.saveOrder(false);
+			}
+
+		}
+
+
+	};
+
+
+	saveOrder = (checkDueAmount) => {
 		// if
 		let receipt = null;
 		let price_total = 0;
 		let totalAmount = 0;
-			// Assumes that there is at least one product
-			let receiptDate = this.state.receiptDate
-				? this.state.receiptDate
-				: new Date(Date.now());
+		// Assumes that there is at least one product
+		let receiptDate = this.state.receiptDate
+			? this.state.receiptDate
+			: new Date(Date.now());
 
-			receipt = {
-				id: uuidv1(),
-				createdDate: receiptDate,
-				currency_code: this.props.products[0].product.priceCurrency,
-				customer_account_id: this.props.selectedCustomer.customerId,
-				isWalkIn: this.props.payment.isWalkIn,
-				amount_cash: this.props.payment.cash,
-				delivery: this.props.delivery,
-				amount_loan: this.props.payment.credit,
-				amountMobile: this.props.payment.mobile,
-				amount_bank: this.props.payment.bank,
-				amount_cheque: this.props.payment.cheque,
-				amountjibuCredit: this.props.payment.jibuCredit,
-				siteId: this.props.selectedCustomer.siteId
-					? this.props.selectedCustomer.siteId
-					: SettingRealm.getAllSetting().siteId,
-				payment_type: '', // NOT sure what this is
-				sales_channel_id: this.props.selectedCustomer.salesChannelId,
-				customer_type_id: this.props.selectedCustomer.customerTypeId,
-				products: [],
-				active: 1
-			};
+		receipt = {
+			id: uuidv1(),
+			createdDate: receiptDate,
+			currency_code: this.props.products[0].product.priceCurrency,
+			customer_account_id: this.props.selectedCustomer.customerId,
+			isWalkIn: this.props.payment.isWalkIn,
+			amount_cash: this.props.payment.cash,
+			delivery: this.props.delivery,
+			amount_loan: this.props.payment.credit,
+			amountMobile: this.props.payment.mobile,
+			amount_bank: this.props.payment.bank,
+			amount_cheque: this.props.payment.cheque,
+			amountjibuCredit: this.props.payment.jibuCredit,
+			siteId: this.props.selectedCustomer.siteId
+				? this.props.selectedCustomer.siteId
+				: SettingRealm.getAllSetting().siteId,
+			payment_type: '', // NOT sure what this is
+			sales_channel_id: this.props.selectedCustomer.salesChannelId,
+			customer_type_id: this.props.selectedCustomer.customerTypeId,
+			products: [],
+			active: 1
+		};
 
-			if (!receipt.siteId) {
-				// This fixes issues with the pseudo direct customer
-				if (SettingRealm.getAllSetting())
-					receipt.siteId = SettingRealm.getAllSetting().siteId;
+		if (!receipt.siteId) {
+			// This fixes issues with the pseudo direct customer
+			if (SettingRealm.getAllSetting())
+				receipt.siteId = SettingRealm.getAllSetting().siteId;
+		}
+		let cogs_total = 0;
+
+		receipt.products = this.props.products.map(product => {
+			let receiptLineItem = {};
+			let tempValue = this.getItemCogs(product.product) * product.quantity;
+			receiptLineItem.price_total = this.getItemPrice(product.product) * product.quantity;
+			receiptLineItem.totalAmount = product.finalAmount;
+			receiptLineItem.quantity = product.quantity;
+			receiptLineItem.notes = product.notes;
+
+			receiptLineItem.emptiesReturned = Number(product.emptiesReturned);
+			receiptLineItem.refillPending = Number(product.refillPending);
+			receiptLineItem.emptiesDamaged = Number(product.emptiesDamaged);
+			receiptLineItem.product_id = product.product.productId;
+			receiptLineItem.product = product.product;
+			receiptLineItem.cogs_total = tempValue == 0 ? product.quantity : tempValue;
+			// The items below are used for reporting...
+			receiptLineItem.sku = product.product.sku;
+			receiptLineItem.description = product.product.description;
+			if (product.product.unitMeasure == 'liters') {
+				receiptLineItem.litersPerSku =
+					product.product.unitPerProduct;
+			} else {
+				receiptLineItem.litersPerSku = 'N/A';
 			}
-			let cogs_total = 0;
-
-			receipt.products = this.props.products.map(product => {
-				let receiptLineItem = {};
-				let tempValue = this.getItemCogs(product.product) * product.quantity;
-				receiptLineItem.price_total = this.getItemPrice(product.product) * product.quantity;
-				receiptLineItem.totalAmount = product.finalAmount;
-				receiptLineItem.quantity = product.quantity;
-				receiptLineItem.notes = product.notes;
-
-				receiptLineItem.emptiesReturned = Number(product.emptiesReturned);
-				receiptLineItem.refillPending = Number(product.refillPending);
-				receiptLineItem.emptiesDamaged = Number(product.emptiesDamaged);
-				receiptLineItem.product_id = product.product.productId;
-				receiptLineItem.product = product.product;
-				receiptLineItem.cogs_total = tempValue == 0 ? product.quantity : tempValue;
-				// The items below are used for reporting...
-				receiptLineItem.sku = product.product.sku;
-				receiptLineItem.description = product.product.description;
-				if (product.product.unitMeasure == 'liters') {
-					receiptLineItem.litersPerSku =
-						product.product.unitPerProduct;
-				} else {
-					receiptLineItem.litersPerSku = 'N/A';
-				}
-				totalAmount += receiptLineItem.totalAmount;
-				price_total += receiptLineItem.price_total;
-				cogs_total += receiptLineItem.cogs_total;
-				receiptLineItem.active = 1;
-				return receiptLineItem;
-			});
-			receipt.total = price_total;
-			receipt.totalAmount = totalAmount;
-			receipt.cogs = cogs_total;
+			totalAmount += receiptLineItem.totalAmount;
+			price_total += receiptLineItem.price_total;
+			cogs_total += receiptLineItem.cogs_total;
+			receiptLineItem.active = 1;
+			return receiptLineItem;
+		});
+		receipt.total = price_total;
+		receipt.totalAmount = totalAmount;
+		receipt.cogs = cogs_total;
 
 		if (receipt != null) {
 			const creditIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
@@ -1104,41 +1254,22 @@ class OrderCheckout extends React.PureComponent {
 				CustomerReminderRealm.getCustomerReminders()
 			);
 
-			const rpIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("loan");
+			if (checkDueAmount) {
+				const rpIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("loan");
 
-			if (rpIndex >= 0) {
-				console.log('-rpIndex-', rpIndex);
-				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) + Number(this.props.selectedPaymentTypes[rpIndex].amount);
-				console.log('-this.props.selectedCustomer.dueAmount-', this.props.selectedCustomer.dueAmount);
-				CustomerRealm.updateCustomerDueAmount(
-					this.props.selectedCustomer,
-					this.props.selectedCustomer.dueAmount
-				);
-				this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
-				this.props.customerActions.setCustomers(
-					CustomerRealm.getAllCustomer()
-				);
-			}
-
-			if (this.state.loanPaid > 0) {
-				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) + Number(this.state.loanPaid);
-				console.log('-this.props.selectedCustomer.dueAmount-', this.props.selectedCustomer.dueAmount);
-				CustomerRealm.updateCustomerDueAmount(
-					this.props.selectedCustomer,
-					this.props.selectedCustomer.dueAmount
-				);
-			}
-
-			if (this.state.topUpExpected > 0) {
-				CreditRealm.createCredit(
-					this.props.selectedCustomer.customerId,
-					Number(this.state.topUpExpected),
-					Number(this.state.topUpExpected)
-				);
-				this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
-				this.props.topUpActions.setTopUpTotal(
-					this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
-				);
+				if (rpIndex >= 0) {
+					console.log('-rpIndex-', rpIndex);
+					this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) + Number(this.props.selectedPaymentTypes[rpIndex].amount);
+					console.log('-this.props.selectedCustomer.dueAmount-', this.props.selectedCustomer.dueAmount);
+					CustomerRealm.updateCustomerDueAmount(
+						this.props.selectedCustomer,
+						this.props.selectedCustomer.dueAmount
+					);
+					this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
+					this.props.customerActions.setCustomers(
+						CustomerRealm.getAllCustomer()
+					);
+				}
 			}
 
 
