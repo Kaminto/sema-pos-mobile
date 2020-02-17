@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-// if (process.env.NODE_ENV === 'development') {
-// 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-// 	whyDidYouRender(React);
-//   }
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
 import { View, Alert, Text, TextInput, Button, FlatList, ScrollView, SafeAreaView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -35,7 +35,7 @@ const uuidv1 = require('uuid/v1');
 const widthQuanityModal = '70%';
 const heightQuanityModal = 540;
 
-class OrderCheckout extends Component {
+class OrderCheckout extends React.PureComponent {
 
 	constructor(props) {
 		super(props);
@@ -166,7 +166,7 @@ class OrderCheckout extends Component {
 				</Modal>
 
 				<Modal
-					style={[styles.modal, styles.modal3]}
+					style={styles.modal3}
 					coverScreen={true}
 					position={"center"} ref={"modal6"}
 					onClosed={() => this.modalOnClose()}
@@ -299,7 +299,23 @@ class OrderCheckout extends Component {
 
 								</View>
 								<View style={{ flex: 1, flexDirection: 'row' }}>
-									<Text style={[styles.baseItem, { fontSize: 16, paddingTop: 15, textAlign: 'left' }]}>Are you recording an old sale?</Text>{this.getBackDateComponent()}
+									<Text style={[styles.baseItem, { fontSize: 16, paddingTop: 15, textAlign: 'left' }]}>Are you recording an old sale?</Text>
+									<View
+										style={{
+											padding: 10
+										}}>
+										<Button
+											style={{ flex: 1 }}
+											title="Change Receipt Date"
+											onPress={this.showDateTimePicker}
+										/>
+										<DateTimePicker
+											maximumDate={new Date()}
+											isVisible={this.state.isDateTimePickerVisible}
+											onConfirm={this.handleDatePicked}
+											onCancel={this.hideDateTimePicker}
+										/>
+									</View>
 								</View>
 							</View>
 							<View style={styles.completeOrderBtn}>
@@ -535,7 +551,7 @@ class OrderCheckout extends Component {
 			}
 		}
 
-		//if(item.name != 'loan' && item.name != 'credit'){
+		if(item.name != 'loan' && item.name != 'credit'){
 
 		return (
 			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
@@ -580,7 +596,6 @@ class OrderCheckout extends Component {
 
 								console.log('item', item);
 								console.log('selectedType', this.state.selectedType);
-
 
 								if (this.props.selectedPaymentTypes.length >= 0) {
 
@@ -715,6 +730,7 @@ class OrderCheckout extends Component {
 
 										}
 
+
 									}
 
 									// paid < amount due
@@ -841,7 +857,6 @@ class OrderCheckout extends Component {
 	}
 
 	getSaleAmount() {
-		if (!this.isPayoffOnly()) {
 			return (
 				<PaymentDescription
 					styles={{ fontWeight: 'bold' }}
@@ -849,9 +864,6 @@ class OrderCheckout extends Component {
 					total={Utilities.formatCurrency(this.calculateOrderDue())}
 				/>
 			);
-		} else {
-			return null;
-		}
 	}
 
 	getCancelButton() {
@@ -876,31 +888,6 @@ class OrderCheckout extends Component {
 				/>
 			</TouchableHighlight>
 		);
-	}
-
-	getBackDateComponent() {
-		if (!this.isPayoffOnly()) {
-			return (
-				<View
-					style={{
-						padding: 10
-					}}>
-					<Button
-						style={{ flex: 1 }}
-						title="Change Receipt Date"
-						onPress={this.showDateTimePicker}
-					/>
-					<DateTimePicker
-						maximumDate={new Date()}
-						isVisible={this.state.isDateTimePickerVisible}
-						onConfirm={this.handleDatePicked}
-						onCancel={this.hideDateTimePicker}
-					/>
-				</View>
-			);
-		} else {
-			return null;
-		}
 	}
 
 	_roundToDecimal(value) {
@@ -983,10 +970,6 @@ class OrderCheckout extends Component {
 
 
 	calculateOrderDue() {
-		if (this.isPayoffOnly()) {
-			// If this is a loan payoff then the loan payment is negative the loan amount due
-			return this.calculateAmountDue();
-		} else {
 			let totalAmount = 0;
 			for (let i of this.props.products) {
 				if (i.product.description === 'discount') {
@@ -1001,28 +984,18 @@ class OrderCheckout extends Component {
 				}
 			}
 			return totalAmount;
-			// return this.props.products.reduce((total, item) => {
-			// 	return total + item.finalAmount;
-
-			// }, 0);
-		}
 	}
 
 	calculateAmountDue() {
 		return this.props.selectedCustomer.dueAmount;
 	}
 
-	isPayoffOnly() {
-		return this.props.products.length === 0;
-	}
-
 
 	onCompleteOrder = () => {
+		// if
 		let receipt = null;
 		let price_total = 0;
 		let totalAmount = 0;
-
-		if (!this.isPayoffOnly()) {
 			// Assumes that there is at least one product
 			let receiptDate = this.state.receiptDate
 				? this.state.receiptDate
@@ -1090,42 +1063,7 @@ class OrderCheckout extends Component {
 			receipt.total = price_total;
 			receipt.totalAmount = totalAmount;
 			receipt.cogs = cogs_total;
-		}
-		// Check loan payoff
-		let payoff = 0;
-		try {
-			if (this.props.payment.hasOwnProperty('cashToDisplay')) {
-				payoff = parseFloat(this.props.payment.cashToDisplay);
-			} else if (this.props.payment.hasOwnProperty('mobileToDisplay')) {
-				payoff = parseFloat(this.props.payment.mobileToDisplay);
-			}
-			if (payoff > price_total) {
-				// User is paying of loan amount
-				payoff -= price_total;
-				if (payoff > this.props.selectedCustomer.dueAmount) {
-					// Overpayment... this is an error
-					Alert.alert(
-						i18n.t('over-due-amount-title'),
-						i18n.t('over-due-amount-text') +
-						this.props.selectedCustomer.dueAmount,
-						[
-							{
-								text: 'OK',
-								onPress: () => { }
-							}
-						],
-						{ cancelable: false }
-					);
 
-					//return false;
-					payoff = 0;
-				}
-			} else {
-				payoff = 0;
-			}
-		} catch (err) {
-
-		}
 		if (receipt != null) {
 			const creditIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
 
@@ -1412,8 +1350,8 @@ class OrderCheckout extends Component {
 	}
 
 	getOpacity = () => {
-		if (this.props.products.length == 0 || this.props.flow.page != 'products') {
-			return { opacity: .3 };
+		if (this.props.products.length == 0) {
+			return { opacity: .2 };
 		} else {
 			return { opacity: 1 };
 		}
@@ -1429,7 +1367,6 @@ function mapStateToProps(state, props) {
 		delivery: state.paymentTypesReducer.delivery,
 		selectedPaymentTypes: state.paymentTypesReducer.selectedPaymentTypes,
 		selectedDiscounts: state.orderReducer.discounts,
-		flow: state.orderReducer.flow,
 		channel: state.orderReducer.channel,
 		receiptsPaymentTypes: state.paymentTypesReducer.receiptsPaymentTypes,
 		receipts: state.receiptReducer.receipts,
@@ -1505,6 +1442,7 @@ const styles = StyleSheet.create({
 	},
 
 	modal2: {
+
 		height: 300,
 		width: '65%',
 		padding: 5,
@@ -1520,12 +1458,13 @@ const styles = StyleSheet.create({
 	completeOrderBtn: {
 		backgroundColor: '#2858a7',
 		bottom: 0,
-		marginTop: '1%',
+		marginTop: '5%',
 		marginBottom: 0,
 		// position: 'absolute'
 	},
 
 	modal3: {
+		justifyContent: 'center',
 		width: widthQuanityModal,
 		height: heightQuanityModal,
 	},

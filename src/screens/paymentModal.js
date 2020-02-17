@@ -16,12 +16,13 @@ import CustomerDebtRealm from '../database/customer_debt/customer_debt.operation
 import PaymentDescription from '../components/orders/order-checkout/payment-description';
 
 import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
+import CreditRealm from '../database/credit/credit.operations';
 import SettingRealm from '../database/settings/settings.operations';
 import CustomerRealm from '../database/customers/customer.operations';
 
 import * as Utilities from "../services/Utilities";
-const widthQuanityModal = '80%';
-const heightQuanityModal = 400;
+const widthQuanityModal = '75%';
+const heightQuanityModal = 300;
 
 import moment from 'moment-timezone';
 
@@ -33,6 +34,7 @@ class PaymentModal extends Component {
 			selectedPaymentTypes: [],
 			selectedType: {},
 			checkedType: {},
+			topup: "",
 		};
 	}
 
@@ -40,9 +42,8 @@ class PaymentModal extends Component {
 	render() {
 		const state = this.state;
 		return (
-			// <View style={styles.modal3}>
-				<ScrollView>
-					<View
+			<ScrollView>
+				<View
 						style={{
 							flex: 1,
 							marginTop: 0,
@@ -72,7 +73,7 @@ class PaymentModal extends Component {
 							numColumns={3}
 							contentContainerStyle={styles.container}
 						/>
-					<Card>
+					<Card style={{ flex: 1 }}>
 						<PaymentDescription
 							title={`${i18n.t('previous-amount-due')}:`}
 							total={Utilities.formatCurrency(
@@ -97,16 +98,13 @@ class PaymentModal extends Component {
 											{ paddingTop: 20, paddingBottom: 20 },
 											styles.buttonText
 										]}>
-										{i18n.t('clear-loan')}
+									{this.props.selectedCustomer.dueAmount > 0 ? i18n.t('clear-loan') : 'Credit Wallet'}
 									</Text>
 								</TouchableHighlight>
 							</View>
 						</View>
 					</View>
 				</ScrollView>
-
-
-			// </View>
 
 		);
 	}
@@ -371,15 +369,6 @@ class PaymentModal extends Component {
 	};
 
 	valuePaymentChange = (textValue, itemIndex) => {
-		if (Number(textValue) > Number(this.calculateOrderDue())) {
-			// Alert.alert(
-			// 	'Notice. ',
-			// 	`Amount can not be greater that ${this.calculateOrderDue()}`,
-			// 	[{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-			// 	{ cancelable: false }
-			// );
-			// return;
-		}
 
 		if (this.props.selectedDebtPaymentTypes.length >= 0) {
 			const itemIndex2 = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
@@ -395,8 +384,10 @@ class PaymentModal extends Component {
 
 			if (secondItemObj.length > 0) {
 				const seconditemIndex2 = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(secondItemObj[0]);
+				if(Number(this.calculateOrderDue()) <= Number(textValue)){
 				this.props.selectedDebtPaymentTypes[seconditemIndex2].amount = Number(this.calculateOrderDue()) - Number(textValue);
 				this.props.paymentTypesActions.updateSelectedDebtPaymentType({ ...this.props.selectedDebtPaymentTypes[seconditemIndex2], amount: Number(this.calculateOrderDue()) - Number(textValue) }, seconditemIndex2);
+				}
 			}
 		}
 
@@ -435,7 +426,9 @@ class PaymentModal extends Component {
 				return (total + item.amount);
 			}, 0);
 
-			if (amountPaid >= 0) {
+
+			if (amountPaid >= 0 && amountPaid <= Number(this.props.selectedCustomer.dueAmount)) {
+
 				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - Number(amountPaid);
 				CustomerRealm.updateCustomerDueAmount(
 					this.props.selectedCustomer,
@@ -445,7 +438,46 @@ class PaymentModal extends Component {
 				this.props.customerActions.setCustomers(
 					CustomerRealm.getAllCustomer()
 				);
+			} else if (amountPaid >= 0 && amountPaid > Number(this.props.selectedCustomer.dueAmount)) {
+				   this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount);
+
+				   let creditsurplus = Number(amountPaid) - Number(this.props.selectedCustomer.dueAmount);
+				    if(this.props.selectedCustomer.dueAmount > 0) {
+
+						console.log("Amount greater outside." + this.props.selectedCustomer.dueAmount);
+
+						this.props.selectedCustomer.dueAmount = 0;
+
+						CustomerRealm.updateCustomerDueAmount(
+							this.props.selectedCustomer,
+							this.props.selectedCustomer.dueAmount
+						);
+
+						this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
+						this.props.customerActions.setCustomers(
+							CustomerRealm.getAllCustomer()
+						);
+					}
+
+
+
+					console.log("Amount greater inside." + creditsurplus);
+
+					CreditRealm.createCredit(
+						this.props.selectedCustomer.customerId,
+						Number(creditsurplus),
+						Number(creditsurplus)
+					);
+					this.setState({ topup: "" });
+					this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
+					this.props.topUpActions.setTopUpTotal(
+						this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
+					);
+
+				// }
 			}
+
+
 
 			Alert.alert(
 				'SEMA',
@@ -477,23 +509,13 @@ class PaymentModal extends Component {
 	}
 
 	calculateOrderDue() {
-		if (this.isPayoffOnly()) {
 			// If this is a loan payoff then the loan payment is negative the loan amount due
 			return this.calculateAmountDue();
-		} else {
-			return this.props.products.reduce((total, item) => {
-				return total + item.finalAmount;
 
-			}, 0);
-		}
 	}
 
 	calculateAmountDue() {
 		return this.props.selectedCustomer.dueAmount;
-	}
-
-	isPayoffOnly() {
-		return this.props.products.length === 0;
 	}
 
 	closePaymentModal = () => {
@@ -504,17 +526,11 @@ class PaymentModal extends Component {
 
 function mapStateToProps(state, props) {
 	return {
-		products: state.orderReducer.products,
 		paymentTypes: state.paymentTypesReducer.paymentTypes,
-		delivery: state.paymentTypesReducer.delivery,
 		selectedPaymentTypes: state.paymentTypesReducer.selectedPaymentTypes,
 		selectedDebtPaymentTypes: state.paymentTypesReducer.selectedDebtPaymentTypes,
-		selectedDiscounts: state.orderReducer.discounts,
-		flow: state.orderReducer.flow,
 		receiptsPaymentTypes: state.paymentTypesReducer.receiptsPaymentTypes,
 		receipts: state.receiptReducer.receipts,
-		payment: state.orderReducer.payment,
-		channel: state.orderReducer.channel,
 		payment: state.orderReducer.payment,
 		selectedCustomer: state.customerReducer.selectedCustomer,
 		topups: state.topupReducer.topups,
@@ -525,7 +541,6 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
 	return {
 		orderActions: bindActionCreators(OrderActions, dispatch),
-		customerBarActions: bindActionCreators(CustomerBarActions, dispatch),
 		receiptActions: bindActionCreators(receiptActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
 		paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch),
@@ -578,7 +593,7 @@ const styles = StyleSheet.create({
 	completeOrder: {
 		backgroundColor: '#2858a7',
 		borderRadius: 5,
-		marginTop: '1%',
+		marginTop: '5%',
 		bottom: 0
 	},
 

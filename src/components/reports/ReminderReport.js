@@ -141,9 +141,9 @@ class RemindersReport extends Component {
 	};
 
 	displayReminders() {
-		if (this.props.customerReminder.length == 0) {
+		if (this.props.customerReminder.length <= 0) {
 			return (
-				<View style={{ flex: 1 }}>
+				<View style={{ flex: 1, marginTop: '50%' }}>
 					<Text style={[styles.titleText, { textAlign: 'center' }]}>No Reminders Available</Text>
 				</View>
 			);
@@ -227,13 +227,13 @@ class RemindersReport extends Component {
 	render() {
 		return (
 			<View style={{ flex: 1, flexDirection: 'column' }}>
-				<View style={{ flex: .15 }}>
+				<View style={{ flex: .15, flexDirection: 'row' }}>
 					<DateFilter />
 					{/* <TouchableHighlight
-						style={styles.currentInventory}
+						style={[styles.currentInventory, {flex:.5}]}
 						onPress={() => this.showDatePickerFilter()}
 						underlayColor='#18376A'>
-						<Text style={[styles.currentInventoryText, { padding: 5 }]}>
+						<Text style={[styles.currentInventoryText]}>
 							{moment.tz(new Date(this.state.filterDate), moment.tz.guess()).format('ddd Do MMM YYYY')}
 						</Text>
 					</TouchableHighlight>

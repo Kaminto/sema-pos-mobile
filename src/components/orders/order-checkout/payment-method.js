@@ -33,8 +33,7 @@ class PaymentMethod extends Component {
 	}
 	showTextInput() {
 		if (
-			this.props.parent.state.isCredit ||
-			this.props.parent.isPayoffOnly()
+			this.props.parent.state.isCredit
 		) {
 			if (this.props.type === 'cash' && this.props.parent.state.isCash) {
 				return (
