@@ -34,7 +34,7 @@ import * as PaymentTypesActions from "../actions/PaymentTypesActions";
 
 import PaymentModal from './paymentModal';
 
-class CustomerList extends Component {
+class CustomerList extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -49,8 +49,8 @@ class CustomerList extends Component {
             hasScrolled: false
 		};
 
-		this.onPressItem = this.onPressItem.bind(this);
-		this.onLongPressItem = this.onLongPressItem.bind(this);
+		// this.onPressItem = this.onPressItem.bind(this);
+		// this.onLongPressItem = this.onLongPressItem.bind(this);
 	}
 
     componentDidMount() {
@@ -181,10 +181,6 @@ class CustomerList extends Component {
         offset: 50 * index,
         index
     });
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return true;
-    }
 
     render() {
         return (
@@ -440,6 +436,12 @@ class CustomerList extends Component {
                             {item.dueAmount.toFixed(2)}
                         </Text>
                     </View>
+					<View style={{ flex: 1 }}>
+                        <Text style={[styles.baseItem]}>
+                            {item.dueAmount.toFixed(2)}
+                        </Text>
+                    </View>
+
 
                 </View>
             );
@@ -599,6 +601,9 @@ class CustomerList extends Component {
                 <View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem]}>{i18n.t('balance')}</Text>
                 </View>
+				<View style={[{ flex: 1 }]}>
+                    <Text style={[styles.headerItem]}>Wallet</Text>
+                </View>
 
             </View>
         );
@@ -614,7 +619,7 @@ class CustomerList extends Component {
     };
 }
 
-class SearchWatcher extends React.Component {
+class SearchWatcher extends React.PureComponent {
     render() {
 
         return this.searchEvent();
@@ -640,6 +645,7 @@ class SearchWatcher extends React.Component {
         return null;
     }
 }
+
 function mapStateToProps(state, props) {
     return {
         selectedCustomer: state.customerReducer.selectedCustomer,

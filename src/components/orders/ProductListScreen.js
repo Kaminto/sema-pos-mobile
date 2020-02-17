@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
-class ProductListScreen extends Component {
+class ProductListScreen extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		let { height, width } = Dimensions.get('window');
@@ -26,10 +26,6 @@ class ProductListScreen extends Component {
 
 	static whyDidYouRender = true;
 
-	shouldComponentUpdate( nextProps,nextState) {
-        return nextState !== this.state;
-    }
-
 
 	componentDidMount() {
 		this.setState({
@@ -45,13 +41,6 @@ class ProductListScreen extends Component {
 			).start();
 		});
 	}
-
-	//static whyDidYouRender = true;
-
-    shouldComponentUpdate( nextProps,nextState) {
-		//return nextProps !== this.props;
-		return true;
-    }
 
 	render() {
 		console.log('jyu');

@@ -26,7 +26,7 @@ const heightQuanityModal = 300;
 
 import moment from 'moment-timezone';
 
-class PaymentModal extends Component {
+class PaymentModal extends React.PureComponent {
 
 	constructor(props) {
 		super(props);
@@ -98,7 +98,7 @@ class PaymentModal extends Component {
 											{ paddingTop: 20, paddingBottom: 20 },
 											styles.buttonText
 										]}>
-									{this.props.selectedCustomer.dueAmount > 0 ? i18n.t('clear-loan') : 'Credit Wallet'}
+									{this.props.selectedCustomer.dueAmount > 0 ? i18n.t('clear-loan') : 'Topup Customer Wallet'}
 									</Text>
 								</TouchableHighlight>
 							</View>
@@ -593,7 +593,7 @@ const styles = StyleSheet.create({
 	completeOrder: {
 		backgroundColor: '#2858a7',
 		borderRadius: 5,
-		marginTop: '5%',
+		marginTop: '10%',
 		bottom: 0
 	},
 

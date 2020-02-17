@@ -11,7 +11,7 @@ import PosStorage from "../../database/PosStorage";
 
 import i18n from '../../app/i18n';
 const uuidv1 = require('uuid/v1');
-class InventoryEdit extends Component {
+class InventoryEdit extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.state = { inventoryQuantity: this.props.quantity };

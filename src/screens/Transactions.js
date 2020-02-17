@@ -29,7 +29,7 @@ import i18n from '../app/i18n';
 import moment from 'moment-timezone';
 
 
-class ReceiptLineItem extends Component {
+class ReceiptLineItem extends React.PureComponent {
 	constructor(props) {
 		super(props);
 	}
@@ -80,7 +80,7 @@ class ReceiptLineItem extends Component {
 	};
 }
 
-class PaymentTypeItem extends Component {
+class PaymentTypeItem extends React.PureComponent {
 	constructor(props) {
 		super(props);
 	}
@@ -106,7 +106,7 @@ class PaymentTypeItem extends Component {
 	}
 }
 
-class TransactionDetail extends Component {
+class TransactionDetail extends React.PureComponent {
 	constructor(props) {
 		super(props);
 
@@ -195,7 +195,7 @@ class TransactionDetail extends Component {
 						receiptActions={this.props.receiptActions}
 						remoteReceipts={this.props.receipts}
 						item={lineItem}
-						key={lineItem.id.toString()}
+						key={lineItem.id}
 						lineItemIndex={idx}
 						products={this.props.products}
 						handleUpdate={this.handleUpdate.bind(this)}
@@ -212,7 +212,7 @@ class TransactionDetail extends Component {
 				return (
 
 					<PaymentTypeItem
-				    	key={paymentItem.id.toString()}
+				    	key={paymentItem.id}
 					    item={paymentItem}
 					    lineItemIndex={idx}
 					/>
@@ -291,7 +291,7 @@ class TransactionDetail extends Component {
 
 }
 
-class Transactions extends Component {
+class Transactions extends React.PureComponent {
 	constructor(props) {
 		super(props);
 
@@ -624,7 +624,7 @@ class Transactions extends Component {
 
 }
 
-class SearchWatcher extends React.Component {
+class SearchWatcher extends React.PureComponent {
 	render() {
 
 		return this.searchEvent();

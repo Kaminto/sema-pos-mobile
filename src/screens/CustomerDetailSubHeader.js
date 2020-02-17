@@ -29,7 +29,7 @@ import PaymentModal from './paymentModal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modalbox';
 
-class SelectedCustomerDetails extends React.Component {
+class SelectedCustomerDetails extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.saleSuccess = false;
@@ -58,54 +58,44 @@ class SelectedCustomerDetails extends React.Component {
 		return (
 			<>
 				<View style={styles.commandBarContainer}>
-					<View style={{ flexDirection: 'column', flex: 1.5, height: 100, paddingLeft: 10 }}>
+					<View style={{ flexDirection: 'column', flex: 1, height: 100, paddingLeft: 10 }}>
 						<Text style={[styles.selectedCustomerText, { fontSize: 20 }]}>
 							{this.getName()} . {this.getPhone()}
 						</Text>
-						{/* <Text style={[styles.selectedCustomerText, { fontSize: 18 }]}>
-							Last Purchase Date: {CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId) === 'N/A' ? 'N.A' : CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId).lastPurchaseDate }
-						</Text> */}
 						<Text style={styles.selectedCustomerText}>
 								<Ionicons
 										name='md-alarm'
 										size={24}
 										color='black'
 									/> :
-									  {CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId) === ' N/A' ? ' N/A' : CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId).reminder_date }
+									  {CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId) === 'N/A' ? ' No reminder yet.' : CustomerReminderRealm.getCustomerReminderById(this.props.selectedCustomer.customerId).reminder_date }
 						</Text>
+
+					</View>
+					<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
+						<Text style={styles.selectedCustomerText}>
+							Customer Wallet: {this.props.topupTotal - this.getCreditPurchases()}
+						</Text>
+
+						<Text style={styles.selectedCustomerText}>
+							Loan Balance:  {this.props.selectedCustomer.dueAmount}
+						</Text>
+
+					</View>
+
+					<View style={{ flexDirection: 'column', flex: 1, height: 100, paddingLeft: 20 }}>
 						<View style={styles.completeOrder}>
 							<TouchableHighlight
 								onPress={() => this.props.navigation.navigate('OrderView')}>
 								<Text style={styles.buttonText}>Make Sale</Text>
 							</TouchableHighlight>
 						</View>
-					</View>
-					<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
-						{/* <Text style={styles.selectedCustomerText}>
-					{this.getCreditPurchases()} Credit Purchases
-					</Text> */}
-						<Text style={styles.selectedCustomerText}>
-							Customer Wallet: {this.props.topupTotal - this.getCreditPurchases()}
-						</Text>
-
-						<View style={[styles.completeOrder, {marginLeft: 10}]}>
-							<TouchableHighlight
-								onPress={() => this.props.navigation.navigate('CustomerWallet')}>
-								<Text style={[styles.buttonText, {marginLeft: 10}]}>Topup Wallet</Text>
-							</TouchableHighlight>
-						</View>
-					</View>
-
-					<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
-						<Text style={styles.selectedCustomerText}>
-							Loan Balance:  {this.props.selectedCustomer.dueAmount}
-						</Text>
 						<View style={styles.completeOrder}>
 							<TouchableHighlight
 								onPress={() => {
 									this.refs.modal6.open();
 								}}>
-								<Text style={styles.buttonText}>Loan Repayment</Text>
+								<Text style={styles.buttonText}>Topup Wallet / Loan Repayment</Text>
 							</TouchableHighlight>
 						</View>
 					</View>
@@ -205,7 +195,6 @@ function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		toolbarActions: bindActionCreators(ToolbarActions, dispatch),
 		topUpActions: bindActionCreators(TopUpActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
 		reportActions: bindActionCreators(reportActions, dispatch),
@@ -237,7 +226,7 @@ const styles = StyleSheet.create({
 		height: 70,
 		elevation: 10,
 		alignSelf: 'center',
-		width: '85%',
+		width: '90%',
 		justifyContent: 'center',
 		color: 'white',
 		paddingBottom: 20
@@ -267,8 +256,8 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		flex: .4,
 		margin: '1%',
-		padding: 10,
-		width: 200
+		padding: 5,
+
 	}
 
 });

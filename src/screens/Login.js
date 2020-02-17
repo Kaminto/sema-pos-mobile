@@ -59,11 +59,10 @@ const marginInputItems = width / 2 - inputTextWidth / 2;
 
 const supportedUILanguages = [
 	{ name: 'English', iso_code: 'en' },
-	{ name: 'Français', iso_code: 'fr' },
-	{ name: 'Kreyòl Ayisyen', iso_code: 'ht' }
+	{ name: 'Français', iso_code: 'fr' }
 ];
 
-class Login extends Component {
+class Login extends React.PureComponent {
 	constructor(props) {
 
 		super(props);

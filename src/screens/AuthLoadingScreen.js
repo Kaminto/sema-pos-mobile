@@ -42,7 +42,7 @@ import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_p
 import Communications from '../services/Communications';
 import NetInfo from "@react-native-community/netinfo";
 
-class AuthLoadingScreen extends React.Component {
+class AuthLoadingScreen extends React.PureComponent {
 
     constructor(props) {
         super(props);
