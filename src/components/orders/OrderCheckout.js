@@ -551,7 +551,7 @@ class OrderCheckout extends React.PureComponent {
 			}
 		}
 
-		if(item.name != 'loan' && item.name != 'credit'){
+		//if(item.name != 'loan' && item.name != 'credit'){
 
 		return (
 			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
