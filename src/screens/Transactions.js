@@ -20,6 +20,7 @@ import Events from 'react-native-simple-events';
 
 import * as ToolbarActions from '../actions/ToolBarActions';
 import CustomerRealm from '../database/customers/customer.operations';
+import OrderRealm from '../database/orders/orders.operations';
 import * as CustomerActions from '../actions/CustomerActions';
 
 import * as reportActions from '../actions/ReportActions';
@@ -94,12 +95,12 @@ class PaymentTypeItem extends React.PureComponent {
 					marginBottom: 5,
 					marginTop: 5
 				}}>
-					<View style={[styles.itemData, {flex: 3}]}>
-						<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>{this.props.item.name}</Text>
-					</View>
-					<View style={[styles.itemData, {flex: 1}]}>
-						<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold'}]}>{this.props.item.amount} </Text>
-					</View>
+				<View style={[styles.itemData, { flex: 3 }]}>
+					<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>{this.props.item.name}</Text>
+				</View>
+				<View style={[styles.itemData, { flex: 1 }]}>
+					<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold' }]}>{this.props.item.amount} </Text>
+				</View>
 
 			</View>
 		);
@@ -121,9 +122,10 @@ class TransactionDetail extends React.PureComponent {
 		});
 	}
 
+
 	onDeleteReceipt(item) {
 		return () => {
-			if (!item.active) {
+			if (item.isDelete === 0) {
 				return ToastAndroid.show(
 					'Receipt already deleted',
 					ToastAndroid.SHORT
@@ -142,10 +144,7 @@ class TransactionDetail extends React.PureComponent {
 					{
 						text: i18n.t('yes'),
 						onPress: () => {
-							this.deleteReceipt(item, {
-								active: 0,
-								updated: true
-							});
+							this.deleteReceipt(item);
 						}
 					}
 				],
@@ -154,32 +153,25 @@ class TransactionDetail extends React.PureComponent {
 		};
 	}
 
-	deleteReceipt(item, updatedFields) {
-		this.props.receiptActions.updateRemoteReceipt(
-			item.index,
-			updatedFields
-		);
 
-		PosStorage.updateLoggedReceipt(item.id, updatedFields);
-
-		PosStorage.updatePendingSale(item.id);
-
-		// Take care of customer due amount
-		if (item.amountLoan) {
-			item.customerAccount.dueAmount -= item.amountLoan;
-
-			CustomerRealm.updateCustomer(
+	deleteReceipt(item) {
+		console.log(item);
+		OrderRealm.softDeleteOrder(item);
+		const loanIndex = item.paymentTypes.map(function (e) { return e.name }).indexOf("loan");
+		if (loanIndex >= 0) {
+			item.customerAccount.dueAmount = Number(item.customerAccount.dueAmount) - Number(this.props.selectedPaymentTypes[loanIndex].amount);
+			CustomerRealm.updateCustomerDueAmount(
 				item.customerAccount,
-				item.customerAccount.phoneNumber,
-				item.customerAccount.name,
-				item.customerAccount.address,
-				item.customerAccount.salesChannelId,
-				item.customerAccount.customerTypeId,
-				item.customerAccount.frequency,
-				item.customerAccount.secondPhoneNumber
+				item.customerAccount.dueAmount
+			);
+			this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
+			this.props.customerActions.setCustomers(
+				CustomerRealm.getAllCustomer()
 			);
 		}
-
+		this.props.receiptActions.setReceipts(
+            OrderRealm.getAllOrder()
+        );
 		this.setState({ refresh: !this.state.refresh });
 	}
 
@@ -212,9 +204,9 @@ class TransactionDetail extends React.PureComponent {
 				return (
 
 					<PaymentTypeItem
-				    	key={paymentItem.id}
-					    item={paymentItem}
-					    lineItemIndex={idx}
+						key={paymentItem.id}
+						item={paymentItem}
+						lineItemIndex={idx}
 					/>
 				);
 			});
@@ -239,34 +231,34 @@ class TransactionDetail extends React.PureComponent {
 					<Text style={styles.customername}>{this.props.item.customerAccount.name}</Text>
 				</View>
 				<Text>
-				{moment
-							.tz(this.props.item.createdAt, moment.tz.guess())
-							.format('dddd Do MMMM YYYY')}
-							</Text>
+					{moment
+						.tz(this.props.item.createdAt, moment.tz.guess())
+						.format('dddd Do MMMM YYYY')}
+				</Text>
 				<View>
 
 				</View>
 				<View style={styles.receiptStats}>
-					{this.props.item.syncAction === 'DELETE' && (
+					{this.props.item.isDelete === 0 && (
 						<Text style={styles.receiptStatusText}>
 							{'Deleted'.toUpperCase()}
 						</Text>
 					)}
-					{!this.props.item.active  ? (
+					{!this.props.item.active ? (
 						<View style={{ flexDirection: 'row' }}>
 							<Text style={styles.receiptPendingText}>
-								{'Pending'.toUpperCase()}
+								{' Pending'.toUpperCase()}
 							</Text>
 						</View>
 					) : (
 							<View style={{ flexDirection: 'row' }}>
 								{!this.props.item.active && <Text> - </Text>}
 								<Text style={styles.receiptSyncedText}>
-									{'Synced'.toUpperCase()}
+									{' Synced'.toUpperCase()}
 								</Text>
 							</View>
 						)}
-					</View>
+				</View>
 				<View>
 					<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>PAYMENT</Text>
 				</View>
@@ -399,6 +391,7 @@ class Transactions extends React.PureComponent {
 			return {
 				active: receipt.active,
 				id: receipt.id,
+				receiptId: receipt.id,
 				createdAt: receipt.created_at,
 				customerAccount: receipt.customer_account,
 				receiptLineItems: receipt.receipt_line_items,
@@ -407,6 +400,7 @@ class Transactions extends React.PureComponent {
 				key: receipt.isLocal ? receipt.key : null,
 				index,
 				updated: receipt.updated,
+				isDelete: receipt.isDelete,
 				amountLoan: receipt.amount_loan,
 				totalCount,
 				currency: receipt.currency_code,
@@ -507,67 +501,6 @@ class Transactions extends React.PureComponent {
 		});
 	}
 
-	onDeleteReceipt(item) {
-		return () => {
-			if (!item.active) {
-				return ToastAndroid.show(
-					'Receipt already deleted',
-					ToastAndroid.SHORT
-				);
-			}
-
-			Alert.alert(
-				'Confirm Receipt Deletion',
-				'Are you sure you want to delete this receipt? (this cannot be undone)',
-				[
-					{
-						text: i18n.t('no'),
-						onPress: () => console.log('Cancel Pressed'),
-						style: 'cancel'
-					},
-					{
-						text: i18n.t('yes'),
-						onPress: () => {
-							this.deleteReceipt(item, {
-								active: 0,
-								updated: true
-							});
-						}
-					}
-				],
-				{ cancelable: true }
-			);
-		};
-	}
-
-	deleteReceipt(item, updatedFields) {
-		// this.props.receiptActions.updateRemoteReceipt(
-		// 	item.index,
-		// 	updatedFields
-		// );
-
-		// PosStorage.updateLoggedReceipt(item.id, updatedFields);
-
-		// PosStorage.updatePendingSale(item.id);
-
-		// // Take care of customer due amount
-		// if (item.amountLoan) {
-		// 	item.customerAccount.dueAmount -= item.amountLoan;
-
-		// 	CustomerRealm.updateCustomer(
-		// 		item.customerAccount,
-		// 		item.customerAccount.phoneNumber,
-		// 		item.customerAccount.name,
-		// 		item.customerAccount.address,
-		// 		item.customerAccount.salesChannelId,
-		// 		item.customerAccount.customerTypeId,
-		// 		item.customerAccount.frequency,
-		// 		item.customerAccount.secondPhoneNumber
-		// 	);
-		// }
-
-		// this.setState({ refresh: !this.state.refresh });
-	}
 
 	renderReceipt({ item, index }) {
 		return (
