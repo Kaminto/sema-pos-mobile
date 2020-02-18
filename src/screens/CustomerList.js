@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-}
+// if (process.env.NODE_ENV === 'development') {
+// 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+// 	whyDidYouRender(React);
+// }
 import {
     View,
     Text,
@@ -78,7 +78,7 @@ class CustomerList extends React.PureComponent {
 	}
 
 
-	static whyDidYouRender = true;
+	//static whyDidYouRender = true;
 
     searchCustomer = (searchText) => {
         this.props.customerActions.SearchCustomers(searchText);
@@ -241,8 +241,7 @@ class CustomerList extends React.PureComponent {
         let data = [];
         if (this.props.customers.length > 0) {
             data = this.filterItems(this.props.customers);
-        }
-        console.log('data', data)
+        }        
         return data;
     };
 
@@ -369,15 +368,17 @@ class CustomerList extends React.PureComponent {
             customerType: this.props.customerTypeFilter.length > 0 ? this.props.customerTypeFilter === 'all' ? "" : this.props.customerTypeFilter : "",
         };
         data = data.map(item => {
+            console.log('totalTopUp',this.totalTopUp(item.customerId));
+            console.log('customerCreditPaymentTypeReceipts',this.customerCreditPaymentTypeReceipts(item.customerId).reduce((total, item) => { return (total + item.amount) }, 0));
             return {
                 ...item,
-                wallet: this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId),
+                wallet: this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId).reduce((total, item) => { return (total + item.amount) }, 0) >= 0 ? this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId) : 0 ,
                 salesChannel: this.getCustomerSalesChannel(item).toLowerCase(),
                 searchString: item.name + ' ' + item.phoneNumber + ' ' + item.address,
                 customerType: this.getCustomerTypes(item).toLowerCase()
             }
         });
-
+        console.log('datar', data)
         let filteredItems = data.filter(function (item) {
             for (var key in filter) {
                 if (
@@ -438,7 +439,7 @@ class CustomerList extends React.PureComponent {
                     </View>
 					<View style={{ flex: 1 }}>
                         <Text style={[styles.baseItem]}>
-                            {item.dueAmount.toFixed(2)}
+                            {item.wallet.toFixed(2)}
                         </Text>
                     </View>
 
