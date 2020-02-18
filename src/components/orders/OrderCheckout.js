@@ -788,26 +788,11 @@ class OrderCheckout extends React.PureComponent {
 				this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
 			}
 			return;
-		}
-
-		if (this.props.selectedPaymentTypes.length === 3) {
-			Alert.alert(
-				'Payment',
-				`You cannot select more than three payment methods.`,
-				[{
-					text: 'OK', onPress: () => {
-						this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
-					}
-				}],
-				{ cancelable: false }
-			);
-			return;
-		}
+		}		
 
 		this.setState({
 			checkedType: { ...item, isSelected: item.isSelected === true ? false : true }
 		});
-
 
 		if (this.props.selectedPaymentTypes.length === 0) {
 			PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
