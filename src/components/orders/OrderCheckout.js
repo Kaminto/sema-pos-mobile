@@ -377,7 +377,7 @@ class OrderCheckout extends React.PureComponent {
 							onChangeText={(value) => this.setEmptiesReturned(value, item)}
 							underlineColorAndroid="transparent"
 							placeholder="0"
-							value={item.emptiesReturned}
+							value={(item.emptiesReturned == '') ? item.quantity.toString() : item.emptiesReturned}
 						/>
 					</View>
 					<View style={[{ flex: 1 }]}>
@@ -989,7 +989,6 @@ class OrderCheckout extends React.PureComponent {
 			this.saveOrder(true);
 
 		}
-
 		if (this.currentCredit() < this.calculateOrderDue()) {
 			// if credit is less than order due:-
 			// compare totalPaid with order due
@@ -999,17 +998,15 @@ class OrderCheckout extends React.PureComponent {
 					//top up wallet
 					CreditRealm.createCredit(
 						this.props.selectedCustomer.customerId,
-						Number(totalAmountPaid),
-						Number(totalAmountPaid)
+						Number(totalAmountPaid - this.calculateOrderDue()),
+						Number(totalAmountPaid - this.calculateOrderDue())
 					);
 					this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
 					this.props.topUpActions.setTopUpTotal(
 						this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
 					);
 					this.saveOrder(true);
-				}
-
-				if (this.calculateAmountDue() > 0) {
+				} else if (this.calculateAmountDue() > 0) {
 					//clear loan and topup wallet if there is any balance
 					let postToLoan = Number(totalAmountPaid - this.calculateOrderDue());
 					if (postToLoan > this.calculateAmountDue()) {
@@ -1057,8 +1054,7 @@ class OrderCheckout extends React.PureComponent {
 
 				}
 			}
-
-			if (totalAmountPaid < this.calculateOrderDue()) {
+			 if (totalAmountPaid < this.calculateOrderDue()) {
 				//add loan payment type to reducer
 				//add loan to dueAmount
 
@@ -1218,51 +1214,9 @@ class OrderCheckout extends React.PureComponent {
 				}
 			}
 
-			// Data
-			// let customerwalletvalue:
-			// let salesamountdue:
-			// let loanbalance:
-			// let amountPaid.
-			// let totalamountdue.
-
-			// amountPaid = cash + bank + wallet + cheque;
-
-			// if (amountpaid > totalAmountdue) {
-			// 	total
-
-			// } else if (amountpaid < totalAmountdue) {
-
-			// }
-
-			// if (loanbalance > 0) {
-			// 	if (amountpaid > salesamountdue) {
-
-			// 	}
-
-			// }
-
-			// if(customerwalletvalue > 0 && customerwalletvalue <= salesamountdue){
-			// 	// amountpaid > 0
-			// 	// record payment as credit
-			// 	// amountpaid = amountpaid + credit
-			// 	// record (salesamountdue - customerwalletvalue) as loan
-
-			// } else if (customerwalletvalue > 0 && customerwalletvalue >= salesamountdue) {
-			// 	// record payment as credit
-			// 	// amountpaid > 0 -- topup credit
-			// }
-
-
-			//Actions:
-			//Topup wallet
-			//Clear loan
-			//Add loan
-
-
-
 			Alert.alert(
 				'SEMA',
-				'Payment Made',
+				'Payment Made. Loan Paid: ' + this.state.loanPaid + ' Wallet Topup: ' +this.state.topUpExpected,
 				[{
 					text: 'OK',
 					onPress: () => {
@@ -1332,7 +1286,6 @@ class OrderCheckout extends React.PureComponent {
 		}
 		return final;
 	}
-
 
 	saveCustomerFrequency(receipts) {
 		CustomerReminderRealm.createCustomerReminder(this.getRemindersNew(receipts)[0])
@@ -1473,7 +1426,6 @@ class OrderCheckout extends React.PureComponent {
 			return { opacity: 1 };
 		}
 	}
-
 
 }
 

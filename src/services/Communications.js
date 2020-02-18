@@ -15,7 +15,7 @@ import PaymentTypesApi from './api/payment-types.api';
 
 class Communications {
 	constructor() {
-		this._url = 'h';
+		this._url = '';
 		this._site = '';
 		this._user = '';
 		this._password = '';

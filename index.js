@@ -32,4 +32,4 @@ const MainApp = () => (
 );
 
 AppRegistry.registerComponent('semapos', () => MainApp);
-// console.disableYellowBox = true;
+console.disableYellowBox = true;

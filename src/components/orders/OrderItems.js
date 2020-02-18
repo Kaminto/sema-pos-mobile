@@ -385,12 +385,17 @@ class OrderItems extends React.PureComponent {
 
 	emptiesReturnedValue() {
 		let emptiesReturned = '';
+		let qty = this.state.selectedItem.quantity.toString();
+
 		if (!this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
 			return;
 		}
 
 		if (this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
 			emptiesReturned = this.state.selectedItem.emptiesReturned;
+			if(emptiesReturned === ''){
+				emptiesReturned = qty;
+			}
 		}
 
 		return (
@@ -804,7 +809,7 @@ class OrderItems extends React.PureComponent {
 				break;
 		}
 	}
-
+	// Wrong sales channel for Retailers or Resellers.
 	getItemPrice = (item) => {
 		if (!item) {
 			return 1;
