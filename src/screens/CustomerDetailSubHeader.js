@@ -59,7 +59,7 @@ class SelectedCustomerDetails extends React.PureComponent {
 			<>
 				<View style={styles.commandBarContainer}>
 					<View style={{ flexDirection: 'column', flex: 1.4, height: 100, paddingLeft: 10 }}>
-						<Text style={[styles.selectedCustomerText, { fontSize: 20 }]}>
+						<Text style={[styles.selectedCustomerText, { fontSize: 18 }]}>
 							{this.getName()} . {this.getPhone()}
 						</Text>
 						<Text style={styles.selectedCustomerText}>

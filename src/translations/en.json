@@ -118,7 +118,8 @@
 
   "make-payment": "Make Payment",
   "clear-loan": "Clear Loan",
-  "no-credentials": "Useraname or Password is required",
+  "no-username": "Wrong Credentials",
+  "no-credentials": "Username and Password is Required",
   "set-reminder": "SET",
   "topup": "Top Up",
   "topup-placeholder": "Top Up",

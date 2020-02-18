@@ -558,10 +558,6 @@ class Transactions extends React.PureComponent {
 					<Text style={styles.customername}>
 						{item.currency.toUpperCase()} {item.totalAmount}
 					</Text>
-					<Text style={styles.customername}>
-						Active:  {item.active}
-					</Text>
-
 				</View>
 			</TouchableNativeFeedback>
 		);

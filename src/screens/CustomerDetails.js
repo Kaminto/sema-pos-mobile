@@ -728,28 +728,27 @@ class TransactionDetail extends React.PureComponent {
 				<View>
 
 				</View>
-				<View style={styles.receiptStats}>
-					{!this.props.item.active && (
+				 <View style={styles.receiptStats}>
+					{this.props.item.syncAction === 'DELETE' && (
 						<Text style={styles.receiptStatusText}>
 							{'Deleted'.toUpperCase()}
 						</Text>
 					)}
-					{this.props.item.isLocal || this.props.item.updated ? (
+					{!this.props.item.active  ? (
 						<View style={{ flexDirection: 'row' }}>
-							{!this.props.item.active && <Text> - </Text>}
 							<Text style={styles.receiptPendingText}>
-								{'Pending'.toLowerCase()}
+								{'Pending'.toUpperCase()}
 							</Text>
 						</View>
 					) : (
 							<View style={{ flexDirection: 'row' }}>
 								{!this.props.item.active && <Text> - </Text>}
 								<Text style={styles.receiptSyncedText}>
-									{'Synced'.toLowerCase()}
+									{'Synced'.toUpperCase()}
 								</Text>
 							</View>
 						)}
-				</View>
+					</View>
 				<View>
 					<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>PAYMENT</Text>
 				</View>

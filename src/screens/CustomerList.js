@@ -359,8 +359,6 @@ class CustomerList extends React.PureComponent {
 
 	}
 
-
-
     filterItems = data => {
         let filter = {
             salesChannel: this.props.channelFilterString.length > 0 ? this.props.channelFilterString === 'all' ? "" : this.props.channelFilterString : "",
@@ -438,11 +436,11 @@ class CustomerList extends React.PureComponent {
                             {item.dueAmount.toFixed(2)}
                         </Text>
                     </View>
-					<View style={{ flex: 1 }}>
+					{/* <View style={{ flex: 1 }}>
                         <Text style={[styles.baseItem]}>
-                            {/* {item.wallet.toFixed(2)} */} 0
+                            {item.wallet.toFixed(2)}  0
                         </Text>
-                    </View>
+                    </View> */}
 
 
                 </View>
@@ -499,7 +497,8 @@ class CustomerList extends React.PureComponent {
         } else if (index === 1) {
             this.deleteCustomer();
         }
-    }
+	}
+
     deleteCustomer() {
         let alertMessage = i18n.t('delete-specific-customer', {
             customerName: this.props.selectedCustomer.name
@@ -603,13 +602,14 @@ class CustomerList extends React.PureComponent {
                 <View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem]}>{i18n.t('balance')}</Text>
                 </View>
-				<View style={[{ flex: 1 }]}>
+				{/* <View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem]}>Wallet</Text>
-                </View>
+                </View> */}
 
             </View>
         );
-    };
+	};
+
     getRowBackground = (index, isSelected) => {
         if (isSelected) {
             return styles.selectedBackground;
