@@ -237,10 +237,9 @@ class OrderRealm {
     softDeleteOrder(order) {
         try {
             realm.write(() => {
-                realm.write(() => {
-                    let orderObj = realm.objects('Order').filtered(`orderId = "${order.receiptId}"`);
+                    let orderObj = realm.objects('Order').filtered(`id = "${order.receiptId}"`);
                     orderObj[0].syncAction = 'delete';
-                })
+                    orderObj[0].isDelete = 0;              
             })
 
         } catch (e) {
