@@ -368,17 +368,15 @@ class CustomerList extends React.PureComponent {
             customerType: this.props.customerTypeFilter.length > 0 ? this.props.customerTypeFilter === 'all' ? "" : this.props.customerTypeFilter : "",
         };
         data = data.map(item => {
-            console.log('totalTopUp',this.totalTopUp(item.customerId));
-            console.log('customerCreditPaymentTypeReceipts',this.customerCreditPaymentTypeReceipts(item.customerId).reduce((total, item) => { return (total + item.amount) }, 0));
             return {
                 ...item,
-                wallet: this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId).reduce((total, item) => { return (total + item.amount) }, 0) >= 0 ? this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId) : 0 ,
+                //wallet: this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId).reduce((total, item) => { return (total + item.amount) }, 0) >= 0 ? this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId) : 0 ,
+                wallet: 0 ,
                 salesChannel: this.getCustomerSalesChannel(item).toLowerCase(),
                 searchString: item.name + ' ' + item.phoneNumber + ' ' + item.address,
                 customerType: this.getCustomerTypes(item).toLowerCase()
             }
-        });
-        console.log('datar', data)
+        });       
         let filteredItems = data.filter(function (item) {
             for (var key in filter) {
                 if (

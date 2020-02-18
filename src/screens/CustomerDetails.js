@@ -377,8 +377,7 @@ class CustomerDetails extends React.PureComponent {
 		if (this.props.receipts.length > 0) {
 			const totalCount = this.props.receipts.length;
 
-			let salesLogs = [...new Set(this.props.receipts)];
-			let remoteReceipts = salesLogs.map((receipt, index) => {
+			let receipts = this.comparePaymentTypeReceipts().map((receipt, index) => {
 				return {
 					active: receipt.active,
 					id: receipt.id,
@@ -386,6 +385,7 @@ class CustomerDetails extends React.PureComponent {
 					customerAccount: receipt.customer_account,
 					customer_account_id: receipt.customer_account_id,
 					receiptLineItems: receipt.receipt_line_items,
+					paymentTypes: receipt.paymentTypes,
 					isLocal: receipt.isLocal || false,
 					key: receipt.isLocal ? receipt.key : null,
 					index,
@@ -397,7 +397,7 @@ class CustomerDetails extends React.PureComponent {
 				};
 			});
 
-			remoteReceipts.sort((a, b) => {
+			receipts.sort((a, b) => {
 				return moment
 					.tz(a.createdAt, moment.tz.guess())
 					.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
@@ -410,7 +410,7 @@ class CustomerDetails extends React.PureComponent {
 				siteId = SettingRealm.getAllSetting().siteId;
 			}
 
-			return remoteReceipts.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
+			return receipts.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
 		} else {
 			return [];
 		}
@@ -554,7 +554,7 @@ class CustomerDetails extends React.PureComponent {
 	comparePaymentTypeReceipts() {
 		let receiptsPaymentTypes = [...this.comparePaymentTypes()];
 
-		let customerReceipts = [...this.prepareData()];
+		let customerReceipts = [...this.props.receipts];
 		let finalCustomerReceiptsPaymentTypes = [];
 		for (let customerReceipt of customerReceipts) {
 			let paymentTypes = [];

@@ -398,7 +398,7 @@ class Synchronization {
 				settings.token.length === 0 ||
 				currentDateTime > tokenExpirationDate
 			) {
-				Communications.login()
+				Communications.login(settings.user,settings.password)
 					.then(result => {
 						if (result.status === 200) {
 							SettingRealm.saveSettings(

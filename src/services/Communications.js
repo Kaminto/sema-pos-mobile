@@ -164,16 +164,20 @@ class Communications {
 		RecieptPaymentTypesApi.setSiteId(siteId);
 	}
 
-	login() {
+	login(usernameOrEmail,password) {
 		let options = {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',
 				'Content-Type': 'application/json'
 			},
+			// body: JSON.stringify({
+			// 	usernameOrEmail: "administrator",
+			// 	password: "Let'sGrow"
+			// })
 			body: JSON.stringify({
-				usernameOrEmail: "administrator",
-				password: "Let'sGrow"
+				usernameOrEmail: usernameOrEmail,
+				password: password
 			})
 		};
 
