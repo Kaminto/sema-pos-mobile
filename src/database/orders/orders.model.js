@@ -77,6 +77,7 @@ export const OrderSchema = {
         amount_cash: { type: 'int', optional: true },
         amount_loan: { type: 'int', optional: true },
         amount_mobile: { type: 'int', optional: true },
+        isDelete: { type: 'int', optional: true, default: 1 },
         isWalkIn: { type: 'bool', optional: true },
         amount_bank: { type: 'int', optional: true },
         amount_cheque: { type: 'int', optional: true },
