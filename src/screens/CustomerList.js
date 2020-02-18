@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-}
+// if (process.env.NODE_ENV === 'development') {
+// 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+// 	whyDidYouRender(React);
+// }
 import {
     View,
     Text,
@@ -12,10 +12,10 @@ import {
     UIManager,
 	Alert
 } from 'react-native';
-
+import moment from 'moment-timezone';
 import { FloatingAction } from "react-native-floating-action";
 
-
+import SettingRealm from '../database/settings/settings.operations';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as ToolbarActions from '../actions/ToolBarActions';
 
@@ -78,7 +78,7 @@ class CustomerList extends React.PureComponent {
 	}
 
 
-	static whyDidYouRender = true;
+	//static whyDidYouRender = true;
 
     searchCustomer = (searchText) => {
         this.props.customerActions.SearchCustomers(searchText);
@@ -241,10 +241,125 @@ class CustomerList extends React.PureComponent {
         let data = [];
         if (this.props.customers.length > 0) {
             data = this.filterItems(this.props.customers);
-        }
+        }        
         return data;
     };
 
+    totalTopUp(customerId) {
+		return this.prepareTopUpData(customerId).reduce((total, item) => { return (total + item.topup) }, 0)
+	}
+
+	prepareTopUpData(customerId) {
+
+		if (this.props.topups.length > 0) {
+			const totalCount = this.props.topups.length;
+			let topupLogs = [...new Set(this.props.topups)];
+			let topups = topupLogs.map((topup, index) => {
+				return {
+					active: topup.active,
+					//id: topup.id,
+					createdAt: topup.createdDate,
+					topUpId: topup.topUpId,
+					customer_account_id: topup.customer_account_id,
+					total: topup.total,
+					topup: topup.topup,
+					balance: topup.balance,
+					totalCount
+				};
+			});
+
+			topups.sort((a, b) => {
+				return moment
+					.tz(a.createdAt, moment.tz.guess())
+					.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+					? 1
+					: -1;
+			});
+
+			return topups.filter(r => r.customer_account_id === customerId);
+		} else {
+			return [];
+		}
+
+	}
+
+
+    customerCreditPaymentTypeReceipts(customerId) {
+		let receiptsPaymentTypes = [...this.compareCreditPaymentTypes()];
+		let customerReceipt = [...this.getCustomerRecieptData(customerId)];
+		let finalCustomerReceiptsPaymentTypes = [];
+
+		for (let receiptsPaymentType of receiptsPaymentTypes) {
+			const rpIndex = customerReceipt.map(function (e) { return e.id }).indexOf(receiptsPaymentType.receipt_id);
+			if (rpIndex >= 0) {
+				receiptsPaymentType.receipt = receiptsPaymentTypes[rpIndex];
+				finalCustomerReceiptsPaymentTypes.push(receiptsPaymentType);
+			}
+		}
+		return finalCustomerReceiptsPaymentTypes;
+	}
+
+	compareCreditPaymentTypes() {
+		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
+		let paymentTypes = [...this.props.paymentTypes];
+		let finalreceiptsPaymentTypes = [];
+		for (let receiptsPaymentType of receiptsPaymentTypes) {
+			const rpIndex = paymentTypes.map(function (e) { return e.id }).indexOf(receiptsPaymentType.payment_type_id);
+			if (rpIndex >= 0) {
+				if (paymentTypes[rpIndex].name === 'credit') {
+					receiptsPaymentType.name = paymentTypes[rpIndex].name;
+					finalreceiptsPaymentTypes.push(receiptsPaymentType);
+				}
+			}
+		}
+		return finalreceiptsPaymentTypes;
+    }
+    
+    getCustomerRecieptData(customerId) {
+
+		if (this.props.receipts.length > 0) {
+			const totalCount = this.props.receipts.length;
+
+			let salesLogs = [...new Set(this.props.receipts)];
+			let remoteReceipts = salesLogs.map((receipt, index) => {
+				return {
+					active: receipt.active,
+					id: receipt.id,
+					createdAt: receipt.created_at,
+					customerAccount: receipt.customer_account,
+					customer_account_id: receipt.customer_account_id,
+					receiptLineItems: receipt.receipt_line_items,
+					isLocal: receipt.isLocal || false,
+					key: receipt.isLocal ? receipt.key : null,
+					index,
+					updated: receipt.updated,
+					amountLoan: receipt.amount_loan,
+					totalCount,
+					currency: receipt.currency_code,
+					totalAmount: receipt.total
+				};
+			});
+
+			remoteReceipts.sort((a, b) => {
+				return moment
+					.tz(a.createdAt, moment.tz.guess())
+					.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+					? 1
+					: -1;
+			});
+
+			let siteId = 0;
+			if (SettingRealm.getAllSetting()) {
+				siteId = SettingRealm.getAllSetting().siteId;
+			}
+			return remoteReceipts.filter(r => r.customer_account_id === customerId);
+		} else {
+			return [];
+		}
+
+	}
+
+    
 
     filterItems = data => {
         let filter = {
@@ -253,14 +368,17 @@ class CustomerList extends React.PureComponent {
             customerType: this.props.customerTypeFilter.length > 0 ? this.props.customerTypeFilter === 'all' ? "" : this.props.customerTypeFilter : "",
         };
         data = data.map(item => {
+            console.log('totalTopUp',this.totalTopUp(item.customerId));
+            console.log('customerCreditPaymentTypeReceipts',this.customerCreditPaymentTypeReceipts(item.customerId).reduce((total, item) => { return (total + item.amount) }, 0));
             return {
                 ...item,
+                wallet: this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId).reduce((total, item) => { return (total + item.amount) }, 0) >= 0 ? this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId) : 0 ,
                 salesChannel: this.getCustomerSalesChannel(item).toLowerCase(),
                 searchString: item.name + ' ' + item.phoneNumber + ' ' + item.address,
                 customerType: this.getCustomerTypes(item).toLowerCase()
             }
         });
-
+        console.log('datar', data)
         let filteredItems = data.filter(function (item) {
             for (var key in filter) {
                 if (
@@ -321,7 +439,7 @@ class CustomerList extends React.PureComponent {
                     </View>
 					<View style={{ flex: 1 }}>
                         <Text style={[styles.baseItem]}>
-                            {item.dueAmount.toFixed(2)}
+                            {item.wallet.toFixed(2)}
                         </Text>
                     </View>
 
@@ -536,6 +654,12 @@ function mapStateToProps(state, props) {
         searchString: state.customerReducer.searchString,
         channelFilterString: state.customerReducer.channelFilterString,
         customerTypeFilter: state.customerReducer.customerTypeFilter,
+        receiptsPaymentTypes: state.paymentTypesReducer.receiptsPaymentTypes,
+		paymentTypes: state.paymentTypesReducer.paymentTypes,
+        products: state.productReducer.products,
+        receipts: state.receiptReducer.receipts,
+		topups: state.topupReducer.topups,
+		topupTotal: state.topupReducer.total,
     };
 }
 
