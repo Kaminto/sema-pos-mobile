@@ -32,7 +32,7 @@ import i18n from '../app/i18n';
 class NavigationDrawerStructure extends React.PureComponent {
     toggleDrawer = () => {
         this.props.navigationProps.toggleDrawer();
-	};
+    };
 
     render() {
         return (
@@ -55,19 +55,19 @@ class NavigationDrawerStructure extends React.PureComponent {
 
 const CreditHistoryStack = createStackNavigator({
     CreditHistory: {
-		screen: CreditHistory
+        screen: CreditHistory
     },
-  },
+},
     {
         headerMode: 'none',
-		initialRouteName: 'CreditHistory'
+        initialRouteName: 'CreditHistory'
     });
 
 const CustomerTransactionStack = createStackNavigator({
     Transaction: {
         screen: CustomerDetails
     },
-  },
+},
     {
         headerMode: 'none',
         initialRouteName: 'Transaction'
@@ -75,7 +75,12 @@ const CustomerTransactionStack = createStackNavigator({
 
 const TabNavigator = createBottomTabNavigator({
     Transaction: CustomerTransactionStack,
-    CustomerWallet: CreditHistoryStack
+    CustomerWallet: {
+        screen: CreditHistoryStack,
+        navigationOptions: {
+            title: 'Customer Wallet',
+        }
+    }
 },
     {
         initialRouteName: 'Transaction',
@@ -134,8 +139,8 @@ const ListCustomerStack = createStackNavigator({
                             marginTop: 12,
                             flex: 1
                         }}>
-							{/* && navigation.getParam('isDueAmount') > 0 */}
-                        {navigation.getParam('isCustomerSelected')  && (
+                        {/* && navigation.getParam('isDueAmount') > 0 */}
+                        {navigation.getParam('isCustomerSelected') && (
                             <Icons
                                 name='balance-scale'
                                 size={25}
@@ -148,7 +153,7 @@ const ListCustomerStack = createStackNavigator({
 
                         )}
                     </View>
-					<View
+                    <View
                         style={{
                             marginTop: 12,
                             flex: 1
@@ -170,25 +175,25 @@ const ListCustomerStack = createStackNavigator({
 
                         )}
                     </View>
-					<View
+                    <View
                         style={{
                             marginTop: 12,
                             flex: 1
                         }}>
                         {navigation.getParam('isCustomerSelected') && (
-							  <Icon
-							  name='md-more'
-							  size={25}
-							  color="white"
-							  style={{
-								  marginRight: 20,
-							  }}
-						  />
-						)}
-					</View>
+                            <Icon
+                                name='md-more'
+                                size={25}
+                                color="white"
+                                style={{
+                                    marginRight: 20,
+                                }}
+                            />
+                        )}
+                    </View>
 
 
-					<View
+                    <View
                         style={{
                             marginTop: 12,
                             flex: 1
@@ -257,8 +262,8 @@ const ListCustomerStack = createStackNavigator({
                         <Input
                             onChangeText={navigation.getParam('searchCustomer')}
                             placeholder={i18n.t('search-placeholder')}
-							placeholderTextColor='white'
-							inputStyle={{ flex: .8, color: 'white'}}
+                            placeholderTextColor='white'
+                            inputStyle={{ flex: .8, color: 'white' }}
                         />
                     </View>
 
@@ -267,19 +272,19 @@ const ListCustomerStack = createStackNavigator({
                             marginTop: 12,
                             flex: 1
                         }}>
-                          <Picker
-						  		mode="dropdown"
-                                selectedValue={navigation.getParam('customerTypeValue')}
-                                style={{ height: 50, width: 200, color: 'white' }}
-								onValueChange={navigation.getParam('checkCustomerTypefilter')}>
+                        <Picker
+                            mode="dropdown"
+                            selectedValue={navigation.getParam('customerTypeValue')}
+                            style={{ height: 50, width: 200, color: 'white' }}
+                            onValueChange={navigation.getParam('checkCustomerTypefilter')}>
 
-                                <Picker.Item label="All Customer Types" value="all" />
-                                <Picker.Item label="Business" value="Business" />
-                                <Picker.Item label="Household" value="Household" />
-                                <Picker.Item label="Retailer" value="Retailer" />
-                                <Picker.Item label="Outlet Franchise" value="Outlet Franchise" />
-                                <Picker.Item label="Anonymous" value="Anonymous" />
-                            </Picker>
+                            <Picker.Item label="All Customer Types" value="all" />
+                            <Picker.Item label="Business" value="Business" />
+                            <Picker.Item label="Household" value="Household" />
+                            <Picker.Item label="Retailer" value="Retailer" />
+                            <Picker.Item label="Outlet Franchise" value="Outlet Franchise" />
+                            <Picker.Item label="Anonymous" value="Anonymous" />
+                        </Picker>
 
                     </View>
 

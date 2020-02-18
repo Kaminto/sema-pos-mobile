@@ -499,7 +499,6 @@ class CustomerDetails extends React.PureComponent {
 	}
 
 	renderReceipt({ item, index }) {
-
 		return (
 			<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
 				<View key={index} style={{ padding: 15 }}>
