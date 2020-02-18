@@ -549,7 +549,7 @@ class CustomerList extends React.PureComponent {
 
     }
 
-    onPressItem  = item => {
+    onLongPressItem = item => {
         this.props.customerActions.CustomerSelected(item);
         this.setState({ refresh: !this.state.refresh });
         this.props.customerActions.setCustomerEditStatus(true);
@@ -560,7 +560,7 @@ class CustomerList extends React.PureComponent {
         Events.trigger('onOrder', { customer: item });
 	};
 
-	onLongPressItem = item => {
+	onPressItem = item => {
 		this.props.customerActions.CustomerSelected(item);
 		this.props.navigation.setParams({ isDueAmount: item.dueAmount });
 		this.props.navigation.setParams({ isCustomerSelected: false });
