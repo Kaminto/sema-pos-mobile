@@ -71,8 +71,8 @@ class Login extends React.PureComponent {
 
 		this.state = {
 			language: '',
-			user: "",
-			password: "",
+			user: null,
+			password: null,
 			selectedLanguage: {},
 			isLoading: false
 		};
@@ -86,45 +86,45 @@ class Login extends React.PureComponent {
 			return <Picker.Item key={i} value={s.iso_code} label={s.name} />
 		});
 		return (
-			<ImageBackground style={ styles.imgBackground }
-                 resizeMode='cover'
-                 source={require('../images/bottlesrackmin.jpg')}>
+			<ImageBackground style={styles.imgBackground}
+				resizeMode='cover'
+				source={require('../images/bottlesrackmin.jpg')}>
 				<ScrollView style={{ flex: 1, backgroundColor: 'transparent' }}>
-						<View style={{ flex: 1,  backgroundColor: 'transparent', alignItems: 'center' }}>
-							<Card
-								title={'Welcome to SEMA'}
-								titleStyle={{ fontSize: 26 }}
-								dividerStyle={{ display: 'none' }}
-								containerStyle={{ width: '40%', marginTop: 30, borderRadius: 5, elevation: 10 }}>
+					<View style={{ flex: 1, backgroundColor: 'transparent', alignItems: 'center' }}>
+						<Card
+							title={'Welcome to SEMA'}
+							titleStyle={{ fontSize: 26 }}
+							dividerStyle={{ display: 'none' }}
+							containerStyle={{ width: '40%', marginTop: 30, borderRadius: 5, elevation: 10 }}>
 
-								<Input
-									label={i18n.t('username-or-email-placeholder')}
-									onChangeText={this.onChangeEmail.bind(this)}
-									inputContainerStyle={[styles.inputText]}
-								/>
-								<Input
-									label={i18n.t('password-placeholder')}
-									secureTextEntry={true}
-									onChangeText={this.onChangePassword.bind(this)}
-									inputContainerStyle={[styles.inputText]}
-								/>
-								<Picker
-								    style={{ padding: 10, width:'95%', alignSelf:'center' }}
-									selectedValue={this.state.selectedLanguage.iso_code}
-									onValueChange={(itemValue, itemIndex) => {
-										this.onLanguageSelected(itemIndex);
-									}
-									}
-								>
-									{serviceItems}
-								</Picker>
-								<Button
-									onPress={this.onConnection.bind(this)}
-									buttonStyle={{ borderRadius: 8, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10, padding: 10 }}
-									title={i18n.t('connect')} />
+							<Input
+								label={i18n.t('username-or-email-placeholder')}
+								onChangeText={this.onChangeEmail.bind(this)}
+								inputContainerStyle={[styles.inputText]}
+							/>
+							<Input
+								label={i18n.t('password-placeholder')}
+								secureTextEntry={true}
+								onChangeText={this.onChangePassword.bind(this)}
+								inputContainerStyle={[styles.inputText]}
+							/>
+							<Picker
+								style={{ padding: 10, width: '95%', alignSelf: 'center' }}
+								selectedValue={this.state.selectedLanguage.iso_code}
+								onValueChange={(itemValue, itemIndex) => {
+									this.onLanguageSelected(itemIndex);
+								}
+								}
+							>
+								{serviceItems}
+							</Picker>
+							<Button
+								onPress={this.onConnection.bind(this)}
+								buttonStyle={{ borderRadius: 8, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10, padding: 10 }}
+								title={i18n.t('connect')} />
 
-							</Card>
-						</View>
+						</Card>
+					</View>
 					{
 						this.state.isLoading && (
 							<ActivityIndicator size={100} color="#ABC1DE" />
@@ -132,7 +132,7 @@ class Login extends React.PureComponent {
 					}
 				</ScrollView>
 
-			 </ImageBackground>
+			</ImageBackground>
 		);
 	}
 
@@ -185,9 +185,17 @@ class Login extends React.PureComponent {
 	};
 
 	onConnection() {
+		if (!this.state.user || !this.state.password) {
+			Alert.alert(
+				i18n.t('network-connection'),
+				i18n.t('no-credentials'),
+				[{ text: i18n.t('ok'), style: 'cancel' }],
+				{ cancelable: true }
+			);
+			return;
+		}
 		this.setState({ isLoading: true });
-
-		Communications.login()
+		Communications.login(this.state.user, this.state.password)
 			.then(result => {
 				if (result.status === 200) {
 					let oldSettings = { ...SettingRealm.getAllSetting() };
@@ -276,12 +284,12 @@ class Login extends React.PureComponent {
 			PosStorage.getRemoteReceipts()
 		);
 		this.props.receiptActions.setReceipts(
-            OrderRealm.getAllOrder()
-        );
+			OrderRealm.getAllOrder()
+		);
 
-        this.props.discountActions.setDiscounts(
-            DiscountRealm.getDiscounts()
-        );
+		this.props.discountActions.setDiscounts(
+			DiscountRealm.getDiscounts()
+		);
 		Synchronization.initialize(
 			CustomerRealm.getLastCustomerSync(),
 			ProductsRealm.getLastProductsync(),
@@ -340,7 +348,7 @@ function mapStateToProps(state, props) {
 		settings: state.settingsReducer.settings,
 		auth: state.authReducer,
 		network: state.networkReducer.network,
-        discounts: state.discountReducer.discounts
+		discounts: state.discountReducer.discounts
 	};
 }
 function mapDispatchToProps(dispatch) {
@@ -354,7 +362,7 @@ function mapDispatchToProps(dispatch) {
 		inventoryActions: bindActionCreators(InventoryActions, dispatch),
 		productActions: bindActionCreators(ProductActions, dispatch),
 		receiptActions: bindActionCreators(receiptActions, dispatch),
-        discountActions: bindActionCreators(discountActions, dispatch),
+		discountActions: bindActionCreators(discountActions, dispatch),
 	};
 }
 
@@ -421,9 +429,9 @@ const styles = StyleSheet.create({
 	},
 
 	imgBackground: {
-        width: '100%',
-        height: '100%',
-        flex: 1
+		width: '100%',
+		height: '100%',
+		flex: 1
 	},
 
 	updating: {

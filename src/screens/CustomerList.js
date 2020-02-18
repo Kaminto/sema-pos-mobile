@@ -375,10 +375,11 @@ class CustomerList extends React.PureComponent {
                 // wallet: this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId).reduce((total, item) => { return (total + item.amount) }, 0) >= 0 ? this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId) : 0 ,
                 salesChannel: this.getCustomerSalesChannel(item).toLowerCase(),
                 searchString: item.name + ' ' + item.phoneNumber + ' ' + item.address,
-                customerType: this.getCustomerTypes(item).toLowerCase()
+				customerType: this.getCustomerTypes(item).toLowerCase(),
+				wallet: 0
             }
         });
-        // console.log('datar', data)
+        // console.log('data', data)
         let filteredItems = data.filter(function (item) {
             for (var key in filter) {
                 if (

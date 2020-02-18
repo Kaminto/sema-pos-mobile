@@ -55,12 +55,16 @@ class NavigationDrawerStructure extends React.PureComponent {
 
 const CreditHistoryStack = createStackNavigator({
     CreditHistory: {
-        screen: CreditHistory
-    },
+        screen: CreditHistory,
+        navigationOptions: {
+            title: 'Customer Wallet',
+        }
+    }
 },
     {
         headerMode: 'none',
         initialRouteName: 'CreditHistory'
+
     });
 
 const CustomerTransactionStack = createStackNavigator({
@@ -75,12 +79,8 @@ const CustomerTransactionStack = createStackNavigator({
 
 const TabNavigator = createBottomTabNavigator({
     Transaction: CustomerTransactionStack,
-    CustomerWallet: {
-        screen: CreditHistoryStack,
-        navigationOptions: {
-            title: 'Customer Wallet',
-        }
-    }
+    CustomerWallet: CreditHistoryStack,
+
 },
     {
         initialRouteName: 'Transaction',

@@ -118,6 +118,7 @@
 
   "make-payment": "Make Payment",
   "clear-loan": "Clear Loan",
+  "no-credentials": "Useraname or Password is required",
   "set-reminder": "SET",
   "topup": "Top Up",
   "topup-placeholder": "Top Up",
