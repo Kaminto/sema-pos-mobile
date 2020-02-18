@@ -58,7 +58,7 @@ class SelectedCustomerDetails extends React.PureComponent {
 		return (
 			<>
 				<View style={styles.commandBarContainer}>
-					<View style={{ flexDirection: 'column', flex: 1, height: 100, paddingLeft: 10 }}>
+					<View style={{ flexDirection: 'column', flex: 1.4, height: 100, paddingLeft: 10 }}>
 						<Text style={[styles.selectedCustomerText, { fontSize: 20 }]}>
 							{this.getName()} . {this.getPhone()}
 						</Text>
@@ -73,11 +73,11 @@ class SelectedCustomerDetails extends React.PureComponent {
 
 					</View>
 					<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
-						<Text style={styles.selectedCustomerText}>
+						<Text style={[styles.selectedCustomerText, {padding: 5}]}>
 							Customer Wallet: {this.props.topupTotal - this.getCreditPurchases()}
 						</Text>
 
-						<Text style={styles.selectedCustomerText}>
+						<Text style={[styles.selectedCustomerText, {padding: 5}]}>
 							Loan Balance:  {this.props.selectedCustomer.dueAmount}
 						</Text>
 
@@ -90,12 +90,12 @@ class SelectedCustomerDetails extends React.PureComponent {
 								<Text style={styles.buttonText}>Make Sale</Text>
 							</TouchableHighlight>
 						</View>
-						<View style={styles.completeOrder}>
+						<View style={[styles.completeOrder]}>
 							<TouchableHighlight
 								onPress={() => {
 									this.refs.modal6.open();
 								}}>
-								<Text style={styles.buttonText}>Topup Wallet / Loan Repayment</Text>
+								<Text style={styles.buttonText}>{`Topup Wallet / Repy Loan`}</Text>
 							</TouchableHighlight>
 						</View>
 					</View>
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
 		height: 70,
 		elevation: 10,
 		alignSelf: 'center',
-		width: '90%',
+		width: '85%',
 		justifyContent: 'center',
 		color: 'white',
 		paddingBottom: 20

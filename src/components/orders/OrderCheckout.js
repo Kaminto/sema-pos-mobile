@@ -1216,7 +1216,10 @@ class OrderCheckout extends React.PureComponent {
 
 			Alert.alert(
 				'SEMA',
-				'Payment Made. Loan Paid: ' + this.state.loanPaid + ' Wallet Topup: ' +this.state.topUpExpected,
+				'Payment Made. Loan Cleared: ' + this.state.loanPaid +
+				'Wallet Topup: ' +this.state.topUpExpected +
+				'Loan Balance: ' + this.props.selectedCustomer.dueAmount +
+				'Customer Wallet: ' + this.currentCredit(),
 				[{
 					text: 'OK',
 					onPress: () => {

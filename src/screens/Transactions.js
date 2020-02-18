@@ -540,36 +540,8 @@ class Transactions extends React.PureComponent {
 		};
 	}
 
-	deleteReceipt(item, updatedFields) {
-		// this.props.receiptActions.updateRemoteReceipt(
-		// 	item.index,
-		// 	updatedFields
-		// );
-
-		// PosStorage.updateLoggedReceipt(item.id, updatedFields);
-
-		// PosStorage.updatePendingSale(item.id);
-
-		// // Take care of customer due amount
-		// if (item.amountLoan) {
-		// 	item.customerAccount.dueAmount -= item.amountLoan;
-
-		// 	CustomerRealm.updateCustomer(
-		// 		item.customerAccount,
-		// 		item.customerAccount.phoneNumber,
-		// 		item.customerAccount.name,
-		// 		item.customerAccount.address,
-		// 		item.customerAccount.salesChannelId,
-		// 		item.customerAccount.customerTypeId,
-		// 		item.customerAccount.frequency,
-		// 		item.customerAccount.secondPhoneNumber
-		// 	);
-		// }
-
-		// this.setState({ refresh: !this.state.refresh });
-	}
-
 	renderReceipt({ item, index }) {
+		console.log(JSON.stringify(item))
 		return (
 			<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
 				<View key={index} style={{ padding: 15 }}>
@@ -586,6 +558,10 @@ class Transactions extends React.PureComponent {
 					<Text style={styles.customername}>
 						{item.currency.toUpperCase()} {item.totalAmount}
 					</Text>
+					<Text style={styles.customername}>
+						Active:  {item.active}
+					</Text>
+
 				</View>
 			</TouchableNativeFeedback>
 		);
