@@ -108,11 +108,6 @@ class Synchronization {
 			//Sync customers
 			CustomerSync.synchronizeCustomers();
 
-			// //Sync Sales
-			// this.synchronizeSales();
-
-			//Sync Receipts
-			this.synchronizeReceipts();
 			//Synchronize receipts
 			this.synchReceipts();
 		} else {
@@ -212,14 +207,6 @@ class Synchronization {
 								}
 							);
 
-							const promiseReceipts = this.synchronizeReceipts().then(
-								results => {
-									syncResult.receipts = results;
-									return results;
-								}
-							);
-
-
 							// This will make sure they run synchronously
 							[
 								promiseCustomers,
@@ -228,8 +215,7 @@ class Synchronization {
 								promiseProducts,
 								promiseProductMrps,
 								promiseOrders,
-								promiseSales,
-								promiseReceipts
+								promiseSales
 							]
 								.reduce((promiseChain, currentTask) => {
 									return promiseChain.then(chainResults =>
@@ -297,65 +283,7 @@ class Synchronization {
 		});
 	}
 
-	async synchronizeReceipts() {
-		let settings = SettingRealm.getAllSetting();
-		let remoteReceipts = await PosStorage.loadRemoteReceipts();
 
-		const receiptIds = [];
-		remoteReceipts = remoteReceipts
-			.map(receipt => {
-				let receiptData = {
-					id: receipt.id,
-					active: receipt.active,
-					lineItems: [],
-					isLocal: receipt.isLocal
-				};
-
-				if (receipt.updated) {
-					receiptData.lineItems = receipt.receipt_line_items.map(
-						lineItem => {
-							return {
-								id: lineItem.id,
-								active: lineItem.active
-							};
-						}
-					);
-
-					receiptData.updated = true;
-				}
-
-				receiptIds.push(receipt.id);
-				return receiptData;
-			})
-			// Making sure we don't enter local receipts twice - synchronizeSales is already taking care of this
-			// We do this after the map because we don't want to pull their remote equivalent from the DB,
-			// so we're sending their IDs too.
-			// Sending only remote receipts and local receipts that have been updated.
-			.filter(receipt => receipt.updated || !receipt.isLocal);
-
-		return Communications.sendLoggedReceipts(
-			settings.siteId,
-			remoteReceipts,
-			receiptIds
-		).then(result => {
-			// result.newReceipts is the list of today's receipts that we don't have in the local storage already
-			return new Promise(resolve => {
-				if (!result.newReceipts.length) {
-					Events.trigger('ReceiptsFetched', []);
-					return resolve();
-				}
-				PosStorage.addRemoteReceipts(result.newReceipts).then(
-					allReceipts => {
-						resolve({
-							error: null,
-							receipts: result.newReceipts.length
-						});
-						Events.trigger('ReceiptsFetched', allReceipts);
-					}
-				);
-			});
-		});
-	}
 
 	synchReceipts() {
 		let date = new Date();

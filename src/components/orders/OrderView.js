@@ -16,7 +16,7 @@ class OrderView extends React.PureComponent {
 	constructor(props) {
 		super(props);
 	}
-	static whyDidYouRender = true;
+	// static whyDidYouRender = true;
 
 	render() {
 		return (

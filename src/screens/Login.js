@@ -401,7 +401,6 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white'
 	},
 	inputText: {
-		fontSize: 22,
 		alignSelf: 'center',
 		borderWidth: 2,
 		borderRadius: 8,

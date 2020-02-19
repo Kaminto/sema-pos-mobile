@@ -16,7 +16,7 @@ class OrderTotal extends React.PureComponent {
 		super(props);
 	}
 
-	static whyDidYouRender = true;
+	// static whyDidYouRender = true;
 
 	render() {
 		return (

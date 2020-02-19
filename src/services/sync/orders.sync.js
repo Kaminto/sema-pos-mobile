@@ -63,7 +63,7 @@ class OrderSync {
                             onlyLocally.forEach(localOrder => {
                                 console.log(
                                     'localOrder - ',
-                                    localOrder
+                                    localOrder.total + ' - ' + localOrder.totalAmount
                                 );
 
                                 let products = [];
@@ -111,7 +111,7 @@ class OrderSync {
                                         receiptId: localOrder.receiptId,
                                         salesChannelId: localOrder.sales_channel_id,
                                         siteId: localOrder.kiosk_id,
-										total: 10000
+										total: localOrder.total != null ? localOrder.total : 0
                                     }
                                 )
                                     .then((response) => {

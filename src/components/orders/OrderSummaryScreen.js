@@ -10,7 +10,7 @@ import OrderItems from "./OrderItems";
 import OrderCheckout from "./OrderCheckout";
 
 export default class OrderSummaryScreen extends React.PureComponent {
-	static whyDidYouRender = true;
+	// static whyDidYouRender = true;
 
 	render() {
 		return (
