@@ -4,6 +4,22 @@ import { View, StyleSheet, Image, Text, Alert, ActivityIndicator } from 'react-n
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import CreditRealm from '../database/credit/credit.operations';
+import OrderRealm from '../database/orders/orders.operations';
+import InventroyRealm from '../database/inventory/inventory.operations';
+import ProductsRealm from '../database/products/product.operations';
+import DiscountRealm from '../database/discount/discount.operations';
+import CustomerReminderRealm from '../database/customer-reminder/customer-reminder.operations';
+import Synchronization from '../services/Synchronization';
+import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
+import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
+import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_payment_types.operations';
+import CustomerRealm from '../database/customers/customer.operations';
+import SettingRealm from '../database/settings/settings.operations';
+import Synchronization from '../services/Synchronization';
+import Communications from '../services/Communications';
+
+
 import * as CustomerActions from '../actions/CustomerActions';
 import * as NetworkActions from '../actions/NetworkActions';
 import * as SettingsActions from '../actions/SettingsActions';
@@ -16,30 +32,7 @@ import * as WastageActions from "../actions/WastageActions";
 import * as discountActions from '../actions/DiscountActions';
 import * as paymentTypesActions from '../actions/PaymentTypesActions';
 import * as CustomerReminderActions from '../actions/CustomerReminderActions';
-import CreditRealm from '../database/credit/credit.operations';
-import OrderRealm from '../database/orders/orders.operations';
-import InventroyRealm from '../database/inventory/inventory.operations';
-import ProductsRealm from '../database/products/product.operations';
-import DiscountRealm from '../database/discount/discount.operations';
-import CustomerReminderRealm from '../database/customer-reminder/customer-reminder.operations';
-import Synchronization from '../services/Synchronization';
-import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
-import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
-import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_payment_types.operations';
- 
-
-
-
-
-
-
-
-
 import * as AuthActions from '../actions/AuthActions';
-import CustomerRealm from '../database/customers/customer.operations';
-import SettingRealm from '../database/settings/settings.operations';
-import Synchronization from '../services/Synchronization';
-import Communications from '../services/Communications';
 import i18n from '../app/i18n';
 class CustomSidebarMenu extends React.PureComponent {
   constructor() {
