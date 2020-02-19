@@ -1,9 +1,5 @@
-import React, { Component } from "react";
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-}
-import { Dimensions, View, Animated } from "react-native";
+import React from "react";
+import { Dimensions, Animated } from "react-native";
 import ProductList from "./ProductList";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -43,7 +39,6 @@ class ProductListScreen extends React.PureComponent {
 	}
 
 	render() {
-		console.log('jyu');
 		let { fadeAnim } = this.state;
 		if (this.state.salesChannel) {
 			return (

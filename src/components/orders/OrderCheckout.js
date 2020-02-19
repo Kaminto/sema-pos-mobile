@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 if (process.env.NODE_ENV === 'development') {
 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
 	whyDidYouRender(React);
@@ -186,7 +186,7 @@ class OrderCheckout extends React.PureComponent {
 									marginRight: 20
 								}}>
 								<Card
-									containerStyle={{ backgroundColor: '#ABC1DE', color: 'white' }}>
+									containerStyle={{ backgroundColor: '#ABC1DE' }}>
 
 									<View style={{ flex: 1, flexDirection: 'row' }}>
 										{this.getSaleAmount()}
@@ -216,7 +216,7 @@ class OrderCheckout extends React.PureComponent {
 									</View>
 								</Card>
 
-								<View style={{ flex: 1, flexDirection: 'row' }}>
+								<View style={{ flex: 1, flexDirection: 'row', padding: 0 }}>
 									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
 								</View>
 
@@ -377,7 +377,7 @@ class OrderCheckout extends React.PureComponent {
 							onChangeText={(value) => this.setEmptiesReturned(value, item)}
 							underlineColorAndroid="transparent"
 							placeholder="0"
-							value={item.emptiesReturned}
+							value={(item.emptiesReturned == '') ? item.quantity.toString() : item.emptiesReturned}
 						/>
 					</View>
 					<View style={[{ flex: 1 }]}>
@@ -1023,7 +1023,6 @@ class OrderCheckout extends React.PureComponent {
 			this.saveOrder(true);
 
 		}
-
 		if (this.currentCredit() < this.calculateOrderDue()) {
 			// if credit is less than order due:-
 			// compare totalPaid with order due
@@ -1035,9 +1034,7 @@ class OrderCheckout extends React.PureComponent {
 					this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + Number(totalAmountPaid - this.calculateOrderDue());
 					this.updateWallet(this.props.selectedCustomer.walletBalance);
 					this.saveOrder(true);
-				}
-
-				if (this.calculateAmountDue() > 0) {
+				} else if (this.calculateAmountDue() > 0) {
 					//clear loan and topup wallet if there is any balance
 					let postToLoan = Number(totalAmountPaid - this.calculateOrderDue());
 					if (postToLoan > this.calculateAmountDue()) {
@@ -1066,9 +1063,7 @@ class OrderCheckout extends React.PureComponent {
 					}
 
 				}
-			}
-
-			if (totalAmountPaid < this.calculateOrderDue()) {
+			} else  if (totalAmountPaid < this.calculateOrderDue()) {
 				//add loan payment type to reducer
 				//add loan to dueAmount
 
@@ -1080,6 +1075,8 @@ class OrderCheckout extends React.PureComponent {
 					this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[loanIndex], created_at: new Date(), isSelected: this.props.paymentTypes[loanIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() - totalAmountPaid });
 				}
 				this.saveOrder(false);
+			} else {
+				this.saveOrder(true);
 			}
 
 		}
@@ -1219,51 +1216,12 @@ class OrderCheckout extends React.PureComponent {
 				}
 			}
 
-			// Data
-			// let customerwalletvalue:
-			// let salesamountdue:
-			// let loanbalance:
-			// let amountPaid.
-			// let totalamountdue.
-
-			// amountPaid = cash + bank + wallet + cheque;
-
-			// if (amountpaid > totalAmountdue) {
-			// 	total
-
-			// } else if (amountpaid < totalAmountdue) {
-
-			// }
-
-			// if (loanbalance > 0) {
-			// 	if (amountpaid > salesamountdue) {
-
-			// 	}
-
-			// }
-
-			// if(customerwalletvalue > 0 && customerwalletvalue <= salesamountdue){
-			// 	// amountpaid > 0
-			// 	// record payment as credit
-			// 	// amountpaid = amountpaid + credit
-			// 	// record (salesamountdue - customerwalletvalue) as loan
-
-			// } else if (customerwalletvalue > 0 && customerwalletvalue >= salesamountdue) {
-			// 	// record payment as credit
-			// 	// amountpaid > 0 -- topup credit
-			// }
-
-
-			//Actions:
-			//Topup wallet
-			//Clear loan
-			//Add loan
-
-
-
 			Alert.alert(
 				'SEMA',
-				'Payment Made',
+				'Payment Made. \nLoan Cleared: ' + this.state.loanPaid +
+				'\nWallet Topup: ' +this.state.topUpExpected +
+				'\nLoan Balance: ' + this.props.selectedCustomer.dueAmount +
+				'\nCustomer Wallet: ' + this.currentCredit(),
 				[{
 					text: 'OK',
 					onPress: () => {
@@ -1333,7 +1291,6 @@ class OrderCheckout extends React.PureComponent {
 		}
 		return final;
 	}
-
 
 	saveCustomerFrequency(receipts) {
 		CustomerReminderRealm.createCustomerReminder(this.getRemindersNew(receipts)[0])
@@ -1474,7 +1431,6 @@ class OrderCheckout extends React.PureComponent {
 			return { opacity: 1 };
 		}
 	}
-
 
 }
 

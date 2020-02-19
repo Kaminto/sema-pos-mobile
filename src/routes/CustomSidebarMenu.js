@@ -18,13 +18,11 @@ import i18n from '../app/i18n';
 class CustomSidebarMenu extends React.PureComponent {
   constructor() {
     super();
-
-
     this.state = {
       animating: false,
       language: '',
-      user: "administrator",
-      password: "Let'sGrow",
+      user: "",
+      password: "",
       selectedLanguage: {},
       isLoading: false
     };

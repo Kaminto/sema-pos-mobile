@@ -385,12 +385,17 @@ class OrderItems extends React.PureComponent {
 
 	emptiesReturnedValue() {
 		let emptiesReturned = '';
+		let qty = this.state.selectedItem.quantity.toString();
+
 		if (!this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
 			return;
 		}
 
 		if (this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
 			emptiesReturned = this.state.selectedItem.emptiesReturned;
+			if(emptiesReturned === ''){
+				emptiesReturned = qty;
+			}
 		}
 
 		return (
@@ -535,7 +540,7 @@ class OrderItems extends React.PureComponent {
 				</View>
 				<View style={[{ flex: 2 }]}>
 					<Text numberOfLines={1} style={[styles.baseItem, {textAlign: 'right', paddingRight: 5}]}>
-						{this.getCurrency(item)} {this.getDiscountPrice((item.quantity * this.getItemPrice(item.product)), item)}</Text>
+						{this.getCurrency(item)} {this.getDiscountPrice((item.quantity * item.unitPrice), item)}</Text>
 				</View>
 			</View>
 		);
@@ -804,7 +809,7 @@ class OrderItems extends React.PureComponent {
 				break;
 		}
 	}
-
+	// Wrong sales channel for Retailers or Resellers.
 	getItemPrice = (item) => {
 		if (!item) {
 			return 1;
@@ -816,7 +821,7 @@ class OrderItems extends React.PureComponent {
 				return productMrp.priceAmount;
 			}
 		}
-		return item.priceAmount;	// Just use product price
+		return item.unitPrice ;	// Just use product price
 	};
 
 	getCurrency = (item) => {

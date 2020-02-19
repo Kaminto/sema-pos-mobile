@@ -187,7 +187,7 @@ class Login extends React.PureComponent {
 	onConnection() {
 		if (!this.state.user || !this.state.password) {
 			Alert.alert(
-				i18n.t('network-connection'),
+				i18n.t('no-username'),
 				i18n.t('no-credentials'),
 				[{ text: i18n.t('ok'), style: 'cancel' }],
 				{ cancelable: true }

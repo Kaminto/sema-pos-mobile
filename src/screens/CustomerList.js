@@ -241,7 +241,7 @@ class CustomerList extends React.PureComponent {
         let data = [];
         if (this.props.customers.length > 0) {
             data = this.filterItems(this.props.customers);
-        }        
+        }
         return data;
     };
 
@@ -314,7 +314,7 @@ class CustomerList extends React.PureComponent {
 		}
 		return finalreceiptsPaymentTypes;
     }
-    
+
     getCustomerRecieptData(customerId) {
 
 		if (this.props.receipts.length > 0) {
@@ -359,8 +359,6 @@ class CustomerList extends React.PureComponent {
 
 	}
 
-    
-
     filterItems = data => {
         let filter = {
             salesChannel: this.props.channelFilterString.length > 0 ? this.props.channelFilterString === 'all' ? "" : this.props.channelFilterString : "",
@@ -368,15 +366,17 @@ class CustomerList extends React.PureComponent {
             customerType: this.props.customerTypeFilter.length > 0 ? this.props.customerTypeFilter === 'all' ? "" : this.props.customerTypeFilter : "",
         };
         data = data.map(item => {
+            // console.log('totalTopUp',this.totalTopUp(item.customerId));
+            // console.log('customerCreditPaymentTypeReceipts',this.customerCreditPaymentTypeReceipts(item.customerId).reduce((total, item) => { return (total + item.amount) }, 0));
             return {
                 ...item,
-                //wallet: this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId).reduce((total, item) => { return (total + item.amount) }, 0) >= 0 ? this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId) : 0 ,
                 walletBalance: item.walletBalance ? item.walletBalance : 0 ,
                 salesChannel: this.getCustomerSalesChannel(item).toLowerCase(),
                 searchString: item.name + ' ' + item.phoneNumber + ' ' + item.address,
-                customerType: this.getCustomerTypes(item).toLowerCase()
+				customerType: this.getCustomerTypes(item).toLowerCase(),
             }
-        });       
+        });
+        // console.log('data', data)
         let filteredItems = data.filter(function (item) {
             for (var key in filter) {
                 if (
@@ -411,21 +411,21 @@ class CustomerList extends React.PureComponent {
                             alignItems: 'center'
                         }
                     ]}>
-                    <View style={{ flex: 2 }}>
+                    <View style={{ flex: 1 }}>
                         <Text style={[styles.baseItem, styles.leftMargin]}>
                             {item.name}
                         </Text>
                     </View>
-                    <View style={{ flex: 1.5 }}>
+                    <View style={{ flex: 1 }}>
                         <Text style={[styles.baseItem]}>
                             {item.phoneNumber}
                         </Text>
                     </View>
 
-                    <View style={{ flex: 2 }}>
+                    <View style={{ flex: 1 }}>
                         <Text style={[styles.baseItem]}>{item.address}</Text>
                     </View>
-                    <View style={{ flex: 1.5 }}>
+                    <View style={{ flex: 1 }}>
                         <Text style={[styles.baseItem]}>
                             {this.getCustomerTypes(item)}
                         </Text>
@@ -496,7 +496,8 @@ class CustomerList extends React.PureComponent {
         } else if (index === 1) {
             this.deleteCustomer();
         }
-    }
+	}
+
     deleteCustomer() {
         let alertMessage = i18n.t('delete-specific-customer', {
             customerName: this.props.selectedCustomer.name
@@ -581,20 +582,20 @@ class CustomerList extends React.PureComponent {
                     },
                     styles.headerBackground
                 ]}>
-                <View style={[{ flex: 2 }]}>
+                <View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem, styles.leftMargin]}>
                         {i18n.t('account-name')}
                     </Text>
                 </View>
-                <View style={[{ flex: 1.5 }]}>
+                <View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem]}>
                         {i18n.t('telephone-number')}
                     </Text>
                 </View>
-                <View style={[{ flex: 2 }]}>
+                <View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem]}>{i18n.t('address')}</Text>
                 </View>
-                <View style={[{ flex: 1.5 }]}>
+                <View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem]}>{i18n.t('customer-type')}</Text>
                 </View>
                 <View style={[{ flex: 1 }]}>
@@ -606,7 +607,8 @@ class CustomerList extends React.PureComponent {
 
             </View>
         );
-    };
+	};
+
     getRowBackground = (index, isSelected) => {
         if (isSelected) {
             return styles.selectedBackground;
