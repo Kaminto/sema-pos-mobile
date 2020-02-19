@@ -18,8 +18,6 @@ import CustomerRealm from '../database/customers/customer.operations';
 import SettingRealm from '../database/settings/settings.operations';
 import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
-
-
 import * as CustomerActions from '../actions/CustomerActions';
 import * as NetworkActions from '../actions/NetworkActions';
 import * as SettingsActions from '../actions/SettingsActions';
