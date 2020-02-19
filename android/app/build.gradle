@@ -111,11 +111,8 @@ android {
         applicationId "com.semapos"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 70
+        versionCode 71
         versionName "0.7.0"
-        // ndk {
-        //     abiFilters "armeabi-v7a", "x86"
-        // }
     }
 
     signingConfigs {
@@ -158,7 +155,7 @@ android {
             def abi = output.getFilter(OutputFile.ABI)
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
-                        versionCodes.get(abi) * 1048799 + defaultConfig.versionCode
+                        versionCodes.get(abi) * 1077799 + defaultConfig.versionCode
             }
         }
     }

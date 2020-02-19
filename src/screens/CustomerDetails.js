@@ -710,7 +710,7 @@ class TransactionDetail extends React.PureComponent {
 						onPress={this.onDeleteReceipt(this.props.item)}
 						style={[
 							styles.receiptDeleteButton,
-							{ backgroundColor: this.props.item.active ? 'red' : 'grey' }
+							{ backgroundColor: this.props.item.isDelete != 0 ? 'red' : 'grey' }
 						]}>
 						<Text style={styles.receiptDeleteButtonText}>X</Text>
 					</TouchableOpacity>
@@ -729,7 +729,7 @@ class TransactionDetail extends React.PureComponent {
 
 				</View>
 				 <View style={styles.receiptStats}>
-					{this.props.item.syncAction === 'DELETE' && (
+					{this.props.item.isDelete == 1 && (
 						<Text style={styles.receiptStatusText}>
 							{'Deleted'.toUpperCase()}
 						</Text>

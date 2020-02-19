@@ -79,7 +79,10 @@ class OrderSync {
                                         productId:  localOrder.receipt_line_items[i].product_id,
                                         quantity: localOrder.receipt_line_items[i].quantity,
                                         sku:  localOrder.receipt_line_items[i].sku,
-                                        notes:  localOrder.receipt_line_items[i].notes
+										notes:  localOrder.receipt_line_items[i].notes,
+										emptiesReturned: localOrder.receipt_line_items[i].emptiesReturned,
+										damagedBottles: localOrder.receipt_line_items[i].damagedBottles,
+										pendingBottles: localOrder.receipt_line_items[i].refillPending
                                     })
 
 
@@ -108,7 +111,7 @@ class OrderSync {
                                         receiptId: localOrder.receiptId,
                                         salesChannelId: localOrder.sales_channel_id,
                                         siteId: localOrder.kiosk_id,
-                                        total: localOrder.totalAmount,
+										total: 10000
                                     }
                                 )
                                     .then((response) => {

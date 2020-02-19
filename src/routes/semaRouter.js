@@ -400,7 +400,7 @@ const TransactionStack = createStackNavigator({
                             <Picker.Item label="Loan" value="loan" />
                             <Picker.Item label="Cheque" value="cheque" />
                             <Picker.Item label="Bank" value="bank" />
-                            <Picker.Item label="Credit" value="credit" />
+                            <Picker.Item label="Wallet" value="credit" />
                         </Picker>
                     </View>
                 </View>
