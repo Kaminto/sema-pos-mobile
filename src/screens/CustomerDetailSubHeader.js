@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
 	View,
 	Text,
@@ -8,10 +8,6 @@ import {
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
-import * as ToolbarActions from '../actions/ToolBarActions';
-
-
 import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
 import CustomerReminderRealm from '../database/customer-reminder/customer-reminder.operations';
 
@@ -74,7 +70,7 @@ class SelectedCustomerDetails extends React.PureComponent {
 					</View>
 					<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
 						<Text style={[styles.selectedCustomerText, {padding: 5}]}>
-							Customer Wallet: {this.props.topupTotal - this.getCreditPurchases()}
+							Customer Wallet: {this.props.selectedCustomer.walletBalance}
 						</Text>
 
 						<Text style={[styles.selectedCustomerText, {padding: 5}]}>
@@ -131,10 +127,6 @@ class SelectedCustomerDetails extends React.PureComponent {
 		this.refs.modal6.close();
 	};
 
-	getCreditPurchases() {
-		return this.props.creditSales.reduce((total, item) => { return (total + item.amount) }, 0)
-	}
-
 	getReminder(id) {
 		if (CustomerReminderRealm.getCustomerReminderById(id).length > 0) {
 			return CustomerReminderRealm.getCustomerReminderById(id)[0].reminder_date;
@@ -142,15 +134,6 @@ class SelectedCustomerDetails extends React.PureComponent {
 			return 'N/A';
 		}
 	}
-
-	getLastPurchaseDate(id) {
-		if (CustomerReminderRealm.getCustomerReminderById(id).length > 0) {
-			return CustomerReminderRealm.getCustomerReminderById(id)[0].lastPurchaseDate;
-		} else {
-			return 'N/A';
-		}
-	}
-
 
 
 	getName() {

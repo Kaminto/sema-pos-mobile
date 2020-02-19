@@ -25,7 +25,11 @@ class ProductList extends React.PureComponent {
 		// this.onPressItem = this.onPressItem.bind(this);
 	}
 
-	static whyDidYouRender = true;
+	// static whyDidYouRender = true;
+
+	// shouldComponentUpdate(nextState, nextProps) {
+	// 	return false;
+	// }
 
 	render() {
 		return (

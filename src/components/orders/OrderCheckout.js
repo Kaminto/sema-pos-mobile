@@ -30,7 +30,6 @@ import CustomerReminderRealm from '../../database/customer-reminder/customer-rem
 
 import ReceiptPaymentTypeRealm from '../../database/reciept_payment_types/reciept_payment_types.operations';
 import * as Utilities from "../../services/Utilities";
-import moment from 'moment-timezone';
 const uuidv1 = require('uuid/v1');
 const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
@@ -60,7 +59,11 @@ class OrderCheckout extends React.PureComponent {
 	}
 
 
-	static whyDidYouRender = true;
+	// static whyDidYouRender = true;
+
+	// shouldComponentUpdate(nextState, nextProps) {
+	// 	return false;
+	// }
 
 
 	showDateTimePicker = () => {
@@ -841,8 +844,10 @@ class OrderCheckout extends React.PureComponent {
 			// if credit is more than order due:
 			// if totalPayment is greater than currentCredit.
 			// if it has some payment type top up wallet.
+			// totalAmountPaid = totalAmountPaid + this.currentCredit();
 			console.log('credit is more');
-			if (totalAmountPaid >= this.calculateOrderDue()) {
+
+			if (totalAmountPaid > this.calculateOrderDue()) {
 				this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
 				console.log('walletBalance red', this.props.selectedCustomer.walletBalance);
 				this.updateWallet(this.props.selectedCustomer.walletBalance);
@@ -851,16 +856,16 @@ class OrderCheckout extends React.PureComponent {
 				if(diff > 0){
 					this.topUpWallet(Number(diff));
 				}
-			}
+			} else if (totalAmountPaid < this.calculateOrderDue()) {
 
-			if (totalAmountPaid == this.calculateOrderDue()) {
+
+			} else if (totalAmountPaid == this.calculateOrderDue()) {
 				this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
 				this.updateWallet(this.props.selectedCustomer.walletBalance);
 			}
 			this.saveOrder(true);
 
-		}
-		if (this.currentCredit() < this.calculateOrderDue()) {
+		} else if (this.currentCredit() < this.calculateOrderDue()) {
 			// if credit is less than order due:-
 			// compare totalPaid with order due
 			if (totalAmountPaid > this.calculateOrderDue()) {
@@ -911,6 +916,11 @@ class OrderCheckout extends React.PureComponent {
 				if (loanIndex >= 0) {
 					this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[loanIndex], created_at: new Date(), isSelected: this.props.paymentTypes[loanIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() - totalAmountPaid });
 				}
+				console.log('walletBalance', this.props.selectedCustomer.walletBalance);
+				this.props.selectedCustomer.walletBalance = 0;
+				console.log('walletBalance1', this.props.selectedCustomer.walletBalance);
+				this.updateWallet(this.props.selectedCustomer.walletBalance);
+
 				this.saveOrder(false);
 			} else {
 				this.saveOrder(true);
@@ -1054,11 +1064,11 @@ class OrderCheckout extends React.PureComponent {
 			}
 
 			Alert.alert(
-				'SEMA',
-				'Payment Made. \nLoan Cleared: ' + this.state.loanPaid +
-				'\nWallet Topup: ' +this.state.topUpExpected +
-				'\nLoan Balance: ' + this.props.selectedCustomer.dueAmount +
-				'\nCustomer Wallet: ' + this.currentCredit(),
+				'Payment Made.',
+				'Loan Cleared: ' + this.state.loanPaid +
+				'\nCustomer Wallet Topup: ' +this.state.topUpExpected +
+				'\nCustomer\'s Loan Balance: ' + this.props.selectedCustomer.dueAmount +
+				'\nCustomer Wallet Balance: ' + this.currentCredit(),
 				[{
 					text: 'OK',
 					onPress: () => {

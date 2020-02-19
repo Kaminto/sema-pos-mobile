@@ -157,9 +157,11 @@ class CustomSidebarMenu extends React.PureComponent {
 
   onSynchronize() {
     try {
-      this.setState({ isLoading: true });
+	  this.setState({ isLoading: true });
+	  console.log("Started synching ...");
       Synchronization.synchronize().then(syncResult => {
-        this.setState({ isLoading: false });
+		this.setState({ isLoading: false });
+		console.log("Stopped synching. ")
 
         this.props.customerActions.setCustomers(
           CustomerRealm.getAllCustomer()
@@ -222,24 +224,17 @@ class CustomSidebarMenu extends React.PureComponent {
         ) {
           return i18n.t('data-is-up-to-date');
         } else {
-          return `${syncResult.customers.updatedCustomers} ${i18n.t(
-            'customers-updated'
-          )}
-        ${syncResult.products.remoteProducts} ${i18n.t('products-updated')}
-        ${syncResult.topups.localTopup} ${i18n.t(
-            'topups-updated'
-          )}
-				${syncResult.sales.updatedOrders} ${i18n.t('sales-receipts-updated')}
-				${syncResult.productMrps.remoteProductMrps} ${i18n.t(
-            'product-sales-channel-prices-updated'
-          )}`;
+          return `${syncResult.customers.updatedCustomers} ${i18n.t('customers-updated')}
+      			\n${syncResult.products.remoteProducts} ${i18n.t('products-updated')}
+				\n${syncResult.sales.updatedOrders} ${i18n.t('sales-receipts-updated')}
+				\n${syncResult.productMrps.remoteProductMrps} ${i18n.t('product-sales-channel-prices-updated')}`;
         }
       }
     } catch (error) { }
   }
 
 }
-
+// ${syncResult.topups.localTopup} ${i18n.t('topups-updated')}
 
 function mapStateToProps(state, props) {
   return {
