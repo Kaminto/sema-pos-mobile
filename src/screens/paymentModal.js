@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React from "react"
 import { View, Alert, Text, TextInput, FlatList, ScrollView, TouchableHighlight, StyleSheet } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import * as OrderActions from "../actions/OrderActions";
@@ -17,14 +17,11 @@ import PaymentDescription from '../components/orders/order-checkout/payment-desc
 
 import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
 import CreditRealm from '../database/credit/credit.operations';
-import SettingRealm from '../database/settings/settings.operations';
 import CustomerRealm from '../database/customers/customer.operations';
 
 import * as Utilities from "../services/Utilities";
 const widthQuanityModal = '75%';
 const heightQuanityModal = 300;
-
-import moment from 'moment-timezone';
 
 class PaymentModal extends React.PureComponent {
 
@@ -83,7 +80,7 @@ class PaymentModal extends React.PureComponent {
 						<PaymentDescription
 											title={`${i18n.t('customer-wallet')}:`}
 											total={Utilities.formatCurrency(
-												this.currentCredit()
+												this.props.selectedCustomer.walletBalance
 											)}
 										/>
 					</Card>
@@ -107,131 +104,6 @@ class PaymentModal extends React.PureComponent {
 				</ScrollView>
 
 		);
-	}
-
-
-	getCreditPurchases() {
-		return this.customerCreditPaymentTypeReceipts().reduce((total, item) => { return (total + item.amount) }, 0)
-	}
-
-	currentCredit() {
-		return this.totalTopUp() - this.getCreditPurchases();
-	}
-
-	totalTopUp() {
-        return this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
-    }
-
-    prepareTopUpData() {
-
-        if (this.props.topups.length > 0) {
-            const totalCount = this.props.topups.length;
-            let topupLogs = [...new Set(this.props.topups)];
-            let topups = topupLogs.map((topup, index) => {
-                return {
-                    active: topup.active,
-                    //id: topup.id,
-                    createdAt: topup.createdDate,
-                    topUpId: topup.topUpId,
-                    customer_account_id: topup.customer_account_id,
-                    total: topup.total,
-                    topup: topup.topup,
-                    balance: topup.balance,
-                    totalCount
-                };
-            });
-
-            topups.sort((a, b) => {
-                return moment
-                    .tz(a.createdAt, moment.tz.guess())
-                    .isBefore(moment.tz(b.createdAt, moment.tz.guess()))
-                    ? 1
-                    : -1;
-            });
-            return topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
-        } else {
-            return [];
-        }
-
-    }
-
-	customerCreditPaymentTypeReceipts() {
-		let receiptsPaymentTypes = [...this.compareCreditPaymentTypes()];
-		let customerReceipt = [...this.getCustomerRecieptData()];
-		let finalCustomerReceiptsPaymentTypes = [];
-
-		for (let receiptsPaymentType of receiptsPaymentTypes) {
-			const rpIndex = customerReceipt.map(function (e) { return e.id }).indexOf(receiptsPaymentType.receipt_id);
-			if (rpIndex >= 0) {
-				receiptsPaymentType.receipt = receiptsPaymentTypes[rpIndex];
-				finalCustomerReceiptsPaymentTypes.push(receiptsPaymentType);
-			}
-		}
-		return finalCustomerReceiptsPaymentTypes;
-	}
-
-	compareCreditPaymentTypes() {
-		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
-		let paymentTypes = [...this.props.paymentTypes];
-		let finalreceiptsPaymentTypes = [];
-		for (let receiptsPaymentType of receiptsPaymentTypes) {
-			const rpIndex = paymentTypes.map(function (e) { return e.id }).indexOf(receiptsPaymentType.payment_type_id);
-			if (rpIndex >= 0) {
-				if (paymentTypes[rpIndex].name === 'credit') {
-					receiptsPaymentType.name = paymentTypes[rpIndex].name;
-					finalreceiptsPaymentTypes.push(receiptsPaymentType);
-				}
-			}
-		}
-		return finalreceiptsPaymentTypes;
-	}
-
-
-	getCustomerRecieptData() {
-		// Used for enumerating receipts
-		//console.log("here selectedCustomer", this.props.selectedCustomer);
-
-		if (this.props.receipts.length > 0) {
-			const totalCount = this.props.receipts.length;
-
-			let salesLogs = [...new Set(this.props.receipts)];
-			let remoteReceipts = salesLogs.map((receipt, index) => {
-				//console.log("customerAccount", receipt.customer_account);
-				return {
-					active: receipt.active,
-					id: receipt.id,
-					createdAt: receipt.created_at,
-					customerAccount: receipt.customer_account,
-					customer_account_id: receipt.customer_account_id,
-					receiptLineItems: receipt.receipt_line_items,
-					isLocal: receipt.isLocal || false,
-					key: receipt.isLocal ? receipt.key : null,
-					index,
-					updated: receipt.updated,
-					amountLoan: receipt.amount_loan,
-					totalCount,
-					currency: receipt.currency_code,
-					totalAmount: receipt.total
-				};
-			});
-
-			remoteReceipts.sort((a, b) => {
-				return moment
-					.tz(a.createdAt, moment.tz.guess())
-					.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
-					? 1
-					: -1;
-			});
-
-			let siteId = 0;
-			if (SettingRealm.getAllSetting()) {
-				siteId = SettingRealm.getAllSetting().siteId;
-			}
-			return remoteReceipts.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
-		} else {
-			return [];
-		}
-
 	}
 
 	paymentTypesRow = (item, index, separators) => {
@@ -470,9 +342,6 @@ class PaymentModal extends React.PureComponent {
 					);
 					this.setState({ topup: "" });
 					this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
-					this.props.topUpActions.setTopUpTotal(
-						this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
-					);
 
 					this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + Number(creditsurplus);
 					CustomerRealm.updateCustomerWalletBalance(
@@ -483,9 +352,7 @@ class PaymentModal extends React.PureComponent {
 					this.props.customerActions.setCustomers(
 						CustomerRealm.getAllCustomer()
 					);
-			
 
-				// }
 			}
 
 
@@ -582,7 +449,7 @@ const styles = StyleSheet.create({
 	},
 	buttonText: {
 		fontWeight: 'bold',
-		fontSize: 30,
+		fontSize: 24,
 		alignSelf: 'center',
 		color: 'white'
 	},
