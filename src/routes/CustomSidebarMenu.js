@@ -9,6 +9,7 @@ import * as NetworkActions from '../actions/NetworkActions';
 import * as SettingsActions from '../actions/SettingsActions';
 import * as ProductActions from '../actions/ProductActions';
 import * as receiptActions from '../actions/ReceiptActions';
+import OrderRealm from '../database/orders/orders.operations';
 import * as AuthActions from '../actions/AuthActions';
 import CustomerRealm from '../database/customers/customer.operations';
 import SettingRealm from '../database/settings/settings.operations';
@@ -71,9 +72,9 @@ class CustomSidebarMenu extends React.PureComponent {
       <View style={styles.sideMenuContainer}>
         {/* <Icon name="ios-person" size={100} style={styles.sideMenuProfileIcon} /> */}
         <Image source={require('../images/jibulogo.png')} resizeMode='stretch' style={{
-                        width: 100,
-                        height: 100,
-                    }} />
+          width: 100,
+          height: 100,
+        }} />
         {/*Divider between Top Image and Sidebar Option*/}
         <View
           style={{
@@ -123,13 +124,13 @@ class CustomSidebarMenu extends React.PureComponent {
             </View>
           ))}
         </View>
-                 {
-						this.state.isLoading && (
+        {
+          this.state.isLoading && (
 
-								<ActivityIndicator size={60} color="#ABC1DE" />
+            <ActivityIndicator size={60} color="#ABC1DE" />
 
-						)
-					}
+          )
+        }
       </View>
     );
   }
@@ -163,6 +164,12 @@ class CustomSidebarMenu extends React.PureComponent {
         this.props.customerActions.setCustomers(
           CustomerRealm.getAllCustomer()
         );
+
+        this.props.receiptActions.setReceipts(
+          OrderRealm.getAllOrder()
+        );
+
+
         Alert.alert(
           i18n.t('sync-results'),
           this._getSyncResults(syncResult),
