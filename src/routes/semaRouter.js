@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
-import { View, Image, TouchableOpacity, Text, Picker } from 'react-native';
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import React from 'react';
+import { View, TouchableOpacity, Text, Picker } from 'react-native';
+import { createSwitchNavigator } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
-import { createBottomTabNavigator, createMaterialTopTabNavigator } from 'react-navigation-tabs';
-import createNativeStackNavigator from 'react-native-screens/createNativeStackNavigator';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import CustomerList from '../screens/CustomerList';
 import CustomerEdit from '../screens/CustomerEdit';
 import CustomerDetails from '../screens/CustomerDetails';
@@ -24,7 +23,6 @@ import SalesReport from '../components/reports/SalesReport';
 import { Input } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomSidebarMenu from './CustomSidebarMenu';
-import { Tooltip } from 'react-native-elements';
 import Icons from 'react-native-vector-icons/FontAwesome';
 
 import i18n from '../app/i18n';
@@ -69,10 +67,7 @@ const CreditHistoryStack = createStackNavigator({
 
 const CustomerTransactionStack = createStackNavigator({
     Transaction: {
-		screen: CustomerDetails,
-		navigationOptions: {
-            title: 'Transactions',
-        }
+        screen: CustomerDetails
     },
 },
     {

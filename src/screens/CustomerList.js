@@ -370,16 +370,10 @@ class CustomerList extends React.PureComponent {
             // console.log('customerCreditPaymentTypeReceipts',this.customerCreditPaymentTypeReceipts(item.customerId).reduce((total, item) => { return (total + item.amount) }, 0));
             return {
                 ...item,
-<<<<<<< HEAD
-                // wallet: this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId).reduce((total, item) => { return (total + item.amount) }, 0) >= 0 ? this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId) : 0 ,
-=======
-                //wallet: this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId).reduce((total, item) => { return (total + item.amount) }, 0) >= 0 ? this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId) : 0 ,
                 walletBalance: item.walletBalance ? item.walletBalance : 0 ,
->>>>>>> 15a3849e8c6882beace4160a5246519159d3da68
                 salesChannel: this.getCustomerSalesChannel(item).toLowerCase(),
                 searchString: item.name + ' ' + item.phoneNumber + ' ' + item.address,
 				customerType: this.getCustomerTypes(item).toLowerCase(),
-				wallet: 0
             }
         });
         // console.log('data', data)
@@ -441,11 +435,11 @@ class CustomerList extends React.PureComponent {
                             {item.dueAmount.toFixed(2)}
                         </Text>
                     </View>
-					{/* <View style={{ flex: 1 }}>
+					<View style={{ flex: 1 }}>
                         <Text style={[styles.baseItem]}>
                             {item.walletBalance.toFixed(2)}
                         </Text>
-                    </View> */}
+                    </View>
 
 
                 </View>
@@ -607,9 +601,9 @@ class CustomerList extends React.PureComponent {
                 <View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem]}>{i18n.t('balance')}</Text>
                 </View>
-				{/* <View style={[{ flex: 1 }]}>
+				<View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem]}>Wallet</Text>
-                </View> */}
+                </View>
 
             </View>
         );

@@ -1044,8 +1044,7 @@ class OrderCheckout extends React.PureComponent {
 					}
 
 				}
-			}
-			 if (totalAmountPaid < this.calculateOrderDue()) {
+			} else  if (totalAmountPaid < this.calculateOrderDue()) {
 				//add loan payment type to reducer
 				//add loan to dueAmount
 
@@ -1057,6 +1056,8 @@ class OrderCheckout extends React.PureComponent {
 					this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[loanIndex], created_at: new Date(), isSelected: this.props.paymentTypes[loanIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() - totalAmountPaid });
 				}
 				this.saveOrder(false);
+			} else {
+				this.saveOrder(true);
 			}
 
 		}
@@ -1198,7 +1199,7 @@ class OrderCheckout extends React.PureComponent {
 
 			Alert.alert(
 				'SEMA',
-				'Payment Made. \n Loan Cleared: ' + this.state.loanPaid +
+				'Payment Made. \nLoan Cleared: ' + this.state.loanPaid +
 				'\nWallet Topup: ' +this.state.topUpExpected +
 				'\nLoan Balance: ' + this.props.selectedCustomer.dueAmount +
 				'\nCustomer Wallet: ' + this.currentCredit(),

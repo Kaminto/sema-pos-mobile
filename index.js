@@ -14,4 +14,4 @@ const MainApp = () => (
 );
 
 AppRegistry.registerComponent('semapos', () => MainApp);
-console.disableYellowBox = false;
+console.disableYellowBox = true;

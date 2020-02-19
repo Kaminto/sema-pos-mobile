@@ -302,6 +302,7 @@ class OrderItems extends React.PureComponent {
 
 		return (
 			<TextInput
+				// ref={input => { this.changeQuantity(input) }}
 				style={{
 					textAlign: 'center',
 					height: 50,
@@ -539,7 +540,7 @@ class OrderItems extends React.PureComponent {
 				</View>
 				<View style={[{ flex: 2 }]}>
 					<Text numberOfLines={1} style={[styles.baseItem, {textAlign: 'right', paddingRight: 5}]}>
-						{this.getCurrency(item)} {this.getDiscountPrice((item.quantity * this.getItemPrice(item.product)), item)}</Text>
+						{this.getCurrency(item)} {this.getDiscountPrice((item.quantity * item.unitPrice), item)}</Text>
 				</View>
 			</View>
 		);
@@ -814,14 +815,13 @@ class OrderItems extends React.PureComponent {
 			return 1;
 		}
 		let salesChannel = SalesChannelRealm.getSalesChannelFromName(this.props.channel.salesChannel);
-		console.log("Display me" + this.props.channel.salesChannel + " - " + JSON.stringify(salesChannel));
 		if (salesChannel) {
 			let productMrp = ProductMRPRealm.getFilteredProductMRP()[ProductMRPRealm.getProductMrpKeyFromIds(item.productId, salesChannel.id)];
 			if (productMrp) {
 				return productMrp.priceAmount;
 			}
 		}
-		return item.priceAmount;	// Just use product price
+		return item.unitPrice ;	// Just use product price
 	};
 
 	getCurrency = (item) => {
