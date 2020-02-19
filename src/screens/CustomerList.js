@@ -370,7 +370,12 @@ class CustomerList extends React.PureComponent {
             // console.log('customerCreditPaymentTypeReceipts',this.customerCreditPaymentTypeReceipts(item.customerId).reduce((total, item) => { return (total + item.amount) }, 0));
             return {
                 ...item,
+<<<<<<< HEAD
                 // wallet: this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId).reduce((total, item) => { return (total + item.amount) }, 0) >= 0 ? this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId) : 0 ,
+=======
+                //wallet: this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId).reduce((total, item) => { return (total + item.amount) }, 0) >= 0 ? this.totalTopUp(item.customerId) - this.customerCreditPaymentTypeReceipts(item.customerId) : 0 ,
+                walletBalance: item.walletBalance ? item.walletBalance : 0 ,
+>>>>>>> 15a3849e8c6882beace4160a5246519159d3da68
                 salesChannel: this.getCustomerSalesChannel(item).toLowerCase(),
                 searchString: item.name + ' ' + item.phoneNumber + ' ' + item.address,
 				customerType: this.getCustomerTypes(item).toLowerCase(),
@@ -438,7 +443,7 @@ class CustomerList extends React.PureComponent {
                     </View>
 					{/* <View style={{ flex: 1 }}>
                         <Text style={[styles.baseItem]}>
-                            {item.wallet.toFixed(2)}  0
+                            {item.walletBalance.toFixed(2)}
                         </Text>
                     </View> */}
 
@@ -551,7 +556,7 @@ class CustomerList extends React.PureComponent {
 
     }
 
-    onLongPressItem = item => {
+    onPressItem  = item => {
         this.props.customerActions.CustomerSelected(item);
         this.setState({ refresh: !this.state.refresh });
         this.props.customerActions.setCustomerEditStatus(true);
@@ -562,7 +567,7 @@ class CustomerList extends React.PureComponent {
         Events.trigger('onOrder', { customer: item });
 	};
 
-	onPressItem = item => {
+	onLongPressItem = item => {
 		this.props.customerActions.CustomerSelected(item);
 		this.props.navigation.setParams({ isDueAmount: item.dueAmount });
 		this.props.navigation.setParams({ isCustomerSelected: false });

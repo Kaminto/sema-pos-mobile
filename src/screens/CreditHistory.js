@@ -16,6 +16,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import moment from 'moment-timezone';
 import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
+import CustomerRealm from '../database/customers/customer.operations';
 import CreditRealm from '../database/credit/credit.operations';
 import SettingRealm from '../database/settings/settings.operations';
 import i18n from '../app/i18n';
@@ -139,6 +140,18 @@ class CreditHistory extends React.PureComponent {
         this.props.topUpActions.setTopUpTotal(
             this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
         );
+
+        this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + Number(this.state.topup);
+		CustomerRealm.updateCustomerWalletBalance(
+            this.props.selectedCustomer,
+            this.props.selectedCustomer.walletBalance
+        );
+        this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
+        this.props.customerActions.setCustomers(
+            CustomerRealm.getAllCustomer()
+        );
+
+
     }
 
     totalTopUp() {
