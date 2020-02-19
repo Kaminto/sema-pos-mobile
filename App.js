@@ -11,9 +11,6 @@ import * as SettingsActions from './src/actions/SettingsActions';
 import * as ProductActions from './src/actions/ProductActions';
 import * as receiptActions from './src/actions/ReceiptActions';
 
-// import { enableScreens } from 'react-native-screens';
-// enableScreens();
-
 const MainApp = createAppContainer(JibuRouter);
 
 class App extends React.Component {

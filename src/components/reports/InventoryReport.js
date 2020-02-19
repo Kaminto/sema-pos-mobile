@@ -18,9 +18,6 @@ class InventoryEdit extends React.PureComponent {
 		this.quantityInput = React.createRef();
 	}
 
-	componentDidUpdate() {
-	}
-
 	render() {
 		return (
 			<Modal visible={this.isVisible()}
