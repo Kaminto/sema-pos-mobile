@@ -986,21 +986,40 @@ class OrderCheckout extends React.PureComponent {
 		let totalAmountPaid = this.props.selectedPaymentTypes.reduce((total, item) => { return (total + item.amount) }, 0);
 
 		if (this.currentCredit() > this.calculateOrderDue()) {
-			// if credit is more than order due:- make normal payment
-			// add credit payment type to selected payments
-			// if it has some payment type top up wallet
-			const creditIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("credit");
-			if (creditIndex >= 0) {
-				this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[creditIndex], created_at: new Date(), isSelected: this.props.paymentTypes[creditIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() });
+			// if credit is more than order due:
+			// if totalPayment is greater than currentCredit.
+			// if it has some payment type top up wallet.
+			console.log('credit is more');
+			if (totalAmountPaid >= this.calculateOrderDue()) {				
+				this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
+				console.log('walletBalance red', this.props.selectedCustomer.walletBalance);
+				this.updateWallet(this.props.selectedCustomer.walletBalance);
+				let diff = Math.abs(totalAmountPaid - this.currentCredit());
+				console.log('topup red', diff);
+				if(diff > 0){
+					this.topUpWallet(Number(diff));	
+				}								
+			}
+
+			if (totalAmountPaid == this.calculateOrderDue()) {
 				this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
 				this.updateWallet(this.props.selectedCustomer.walletBalance);
 			}
 
-			if (totalAmountPaid > 0) {
-				this.topUpWallet(Number(totalAmountPaid));
-				this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + Number(totalAmountPaid);
-				this.updateWallet(this.props.selectedCustomer.walletBalance);
-			}
+
+			
+			// const creditIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("credit");
+			// if (creditIndex >= 0) {
+			// 	this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[creditIndex], created_at: new Date(), isSelected: this.props.paymentTypes[creditIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() });
+			// 	this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
+			// 	this.updateWallet(this.props.selectedCustomer.walletBalance);
+			// }
+
+			// if (totalAmountPaid > 0) {
+			// 	this.topUpWallet(Number(totalAmountPaid));
+			// 	this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + Number(totalAmountPaid);
+			// 	this.updateWallet(this.props.selectedCustomer.walletBalance);
+			// }
 			this.saveOrder(true);
 
 		}
@@ -1011,8 +1030,8 @@ class OrderCheckout extends React.PureComponent {
 				//compare amount due
 				if (this.calculateAmountDue() === 0) {
 					//top up wallet
-					this.topUpWallet(Number(totalAmountPaid-this.calculateOrderDue()));
-					this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + Number(totalAmountPaid-this.calculateOrderDue());
+					this.topUpWallet(Number(totalAmountPaid - this.calculateOrderDue()));
+					this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + Number(totalAmountPaid - this.calculateOrderDue());
 					this.updateWallet(this.props.selectedCustomer.walletBalance);
 					this.saveOrder(true);
 				} else if (this.calculateAmountDue() > 0) {
