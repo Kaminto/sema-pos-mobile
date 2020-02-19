@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 if (process.env.NODE_ENV === 'development') {
 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
 	whyDidYouRender(React);
@@ -50,7 +50,7 @@ class ProductList extends React.PureComponent {
 	}
 
 	getItem = (item, index) => {
-		console.log(JSON.stringify(item));
+		// console.log(JSON.stringify(item));
 		return (
 			<View
 				style={[

@@ -302,7 +302,6 @@ class OrderItems extends React.PureComponent {
 
 		return (
 			<TextInput
-				// ref={input => { this.changeQuantity(input) }}
 				style={{
 					textAlign: 'center',
 					height: 50,
@@ -815,6 +814,7 @@ class OrderItems extends React.PureComponent {
 			return 1;
 		}
 		let salesChannel = SalesChannelRealm.getSalesChannelFromName(this.props.channel.salesChannel);
+		console.log("Display me" + this.props.channel.salesChannel + " - " + JSON.stringify(salesChannel));
 		if (salesChannel) {
 			let productMrp = ProductMRPRealm.getFilteredProductMRP()[ProductMRPRealm.getProductMrpKeyFromIds(item.productId, salesChannel.id)];
 			if (productMrp) {

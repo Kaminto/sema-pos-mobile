@@ -69,7 +69,10 @@ const CreditHistoryStack = createStackNavigator({
 
 const CustomerTransactionStack = createStackNavigator({
     Transaction: {
-        screen: CustomerDetails
+		screen: CustomerDetails,
+		navigationOptions: {
+            title: 'Transactions',
+        }
     },
 },
     {

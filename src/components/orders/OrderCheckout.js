@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 if (process.env.NODE_ENV === 'development') {
 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
 	whyDidYouRender(React);
@@ -186,7 +186,7 @@ class OrderCheckout extends React.PureComponent {
 									marginRight: 20
 								}}>
 								<Card
-									containerStyle={{ backgroundColor: '#ABC1DE', color: 'white' }}>
+									containerStyle={{ backgroundColor: '#ABC1DE' }}>
 
 									<View style={{ flex: 1, flexDirection: 'row' }}>
 										{this.getSaleAmount()}
@@ -216,7 +216,7 @@ class OrderCheckout extends React.PureComponent {
 									</View>
 								</Card>
 
-								<View style={{ flex: 1, flexDirection: 'row' }}>
+								<View style={{ flex: 1, flexDirection: 'row', padding: 0 }}>
 									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
 								</View>
 
