@@ -53,7 +53,7 @@ export default realm = new Realm({
         CustomerDebtSchema,
         CustomerReminderSchema
     ],
-    schemaVersion: 74,
+    schemaVersion: 75,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
         if (oldRealm.schemaVersion < 1) {

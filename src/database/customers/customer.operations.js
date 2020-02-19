@@ -154,7 +154,24 @@ class CustomerRealm {
         } catch (e) {
             console.log("Error on creation", e);
         }
+    }
 
+    
+    updateCustomerWalletBalance(
+        customer,
+        walletBalance,
+    ) {
+        try {
+            realm.write(() => {
+                let customerObj = realm.objects('Customer').filtered(`customerId = "${customer.customerId}"`);
+                customerObj[0].updatedDate = new Date();
+                customerObj[0].syncAction = 'update';;
+                customerObj[0].walletBalance = walletBalance;
+            })
+
+        } catch (e) {
+            console.log("Error on creation", e);
+        }
     }
 
 
