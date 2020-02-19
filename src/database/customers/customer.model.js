@@ -10,6 +10,7 @@ export const CustomerSchema = {
         reminder_date: { type: 'string', optional: true },
         frequency: { type: 'string', optional: true },
         dueAmount: { type: 'int', optional: true },
+        walletBalance: { type: 'int', optional: true },
         address: { type: 'string', optional: true },
         gpsCoordinates: { type: 'string', optional: true },
         phoneNumber: { type: 'string', optional: true },

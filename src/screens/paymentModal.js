@@ -474,6 +474,17 @@ class PaymentModal extends React.PureComponent {
 						this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
 					);
 
+					this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + Number(creditsurplus);
+					CustomerRealm.updateCustomerWalletBalance(
+						this.props.selectedCustomer,
+						this.props.selectedCustomer.walletBalance
+					);
+					this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
+					this.props.customerActions.setCustomers(
+						CustomerRealm.getAllCustomer()
+					);
+			
+
 				// }
 			}
 
