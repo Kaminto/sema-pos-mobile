@@ -1008,18 +1008,18 @@ class OrderCheckout extends React.PureComponent {
 
 
 			
-			const creditIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("credit");
-			if (creditIndex >= 0) {
-				this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[creditIndex], created_at: new Date(), isSelected: this.props.paymentTypes[creditIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() });
-				this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
-				this.updateWallet(this.props.selectedCustomer.walletBalance);
-			}
+			// const creditIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("credit");
+			// if (creditIndex >= 0) {
+			// 	this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[creditIndex], created_at: new Date(), isSelected: this.props.paymentTypes[creditIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() });
+			// 	this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
+			// 	this.updateWallet(this.props.selectedCustomer.walletBalance);
+			// }
 
-			if (totalAmountPaid > 0) {
-				this.topUpWallet(Number(totalAmountPaid));
-				this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + Number(totalAmountPaid);
-				this.updateWallet(this.props.selectedCustomer.walletBalance);
-			}
+			// if (totalAmountPaid > 0) {
+			// 	this.topUpWallet(Number(totalAmountPaid));
+			// 	this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + Number(totalAmountPaid);
+			// 	this.updateWallet(this.props.selectedCustomer.walletBalance);
+			// }
 			this.saveOrder(true);
 
 		}
