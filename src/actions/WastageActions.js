@@ -130,6 +130,7 @@ export function GetInventoryReportData(beginDate, endDate, products) {
 	return dispatch => {
 		getWastageData(beginDate, endDate, getMrps(products))
 			.then(inventoryData => {
+				console.log('inventoryData', inventoryData);
 				dispatch({
 					type: INVENTORY_REPORT,
 					data: { inventoryData: inventoryData }
