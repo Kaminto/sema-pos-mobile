@@ -36,7 +36,6 @@ class ProductList extends React.PureComponent {
 					)}
 					keyExtractor={item => item.productId}
 					numColumns={4}
-
 					horizontal={false}
 				/>
 			</View>
