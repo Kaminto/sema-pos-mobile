@@ -18,7 +18,7 @@ import CustomerReminderRealm from '../database/customer-reminder/customer-remind
 import PosStorage from '../database/PosStorage';
 import SettingRealm from '../database/settings/settings.operations';
 import CreditRealm from '../database/credit/credit.operations';
-import CustomerRealm from '../database/customers/customer.operations'
+import CustomerRealm from '../database/customers/customer.operations';
 import InventroyRealm from '../database/inventory/inventory.operations';
 import ProductsRealm from '../database/products/product.operations';
 import DiscountRealm from '../database/discount/discount.operations';
@@ -279,7 +279,7 @@ class Login extends React.PureComponent {
 			OrderRealm.getAllOrder()
 		);
 
-		this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
+		// this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
 
 		this.props.customerReminderActions.setCustomerReminders(
 			CustomerReminderRealm.getCustomerReminders()

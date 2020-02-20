@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
 	View,
 	Text,
@@ -6,7 +6,6 @@ import {
 	FlatList,
 	Image,
 	TouchableOpacity,
-	TouchableHighlight,
 	TouchableNativeFeedback,
 	Alert,
 	ToastAndroid,
@@ -36,6 +35,7 @@ class ReceiptLineItem extends React.PureComponent {
 	}
 
 	render() {
+		// console.log(this.props.item.product.base64encoded_image + " Jumanji " + JSON.stringify(this.props.item));
 		return (
 			<View
 				style={{
@@ -66,7 +66,7 @@ class ReceiptLineItem extends React.PureComponent {
 
 	getImage = item => {
 		const productImage =
-			item.base64encodedImage ||
+			item.base64encodedImage || item.base64encoded_image ||
 			this.props.products.reduce((image, product) => {
 				if (product.productId === item.product_id)
 					return product.base64encodedImage;
@@ -74,8 +74,11 @@ class ReceiptLineItem extends React.PureComponent {
 			}, '');
 
 		if (productImage.startsWith('data:image')) {
+			// console.log(productImage);
 			return productImage;
+
 		} else {
+			// console.log(productImage);
 			return 'data:image/png;base64,' + productImage;
 		}
 	};
@@ -499,7 +502,6 @@ class Transactions extends React.PureComponent {
 
 
 	renderReceipt({ item, index }) {
-		console.log("Jumanji" + JSON.stringify(item));
 		return (
 			<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
 				<View key={index} style={{ padding: 15 }}>

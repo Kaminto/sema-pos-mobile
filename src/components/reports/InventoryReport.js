@@ -103,6 +103,7 @@ class InventoryReport extends React.PureComponent {
 	};
 
 	render() {
+		console.log(JSON.stringify(this.getInventoryData()));
 		return (
 			<View style={{ flex: 1 }}>
 				<View style={{ flex: .1, flexDirection: 'row' }}>

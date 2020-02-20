@@ -182,10 +182,10 @@ class CustomSidebarMenu extends React.PureComponent {
       this.posStorage.getRemoteReceipts()
     );
 
-    this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
-    this.props.inventoryActions.setInventory(
-      InventroyRealm.getAllInventory()
-    );
+    // this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
+    // this.props.inventoryActions.setInventory(
+    //   InventroyRealm.getAllInventory()
+    // );
     this.props.productActions.setProducts(
       ProductsRealm.getProducts()
     );
