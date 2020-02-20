@@ -19,6 +19,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Synchronization from '../services/Synchronization';
 import * as WastageActions from "../actions/WastageActions";
+import CustomerReminderRealm from '../database/customer-reminder/customer-reminder.operations';
 import PosStorage from '../database/PosStorage';
 import SettingRealm from '../database/settings/settings.operations';
 import CreditRealm from '../database/credit/credit.operations';
@@ -31,8 +32,7 @@ import DiscountRealm from '../database/discount/discount.operations';
 import OrderRealm from '../database/orders/orders.operations';
 import SalesChannelSync from '../services/sync/sales-channel.sync';
 import CustomerTypeSync from '../services/sync/customer-types.sync';
-
-
+import * as CustomerReminderActions from '../actions/CustomerReminderActions';
 import * as TopUpActions from '../actions/TopUpActions';
 import * as SettingsActions from '../actions/SettingsActions';
 import * as ToolbarActions from '../actions/ToolBarActions';
@@ -266,6 +266,10 @@ class Login extends React.PureComponent {
 
 	}
 
+	subtractDays = (theDate, days) => {
+		return new Date(theDate.getTime() - days * 24 * 60 * 60 * 1000);
+	};
+
 	loadSyncedData() {
 		PosStorage.loadLocalData();
 		this.props.customerActions.setCustomers(
@@ -286,9 +290,12 @@ class Login extends React.PureComponent {
 		this.props.receiptActions.setReceipts(
 			OrderRealm.getAllOrder()
 		);
-		
+
 		this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
 
+		this.props.customerReminderActions.setCustomerReminders(
+			CustomerReminderRealm.getCustomerReminders()
+		);
 
 		this.props.discountActions.setDiscounts(
 			DiscountRealm.getDiscounts()
@@ -367,6 +374,7 @@ function mapDispatchToProps(dispatch) {
 		productActions: bindActionCreators(ProductActions, dispatch),
 		receiptActions: bindActionCreators(receiptActions, dispatch),
 		discountActions: bindActionCreators(discountActions, dispatch),
+		customerReminderActions: bindActionCreators(CustomerReminderActions, dispatch),
 	};
 }
 
