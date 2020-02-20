@@ -1,6 +1,6 @@
 class SalesChannelApi {
 		constructor() {
-		this._url = 'http://142.93.115.206:3006/';
+		this._url = 'http://142.93.115.206:3002/';
 		this._site = '';
 		this._user = '';
 		this._password = '';
@@ -8,8 +8,8 @@ class SalesChannelApi {
 		this._siteId = '';
 	}
 
-	 
-	
+
+
 	initialize(url, site, user, password, token, siteId) {
 		if (!url.endsWith('/')) {
 			url = url + '/';
@@ -35,7 +35,7 @@ class SalesChannelApi {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-		let url = 'sema/sales-channels'; 
+		let url = 'sema/sales-channels';
 		console.log('this._url + url', this._url + url);
 		console.log('this._token', this._token);
 		return fetch(this._url + url, options)

@@ -13,7 +13,7 @@ import * as receiptActions from './src/actions/ReceiptActions';
 
 const MainApp = createAppContainer(JibuRouter);
 
-class App extends React.Component {
+class App extends React.PureComponent {
     render() {
         return (
             <MainApp />

@@ -264,7 +264,6 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(RemindersReport);
 
-
 const styles = StyleSheet.create({
 	baseItem: {
 		fontSize: 18

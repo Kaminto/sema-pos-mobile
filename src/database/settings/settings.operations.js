@@ -1,10 +1,10 @@
-import realm from '../init'; 
+import realm from '../init';
 
 class SettingRealm {
     constructor() {
         this.setting = [];
         this.settings = {
-            semaUrl: 'http://142.93.115.206:3006/',
+            semaUrl: 'http://142.93.115.206:3002/',
             site: '',
             user: '',
             password: '',
@@ -58,7 +58,7 @@ class SettingRealm {
         })
 
     }
-    
+
     getTokenExpiration() {
         return  JSON.parse(JSON.stringify(realm.objects('TokenExpiry')))['0'].expirationDate;
     }

@@ -36,7 +36,6 @@ import Synchronization from '../services/Synchronization';
 
 import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
 
-
 import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
 import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_payment_types.operations';
 import Communications from '../services/Communications';

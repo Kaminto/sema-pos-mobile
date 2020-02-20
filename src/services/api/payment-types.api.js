@@ -1,6 +1,6 @@
 class PaymentTypesApi {
 	constructor() {
-		this._url = 'http://142.93.115.206:3006/';
+		this._url = 'http://142.93.115.206:3002/';
 		this._site = '';
 		this._user = '';
 		this._password = '';
@@ -31,7 +31,7 @@ class PaymentTypesApi {
 		let options = {
 			method: 'GET',
 		};
-		let url = 'sema/payment_type'; 
+		let url = 'sema/payment_type';
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.then(responseJson => {

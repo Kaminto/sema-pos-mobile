@@ -1,6 +1,6 @@
 class DiscountApi {
 	constructor() {
-		this._url = 'http://142.93.115.206:3006/';
+		this._url = 'http://142.93.115.206:3002/';
 		this._site = '';
 		this._user = '';
 		this._password = '';
@@ -26,7 +26,7 @@ class DiscountApi {
 	setSiteId(siteId) {
 		this._siteId = siteId;
 	}
-	
+
 	getDiscounts(siteId) {
 		let options = {
 			method: 'GET',
@@ -47,6 +47,6 @@ class DiscountApi {
 	}
 
 
-} 
+}
 
 export default new DiscountApi();

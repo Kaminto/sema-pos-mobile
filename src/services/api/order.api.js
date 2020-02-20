@@ -1,7 +1,7 @@
 import moment from 'moment-timezone';
 class OrderApi {
     constructor() {
-        this._url = 'http://142.93.115.206:3006/';
+        this._url = 'http://142.93.115.206:3002/';
         this._site = '';
         this._user = '';
         this._password = '';

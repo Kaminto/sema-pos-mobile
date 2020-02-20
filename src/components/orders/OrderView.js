@@ -1,8 +1,4 @@
-import React, { Component } from "react";
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
+import React from "react";
 import { View, StyleSheet } from 'react-native';
 import ProductListScreen from './ProductListScreen';
 import OrderSummaryScreen from "./OrderSummaryScreen";
@@ -16,7 +12,6 @@ class OrderView extends React.PureComponent {
 	constructor(props) {
 		super(props);
 	}
-	// static whyDidYouRender = true;
 
 	render() {
 		return (

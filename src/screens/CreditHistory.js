@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
     View,
     Text,
@@ -15,7 +15,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import moment from 'moment-timezone';
-import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
+import { Card, Button, Input } from 'react-native-elements';
 import CustomerRealm from '../database/customers/customer.operations';
 import CreditRealm from '../database/credit/credit.operations';
 import SettingRealm from '../database/settings/settings.operations';

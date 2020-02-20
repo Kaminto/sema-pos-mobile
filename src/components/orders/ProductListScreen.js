@@ -20,12 +20,6 @@ class ProductListScreen extends React.PureComponent {
 		}
 	}
 
-	// static whyDidYouRender = true;
-
-	// shouldComponentUpdate(nextState, nextProps) {
-	// 	return false;
-	// }
-
 	componentDidMount() {
 		this.setState({
 			salesChannel: SalesChannelRealm.getSalesChannelFromId(this.props.selectedCustomer.salesChannelId)

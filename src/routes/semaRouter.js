@@ -310,11 +310,11 @@ const ListCustomerStack = createStackNavigator({
                         flex: 1,
                     }}>
                         <Icon name='md-arrow-back' style={{
-                            marginRight: 25,
+                            marginRight: 15,
                             marginLeft: 15,
                             color: 'white',
                             fontWeight: 'bold',
-                        }} size={20} onPress={() => { navigation.goBack() }} />
+                        }} size={30} onPress={() => { navigation.goBack() }} />
                     </View>
 
                     <View style={{
@@ -323,7 +323,7 @@ const ListCustomerStack = createStackNavigator({
                         {!navigation.getParam('isEdit') && (
                             <Text style={{
                                 fontWeight: 'bold',
-                                fontSize: 18,
+                                fontSize: 20,
                                 color: 'white'
                             }}>New Customer</Text>
                         )}
@@ -331,7 +331,7 @@ const ListCustomerStack = createStackNavigator({
                         {navigation.getParam('isEdit') && (
                             <Text style={{
                                 fontWeight: 'bold',
-                                fontSize: 18,
+                                fontSize: 20,
                                 color: 'white'
                             }}>Edit Customer</Text>
                         )}

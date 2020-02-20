@@ -1,6 +1,6 @@
 class InventoryApi {
 	constructor() {
-		this._url = 'http://142.93.115.206:3006/';
+		this._url = 'http://142.93.115.206:3002/';
 		this._site = '';
 		this._user = '';
 		this._password = '';
@@ -33,12 +33,12 @@ class InventoryApi {
 			headers: {
 				Authorization: 'Bearer ' + this._token
 			}
-		}; 
+		};
         let url = 'sema/kiosk_closing_stock?kiosk_id=' + this._siteId;
 
-		if (updatedSince) {			
+		if (updatedSince) {
 			url = url + '&updated-date=' + updatedSince;
-		} 
+		}
 
 		return fetch(this._url + url, options)
 		.then(response => response.json())

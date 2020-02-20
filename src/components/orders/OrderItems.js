@@ -1,8 +1,4 @@
-import React, { Component } from "react";
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
+import React from "react";
 import { View, Text, ScrollView, FlatList, TextInput, Dimensions, TouchableHighlight, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";

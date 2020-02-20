@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react';
+import React from 'react';
 import { View, StyleSheet, Image, Text, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
@@ -17,7 +17,6 @@ import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_p
 import CustomerRealm from '../database/customers/customer.operations';
 import SettingRealm from '../database/settings/settings.operations';
 import Communications from '../services/Communications';
-import PosStorage from '../database/PosStorage';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as NetworkActions from '../actions/NetworkActions';
 import * as SettingsActions from '../actions/SettingsActions';
@@ -183,10 +182,10 @@ class CustomSidebarMenu extends React.PureComponent {
       this.posStorage.getRemoteReceipts()
     );
 
-    this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
-    this.props.inventoryActions.setInventory(
-      InventroyRealm.getAllInventory()
-    );
+    // this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
+    // this.props.inventoryActions.setInventory(
+    //   InventroyRealm.getAllInventory()
+    // );
     this.props.productActions.setProducts(
       ProductsRealm.getProducts()
     );

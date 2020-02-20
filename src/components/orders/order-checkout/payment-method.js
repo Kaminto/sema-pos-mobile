@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { View, Text, TextInput, CheckBox, StyleSheet, Dimensions } from "react-native";
+import React from "react";
+import { View, Text, TextInput, CheckBox, StyleSheet } from "react-native";
 
 import * as OrderActions from "../../../actions/OrderActions";
 import * as CustomerActions from '../../../actions/CustomerActions';
