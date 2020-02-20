@@ -4,16 +4,31 @@ import { View, StyleSheet, Image, Text, Alert, ActivityIndicator } from 'react-n
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import CreditRealm from '../database/credit/credit.operations';
+import OrderRealm from '../database/orders/orders.operations';
+import InventroyRealm from '../database/inventory/inventory.operations';
+import ProductsRealm from '../database/products/product.operations';
+import DiscountRealm from '../database/discount/discount.operations';
+import CustomerReminderRealm from '../database/customer-reminder/customer-reminder.operations';
+import Synchronization from '../services/Synchronization';
+import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
+import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
+import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_payment_types.operations';
+import CustomerRealm from '../database/customers/customer.operations';
+import SettingRealm from '../database/settings/settings.operations';
+import Communications from '../services/Communications';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as NetworkActions from '../actions/NetworkActions';
 import * as SettingsActions from '../actions/SettingsActions';
 import * as ProductActions from '../actions/ProductActions';
 import * as receiptActions from '../actions/ReceiptActions';
+import * as TopUpActions from '../actions/TopUpActions';
+import * as InventoryActions from '../actions/InventoryActions';
 import * as AuthActions from '../actions/AuthActions';
-import CustomerRealm from '../database/customers/customer.operations';
-import SettingRealm from '../database/settings/settings.operations';
-import Synchronization from '../services/Synchronization';
-import Communications from '../services/Communications';
+import * as WastageActions from "../actions/WastageActions";
+import * as discountActions from '../actions/DiscountActions';
+import * as paymentTypesActions from '../actions/PaymentTypesActions';
+import * as CustomerReminderActions from '../actions/CustomerReminderActions';
 import i18n from '../app/i18n';
 class CustomSidebarMenu extends React.PureComponent {
   constructor() {
@@ -71,9 +86,9 @@ class CustomSidebarMenu extends React.PureComponent {
       <View style={styles.sideMenuContainer}>
         {/* <Icon name="ios-person" size={100} style={styles.sideMenuProfileIcon} /> */}
         <Image source={require('../images/jibulogo.png')} resizeMode='stretch' style={{
-                        width: 100,
-                        height: 100,
-                    }} />
+          width: 100,
+          height: 100,
+        }} />
         {/*Divider between Top Image and Sidebar Option*/}
         <View
           style={{
@@ -123,13 +138,13 @@ class CustomSidebarMenu extends React.PureComponent {
             </View>
           ))}
         </View>
-                 {
-						this.state.isLoading && (
+        {
+          this.state.isLoading && (
 
-								<ActivityIndicator size={60} color="#ABC1DE" />
+            <ActivityIndicator size={60} color="#ABC1DE" />
 
-						)
-					}
+          )
+        }
       </View>
     );
   }
@@ -154,17 +169,67 @@ class CustomSidebarMenu extends React.PureComponent {
     this.props.navigation.navigate('Login');
   };
 
+
+  loadSyncedData() {
+    this.props.customerActions.setCustomers(
+        CustomerRealm.getAllCustomer()
+    );
+    this.props.topUpActions.setTopups(
+        CreditRealm.getAllCredit()
+    );
+    this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
+ this.props.inventoryActions.setInventory(
+        InventroyRealm.getAllInventory()
+    );
+    this.props.productActions.setProducts(
+        ProductsRealm.getProducts()
+    );
+
+    this.props.receiptActions.setReceipts(
+        OrderRealm.getAllOrder()
+    );
+
+    this.props.paymentTypesActions.setPaymentTypes(
+        PaymentTypeRealm.getPaymentTypes()
+    );
+
+    this.props.paymentTypesActions.setRecieptPaymentTypes(
+        ReceiptPaymentTypeRealm.getReceiptPaymentTypes()
+    );
+
+    this.props.customerReminderActions.setCustomerReminders(
+        CustomerReminderRealm.getCustomerReminders()
+    );
+
+    this.props.paymentTypesActions.setCustomerPaidDebt(
+        CustomerDebtRealm.getCustomerDebts()
+    );
+
+    this.props.discountActions.setDiscounts(
+        DiscountRealm.getDiscounts()
+    );
+
+
+};
+
+
   onSynchronize() {
     try {
-	  this.setState({ isLoading: true });
-	  console.log("Started synching ...");
+      this.setState({ isLoading: true });
+      console.log("Started synching ...");
       Synchronization.synchronize().then(syncResult => {
-		this.setState({ isLoading: false });
-		console.log("Stopped synching. ")
+        this.setState({ isLoading: false });
+        console.log("Stopped synching. ")
 
         this.props.customerActions.setCustomers(
           CustomerRealm.getAllCustomer()
         );
+
+        this.props.receiptActions.setReceipts(
+          OrderRealm.getAllOrder()
+        );
+
+
         Alert.alert(
           i18n.t('sync-results'),
           this._getSyncResults(syncResult),
@@ -249,7 +314,14 @@ function mapDispatchToProps(dispatch) {
     networkActions: bindActionCreators(NetworkActions, dispatch),
     settingsActions: bindActionCreators(SettingsActions, dispatch),
     receiptActions: bindActionCreators(receiptActions, dispatch),
-    authActions: bindActionCreators(AuthActions, dispatch)
+    authActions: bindActionCreators(AuthActions, dispatch),
+
+    wastageActions: bindActionCreators(WastageActions, dispatch),
+    topUpActions: bindActionCreators(TopUpActions, dispatch),
+    inventoryActions: bindActionCreators(InventoryActions, dispatch),
+    discountActions: bindActionCreators(discountActions, dispatch),
+    paymentTypesActions: bindActionCreators(paymentTypesActions, dispatch),
+    customerReminderActions: bindActionCreators(CustomerReminderActions, dispatch),
   };
 }
 

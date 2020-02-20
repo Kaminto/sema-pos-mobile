@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
 	View,
 	Text,
@@ -83,7 +83,7 @@ class SettingsProperty extends React.PureComponent {
 	};
 }
 
-class SettingsButton extends Component {
+class SettingsButton extends React.PureComponent {
 	render() {
 		return (
 			<View
@@ -467,7 +467,7 @@ class Settings extends React.PureComponent {
 	onConnection() {
 		this.setState({ animating: true });
 		Communications.initialize(
-			"http://142.93.115.206:3006/",
+			"http://142.93.115.206:3002/",
 			"",
 			this.user.current.state.propertyText,
 			this.password.current.state.propertyText
@@ -478,7 +478,7 @@ class Settings extends React.PureComponent {
 				.then(result => {
 					if (result.status === 200) {
 						this.saveSettings(
-							"http://142.93.115.206:3006/",
+							"http://142.93.115.206:3002/",
 							result.response.token,
 							result.response.data.kiosks[0].name
 						);
@@ -617,7 +617,7 @@ class Settings extends React.PureComponent {
 		}
 
 		PosStorage.saveSettings(
-			"http://142.93.115.206:3006/",
+			"http://142.93.115.206:3002/",
 			site,
 			this.user.current.state.propertyText,
 			this.password.current.state.propertyText,

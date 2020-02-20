@@ -19,10 +19,7 @@ import * as TopUpActions from '../actions/TopUpActions';
 import * as reportActions from '../actions/ReportActions';
 import * as receiptActions from '../actions/ReceiptActions';
 
-
 import PaymentModal from './paymentModal';
-
-import Icon from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modalbox';
 
 class SelectedCustomerDetails extends React.PureComponent {
@@ -91,7 +88,7 @@ class SelectedCustomerDetails extends React.PureComponent {
 								onPress={() => {
 									this.refs.modal6.open();
 								}}>
-								<Text style={styles.buttonText}>{`Topup Wallet / Repy Loan`}</Text>
+								<Text style={styles.buttonText}>{`Topup Wallet / Repay Loan`}</Text>
 							</TouchableHighlight>
 						</View>
 					</View>
@@ -212,7 +209,7 @@ const styles = StyleSheet.create({
 		width: '85%',
 		justifyContent: 'center',
 		color: 'white',
-		paddingBottom: 20
+		paddingBottom: 10
 	},
 
 	modalPayment: {

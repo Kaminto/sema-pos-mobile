@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Text, View, Image, TouchableHighlight, StyleSheet } from 'react-native';
+import React from 'react';
+import { Text, View, TouchableHighlight, StyleSheet } from 'react-native';
 import { bindActionCreators } from "redux";
 import * as reportActions from "../../actions/ReportActions";
 import { connect } from "react-redux";

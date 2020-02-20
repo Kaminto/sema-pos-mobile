@@ -26,10 +26,8 @@ class OrderSync {
                     let bothLocalRemote = {};
                     let updateCount = 0;
                     if (initlocalOrders.length > 0) {
-
-
                         initlocalOrders.forEach(localOrder => {
-                            let filteredObj = remoteOrders.filter(obj => obj.uuid === localOrder.uuid)
+                            let filteredObj = remoteOrders.filter(obj => obj.uuid === localOrder.uuid);
 
                             if (filteredObj.length > 0) {
                                 const remoteIndex = remoteOrders.map(function (e) { return e.uuid }).indexOf(filteredObj[0].uuid);
@@ -61,10 +59,6 @@ class OrderSync {
 
                         if (onlyLocally.length > 0) {
                             onlyLocally.forEach(localOrder => {
-                                console.log(
-                                    'localOrder - ',
-                                    localOrder.total + ' - ' + localOrder.totalAmount
-                                );
 
                                 let products = [];
                                 for (let i in localOrder.receipt_line_items) {

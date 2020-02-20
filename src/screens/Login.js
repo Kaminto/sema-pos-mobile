@@ -1,20 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
 	View,
-	Text,
 	ScrollView,
 	StyleSheet,
 	Dimensions,
-	Image,
 	Picker,
 	Alert,
 	ActivityIndicator,
 	ImageBackground
 } from 'react-native';
-import { Card, ListItem, Button, Input, ThemeProvider } from 'react-native-elements';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import PropTypes from 'prop-types';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Card, Button, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Synchronization from '../services/Synchronization';
@@ -24,14 +19,9 @@ import SettingRealm from '../database/settings/settings.operations';
 import CreditRealm from '../database/credit/credit.operations';
 import CustomerRealm from '../database/customers/customer.operations'
 import InventroyRealm from '../database/inventory/inventory.operations';
-import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
-import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
 import ProductsRealm from '../database/products/product.operations';
 import DiscountRealm from '../database/discount/discount.operations';
 import OrderRealm from '../database/orders/orders.operations';
-import SalesChannelSync from '../services/sync/sales-channel.sync';
-import CustomerTypeSync from '../services/sync/customer-types.sync';
-
 
 import * as TopUpActions from '../actions/TopUpActions';
 import * as SettingsActions from '../actions/SettingsActions';
@@ -52,10 +42,7 @@ import i18n from '../app/i18n';
 
 const { height, width } = Dimensions.get('window');
 const inputFontHeight = Math.round((24 * height) / 752);
-const marginTextInput = Math.round((5 * height) / 752);
-const marginSpacing = Math.round((20 * height) / 752);
 const inputTextWidth = 400;
-const marginInputItems = width / 2 - inputTextWidth / 2;
 
 const supportedUILanguages = [
 	{ name: 'English', iso_code: 'en' },
@@ -200,7 +187,7 @@ class Login extends React.PureComponent {
 				if (result.status === 200) {
 					let oldSettings = { ...SettingRealm.getAllSetting() };
 					SettingRealm.saveSettings(
-						"http://142.93.115.206:3006/",
+						"http://142.93.115.206:3002/",
 						result.response.data.kiosk.name,
 						this.state.user,
 						this.state.password,
@@ -211,7 +198,7 @@ class Login extends React.PureComponent {
 					);
 
 					Communications.initialize(
-						"http://142.93.115.206:3006/",
+						"http://142.93.115.206:3002/",
 						result.response.data.kiosk.name,
 						this.state.user,
 						this.state.password,

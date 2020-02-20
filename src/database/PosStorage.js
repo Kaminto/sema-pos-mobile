@@ -84,7 +84,7 @@ class PosStorage {
 		this.tokenExpiration = firstSyncDate;
 
 		this.settings = {
-			semaUrl: 'http://142.93.115.206:3006/',
+			semaUrl: 'http://142.93.115.206:3002/',
 			site: '',
 			user: '',
 			password: '',

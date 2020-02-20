@@ -6,7 +6,7 @@ class CreditSync {
 
     synchronizeCredits(lastCreditSync) {
         return new Promise(resolve => {
-            CreditApi.getTopUps(new Date(lastCreditSync))
+            CreditApi.getTopUps()
                 .then(remoteCredit => {
                     let initlocalCredits = CreditRealm.getAllCredit();
                     let localCredits = [...initlocalCredits];

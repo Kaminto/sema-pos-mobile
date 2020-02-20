@@ -1,8 +1,4 @@
 import React from 'react';
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
 import {
 	View,
 	Text,
@@ -24,12 +20,6 @@ class ProductList extends React.PureComponent {
 		super(props);
 		// this.onPressItem = this.onPressItem.bind(this);
 	}
-
-	// static whyDidYouRender = true;
-
-	// shouldComponentUpdate(nextState, nextProps) {
-	// 	return false;
-	// }
 
 	render() {
 		return (

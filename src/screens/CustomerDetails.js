@@ -340,7 +340,7 @@ class CustomerDetails extends React.PureComponent {
 			return (
 
 				<View style={{ flex: .75, flexDirection: 'row', paddingTop: 20, width: '85%', alignSelf: 'center' }}>
-					<View style={{ flex: .3, backgroundColor: '#f1f1f1', borderRightWidth: 4, borderRightColor: '#CCC' }}>
+					<View style={{ flex: .3, borderRightWidth: 1, borderRightColor: '#CCC' }}>
 						<FlatList
 							data={this.prepareData()}
 							renderItem={this.renderReceipt.bind(this)}
@@ -700,9 +700,6 @@ class TransactionDetail extends React.PureComponent {
 				</View>)
 		}
 
-
-
-
 		return (
 			<View style={{ padding: 15 }}>
 				<View style={styles.deleteButtonContainer}>
@@ -756,13 +753,13 @@ class TransactionDetail extends React.PureComponent {
 				{paymentTypes}
 
 				<View>
-					<Text style={{ fontSize: 16, fontWeight: "bold" }}>PRODUCTS</Text>
+					<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>PRODUCTS</Text>
 				</View>
 
 				{receiptLineItems}
 
 				<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
-					<Text style={[styles.customername, { flex: .7, fontWeight: 'bold' }]}>TOTAL </Text>
+					<Text style={[styles.customername, { flex: .7, fontWeight: 'bold' }]}>TOTAL AMOUNT </Text>
 					<Text style={[styles.customername, { flex: .3, fontWeight: 'bold' }]}>
 						{this.props.item.currency.toUpperCase()} {this.props.item.totalAmount}
 					</Text>

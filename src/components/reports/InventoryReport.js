@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Text, View, StyleSheet, TouchableHighlight, FlatList, Modal, TextInput } from 'react-native';
 import { bindActionCreators } from "redux";
 import * as reportActions from "../../actions/ReportActions";
@@ -85,7 +85,7 @@ class InventoryEdit extends React.PureComponent {
 
 }
 
-class InventoryReport extends Component {
+class InventoryReport extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.startDate = new Date();

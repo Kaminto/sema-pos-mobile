@@ -1,4 +1,3 @@
-import moment from 'moment-timezone';
 import CreditApi from './api/credit.api';
 import InventoryApi from './api/inventory.api';
 import CustomerApi from './api/customer.api';
@@ -171,10 +170,7 @@ class Communications {
 				Accept: 'application/json',
 				'Content-Type': 'application/json'
 			},
-			// body: JSON.stringify({
-			// 	usernameOrEmail: "administrator",
-			// 	password: "Let'sGrow"
-			// })
+
 			body: JSON.stringify({
 				usernameOrEmail: usernameOrEmail,
 				password: password

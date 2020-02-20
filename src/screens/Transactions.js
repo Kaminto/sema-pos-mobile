@@ -272,7 +272,7 @@ class TransactionDetail extends React.PureComponent {
 				{receiptLineItems}
 
 				<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
-					<Text style={[styles.customername, { flex: .7, fontWeight: 'bold' }]}>TOTAL </Text>
+					<Text style={[styles.customername, { flex: .7, fontWeight: 'bold' }]}>TOTAL AMOUNT</Text>
 					<Text style={[styles.customername, { flex: .3, fontWeight: 'bold' }]}>
 						{this.props.item.currency.toUpperCase()} {this.props.item.totalAmount}
 					</Text>
@@ -499,6 +499,7 @@ class Transactions extends React.PureComponent {
 
 
 	renderReceipt({ item, index }) {
+		console.log("Jumanji" + JSON.stringify(item));
 		return (
 			<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
 				<View key={index} style={{ padding: 15 }}>
