@@ -224,7 +224,6 @@ class InventoryReport extends Component {
 				return this.props.wastageData.salesAndProducts.salesItems;
 			}
 		}
-
 	}
 
 	getTotalSales() {

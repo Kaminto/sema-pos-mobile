@@ -18,7 +18,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Synchronization from '../services/Synchronization';
-
+import * as WastageActions from "../actions/WastageActions";
 import PosStorage from '../database/PosStorage';
 import SettingRealm from '../database/settings/settings.operations';
 import CreditRealm from '../database/credit/credit.operations';
@@ -286,6 +286,9 @@ class Login extends React.PureComponent {
 		this.props.receiptActions.setReceipts(
 			OrderRealm.getAllOrder()
 		);
+		
+		this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
+
 
 		this.props.discountActions.setDiscounts(
 			DiscountRealm.getDiscounts()
@@ -358,6 +361,7 @@ function mapDispatchToProps(dispatch) {
 		topUpActions: bindActionCreators(TopUpActions, dispatch),
 		settingsActions: bindActionCreators(SettingsActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
+		wastageActions: bindActionCreators(WastageActions, dispatch),
 		authActions: bindActionCreators(AuthActions, dispatch),
 		inventoryActions: bindActionCreators(InventoryActions, dispatch),
 		productActions: bindActionCreators(ProductActions, dispatch),
