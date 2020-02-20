@@ -16,8 +16,8 @@ import PaymentTypeRealm from '../database/payment_types/payment_types.operations
 import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_payment_types.operations';
 import CustomerRealm from '../database/customers/customer.operations';
 import SettingRealm from '../database/settings/settings.operations';
-import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
+import PosStorage from '../database/PosStorage';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as NetworkActions from '../actions/NetworkActions';
 import * as SettingsActions from '../actions/SettingsActions';
@@ -30,7 +30,6 @@ import * as WastageActions from "../actions/WastageActions";
 import * as discountActions from '../actions/DiscountActions';
 import * as paymentTypesActions from '../actions/PaymentTypesActions';
 import * as CustomerReminderActions from '../actions/CustomerReminderActions';
-import * as AuthActions from '../actions/AuthActions';
 import i18n from '../app/i18n';
 class CustomSidebarMenu extends React.PureComponent {
   constructor() {
@@ -174,45 +173,50 @@ class CustomSidebarMenu extends React.PureComponent {
 
   loadSyncedData() {
     this.props.customerActions.setCustomers(
-        CustomerRealm.getAllCustomer()
+      CustomerRealm.getAllCustomer()
     );
     this.props.topUpActions.setTopups(
-        CreditRealm.getAllCredit()
+      CreditRealm.getAllCredit()
     );
+
+    this.props.receiptActions.setRemoteReceipts(
+      this.posStorage.getRemoteReceipts()
+    );
+
     this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
- this.props.inventoryActions.setInventory(
-        InventroyRealm.getAllInventory()
+    this.props.inventoryActions.setInventory(
+      InventroyRealm.getAllInventory()
     );
     this.props.productActions.setProducts(
-        ProductsRealm.getProducts()
+      ProductsRealm.getProducts()
     );
 
     this.props.receiptActions.setReceipts(
-        OrderRealm.getAllOrder()
+      OrderRealm.getAllOrder()
     );
 
     this.props.paymentTypesActions.setPaymentTypes(
-        PaymentTypeRealm.getPaymentTypes()
+      PaymentTypeRealm.getPaymentTypes()
     );
 
     this.props.paymentTypesActions.setRecieptPaymentTypes(
-        ReceiptPaymentTypeRealm.getReceiptPaymentTypes()
+      ReceiptPaymentTypeRealm.getReceiptPaymentTypes()
     );
 
     this.props.customerReminderActions.setCustomerReminders(
-        CustomerReminderRealm.getCustomerReminders()
+      CustomerReminderRealm.getCustomerReminders()
     );
 
     this.props.paymentTypesActions.setCustomerPaidDebt(
-        CustomerDebtRealm.getCustomerDebts()
+      CustomerDebtRealm.getCustomerDebts()
     );
 
     this.props.discountActions.setDiscounts(
-        DiscountRealm.getDiscounts()
+      DiscountRealm.getDiscounts()
     );
 
 
-};
+  };
 
 
   onSynchronize() {
