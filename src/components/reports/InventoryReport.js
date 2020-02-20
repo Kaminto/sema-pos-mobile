@@ -224,7 +224,6 @@ class InventoryReport extends React.PureComponent {
 				return this.props.wastageData.salesAndProducts.salesItems;
 			}
 		}
-
 	}
 
 	getTotalSales() {

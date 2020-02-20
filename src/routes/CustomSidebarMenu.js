@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react';
+import React from 'react';
 import { View, StyleSheet, Image, Text, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
@@ -172,45 +172,50 @@ class CustomSidebarMenu extends React.PureComponent {
 
   loadSyncedData() {
     this.props.customerActions.setCustomers(
-        CustomerRealm.getAllCustomer()
+      CustomerRealm.getAllCustomer()
     );
     this.props.topUpActions.setTopups(
-        CreditRealm.getAllCredit()
+      CreditRealm.getAllCredit()
     );
+
+    this.props.receiptActions.setRemoteReceipts(
+      this.posStorage.getRemoteReceipts()
+    );
+
     this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
- this.props.inventoryActions.setInventory(
-        InventroyRealm.getAllInventory()
+    this.props.inventoryActions.setInventory(
+      InventroyRealm.getAllInventory()
     );
     this.props.productActions.setProducts(
-        ProductsRealm.getProducts()
+      ProductsRealm.getProducts()
     );
 
     this.props.receiptActions.setReceipts(
-        OrderRealm.getAllOrder()
+      OrderRealm.getAllOrder()
     );
 
     this.props.paymentTypesActions.setPaymentTypes(
-        PaymentTypeRealm.getPaymentTypes()
+      PaymentTypeRealm.getPaymentTypes()
     );
 
     this.props.paymentTypesActions.setRecieptPaymentTypes(
-        ReceiptPaymentTypeRealm.getReceiptPaymentTypes()
+      ReceiptPaymentTypeRealm.getReceiptPaymentTypes()
     );
 
     this.props.customerReminderActions.setCustomerReminders(
-        CustomerReminderRealm.getCustomerReminders()
+      CustomerReminderRealm.getCustomerReminders()
     );
 
     this.props.paymentTypesActions.setCustomerPaidDebt(
-        CustomerDebtRealm.getCustomerDebts()
+      CustomerDebtRealm.getCustomerDebts()
     );
 
     this.props.discountActions.setDiscounts(
-        DiscountRealm.getDiscounts()
+      DiscountRealm.getDiscounts()
     );
 
 
-};
+  };
 
 
   onSynchronize() {
