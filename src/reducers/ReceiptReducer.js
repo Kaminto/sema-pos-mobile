@@ -10,8 +10,7 @@ import {
     RECEIPT_SEARCH,
     CLEAR_LOGGED_RECEIPTS
 } from "../actions/ReceiptActions";
-
-import moment from 'moment-timezone';
+import { format, isSameMonth, parseISO, isAfter} from 'date-fns';
 
 let initialState = {
     localReceipts: [],
@@ -34,20 +33,15 @@ const receiptReducer = (state = initialState, action) => {
                 if (receipt.updated) {
                     receipt.updated = false;
                 }
-                receipt.isLocal = false;
+				receipt.isLocal = false;
                 return receipt;
             })
                 // Take care of receipts that are not from this weeks
                 .filter(receipt => {
-                    //Daily
-                    // let today = moment.tz(new Date(Date.now()), moment.tz.guess()).format('YYYY-MM-DD');
-                    // return moment.tz(receipt.id, moment.tz.guess()).isSameOrAfter(today);
-                    // //Weekly delete
                     let date = new Date(Date.now());
-                    date.setDate(date.getDate() - 7);
-                    let this_week = moment.tz(date, moment.tz.guess()).format('YYYY-MM-DD');
-                    //return moment.tz(receipt.id, moment.tz.guess()).isSameOrBefore(this_week);
-                    return moment.tz(receipt.createdAt, moment.tz.guess()).isSameOrAfter(this_week);
+					date.setDate(date.getDate() - 7);
+					let this_week = format(date, 'yyyy-MM-dd');
+					return isSameMonth(parseISO(receipt.created_at), parseISO(this_week));
                 });
             newState.receipts = receipts;
             return newState;
@@ -60,20 +54,16 @@ const receiptReducer = (state = initialState, action) => {
                 if (receipt.updated) {
                     receipt.updated = false;
                 }
-                receipt.isLocal = false;
+				receipt.isLocal = false;
                 return receipt;
             })
                 // Take care of receipts that are not from this weeks
                 .filter(receipt => {
-                    //Daily
-                    // let today = moment.tz(new Date(Date.now()), moment.tz.guess()).format('YYYY-MM-DD');
-                    // return moment.tz(receipt.id, moment.tz.guess()).isSameOrAfter(today);
-                    // //Weekly delete
                     let date = new Date(Date.now());
-                    date.setDate(date.getDate() - 7);
-                    let this_week = moment.tz(date, moment.tz.guess()).format('YYYY-MM-DD');
-                    //return moment.tz(receipt.id, moment.tz.guess()).isSameOrBefore(this_week);
-                    return moment.tz(receipt.createdAt, moment.tz.guess()).isSameOrAfter(this_week);
+					date.setDate(date.getDate() - 7);
+					let this_week = format(date, 'yyyy-MM-dd');
+					return isSameMonth(parseISO(receipt.created_at), parseISO(this_week));
+
                 });
             newState.remoteReceipts = remoteReceipts;
             return newState;

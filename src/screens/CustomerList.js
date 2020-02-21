@@ -9,13 +9,9 @@ import {
     FlatList,
     TouchableHighlight,
     StyleSheet,
-    UIManager,
 	Alert
 } from 'react-native';
-import moment from 'moment-timezone';
 import { FloatingAction } from "react-native-floating-action";
-
-import SettingRealm from '../database/settings/settings.operations';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as ToolbarActions from '../actions/ToolBarActions';
 
@@ -31,12 +27,14 @@ import i18n from '../app/i18n';
 
 import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
+import slowlog from 'react-native-slowlog';
 
 import PaymentModal from './paymentModal';
 
 class CustomerList extends React.PureComponent {
     constructor(props) {
-        super(props);
+		super(props);
+		slowlog(this, /.*/);
 
         this.state = {
             refresh: false,

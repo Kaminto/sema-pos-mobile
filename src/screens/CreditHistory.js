@@ -14,7 +14,7 @@ import * as TopUpActions from '../actions/TopUpActions';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import moment from 'moment-timezone';
+import { format, parseISO, isBefore } from 'date-fns';
 import { Card, Button, Input } from 'react-native-elements';
 import CustomerRealm from '../database/customers/customer.operations';
 import CreditRealm from '../database/credit/credit.operations';
@@ -37,10 +37,6 @@ class CreditHistory extends React.PureComponent {
             this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
         );
     }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return true;
-	}
 
     render() {
         return (
@@ -178,9 +174,7 @@ class CreditHistory extends React.PureComponent {
             });
 
             topups.sort((a, b) => {
-                return moment
-                    .tz(a.createdAt, moment.tz.guess())
-                    .isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+                return  isBefore(new Date(a.createdAt), new Date(b.createdAt))
                     ? 1
                     : -1;
             });
@@ -208,9 +202,7 @@ class CreditHistory extends React.PureComponent {
                 ]}>
                 <View style={{ flex: 1 }}>
                     <Text style={[styles.baseItem]}>
-                        {moment
-                            .tz(item.created_at, moment.tz.guess())
-                            .format('MMM Do YYYY')}
+						{format(parseISO(item.created_at), 'iiii d MMM yyyy')}
                     </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -338,9 +330,7 @@ class CreditHistory extends React.PureComponent {
             });
 
             remoteReceipts.sort((a, b) => {
-                return moment
-                    .tz(a.createdAt, moment.tz.guess())
-                    .isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+                return isBefore(new Date(a.createdAt), new Date(b.createdAt))
                     ? 1
                     : -1;
             });

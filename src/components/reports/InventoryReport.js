@@ -7,13 +7,14 @@ import * as InventoryActions from '../../actions/InventoryActions';
 import { connect } from "react-redux";
 import DateFilter from "./DateFilter";
 import PosStorage from "../../database/PosStorage";
-
+import slowlog from 'react-native-slowlog';
 
 import i18n from '../../app/i18n';
 const uuidv1 = require('uuid/v1');
 class InventoryEdit extends React.PureComponent {
 	constructor(props) {
 		super(props);
+		slowlog(this, /.*/);
 		this.state = { inventoryQuantity: this.props.quantity };
 		this.quantityInput = React.createRef();
 	}

@@ -14,10 +14,12 @@ import * as OrderActions from '../../actions/OrderActions';
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 import randomMC from 'random-material-color';
+import slowlog from 'react-native-slowlog';
 
 class ProductList extends React.PureComponent {
 	constructor(props) {
 		super(props);
+		slowlog(this, /.*/);
 		// this.onPressItem = this.onPressItem.bind(this);
 	}
 

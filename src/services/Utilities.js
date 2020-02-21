@@ -1,5 +1,6 @@
 import { NativeModules } from 'react-native';
 import ProductsRealm from "../database/products/product.operations";
+import { format, parseISO, isBefore, isAfter, isEqual } from 'date-fns';
 
 const IntlPolyFill = require('intl');
 // Add additional locales here
@@ -22,6 +23,18 @@ export const isEmptyObj = (obj) => {
 	}
 	return true;
 }
+
+const isBetween = (date, from, to, inclusivity = '()') => {
+    if (!['()', '[]', '(]', '[)'].includes(inclusivity)) {
+        throw new Error('Inclusivity parameter must be one of (), [], (], [)');
+    }
+
+    const isBeforeEqual = inclusivity[0] === '[',
+        isAfterEqual = inclusivity[1] === ']';
+
+    return (isBeforeEqual ? (isEqual(from, date) || isBefore(from, date)) : isBefore(from, date)) &&
+        (isAfterEqual ? (isEqual(to, date) || isAfter(to, date)) : isAfter(to, date));
+};
 
 export function formatCurrency(value) {
 	console.log('value===', value);

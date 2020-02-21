@@ -12,6 +12,7 @@ import SalesChannelRealm from '../../database/sales-channels/sales-channels.oper
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import DiscountRealm from '../../database/discount/discount.operations';
 import ToggleSwitch from 'toggle-switch-react-native';
+import slowlog from 'react-native-slowlog';
 
 const { height, width } = Dimensions.get('window');
 const widthQuanityModal = '70%';
@@ -22,6 +23,7 @@ const inputFontHeight = Math.round((24 * height) / 752);
 class OrderItems extends React.PureComponent {
 	constructor(props) {
 		super(props);
+		slowlog(this, /.*/);
 		this.state = {
 			selectedItem: {},
 			accumulator: 0,

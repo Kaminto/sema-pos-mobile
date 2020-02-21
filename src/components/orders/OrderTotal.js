@@ -5,11 +5,13 @@ import { connect } from "react-redux";
 import * as OrderActions from "../../actions/OrderActions";
 import * as Utilities from "../../services/Utilities";
 import i18n from "../../app/i18n";
+import slowlog from 'react-native-slowlog';
 
 class OrderTotal extends React.PureComponent {
 
 	constructor(props) {
 		super(props);
+		slowlog(this, /.*/);
 	}
 
 	render() {

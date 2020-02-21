@@ -20,12 +20,13 @@ import CustomerRealm from '../database/customers/customer.operations';
 import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
 import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
 import * as CustomerActions from '../actions/CustomerActions';
-
+import slowlog from 'react-native-slowlog';
 import i18n from '../app/i18n';
 
 class CustomerEdit extends React.PureComponent {
 	constructor(props) {
 		super(props);
+		slowlog(this, /.*/);
 		this.state = {
 			isEditInProgress: false,
 			salescid: 0,

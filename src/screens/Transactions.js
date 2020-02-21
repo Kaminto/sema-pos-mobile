@@ -26,12 +26,13 @@ import * as reportActions from '../actions/ReportActions';
 import * as receiptActions from '../actions/ReceiptActions';
 
 import i18n from '../app/i18n';
-import moment from 'moment-timezone';
-
+import { format, parseISO, isBefore } from 'date-fns';
+import slowlog from 'react-native-slowlog';
 
 class ReceiptLineItem extends React.PureComponent {
 	constructor(props) {
 		super(props);
+		slowlog(this, /.*/);
 	}
 
 	render() {
@@ -234,9 +235,7 @@ class TransactionDetail extends React.PureComponent {
 					<Text style={styles.customername}>{this.props.item.customerAccount.name}</Text>
 				</View>
 				<Text>
-					{moment
-						.tz(this.props.item.createdAt, moment.tz.guess())
-						.format('dddd Do MMMM YYYY')}
+					{format(parseISO(this.props.item.createdAt), 'iiii d MMM yyyy')}
 				</Text>
 				<View>
 
@@ -406,12 +405,11 @@ class Transactions extends React.PureComponent {
 				totalAmount: receipt.total
 			};
 		});
+
 		receipts.sort((a, b) => {
-			return moment
-				.tz(a.createdAt, moment.tz.guess())
-				.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
-				? 1
-				: -1;
+			return isBefore(new Date(a.createdAt), new Date(b.createdAt))
+					? 1
+					: -1;
 		});
 		receipts = this.filterItems(receipts);
 
@@ -507,9 +505,7 @@ class Transactions extends React.PureComponent {
 				<View key={index} style={{ padding: 15 }}>
 					<View style={styles.label}>
 						<Text>
-							{moment
-								.tz(item.createdAt, moment.tz.guess())
-								.format('dddd Do MMMM YYYY')}
+								{format(parseISO(item.createdAt), 'iii d MMM yyyy')}
 						</Text>
 					</View>
 					<View style={styles.itemData}>

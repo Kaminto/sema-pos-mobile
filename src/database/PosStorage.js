@@ -3,11 +3,11 @@ This class contains the persistence implementation of the tablet business object
 */
 import { capitalizeWord } from '../services/Utilities';
 import Events from 'react-native-simple-events';
-import moment from 'moment-timezone';
-import TopUps from './credit/credit.operations';
 import InventroyRealm from './inventory/inventory.operations';
 import CreditRealm from './credit/credit.operations';
 import realm from './init';
+
+import { format, parseISO, isAfter, isBefore, isEqual } from 'date-fns';
 
 const uuidv1 = require('uuid/v1');
 
@@ -44,6 +44,18 @@ const reminderDataKey = '@Sema:remindersDataKey';
 
 const tokenExpirationKey = '@Sema:TokenExpirationKey';
 const syncIntervalKey = '@Sema:SyncIntervalKey';
+
+const isBetween = (date, from, to, inclusivity = '()') => {
+    if (!['()', '[]', '(]', '[)'].includes(inclusivity)) {
+        throw new Error('Inclusivity parameter must be one of (), [], (], [)');
+    }
+
+    const isBeforeEqual = inclusivity[0] === '[',
+        isAfterEqual = inclusivity[1] === ']';
+
+    return (isBeforeEqual ? (isEqual(from, date) || isBefore(from, date)) : isBefore(from, date)) &&
+        (isAfterEqual ? (isEqual(to, date) || isAfter(to, date)) : isAfter(to, date));
+};
 
 
 class PosStorage {
@@ -127,6 +139,8 @@ class PosStorage {
 			return 'SetUp Not Required';
 		}
 	}
+
+
 
 
 	initialLocalDb() {
@@ -648,9 +662,7 @@ class PosStorage {
 		customer.secondPhoneNumber = secondPhoneNumber
 
 		if (customer.reminder_date) {
-			customer.reminder_date = moment(customer.reminder_date).format(
-				'YYYY-MM-DD'
-			);
+			customer.reminder_date = format(parseISO(customer.reminder_date), 'yyyy-MM-dd')
 		}
 
 		this.pendingCustomers.push(key);
@@ -912,9 +924,7 @@ class PosStorage {
 
 	getFilteredSales(beginDate, endDate) {
 		return this.salesKeys.filter(receipt => {
-			return moment
-				.tz(new Date(receipt.saleDateTime), moment.tz.guess())
-				.isBetween(beginDate, endDate);
+			return isBetween(new Date(receipt.saleDateTime), parseISO(beginDate), parseISO(endDate));
 		});
 	}
 

@@ -6,11 +6,12 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
 import * as CustomerActions from '../../actions/CustomerActions';
-
+import slowlog from 'react-native-slowlog';
 
 class OrderView extends React.PureComponent {
 	constructor(props) {
 		super(props);
+		slowlog(this, /.*/);
 	}
 
 	render() {

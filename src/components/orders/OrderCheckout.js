@@ -29,11 +29,13 @@ import * as Utilities from "../../services/Utilities";
 const uuidv1 = require('uuid/v1');
 const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
+import slowlog from 'react-native-slowlog';
 
 class OrderCheckout extends React.PureComponent {
 
 	constructor(props) {
 		super(props);
+		slowlog(this, /.*/);
 		this.saleSuccess = false;
 		this.state = {
 			isWalkIn: true,
@@ -181,7 +183,12 @@ class OrderCheckout extends React.PureComponent {
 									containerStyle={{ backgroundColor: '#ABC1DE' }}>
 
 									<View style={{ flex: 1, flexDirection: 'row' }}>
-										{this.getSaleAmount()}
+										{/* {this.getSaleAmount()} */}
+										<PaymentDescription
+											styles={{ fontWeight: 'bold' }}
+											title={`${i18n.t('sale-amount-due')}: `}
+											total={Utilities.formatCurrency(this.calculateOrderDue())}
+										/>
 										<PaymentDescription
 											style={{ color: 'white' }}
 											title={`${i18n.t('customer-wallet')}:`}
@@ -189,7 +196,7 @@ class OrderCheckout extends React.PureComponent {
 												this.currentCredit()
 											)}
 										/>
-									</View>
+								 	</View>
 
 
 									<View style={{ flex: 1, flexDirection: 'row' }}>

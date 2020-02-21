@@ -5,18 +5,32 @@ import { connect } from "react-redux";
 import * as reportActions from "../../actions/ReportActions";
 import DateFilter from "./DateFilter";
 import * as Utilities from "../../services/Utilities";
-const moment = require('moment');
-
+import { format, parseISO, isAfter, isBefore, isEqual } from 'date-fns';
+import slowlog from 'react-native-slowlog';
 import i18n from '../../app/i18n';
+const isBetween = (date, from, to, inclusivity = '()') => {
+    if (!['()', '[]', '(]', '[)'].includes(inclusivity)) {
+        throw new Error('Inclusivity parameter must be one of (), [], (], [)');
+    }
+
+    const isBeforeEqual = inclusivity[0] === '[',
+        isAfterEqual = inclusivity[1] === ']';
+
+    return (isBeforeEqual ? (isEqual(from, date) || isBefore(from, date)) : isBefore(from, date)) &&
+        (isAfterEqual ? (isEqual(to, date) || isAfter(to, date)) : isAfter(to, date));
+};
+
 
 class SalesReport extends React.PureComponent {
 	constructor(props) {
 		super(props);
+		slowlog(this, /.*/);
 		this.startDate = null;
 		this.endDate = null;
 	}
 
 	render() {
+		console.log(JSON.stringify(this.getSalesData()));
 		return (
 			<View style={{ flex: 1 }}>
 				<View style={{
@@ -123,10 +137,12 @@ class SalesReport extends React.PureComponent {
 	}
 
 	getItemTotalLiters(item) {
-		if (item.totalLiters && item.totalLiters !== 'N/A') {
-			return `${item.totalLiters.toFixed(2)} L`;
-		}
-		return 0;
+		console.log(item);
+		// if (item.totalLiters && item.totalLiters !== 'N/A') {
+			// return `${item.totalLiters.toFixed(2)} L`;
+			return `${(item.litersPerSku * item.quantity).toFixed(2)} L`;
+		// }
+		// return 0;
 	}
 
 	getItemLitersPerSku(item) {
@@ -150,7 +166,7 @@ class SalesReport extends React.PureComponent {
 
 		}
 		groupedTotals.push({
-			name: 'TOTAL',
+			name: 'TOTAL REVENUE',
 			totalAmount: this.getTotalSales()
 		});
 
@@ -172,9 +188,10 @@ class SalesReport extends React.PureComponent {
 		let filteredReceipts= [];
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
 			filteredReceipts = receiptsPaymentTypes.filter(receipt =>
-				moment
-					.tz(new Date(receipt.created_at), moment.tz.guess())
-					.isBetween(this.props.dateFilter.startDate, this.props.dateFilter.endDate));
+					isBetween(parseISO(receipt.created_at),
+					parseISO(this.props.dateFilter.startDate),
+					parseISO(this.props.dateFilter.endDate))
+			);
 		}
 
 		let paymentTypes = [...this.props.paymentTypes];
