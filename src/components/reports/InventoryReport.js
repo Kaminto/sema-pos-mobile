@@ -120,7 +120,7 @@ class InventoryReport extends React.PureComponent {
 					<DateFilter />
 				</View>
 
-				<View style={{ flex: .6, backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10 }}>
+				<View style={{ flex: .65, backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10 }}>
 					<View style={{ flex: 1, flexDirection: 'row' }}>
 						<FlatList
 							style={{ flex: .5 }}
@@ -168,7 +168,7 @@ class InventoryReport extends React.PureComponent {
 				</View>
 
 				<View style={{
-					flex: .3,
+					flex: .25,
 					backgroundColor: '#2462a0',
 					color: '#fff',
 					borderRadius: 8,
@@ -218,12 +218,10 @@ class InventoryReport extends React.PureComponent {
 	getInventoryData() {
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
 			if(isSameDay(this.props.dateFilter.startDate, this.startDate) && isSameDay(this.props.dateFilter.endDate, this.endDate)) {
-				alert(this.props.dateFilter.startDate + '-' +this.startDate + " fury wilder " + this.props.wastageData.salesAndProducts.salesItems.length);
 				return this.props.wastageData.salesAndProducts.salesItems;
 			} else {
 				this.startDate = this.props.dateFilter.startDate;
 				this.endDate = this.props.dateFilter.endDate;
-				// alert(this.props.dateFilter.startDate + '-' +this.startDate + " else ");
 				this.props.wastageActions.GetInventoryReportData(this.startDate, this.endDate, this.props.products);
 				return this.props.wastageData.salesAndProducts.salesItems;
 			}

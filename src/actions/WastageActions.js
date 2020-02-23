@@ -5,8 +5,6 @@ export const SALES_REPORT_FROM_ORDERS = 'SALES_REPORT_FROM_ORDERS';
 export const INVENTORY_REPORT = 'INVENTORY_REPORT';
 export const REPORT_TYPE = 'REPORT_TYPE';
 export const REPORT_FILTER = 'REPORT_FILTER';
-export const REMINDER_REPORT = 'REMINDER_REPORT';
-export const ADD_REMINDER = 'ADD_REMINDER';
 
 import { parseISO, isSameDay} from 'date-fns';
 
@@ -167,6 +165,8 @@ export const getWastageData = (beginDate, endDate, products) => {
 const createInventory = (salesData, inventorySettings, products) => {
 	let salesAndProducts = { ...salesData };
 	salesAndProducts.salesItems = salesData.salesItems.slice();
+
+	console.log("Well" + salesAndProducts.salesItems.length + JSON.stringify(salesAndProducts.salesItems))
 	let emptyProducts = [];
 	for (const prod of products) {
 		if (isNotIncluded(prod, salesAndProducts.salesItems)) {

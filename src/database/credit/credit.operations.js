@@ -60,13 +60,15 @@ class CreditRealm {
 
 
     createCredit(customer_account_id, topup, balance) {
-        const now = new Date();
+		const now = new Date();
+		let topupno = Number(topup);
+		let balno = Number(balance);
 
         const newCredit = {
             topUpId: uuidv1(),
             customer_account_id,
-            topup,
-            balance,
+            topupno,
+            balno,
             created_at: now,
             updated_at: now,
             syncAction: 'create',
