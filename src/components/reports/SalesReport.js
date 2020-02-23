@@ -1,25 +1,17 @@
 import React from 'react';
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
 import { Text, View, StyleSheet, FlatList } from 'react-native';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as reportActions from "../../actions/ReportActions";
 import DateFilter from "./DateFilter";
 import * as Utilities from "../../services/Utilities";
-import { format, parseISO, isAfter, isBefore, isEqual } from 'date-fns';
+import { parseISO, isSameDay } from 'date-fns';
 import slowlog from 'react-native-slowlog';
 import i18n from '../../app/i18n';
-const isBetween = (date, from, to, inclusivity = '()') => {
-    if (!['()', '[]', '(]', '[)'].includes(inclusivity)) {
-        throw new Error('Inclusivity parameter must be one of (), [], (], [)');
-    }
-
-    const isBeforeEqual = inclusivity[0] === '[',
-        isAfterEqual = inclusivity[1] === ']';
-
-    return (isBeforeEqual ? (isEqual(from, date) || isBefore(from, date)) : isBefore(from, date)) &&
-        (isAfterEqual ? (isEqual(to, date) || isAfter(to, date)) : isAfter(to, date));
-};
-
 
 class SalesReport extends React.PureComponent {
 	constructor(props) {
@@ -96,6 +88,7 @@ class SalesReport extends React.PureComponent {
 	getSalesData() {
 		let sales = [];
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
+			console.log(this.props.dateFilter.startDate + " - " + this.props.dateFilter.endDate);
 			if (this.props.dateFilter.startDate == this.startDate && this.props.dateFilter.endDate == this.endDate) {
 				sales = this.props.salesData.salesItems;
 			} else {
@@ -138,11 +131,10 @@ class SalesReport extends React.PureComponent {
 
 	getItemTotalLiters(item) {
 		console.log(item);
-		// if (item.totalLiters && item.totalLiters !== 'N/A') {
-			// return `${item.totalLiters.toFixed(2)} L`;
-			return `${(item.litersPerSku * item.quantity).toFixed(2)} L`;
-		// }
-		// return 0;
+		if (item.totalLiters && item.totalLiters !== 'N/A') {
+			return `${item.totalLiters.toFixed(2)} L`;
+		}
+		return 0;
 	}
 
 	getItemLitersPerSku(item) {
@@ -187,10 +179,9 @@ class SalesReport extends React.PureComponent {
 		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
 		let filteredReceipts= [];
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
-			filteredReceipts = receiptsPaymentTypes.filter(receipt =>
-					isBetween(parseISO(receipt.created_at),
-					parseISO(this.props.dateFilter.startDate),
-					parseISO(this.props.dateFilter.endDate))
+			filteredReceipts = receiptsPaymentTypes.filter(receipt => {
+				isSameDay(parseISO(receipt.created_at), this.props.dateFilter.startDate)
+			  }
 			);
 		}
 

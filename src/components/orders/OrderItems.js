@@ -1,4 +1,8 @@
 import React from "react";
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
 import { View, Text, ScrollView, FlatList, TextInput, Dimensions, TouchableHighlight, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -42,8 +46,6 @@ class OrderItems extends React.PureComponent {
 	static whyDidYouRender = true;
 
 	render() {
-
-		const state = this.state;
 		return (
 			<View style={styles.container}>
 				<FlatList

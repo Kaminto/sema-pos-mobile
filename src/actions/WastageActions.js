@@ -8,27 +8,13 @@ export const REPORT_FILTER = 'REPORT_FILTER';
 export const REMINDER_REPORT = 'REMINDER_REPORT';
 export const ADD_REMINDER = 'ADD_REMINDER';
 
-import { format, parseISO, isBefore, isAfter, isEqual } from 'date-fns';
-
-const isBetween = (date, from, to, inclusivity = '()') => {
-    if (!['()', '[]', '(]', '[)'].includes(inclusivity)) {
-        throw new Error('Inclusivity parameter must be one of (), [], (], [)');
-    }
-
-    const isBeforeEqual = inclusivity[0] === '[',
-        isAfterEqual = inclusivity[1] === ']';
-
-    return (isBeforeEqual ? (isEqual(from, date) || isBefore(from, date)) : isBefore(from, date)) &&
-        (isAfterEqual ? (isEqual(to, date) || isAfter(to, date)) : isAfter(to, date));
-};
+import { parseISO, isSameDay} from 'date-fns';
 
 const getSalesData = (beginDate, endDate) => {
 	return new Promise(async (resolve, reject) => {
 		const loggedReceipts = OrderRealm.getAllOrder();
 		const filteredReceipts = loggedReceipts.filter(receipt =>
-				isBetween(parseISO(receipt.created_at),
-				parseISO(beginDate),
-				parseISO(endDate))
+		   isSameDay(parseISO(receipt.created_at), beginDate)
 		);
 		const allReceiptLineItems = filteredReceipts.reduce(
 			(lineItems, receipt) => {
@@ -81,8 +67,8 @@ const getSalesData = (beginDate, endDate) => {
 								Number(lineItem.quantity),
 							totalSales: parseFloat(lineItem.price_total),
 							litersPerSku: Number(
-								// lineItem.product.unitPerProduct
-								lineItem.litersPerSku
+								lineItem.product.unitPerProduct
+								// lineItem.litersPerSku
 							),
 							totalLiters:
 								Number(lineItem.litersPerSku) *

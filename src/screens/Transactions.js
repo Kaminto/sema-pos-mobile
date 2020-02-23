@@ -1,4 +1,8 @@
 import React from 'react';
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
 import {
 	View,
 	Text,
@@ -10,7 +14,8 @@ import {
 	Alert,
 	ToastAndroid,
 	ScrollView,
-	SectionList
+	SectionList,
+ 	SafeAreaView
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -32,7 +37,6 @@ import slowlog from 'react-native-slowlog';
 class ReceiptLineItem extends React.PureComponent {
 	constructor(props) {
 		super(props);
-		slowlog(this, /.*/);
 	}
 
 	render() {
@@ -288,6 +292,7 @@ class TransactionDetail extends React.PureComponent {
 class Transactions extends React.PureComponent {
 	constructor(props) {
 		super(props);
+		slowlog(this, /.*/);
 
 		this.state = {
 			refresh: false,
@@ -333,6 +338,7 @@ class Transactions extends React.PureComponent {
 
 	getTransactionDetail() {
 		if (this.state.selected) {
+			// this.prepareSectionedData();
 			return (
 				<View style={{ flex: 1, flexDirection: 'row' }}>
 					<View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 1, borderRightColor: '#CCC' }}>
@@ -343,12 +349,23 @@ class Transactions extends React.PureComponent {
 							ItemSeparatorComponent={this.renderSeparator}
 							extraData={this.state}
 						/>
+						 {/* <SafeAreaView style={styles.container}>
+								<SectionList
+									sections={this.prepareSectionedData()}
+									keyExtractor={(item, index) => item + index}
+									renderItem={this.renderReceipt.bind(this)}
+									renderSectionHeader={({ section: { title } }) => (
+									<Text style={styles.header}>{title}</Text>
+									)}
+								/>
+						</SafeAreaView> */}
 					</View>
 
 					<View style={{ flex: 2, backgroundColor: '#fff', paddingLeft: 20 }}>
 						<ScrollView>
 							<TransactionDetail
 								item={this.state.selected}
+								key={this.state.selected.id}
 								products={this.props.products}
 								receiptActions={this.props.receiptActions}
 								receipts={this.props.receipts}
@@ -391,6 +408,7 @@ class Transactions extends React.PureComponent {
 				id: receipt.id,
 				receiptId: receipt.id,
 				createdAt: receipt.created_at,
+				sectiontitle: format(parseISO(receipt.created_at), 'iiii d MMM yyyy'),
 				customerAccount: receipt.customer_account,
 				receiptLineItems: receipt.receipt_line_items,
 				paymentTypes: receipt.paymentTypes,
@@ -414,6 +432,18 @@ class Transactions extends React.PureComponent {
 		receipts = this.filterItems(receipts);
 
 		return [...receipts];
+	}
+
+	//{format(parseISO(item.createdAt), 'iii d MMM yyyy')}
+	prepareSectionedData() {
+		// Used for enumerating receipts
+		let receipts = this.prepareData();
+		let newarray = [];
+		let sectionedlist = receipts.map((item, key) => {
+			newarray.push({'title':item.sectiontitle, 'data': item});
+			}
+		);
+		return newarray;
 	}
 
 

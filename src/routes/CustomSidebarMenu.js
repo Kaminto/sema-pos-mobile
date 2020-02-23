@@ -1,12 +1,15 @@
 
 import React from 'react';
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
 import { View, StyleSheet, Image, Text, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import CreditRealm from '../database/credit/credit.operations';
 import OrderRealm from '../database/orders/orders.operations';
-import InventroyRealm from '../database/inventory/inventory.operations';
 import ProductsRealm from '../database/products/product.operations';
 import DiscountRealm from '../database/discount/discount.operations';
 import CustomerReminderRealm from '../database/customer-reminder/customer-reminder.operations';
@@ -30,9 +33,13 @@ import * as discountActions from '../actions/DiscountActions';
 import * as paymentTypesActions from '../actions/PaymentTypesActions';
 import * as CustomerReminderActions from '../actions/CustomerReminderActions';
 import i18n from '../app/i18n';
+
+import slowlog from 'react-native-slowlog';
+
 class CustomSidebarMenu extends React.PureComponent {
   constructor() {
-    super();
+	super();
+	slowlog(this, /.*/);
     this.state = {
       animating: false,
       language: '',
@@ -52,7 +59,7 @@ class CustomSidebarMenu extends React.PureComponent {
         navOptionThumb: 'md-pricetag',
         navOptionName: 'Transactions',
         screenToNavigate: 'Transactions',
-      },
+	  },
       {
         navOptionThumb: 'ios-stats',
         navOptionName: 'Sales Report',
@@ -84,7 +91,6 @@ class CustomSidebarMenu extends React.PureComponent {
 
     return (
       <View style={styles.sideMenuContainer}>
-        {/* <Icon name="ios-person" size={100} style={styles.sideMenuProfileIcon} /> */}
         <Image source={require('../images/jibulogo.png')} resizeMode='stretch' style={{
           width: 100,
           height: 100,
@@ -182,10 +188,10 @@ class CustomSidebarMenu extends React.PureComponent {
       this.posStorage.getRemoteReceipts()
     );
 
-    // this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
-    // this.props.inventoryActions.setInventory(
-    //   InventroyRealm.getAllInventory()
-    // );
+    this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
+    this.props.inventoryActions.setInventory(
+      InventroyRealm.getAllInventory()
+    );
     this.props.productActions.setProducts(
       ProductsRealm.getProducts()
     );
@@ -320,7 +326,6 @@ function mapDispatchToProps(dispatch) {
     settingsActions: bindActionCreators(SettingsActions, dispatch),
     receiptActions: bindActionCreators(receiptActions, dispatch),
     authActions: bindActionCreators(AuthActions, dispatch),
-
     wastageActions: bindActionCreators(WastageActions, dispatch),
     topUpActions: bindActionCreators(TopUpActions, dispatch),
     inventoryActions: bindActionCreators(InventoryActions, dispatch),

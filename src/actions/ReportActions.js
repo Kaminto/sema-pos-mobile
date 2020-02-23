@@ -2,7 +2,7 @@ import PosStorage from '../database/PosStorage';
 import ProductMRPRealm from '../database/productmrp/productmrp.operations';
 import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
 import OrderRealm from '../database/orders/orders.operations';
-import { format, parseISO, isBefore, isAfter, isEqual } from 'date-fns';
+import { format, parseISO, isSameDay } from 'date-fns';
 
 export const SALES_REPORT_FROM_ORDERS = 'SALES_REPORT_FROM_ORDERS';
 export const INVENTORY_REPORT = 'INVENTORY_REPORT';
@@ -11,27 +11,13 @@ export const REPORT_FILTER = 'REPORT_FILTER';
 export const REMINDER_REPORT = 'REMINDER_REPORT';
 export const ADD_REMINDER = 'ADD_REMINDER';
 
-const isBetween = (date, from, to, inclusivity = '()') => {
-    if (!['()', '[]', '(]', '[)'].includes(inclusivity)) {
-        throw new Error('Inclusivity parameter must be one of (), [], (], [)');
-    }
-
-    const isBeforeEqual = inclusivity[0] === '[',
-        isAfterEqual = inclusivity[1] === ']';
-
-    return (isBeforeEqual ? (isEqual(from, date) || isBefore(from, date)) : isBefore(from, date)) &&
-        (isAfterEqual ? (isEqual(to, date) || isAfter(to, date)) : isAfter(to, date));
-};
-
 export function GetSalesReportData(beginDate, endDate) {
 	return dispatch => {
 		getSalesData(beginDate, endDate)
 			.then(salesData => {
 				const customerDebts = CustomerDebtRealm.getCustomerDebts();
 				const filteredDebt = customerDebts.filter(debt =>
-						isBetween(parseISO(debt.created_at),
-						parseISO(beginDate),
-						parseISO(endDate))
+					isSameDay(parseISO(debt.created_at), beginDate)
 				);
 				dispatch({
 					type: SALES_REPORT_FROM_ORDERS,
@@ -66,9 +52,7 @@ const getSalesData = (beginDate, endDate) => {
 	return new Promise(async (resolve, reject) => {
 		const orders = OrderRealm.getAllOrder();
 		const filteredReceipts = orders.filter(receipt =>
-				isBetween(parseISO(receipt.created_at),
-				parseISO(beginDate),
-				parseISO(endDate))
+			isSameDay(parseISO(receipt.created_at), beginDate)
 		);
 		const allReceiptLineItems = filteredReceipts.reduce(
 			(lineItems, receipt) => {
@@ -106,9 +90,6 @@ const getSalesData = (beginDate, endDate) => {
 		const finalData = allReceiptLineItems.reduce(
 			(final, lineItem) => {
 				const productIndex = final.mapping.get(lineItem.product.sku);
-
-				console.log(JSON.stringify(final.salesItems));
-
 				const product =
 					typeof productIndex !== 'undefined'
 						? final.salesItems[productIndex]
@@ -219,6 +200,7 @@ export const getInventoryData = (beginDate, endDate, products) => {
 
 const createInventory = (salesData, inventorySettings, products) => {
 	let salesAndProducts = { ...salesData };
+	console.log("Geordie" + JSON.stringify(salesAndProducts));
 	salesAndProducts.salesItems = salesData.salesItems.slice();
 	let emptyProducts = [];
 	for (const prod of products) {

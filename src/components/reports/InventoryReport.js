@@ -1,13 +1,19 @@
 import React from 'react';
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
 import { Text, View, StyleSheet, TouchableHighlight, FlatList, Modal, TextInput } from 'react-native';
 import { bindActionCreators } from "redux";
-import * as reportActions from "../../actions/ReportActions";
+// import * as reportActions from "../../actions/ReportActions";
 import * as WastageActions from "../../actions/WastageActions";
+import * as ProductActions from "../../actions/ProductActions";
 import * as InventoryActions from '../../actions/InventoryActions';
 import { connect } from "react-redux";
 import DateFilter from "./DateFilter";
 import PosStorage from "../../database/PosStorage";
 import slowlog from 'react-native-slowlog';
+import {isSameDay} from 'date-fns';
 
 import i18n from '../../app/i18n';
 const uuidv1 = require('uuid/v1');
@@ -89,8 +95,12 @@ class InventoryEdit extends React.PureComponent {
 class InventoryReport extends React.PureComponent {
 	constructor(props) {
 		super(props);
-		this.startDate = new Date();
-		this.endDate = this.addDays(new Date(), 1);
+		slowlog(this, /.*/);
+		// this.startDate = new Date();
+		// this.endDate = this.addDays(new Date(), 1);
+		let currentDate = new Date();
+		this.startDate = null;
+		this.endDate = null;
 		this.state = {
 			currentSkuEdit: "",
 			notDispatchedEdit: "",
@@ -104,7 +114,6 @@ class InventoryReport extends React.PureComponent {
 	};
 
 	render() {
-		console.log(JSON.stringify(this.getInventoryData()));
 		return (
 			<View style={{ flex: 1 }}>
 				<View style={{ flex: .1, flexDirection: 'row' }}>
@@ -206,22 +215,15 @@ class InventoryReport extends React.PureComponent {
 		else return value.toFixed(2);
 	}
 
-	formatDate = (date) => {
-		var someDate = new Date(date);
-		var dd = someDate.getDate();
-		var mm = someDate.getMonth() + 1;
-		var y = someDate.getFullYear();
-
-		return (dd + "/" + mm + "/" + y);
-	};
-
 	getInventoryData() {
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
-			if (this.formatDate(this.props.dateFilter.startDate) == this.formatDate(this.startDate) && this.formatDate(this.props.dateFilter.endDate) == this.formatDate(this.endDate)) {
+			if(isSameDay(this.props.dateFilter.startDate, this.startDate) && isSameDay(this.props.dateFilter.endDate, this.endDate)) {
+				alert(this.props.dateFilter.startDate + '-' +this.startDate + " fury wilder " + this.props.wastageData.salesAndProducts.salesItems.length);
 				return this.props.wastageData.salesAndProducts.salesItems;
 			} else {
 				this.startDate = this.props.dateFilter.startDate;
 				this.endDate = this.props.dateFilter.endDate;
+				// alert(this.props.dateFilter.startDate + '-' +this.startDate + " else ");
 				this.props.wastageActions.GetInventoryReportData(this.startDate, this.endDate, this.props.products);
 				return this.props.wastageData.salesAndProducts.salesItems;
 			}
@@ -627,11 +629,9 @@ class InventoryReport extends React.PureComponent {
 
 function mapStateToProps(state, props) {
 	return {
-		inventoryData: state.reportReducer.inventoryData,
-		wastageData: state.reportReducer.inventoryData,
+		wastageData: state.wastageReducer.inventoryData,
 		products: state.productReducer.products,
-		dateFilter: state.reportReducer.dateFilter,
-		reportType: state.reportReducer.reportType,
+		dateFilter: state.wastageReducer.dateFilter,
 		settings: state.settingsReducer.settings
 	};
 }
@@ -639,7 +639,8 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
 	return {
 		wastageActions: bindActionCreators(WastageActions, dispatch),
-		reportActions: bindActionCreators(reportActions, dispatch),
+		// reportActions: bindActionCreators(reportActions, dispatch),
+		productActions: bindActionCreators(ProductActions, dispatch),
 		inventoryActions: bindActionCreators(InventoryActions, dispatch),
 	};
 }

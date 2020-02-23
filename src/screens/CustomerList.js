@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-// if (process.env.NODE_ENV === 'development') {
-// 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-// 	whyDidYouRender(React);
-// }
+import React from 'react';
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
 import {
     View,
     Text,
@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import { FloatingAction } from "react-native-floating-action";
 import * as CustomerActions from '../actions/CustomerActions';
-import * as ToolbarActions from '../actions/ToolBarActions';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -173,7 +172,8 @@ class CustomerList extends React.PureComponent {
     }
 
     onScrollCustomerTo(data) {
-    }
+	}
+
     getItemLayout = (data, index) => ({
         length: 50,
         offset: 50 * index,
@@ -243,8 +243,6 @@ class CustomerList extends React.PureComponent {
         return data;
     };
 
-
-
     filterItems = data => {
         let filter = {
             salesChannel: this.props.channelFilterString.length > 0 ? this.props.channelFilterString === 'all' ? "" : this.props.channelFilterString : "",
@@ -252,8 +250,6 @@ class CustomerList extends React.PureComponent {
             customerType: this.props.customerTypeFilter.length > 0 ? this.props.customerTypeFilter === 'all' ? "" : this.props.customerTypeFilter : "",
         };
         data = data.map(item => {
-            // console.log('totalTopUp',this.totalTopUp(item.customerId));
-            // console.log('customerCreditPaymentTypeReceipts',this.customerCreditPaymentTypeReceipts(item.customerId).reduce((total, item) => { return (total + item.amount) }, 0));
             return {
                 ...item,
                 walletBalance: item.walletBalance ? item.walletBalance : 0 ,
@@ -432,14 +428,9 @@ class CustomerList extends React.PureComponent {
         }
     }
 
-    onPopupError() {
-
-    }
-
     onPressItem  = item => {
         this.props.customerActions.CustomerSelected(item);
         this.setState({ refresh: !this.state.refresh });
-        this.props.customerActions.setCustomerEditStatus(true);
         this.props.navigation.setParams({ isCustomerSelected: true });
         this.props.navigation.setParams({ isDueAmount: item.dueAmount });
         this.props.navigation.setParams({ customerName: item.name });
@@ -508,7 +499,6 @@ class CustomerList extends React.PureComponent {
 
 class SearchWatcher extends React.PureComponent {
     render() {
-
         return this.searchEvent();
     }
 
@@ -539,21 +529,15 @@ function mapStateToProps(state, props) {
         customers: state.customerReducer.customers,
         searchString: state.customerReducer.searchString,
         channelFilterString: state.customerReducer.channelFilterString,
-        customerTypeFilter: state.customerReducer.customerTypeFilter,
-        receiptsPaymentTypes: state.paymentTypesReducer.receiptsPaymentTypes,
+		customerTypeFilter: state.customerReducer.customerTypeFilter,
 		paymentTypes: state.paymentTypesReducer.paymentTypes,
-        products: state.productReducer.products,
-        receipts: state.receiptReducer.receipts,
-		topups: state.topupReducer.topups,
-		topupTotal: state.topupReducer.total,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        customerActions: bindActionCreators(CustomerActions, dispatch),
-        toolbarActions: bindActionCreators(ToolbarActions, dispatch),
-        paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch),
+		customerActions: bindActionCreators(CustomerActions, dispatch),
+		paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch),
     };
 }
 
