@@ -1,12 +1,12 @@
 import CustomerDebtRealm from '../../database/customer_debt/customer_debt.operations';
 import CustomerDebtApi from '../api/customer-debt.api';
 import * as _ from 'lodash';
-
+let settings = SettingRealm.getAllSetting();
 class CustomerDebtsSync {
 
     synchronizeCustomerDebts(lastCustomerDebtsSync) {
         return new Promise(resolve => {
-            CustomerDebtApi.getCustomerDebts(new Date(lastCustomerDebtsSync))
+            CustomerDebtApi.getCustomerDebts(settings.siteId,new Date(lastCustomerDebtsSync))
                 .then(result => {
                     let initlocalCustomerDebts = CustomerDebtRealm.getCustomerDebts();
                     let localCustomerDebts = [...initlocalCustomerDebts];
@@ -62,7 +62,7 @@ class CustomerDebtsSync {
                         if (onlyLocally.length > 0) {
                             onlyLocally.forEach(localCustomerDebt => {
                                 CustomerDebtApi.createCustomerDebt(
-                                    localCustomerDebt
+                                    {...localCustomerDebt, kiosk_id: settings.siteId }
                                 )
                                     .then((response) => {
                                         CustomerDebtRealm.synched(localCustomerDebt);

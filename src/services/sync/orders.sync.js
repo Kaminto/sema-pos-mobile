@@ -87,6 +87,7 @@ class OrderSync {
                                     {
                                         active: 1,
                                         amountCash: localOrder.amount_cash,
+                                        isDelete: localOrder.isDelete,
                                         amountLoan: localOrder.amount_loan,
                                         amountMobile: localOrder.amount_mobile,
                                         isWalkIn: localOrder.isWalkIn,

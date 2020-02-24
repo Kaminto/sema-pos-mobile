@@ -28,14 +28,14 @@ class CustomerDebtApi {
 		this._siteId = siteId;
 	}
 
-	getCustomerDebts(updatedSince) {
+	getCustomerDebts(kiosk_id,updatedSince) {
 		let options = {
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-		let url = 'sema/customer_debt';
+		let url = `sema/customer_debt/${kiosk_id}`;
 		console.log('this._url', this._url);
 		// if (updatedSince) {
 		// 	url = url + '?updated-date=' + updatedSince;
