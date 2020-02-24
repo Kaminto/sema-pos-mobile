@@ -24,7 +24,7 @@ export const isEmptyObj = (obj) => {
 }
 
 export function formatCurrency(value) {
-	console.log('value===', value);
+	// console.log('value===', value);
 	let locale = 'en-US';
 	let currency = "USD";
 	try {
