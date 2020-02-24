@@ -1,6 +1,6 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-import moment from 'moment-timezone';
+import { format, parseISO} from 'date-fns';
 class CustomerRealm {
     constructor() {
         this.customer = [];
@@ -124,9 +124,7 @@ class CustomerRealm {
                 customerObj[0].dueAmount = customer.dueAmount;
 
                 if (customer.reminder_date) {
-                    customerObj[0].reminder_date = moment(customer.reminder_date).format(
-                        'YYYY-MM-DD'
-                    );
+                    customerObj[0].reminder_date = format(parseISO(customer.reminder_date), 'yyyy-MM-dd')
                 }
 
 
@@ -156,7 +154,7 @@ class CustomerRealm {
         }
     }
 
-    
+
     updateCustomerWalletBalance(
         customer,
         walletBalance,

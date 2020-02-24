@@ -1,4 +1,8 @@
 import React from 'react';
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
 import {
 	View,
 	Text,
@@ -14,10 +18,12 @@ import * as OrderActions from '../../actions/OrderActions';
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 import randomMC from 'random-material-color';
+import slowlog from 'react-native-slowlog';
 
 class ProductList extends React.PureComponent {
 	constructor(props) {
 		super(props);
+		slowlog(this, /.*/);
 		// this.onPressItem = this.onPressItem.bind(this);
 	}
 

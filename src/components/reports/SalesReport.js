@@ -1,12 +1,16 @@
 import React from 'react';
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
 import { Text, View, StyleSheet, FlatList } from 'react-native';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as reportActions from "../../actions/ReportActions";
 import DateFilter from "./DateFilter";
 import * as Utilities from "../../services/Utilities";
-const moment = require('moment');
-
+import { parseISO, isSameDay } from 'date-fns';
+import slowlog from 'react-native-slowlog';
 import i18n from '../../app/i18n';
 
 class SalesReport extends React.PureComponent {
@@ -20,6 +24,7 @@ class SalesReport extends React.PureComponent {
 		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
 	};
 	render() {
+		console.log(JSON.stringify(this.getSalesData()));
 		return (
 			<View style={{ flex: 1 }}>
 				<View style={{
@@ -85,6 +90,7 @@ class SalesReport extends React.PureComponent {
 	getSalesData() {
 		let sales = [];
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
+			console.log(this.props.dateFilter.startDate + " - " + this.props.dateFilter.endDate);
 			if (this.props.dateFilter.startDate == this.startDate && this.props.dateFilter.endDate == this.endDate) {
 				sales = this.props.salesData.salesItems;
 			} else {
@@ -115,7 +121,7 @@ class SalesReport extends React.PureComponent {
 
 		}
 		groupedTotals.push({
-			name: 'TOTAL',
+			name: 'TOTAL REVENUE',
 			totalAmount: this.props.salesData.totalSales
 		});
 
@@ -136,10 +142,10 @@ class SalesReport extends React.PureComponent {
 		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
 		let filteredReceipts = [];
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
-			filteredReceipts = receiptsPaymentTypes.filter(receipt =>
-				moment
-					.tz(new Date(receipt.created_at), moment.tz.guess())
-					.isBetween(this.props.dateFilter.startDate, this.props.dateFilter.endDate));
+			filteredReceipts = receiptsPaymentTypes.filter(receipt => {
+				isSameDay(parseISO(receipt.created_at), this.props.dateFilter.startDate)
+			  }
+			);
 		}
 
 		let paymentTypes = [...this.props.paymentTypes];

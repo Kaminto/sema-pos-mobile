@@ -1,6 +1,6 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-import moment from 'moment-timezone';
+import { format, parseISO } from 'date-fns';
 class CustomerReminderRealm {
     constructor() {
         this.customerReminder = [];
@@ -102,12 +102,8 @@ class CustomerReminderRealm {
             reminder = reminder.map(element=>{
                 return {
                     ...element,
-                    lastPurchaseDate:moment
-                    .tz(element.lastPurchaseDate, moment.tz.guess())
-                    .format('dddd Do MMMM YYYY'),
-                    reminder_date:moment
-                    .tz(element.reminder_date, moment.tz.guess())
-                    .format('dddd Do MMMM YYYY')
+                    lastPurchaseDate:format(parseISO(element.lastPurchaseDate), 'iiii d MMM yyyy'),
+                    reminder_date:format(parseISO(element.reminder_date), 'iiii d MMM yyyy')
                 }
             });
 			return reminder[0];

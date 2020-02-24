@@ -1,4 +1,8 @@
 import React from 'react';
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
 import { Text, View, StyleSheet, TouchableHighlight, Alert, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -10,11 +14,13 @@ import CustomerReminderRealm from '../../database/customer-reminder/customer-rem
 import * as CustomerReminderActions from '../../actions/CustomerReminderActions';
 import DateFilter from './ReminderDateFilter';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import moment from 'moment-timezone';
+import { format, parseISO } from 'date-fns';
+import slowlog from 'react-native-slowlog';
 
 class RemindersReport extends React.PureComponent {
 	constructor(props) {
 		super(props);
+		slowlog(this, /.*/);
 		this.state = {
 			refresh: false,
 			filterDate: new Date(),
@@ -117,7 +123,8 @@ class RemindersReport extends React.PureComponent {
 					<Text style={[styles.baseItem]}>{item.address}</Text>
 				</View>
 				<View style={{ flex: 2 }}>
-					<Text style={[styles.baseItem]}>{moment.tz(item.lastPurchaseDate, moment.tz.guess()).format('ddd Do MMM YYYY')}</Text>
+					<Text style={[styles.baseItem]}>{format(parseISO(item.lastPurchaseDate), 'iiii d MMM yyyy')}
+					</Text>
 				</View>
 				<View style={{ flex: 2 }}>
 					<TouchableHighlight
@@ -125,7 +132,7 @@ class RemindersReport extends React.PureComponent {
 						onPress={() => this.showDateTimePicker(item)}
 						underlayColor='#18376A'>
 						<Text style={[styles.currentInventoryText, { padding: 5 }]}>
-							{item.customReminderDate ? moment.tz(new Date(item.customReminderDate), moment.tz.guess()).format('ddd Do MMM YYYY') : 'SET'}
+							{item.customReminderDate ? format(new Date(item.customReminderDate), 'iiii d MMM yyyy'): 'SET'}
 						</Text>
 					</TouchableHighlight>
 					<DateTimePicker
@@ -186,7 +193,7 @@ class RemindersReport extends React.PureComponent {
 	}
 
 	formateDate(date) {
-		return moment.tz(new Date(date), moment.tz.guess()).format("YYYY-MM-DD");
+		return format(new Date(date), 'yyyy-MM-dd') ;
 	}
 
 	filterDate(data) {

@@ -1,4 +1,8 @@
 import React from "react";
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
 import { View, Alert, Text, TextInput, Button, FlatList, ScrollView, SafeAreaView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -29,11 +33,13 @@ import * as Utilities from "../../services/Utilities";
 const uuidv1 = require('uuid/v1');
 const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
+import slowlog from 'react-native-slowlog';
 
 class OrderCheckout extends React.PureComponent {
 
 	constructor(props) {
 		super(props);
+		slowlog(this, /.*/);
 		this.saleSuccess = false;
 		this.state = {
 			isWalkIn: true,
@@ -181,7 +187,12 @@ class OrderCheckout extends React.PureComponent {
 									containerStyle={{ backgroundColor: '#ABC1DE' }}>
 
 									<View style={{ flex: 1, flexDirection: 'row' }}>
-										{this.getSaleAmount()}
+										{/* {this.getSaleAmount()} */}
+										<PaymentDescription
+											styles={{ fontWeight: 'bold' }}
+											title={`${i18n.t('sale-amount-due')}: `}
+											total={Utilities.formatCurrency(this.calculateOrderDue())}
+										/>
 										<PaymentDescription
 											style={{ color: 'white' }}
 											title={`${i18n.t('customer-wallet')}:`}
@@ -189,7 +200,7 @@ class OrderCheckout extends React.PureComponent {
 												this.currentCredit()
 											)}
 										/>
-									</View>
+								 	</View>
 
 
 									<View style={{ flex: 1, flexDirection: 'row' }}>
@@ -324,7 +335,6 @@ class OrderCheckout extends React.PureComponent {
 						</View>
 					</ScrollView>
 				</Modal>
-
 
 			</View>
 
@@ -830,10 +840,6 @@ class OrderCheckout extends React.PureComponent {
 		let totalAmountPaid = this.props.selectedPaymentTypes.reduce((total, item) => { return (total + item.amount) }, 0);
 
 		if (this.currentCredit() > this.calculateOrderDue()) {
-			// if credit is more than order due:
-			// if totalPayment is greater than currentCredit.
-			// if it has some payment type top up wallet.
-			// totalAmountPaid = totalAmountPaid + this.currentCredit();
 			console.log('credit is more');
 
 			if (totalAmountPaid > this.calculateOrderDue()) {
@@ -847,7 +853,7 @@ class OrderCheckout extends React.PureComponent {
 				}
 			} else if (totalAmountPaid < this.calculateOrderDue()) {
 
-
+				console.log("Total Amount Paid is less than the Order Total");
 			} else if (totalAmountPaid == this.calculateOrderDue()) {
 				this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
 				this.updateWallet(this.props.selectedCustomer.walletBalance);
@@ -866,9 +872,9 @@ class OrderCheckout extends React.PureComponent {
 					this.updateWallet(this.props.selectedCustomer.walletBalance);
 					this.saveOrder(true);
 				} else if (this.calculateAmountDue() > 0) {
-					//clear loan and topup wallet if there is any balance
 					let postToLoan = Number(totalAmountPaid - this.calculateOrderDue());
-					if (postToLoan > this.calculateAmountDue()) {
+					if (totalAmountPaid > this.calculateAmountDue()) {
+						console.log("This loan fury wilder");
 						// clear loan balance and topup wallet
 						console.log('postToLoan', postToLoan);
 						console.log('calculateAmountDue', this.calculateAmountDue());
@@ -883,16 +889,14 @@ class OrderCheckout extends React.PureComponent {
 						console.log('sa', topUpExpected);
 						this.updateWallet(this.props.selectedCustomer.walletBalance);
 						this.saveOrder(true);
-					}
-
-					if (postToLoan < this.calculateAmountDue()) {
+					} else if (totalAmountPaid < this.calculateAmountDue()) {
+						console.log("This loan fury 6'9");
 						// clear loan balance
 						///this.setState({ loanPaid: postToLoan });
 						this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - postToLoan;
 						this.updateLoanBalance(this.props.selectedCustomer.dueAmount);
 						this.saveOrder(true);
 					}
-
 				}
 			} else  if (totalAmountPaid < this.calculateOrderDue()) {
 				//add loan payment type to reducer

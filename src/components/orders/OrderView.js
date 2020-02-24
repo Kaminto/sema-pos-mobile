@@ -1,4 +1,8 @@
 import React from "react";
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
 import { View, StyleSheet } from 'react-native';
 import ProductListScreen from './ProductListScreen';
 import OrderSummaryScreen from "./OrderSummaryScreen";
@@ -6,11 +10,12 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
 import * as CustomerActions from '../../actions/CustomerActions';
-
+import slowlog from 'react-native-slowlog';
 
 class OrderView extends React.PureComponent {
 	constructor(props) {
 		super(props);
+		slowlog(this, /.*/);
 	}
 
 	render() {

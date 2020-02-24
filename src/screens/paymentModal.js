@@ -1,4 +1,8 @@
-import React from "react"
+import React from "react";
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
 import { View, Alert, Text, TextInput, FlatList, ScrollView, TouchableHighlight, StyleSheet } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import * as OrderActions from "../actions/OrderActions";
@@ -21,12 +25,16 @@ import CustomerRealm from '../database/customers/customer.operations';
 
 import * as Utilities from "../services/Utilities";
 const widthQuanityModal = '75%';
-const heightQuanityModal = 300;
+const heightQuanityModal = 250;
+
+import slowlog from 'react-native-slowlog';
 
 class PaymentModal extends React.PureComponent {
 
 	constructor(props) {
 		super(props);
+
+		slowlog(this, /.*/);
 		this.state = {
 			selectedPaymentTypes: [],
 			selectedType: {},
@@ -37,7 +45,6 @@ class PaymentModal extends React.PureComponent {
 
 
 	render() {
-		const state = this.state;
 		return (
 			<ScrollView>
 				<View

@@ -1,6 +1,6 @@
 import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
 import OrderRealm from '../database/orders/orders.operations';
-import moment from 'moment-timezone';
+import { format, parseISO, isSameDay } from 'date-fns';
 
 export const SALES_REPORT_FROM_ORDERS = 'SALES_REPORT_FROM_ORDERS';
 export const INVENTORY_REPORT = 'INVENTORY_REPORT';

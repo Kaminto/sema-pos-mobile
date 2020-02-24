@@ -1,4 +1,8 @@
 import React from "react";
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
 import { View, Text, ScrollView, FlatList, TextInput, Dimensions, TouchableHighlight, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -12,6 +16,7 @@ import SalesChannelRealm from '../../database/sales-channels/sales-channels.oper
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import DiscountRealm from '../../database/discount/discount.operations';
 import ToggleSwitch from 'toggle-switch-react-native';
+import slowlog from 'react-native-slowlog';
 
 const { height, width } = Dimensions.get('window');
 const widthQuanityModal = '70%';
@@ -22,6 +27,7 @@ const inputFontHeight = Math.round((24 * height) / 752);
 class OrderItems extends React.PureComponent {
 	constructor(props) {
 		super(props);
+		slowlog(this, /.*/);
 		this.state = {
 			selectedItem: {},
 			accumulator: 0,
@@ -40,8 +46,6 @@ class OrderItems extends React.PureComponent {
 	static whyDidYouRender = true;
 
 	render() {
-
-		const state = this.state;
 		return (
 			<View style={styles.container}>
 				<FlatList

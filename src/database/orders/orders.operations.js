@@ -1,21 +1,11 @@
 import realm from '../init';
-const uuidv1 = require('uuid/v1');
-import moment from 'moment-timezone';
+import { format, parseISO} from 'date-fns';
 class OrderRealm {
     constructor() {
         this.order = [];
         let firstSyncDate = new Date('November 7, 1973');
-        // realm.write(() => {
-        //     if (Object.values(JSON.parse(JSON.stringify(realm.objects('OrderSyncDate')))).length == 0) {
-        //         realm.create('OrderSyncDate', { lastOrderSync: firstSyncDate });
-        //     }
-        // });
         this.lastOrderSync = firstSyncDate;
     }
-
-    // getLastOrderSync() {
-    //     return this.lastOrderSync = JSON.parse(JSON.stringify(realm.objects('OrderSyncDate')))['0'].lastOrderSync;
-    // }
 
     truncate() {
         try {
@@ -27,13 +17,6 @@ class OrderRealm {
             console.log("Error on creation", e);
         }
     }
-
-    // setLastOrderSync(lastSyncTime) {
-    //     realm.write(() => {
-    //     let syncDate = realm.objects('OrderSyncDate');
-    //     syncDate[0].lastOrderSync = lastSyncTime.toISOString()
-    //     })
-    // }
 
     getAllOrder() {
         let formattedArray = [...Object.values(JSON.parse(JSON.stringify(realm.objects('Order'))))];
@@ -54,15 +37,11 @@ class OrderRealm {
                 let orderObj2 = orderObj.map(
                     item => {
                         return {
-                            ...item, created_at: moment(item.created_at).format(
-                                'YYYY-MM-DD'
-                            )
+                            ...item, created_at: format(parseISO(item.created_at), 'yyyy-MM-dd')
                         }
                     });
 
-                resolve(orderObj2.filter(r => r.created_at === moment(date).format(
-                    'YYYY-MM-DD'
-                )));
+                resolve(orderObj2.filter(r => r.created_at === format(parseISO(date), 'yyyy-MM-dd')));
             } catch (e) {
                 console.log("Error on creation", e);
                 resolve(e);
@@ -189,9 +168,7 @@ class OrderRealm {
                 orderObj[0].secondPhoneNumber = secondPhoneNumber
 
                 if (order.reminder_date) {
-                    orderObj[0].reminder_date = moment(order.reminder_date).format(
-                        'YYYY-MM-DD'
-                    );
+                    orderObj[0].reminder_date = format(parseISO(order.reminder_date), 'yyyy-MM-dd');
                 }
 
 
@@ -239,7 +216,7 @@ class OrderRealm {
             realm.write(() => {
                     let orderObj = realm.objects('Order').filtered(`id = "${order.receiptId}"`);
                     orderObj[0].syncAction = 'delete';
-                    orderObj[0].isDelete = 0;              
+                    orderObj[0].isDelete = 0;
             })
 
         } catch (e) {

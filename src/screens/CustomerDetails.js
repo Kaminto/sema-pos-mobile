@@ -1,4 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
+  }
 import {
 	View,
 	Text,
@@ -30,11 +34,13 @@ import * as receiptActions from '../actions/ReceiptActions';
 import SelectedCustomerDetails from './CustomerDetailSubHeader';
 
 import i18n from '../app/i18n';
-import moment from 'moment-timezone';
+import slowlog from 'react-native-slowlog';
+import { format, parseISO, isBefore } from 'date-fns';
 
 class ReceiptLineItem extends React.PureComponent {
 	constructor(props) {
 		super(props);
+		slowlog(this, /.*/);
 	}
 
 	render() {
@@ -226,9 +232,7 @@ class CustomerDetails extends React.PureComponent {
 			});
 
 			topups.sort((a, b) => {
-				return moment
-					.tz(a.createdAt, moment.tz.guess())
-					.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+				return isBefore(new Date(new Date(a.createdAt)), new Date(new Date(b.createdAt)))
 					? 1
 					: -1;
 			});
@@ -317,9 +321,7 @@ class CustomerDetails extends React.PureComponent {
 			});
 
 			remoteReceipts.sort((a, b) => {
-				return moment
-					.tz(a.createdAt, moment.tz.guess())
-					.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+				return isBefore(new Date(new Date(a.createdAt)), new Date(new Date(b.createdAt)))
 					? 1
 					: -1;
 			});
@@ -398,9 +400,7 @@ class CustomerDetails extends React.PureComponent {
 			});
 
 			receipts.sort((a, b) => {
-				return moment
-					.tz(a.createdAt, moment.tz.guess())
-					.isBefore(moment.tz(b.createdAt, moment.tz.guess()))
+				return isBefore(new Date(new Date(a.createdAt)), new Date(new Date(b.createdAt)))
 					? 1
 					: -1;
 			});
@@ -503,10 +503,7 @@ class CustomerDetails extends React.PureComponent {
 			<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
 				<View key={index} style={{ padding: 15 }}>
 					<View style={styles.label}>
-						<Text>
-							{moment
-								.tz(item.createdAt, moment.tz.guess())
-								.format('dddd Do MMMM YYYY')}
+						<Text> {format(parseISO(item.createdAt), 'iii d MMM yyyy')}
 						</Text>
 					</View>
 					<Text style={styles.customername}>
@@ -716,10 +713,7 @@ class TransactionDetail extends React.PureComponent {
 					<Text style={styles.customername}>{this.props.item.customerAccount.name}</Text>
 				</View>
 				<View style={styles.itemData}>
-					<Text>
-						{moment
-							.tz(this.props.item.createdAt, moment.tz.guess())
-							.format('dddd Do MMMM YYYY')}
+					<Text>{format(parseISO(this.props.item.createdAt), 'iii d MMM yyyy')}
 					</Text>
 				</View>
 				<View>

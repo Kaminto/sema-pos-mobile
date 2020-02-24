@@ -1,23 +1,18 @@
 import PosStorage from '../database/PosStorage';
 import ProductMRPRealm from '../database/productmrp/productmrp.operations';
 import OrderRealm from '../database/orders/orders.operations';
-import moment from 'moment-timezone';
 export const SALES_REPORT_FROM_ORDERS = 'SALES_REPORT_FROM_ORDERS';
 export const INVENTORY_REPORT = 'INVENTORY_REPORT';
 export const REPORT_TYPE = 'REPORT_TYPE';
 export const REPORT_FILTER = 'REPORT_FILTER';
-export const REMINDER_REPORT = 'REMINDER_REPORT';
-export const ADD_REMINDER = 'ADD_REMINDER';
 
-
+import { parseISO, isSameDay} from 'date-fns';
 
 const getSalesDatae = (beginDate, endDate) => {
 	return new Promise(async (resolve, reject) => {
-		const orders = OrderRealm.getAllOrder();
-		const filteredReceipts = orders.filter(receipt =>
-			moment
-				.tz(new Date(receipt.created_at), moment.tz.guess())
-				.isBetween(beginDate, endDate)
+		const loggedReceipts = OrderRealm.getAllOrder();
+		const filteredReceipts = loggedReceipts.filter(receipt =>
+		   isSameDay(parseISO(receipt.created_at), beginDate)
 		);
 		const allReceiptLineItems = filteredReceipts.reduce(
 			(lineItems, receipt) => {
@@ -70,8 +65,8 @@ const getSalesDatae = (beginDate, endDate) => {
 								Number(lineItem.quantity),
 							totalSales: parseFloat(lineItem.price_total),
 							litersPerSku: Number(
-								// lineItem.product.unitPerProduct
-								lineItem.litersPerSku
+								lineItem.product.unitPerProduct
+								// lineItem.litersPerSku
 							),
 							totalLiters:
 								Number(lineItem.litersPerSku) *
@@ -221,6 +216,8 @@ export const getWastageData = (beginDate, endDate, products) => {
 const createInventory = (salesData, inventorySettings, products) => {
 	let salesAndProducts = { ...salesData };
 	salesAndProducts.salesItems = salesData.salesItems.slice();
+
+	console.log("Well" + salesAndProducts.salesItems.length + JSON.stringify(salesAndProducts.salesItems))
 	let emptyProducts = [];
 	for (const prod of products) {
 		if (isNotIncluded(prod, salesAndProducts.salesItems)) {

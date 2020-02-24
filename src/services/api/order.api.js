@@ -1,4 +1,4 @@
-import moment from 'moment-timezone';
+import { format, parseISO } from 'date-fns';
 class OrderApi {
     constructor() {
         this._url = 'http://142.93.115.206:3002/';
@@ -88,12 +88,10 @@ class OrderApi {
 			}
 		};
 
-		let url = `sema/site/receipts/${siteId}?date=${moment
-			.tz(new Date('2019-11-01'), moment.tz.guess())
-			.format('YYYY-MM-DD')}`;
+		let url = `sema/site/receipts/${siteId}?date=${format(parseISO('2019-11-01'), 'yyyy-MM-dd')}`;
 		console.log('Communications:getReceipts: ');
-		console.log(
-			moment.tz(new Date('2019-11-01'), moment.tz.guess()).format('YYYY-MM-DD')
+		console.log( "Freaking dates" +
+			format(new Date('2019-11-01'), 'yyyy-MM-dd')
 		);
 		return fetch(this._url + url, options)
 			.then(async response => await response.json())

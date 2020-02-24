@@ -475,7 +475,7 @@ const JibuDrawerNavigation = createDrawerNavigator({
         navigationOptions: {
             drawerLabel: 'Transactions',
         },
-    },
+	},
     SalesReport: {
         screen: SalesReportStack,
         navigationOptions: {
