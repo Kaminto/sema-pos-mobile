@@ -130,12 +130,11 @@ const ListCustomerStack = createStackNavigator({
                     style={{
                         flexDirection: 'row',
                     }}>
-
-
                     <View
                         style={{
-                            marginTop: 12,
-                            flex: 1
+							flex: 1,
+							flexDirection: 'row',
+							marginTop: 15
                         }}>
                         {/* && navigation.getParam('isDueAmount') > 0 */}
                         {navigation.getParam('isCustomerSelected') && (
@@ -150,12 +149,12 @@ const ListCustomerStack = createStackNavigator({
                             />
 
                         )}
-                    </View>
+                    {/* </View>
                     <View
                         style={{
                             marginTop: 12,
                             flex: 1
-                        }}>
+                        }}> */}
                         {navigation.getParam('isCustomerSelected') && (
                             <Icon
                                 name='md-cart'
@@ -172,12 +171,12 @@ const ListCustomerStack = createStackNavigator({
                             />
 
                         )}
-                    </View>
+                    {/* </View>
                     <View
                         style={{
                             marginTop: 12,
                             flex: 1
-                        }}>
+                        }}> */}
                         {navigation.getParam('isCustomerSelected') && (
                             <Icon
                                 name='md-more'
@@ -188,14 +187,12 @@ const ListCustomerStack = createStackNavigator({
                                 }}
                             />
                         )}
-                    </View>
-
-
+                    {/* </View>
                     <View
                         style={{
                             marginTop: 12,
                             flex: 1
-                        }}>
+                        }}> */}
                         {navigation.getParam('isCustomerSelected') && (
 
                             <Icon
@@ -213,14 +210,12 @@ const ListCustomerStack = createStackNavigator({
 
                             />
                         )}
-                    </View>
-
-
+                    {/* </View>
                     <View
                         style={{
                             marginTop: 12,
                             flex: 1
-                        }}>
+                        }}> */}
                         {navigation.getParam('isCustomerSelected') && (
                             <Icon
                                 name='md-trash'
@@ -232,13 +227,13 @@ const ListCustomerStack = createStackNavigator({
                                 onPress={navigation.getParam('onDelete')}
                             />
                         )}
-                    </View>
+                    {/* </View>
 
                     <View
                         style={{
                             marginTop: 12,
                             flex: 1
-                        }}>
+                        }}> */}
                         {navigation.getParam('isCustomerSelected') && (
                             <Icon
                                 name='md-create'
