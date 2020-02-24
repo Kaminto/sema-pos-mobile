@@ -28,6 +28,10 @@ class OrderView extends React.PureComponent {
 		);
 	}
 
+	// componentDidMount(){
+	// 	this.props.navigation.setParams({ 'title': selectedCustomer.name });
+	// }
+
 	componentWillUnmount() {
 		this.props.orderActions.ClearOrder();
 	}

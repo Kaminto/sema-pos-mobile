@@ -40,7 +40,6 @@ class ReceiptLineItem extends React.PureComponent {
 	}
 
 	render() {
-		// console.log(this.props.item.product.base64encoded_image + " Jumanji " + JSON.stringify(this.props.item));
 		return (
 			<View
 				style={{
@@ -195,7 +194,7 @@ class TransactionDetail extends React.PureComponent {
 						receiptActions={this.props.receiptActions}
 						remoteReceipts={this.props.receipts}
 						item={lineItem}
-						key={lineItem.id}
+						key={lineItem.id + idx}
 						lineItemIndex={idx}
 						products={this.props.products}
 						handleUpdate={this.handleUpdate.bind(this)}
@@ -212,7 +211,7 @@ class TransactionDetail extends React.PureComponent {
 				return (
 
 					<PaymentTypeItem
-						key={paymentItem.id}
+						key={paymentItem.id + idx}
 						item={paymentItem}
 						lineItemIndex={idx}
 					/>
@@ -348,6 +347,8 @@ class Transactions extends React.PureComponent {
 							keyExtractor={(item, index) => item.id}
 							ItemSeparatorComponent={this.renderSeparator}
 							extraData={this.state}
+							windowSize={10}
+					        removeClippedSubviews={true}
 						/>
 						 {/* <SafeAreaView style={styles.container}>
 								<SectionList
@@ -365,7 +366,6 @@ class Transactions extends React.PureComponent {
 						<ScrollView>
 							<TransactionDetail
 								item={this.state.selected}
-								key={this.state.selected.id}
 								products={this.props.products}
 								receiptActions={this.props.receiptActions}
 								receipts={this.props.receipts}

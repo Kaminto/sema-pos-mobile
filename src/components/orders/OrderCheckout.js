@@ -3,7 +3,7 @@ if (process.env.NODE_ENV === 'development') {
 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
 	whyDidYouRender(React);
   }
-import { View, Alert, Text, TextInput, Button, FlatList, ScrollView, SafeAreaView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
+import { View, TouchableOpacity, Alert, Text, TextInput, Button, FlatList, ScrollView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as OrderActions from "../../actions/OrderActions";
@@ -44,6 +44,7 @@ class OrderCheckout extends React.PureComponent {
 		this.state = {
 			isWalkIn: true,
 			isDisabled: false,
+			buttonDisabled: false,
 			swipeToClose: true,
 			loanPaid: 0,
 			topUpExpected: 0,
@@ -60,6 +61,9 @@ class OrderCheckout extends React.PureComponent {
 		this.onPay = this.onPay.bind(this);
 	}
 
+	// shouldComponentUpdate(nextProps, nextState) {
+	// 	return nextProps !== this.props && nextState !== this.state;
+	// }
 
 	showDateTimePicker = () => {
 		this.setState({ isDateTimePickerVisible: true });
@@ -116,11 +120,12 @@ class OrderCheckout extends React.PureComponent {
 						</TouchableHighlight>
 					</View>
 				</View>
-				<Modal style={[styles.modal, styles.modal2]}
+				<Modal style={styles.modal2}
 					coverScreen={true}
 					position={"center"} ref={"modal7"}
 					isDisabled={this.state.isDisabled}>
 					<ScrollView>
+					<TouchableOpacity>
 						<View style={{ flex: 1, paddingLeft: 10 }}>
 							<View style={{ flex: 1, flexDirection: 'row', height: 50 }}>
 								<View style={{ flex: 1, flexDirection: 'row' }}>
@@ -155,6 +160,7 @@ class OrderCheckout extends React.PureComponent {
 								/>
 							</View>
 						</View>
+						</TouchableOpacity>
 					</ScrollView>
 				</Modal>
 
@@ -166,6 +172,7 @@ class OrderCheckout extends React.PureComponent {
 					isDisabled={this.state.isDisabled}>
 
 					<ScrollView>
+					<TouchableOpacity>
 						<View style={{ flex: 1, padding: 0, margin: 0 }}>
 							<View
 								style={{
@@ -183,8 +190,7 @@ class OrderCheckout extends React.PureComponent {
 									marginLeft: 20,
 									marginRight: 20
 								}}>
-								<Card
-									containerStyle={{ backgroundColor: '#ABC1DE' }}>
+								<Card containerStyle={{ backgroundColor: '#ABC1DE', padding: 10 }}>
 
 									<View style={{ flex: 1, flexDirection: 'row' }}>
 										{/* {this.getSaleAmount()} */}
@@ -321,6 +327,7 @@ class OrderCheckout extends React.PureComponent {
 								<View style={{ justifyContent: 'center' }}>
 									<TouchableHighlight
 										underlayColor="#c0c0c0"
+										disabled={this.state.buttonDisabled}
 										onPress={() => this.onCompleteOrder()}>
 										<Text
 											style={[
@@ -333,6 +340,7 @@ class OrderCheckout extends React.PureComponent {
 								</View>
 							</View>
 						</View>
+						</TouchableOpacity>
 					</ScrollView>
 				</Modal>
 
@@ -836,6 +844,9 @@ class OrderCheckout extends React.PureComponent {
 	}
 
 	onCompleteOrder = () => {
+		this.setState({
+			buttonDisabled: true
+		});
 		console.log(this.props.selectedPaymentTypes);
 		let totalAmountPaid = this.props.selectedPaymentTypes.reduce((total, item) => { return (total + item.amount) }, 0);
 
@@ -1241,7 +1252,7 @@ const styles = StyleSheet.create({
 	},
 
 	modal2: {
-
+		justifyContent: 'center',
 		height: 300,
 		width: '65%',
 		padding: 5,

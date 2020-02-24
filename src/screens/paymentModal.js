@@ -3,7 +3,7 @@ if (process.env.NODE_ENV === 'development') {
 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
 	whyDidYouRender(React);
   }
-import { View, Alert, Text, TextInput, FlatList, ScrollView, TouchableHighlight, StyleSheet } from "react-native";
+import { View, Alert, TouchableOpacity, Text, TextInput, FlatList, ScrollView, TouchableHighlight, StyleSheet } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import * as OrderActions from "../actions/OrderActions";
 import * as CustomerActions from '../actions/CustomerActions';
@@ -25,7 +25,7 @@ import CustomerRealm from '../database/customers/customer.operations';
 
 import * as Utilities from "../services/Utilities";
 const widthQuanityModal = '75%';
-const heightQuanityModal = 250;
+const heightQuanityModal = 150;
 
 import slowlog from 'react-native-slowlog';
 
@@ -40,6 +40,7 @@ class PaymentModal extends React.PureComponent {
 			selectedType: {},
 			checkedType: {},
 			topup: "",
+			buttonDisabled: false,
 		};
 	}
 
@@ -47,6 +48,7 @@ class PaymentModal extends React.PureComponent {
 	render() {
 		return (
 			<ScrollView>
+				<TouchableOpacity>
 				<View
 						style={{
 							flex: 1,
@@ -96,6 +98,7 @@ class PaymentModal extends React.PureComponent {
 							<View style={{ justifyContent: 'center', height: 50 }}>
 								<TouchableHighlight
 									underlayColor="#c0c0c0"
+									disabled={this.state.buttonDisabled}
 									onPress={() => this.clearLoan()}>
 									<Text
 										style={[
@@ -108,6 +111,7 @@ class PaymentModal extends React.PureComponent {
 							</View>
 						</View>
 					</View>
+					</TouchableOpacity>
 				</ScrollView>
 
 		);
@@ -215,19 +219,19 @@ class PaymentModal extends React.PureComponent {
 			return;
 		}
 
-		if (this.props.selectedDebtPaymentTypes.length === 2) {
-			Alert.alert(
-				'Notice ',
-				`You cannot select more than two payment methods.`,
-				[{
-					text: 'OK', onPress: () => {
-						this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
-					}
-				}],
-				{ cancelable: false }
-			);
-			return;
-		}
+		// if (this.props.selectedDebtPaymentTypes.length === 2) {
+		// 	Alert.alert(
+		// 		'Notice ',
+		// 		`You cannot select more than two payment methods.`,
+		// 		[{
+		// 			text: 'OK', onPress: () => {
+		// 				this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
+		// 			}
+		// 		}],
+		// 		{ cancelable: false }
+		// 	);
+		// 	return;
+		// }
 
 
 		this.setState({
@@ -275,6 +279,9 @@ class PaymentModal extends React.PureComponent {
 	};
 
 	clearLoan = () => {
+		this.setState({
+			buttonDisabled: true
+		});
 		const creditIndex = this.props.selectedDebtPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
 		if (creditIndex >= 0) {
 			if (Number(this.props.selectedDebtPaymentTypes[creditIndex].amount) > Number(this.props.selectedCustomer.dueAmount)) {
@@ -478,7 +485,7 @@ const styles = StyleSheet.create({
 	completeOrder: {
 		backgroundColor: '#2858a7',
 		borderRadius: 5,
-		marginTop: '10%',
+		marginTop: '5%',
 		bottom: 0
 	},
 

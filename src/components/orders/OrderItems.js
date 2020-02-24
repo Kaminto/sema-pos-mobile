@@ -3,7 +3,7 @@ if (process.env.NODE_ENV === 'development') {
 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
 	whyDidYouRender(React);
   }
-import { View, Text, ScrollView, FlatList, TextInput, Dimensions, TouchableHighlight, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, FlatList, TextInput, Dimensions, TouchableHighlight, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
@@ -45,6 +45,10 @@ class OrderItems extends React.PureComponent {
 
 	static whyDidYouRender = true;
 
+	// shouldComponentUpdate(nextProps, nextState) {
+	// 	return nextProps !== this.props && nextState !== this.state;
+	// }
+
 	render() {
 		return (
 			<View style={styles.container}>
@@ -72,6 +76,7 @@ class OrderItems extends React.PureComponent {
 					sDisabled={this.state.isDisabled}>
 
 					<ScrollView>
+					<TouchableOpacity>
 						<View style={[styles.headerBackground, { flex: 1, flexDirection: 'row', paddingLeft: 20, margin: 0 }]}>
 							<View style={{ flex: .3 }}>
 								{this.getProductDescripion()}
@@ -153,7 +158,7 @@ class OrderItems extends React.PureComponent {
 							</View>
 
 						</View>
-
+						</TouchableOpacity>
 					</ScrollView>
 
 				</Modal>

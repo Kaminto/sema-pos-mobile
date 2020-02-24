@@ -14,7 +14,7 @@ import CustomerReminderRealm from '../../database/customer-reminder/customer-rem
 import * as CustomerReminderActions from '../../actions/CustomerReminderActions';
 import DateFilter from './ReminderDateFilter';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, isSameDay } from 'date-fns';
 import slowlog from 'react-native-slowlog';
 
 class RemindersReport extends React.PureComponent {
@@ -199,7 +199,7 @@ class RemindersReport extends React.PureComponent {
 	filterDate(data) {
 		let filteredItems = data.filter((item) => {
 			if (!item.customReminderDate) {
-				if (this.formateDate(item.reminder_date) === this.formateDate(this.props.dateFilter.startDate)) {
+				if (isSameDay(parseISO(item.reminder_date), this.props.dateFilter.startDate)) {
 					return true;
 				} else {
 					return false;
@@ -207,7 +207,7 @@ class RemindersReport extends React.PureComponent {
 			}
 
 			if (item.customReminderDate) {
-				if (this.formateDate(item.customReminderDate) === this.formateDate(this.props.dateFilter.startDate)) {
+				if (isSameDay(parseISO(item.customReminderDate), this.props.dateFilter.startDate)) {
 					return true;
 				} else {
 					return false;

@@ -130,9 +130,7 @@ function totalByProperty(objectArray, property) {
 const getSalesData = (beginDate, endDate) => {
 	const orders = OrderRealm.getAllOrder();
 	const filteredOrders = orders.filter(receipt =>
-		moment
-			.tz(new Date(receipt.created_at), moment.tz.guess())
-			.isBetween(beginDate, endDate)
+			isSameDay(parseISO(receipt.created_at), beginDate)
 	);
 
 	let filteredOrderItems = filteredOrders.reduce(function (accumulator, currentValue) {
@@ -195,7 +193,7 @@ export function GetInventoryReportData(beginDate, endDate, products) {
 }
 
 export const getWastageData = (beginDate, endDate, products) => {
-	return new Promise((resolve, reject) => {				
+	return new Promise((resolve, reject) => {
 				getInventoryItem(beginDate, products)
 					.then(inventorySettings => {
 						let inventoryData = createInventory(
@@ -209,7 +207,7 @@ export const getWastageData = (beginDate, endDate, products) => {
 					.catch(error => {
 						reject(error);
 					});
-		 
+
 	});
 };
 
@@ -301,7 +299,7 @@ const getInventoryItem = (beginDate, products) => {
 		promiseYesterday.then(resultYesterday => {
 			console.log('resultYesterday', resultYesterday);
 		});
-		 
+
 		Promise.all([promiseToday, promiseYesterday]).then(inventoryResults => {
 			if (inventoryResults[0] != null) {
 				if (inventoryResults[1]) {

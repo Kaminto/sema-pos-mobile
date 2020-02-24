@@ -20,9 +20,7 @@ export function GetSalesReportData(beginDate, endDate) {
 function getTotalDebt(beginDate, endDate) {
 	const customerDebts = CustomerDebtRealm.getCustomerDebts();
 	const filteredDebt = customerDebts.filter(debt =>
-		moment
-			.tz(new Date(debt.created_at), moment.tz.guess())
-			.isBetween(beginDate, endDate)
+			isSameDay(parseISO(debt.created_at), beginDate)
 	)
 	return filteredDebt.reduce((total, item) => { return (total + item.due_amount) }, 0);
 }
@@ -56,9 +54,7 @@ function totalByProperty(objectArray, property) {
 const getSalesData = (beginDate, endDate) => {
 	const orders = OrderRealm.getAllOrder();
 	const filteredOrders = orders.filter(receipt =>
-		moment
-			.tz(new Date(receipt.created_at), moment.tz.guess())
-			.isBetween(beginDate, endDate)
+		isSameDay(parseISO(receipt.created_at), beginDate)
 	);
 
 	let filteredOrderItems = filteredOrders.reduce(function (accumulator, currentValue) {

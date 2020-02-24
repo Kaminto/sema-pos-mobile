@@ -200,8 +200,10 @@ class CustomerList extends React.PureComponent {
 						</TouchableHighlight>
 
                     )}
-                    keyExtractor={item => item.customerId}
-                    initialNumToRender={50}
+					keyExtractor={item => item.customerId}
+					windowSize={10}
+					removeClippedSubviews={true}
+                    // initialNumToRender={50}
                 />
                 <FloatingAction
                     onOpen={name => {

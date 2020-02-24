@@ -55,7 +55,7 @@ const CreditHistoryStack = createStackNavigator({
     CreditHistory: {
         screen: CreditHistory,
         navigationOptions: {
-            title: 'Customer Wallet',
+            title: 'Customer Wallet'
         }
     }
 },
@@ -353,8 +353,8 @@ const ListCustomerStack = createStackNavigator({
     OrderView: {
         screen: OrderView,
         navigationOptions: ({ navigation }) => ({
-            title: 'Order',
-            // title: `${navigation.getParam('customerName')} Order`,
+			// title: 'Order',
+			title: navigation.getParam('isCustomerSelected') ? navigation.getParam('title', 'Order') : 'Order',
             headerStyle: {
                 backgroundColor: '#00549C',
             },

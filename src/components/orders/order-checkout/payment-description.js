@@ -54,17 +54,6 @@ const styles = StyleSheet.create({
 		backgroundColor: "#2858a7",
 
 	},
-	checkBoxRow: {
-		flex: 1,
-		flexDirection: 'row',
-		marginTop: '1%',
-		alignItems: 'center'
-	},
-	checkBox: {},
-	checkLabel: {
-		left: 20,
-		fontSize: 20
-	},
 	totalText: {
 		marginTop: 10,
 		fontWeight: 'bold',
@@ -81,39 +70,6 @@ const styles = StyleSheet.create({
 	totalValue: {
 		fontSize: 16,
 		fontWeight: 'bold',
-	},
-	buttonText: {
-		fontWeight: 'bold',
-		fontSize: 30,
-		alignSelf: 'center',
-		color: 'white'
-	},
-	summaryText: {
-		fontWeight: 'bold',
-		fontSize: 18,
-		color: 'black',
-		alignSelf: 'center'
-	},
-	modal: {
-		justifyContent: 'center',
-		// alignItems: 'center'
-	},
-
-	modal2: {
-		height: 230,
-		backgroundColor: "#3B5998"
-	},
-	completeOrder: {
-		backgroundColor: '#2858a7',
-		borderRadius: 30,
-		marginTop: '1%'
-	},
-
-	modal3: {
-		// height: 300,
-		// width: 500
-		width: widthQuanityModal,
-		height: heightQuanityModal,
 	},
 
 });
