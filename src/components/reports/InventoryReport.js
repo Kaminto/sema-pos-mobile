@@ -186,17 +186,17 @@ class InventoryReport extends React.PureComponent {
 					}}>
 						<View style={{ flex: .33, color: '#fff', padding: 10 }} >
 							<Text style={[styles.totalLabel, { flex: .2, fontWeight: 'bold', color: '#fff' }]}>{i18n.t('output').toUpperCase()}</Text>
-							<Text style={[styles.totalLabel, { flex: .2, color: '#fff' }]}> ({i18n.t('sales')} + {i18n.t('inventory')} +  {i18n.t('not-dispatched').toLowerCase()})</Text>
+							<Text style={[styles.totalLabel, { flex: .2, color: '#fff', padding: 5 }]}> ({i18n.t('sales')} + {i18n.t('inventory')} +  {i18n.t('not-dispatched').toLowerCase()})</Text>
 							<Text style={[styles.totalItem, { flex: .6, fontSize: 28, color: '#fff' }]}>{this.getOutput()}</Text>
 						</View>
 						<View style={{ flex: .33, color: '#fff', padding: 10 }} >
 							<Text style={[styles.totalLabel, { flex: .2, fontWeight: 'bold', color: '#fff' }]}>{i18n.t('total-production').toUpperCase()}</Text>
-							<Text style={[styles.totalLabel, { flex: .2, color: '#fff' }]}> (Closing Meter - Opening Meter)</Text>
+							<Text style={[styles.totalLabel, { flex: .2, color: '#fff', padding: 5 }]}> (Closing Meter - Opening Meter)</Text>
 							<Text style={[styles.totalItem, { flex: .6, fontSize: 28, color: '#fff' }]}>{this.getTotalProduction()}</Text>
 						</View>
 						<View style={{ flex: .33, color: '#fff', padding: 10 }} >
 							<Text style={[styles.totalLabel, { flex: .2, fontWeight: 'bold', color: '#fff' }]}>{i18n.t('wastage').toUpperCase()}</Text>
-							<Text style={[styles.totalLabel, { flex: .2, color: '#fff' }]}> (Production - Output) %</Text>
+							<Text style={[styles.totalLabel, { flex: .2, color: '#fff', padding: 5 }]}> (Production - Output) %</Text>
 							<Text style={[styles.totalItem, { flex: .6, fontSize: 28, color: '#fff' }]}>{this.getWastage()}</Text>
 						</View>
 					</View>

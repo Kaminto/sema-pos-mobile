@@ -188,7 +188,7 @@ class SalesReport extends React.PureComponent {
 				</View>
 
 				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.rowItemCenter]}>{item.totalAmount.toFixed(2)}</Text>
+					<Text style={[styles.rowItemCenter]}>{item.totalAmount !== null ? item.totalAmount.toFixed(2) : 0}</Text>
 				</View>
 			</View>
 		);
