@@ -21,7 +21,8 @@ export const CustomerObjSchema = {
         multimedia3: { type: 'string', optional: true },
         multimedia4: { type: 'string', optional: true },
         name: { type: 'string', optional: true },
-        notes: { type: 'string', optional: true },
+        
+     
         phone_number: { type: 'string', optional: true },
         reminder_date: { type: 'string', optional: true },
         sales_channel_id: { type: 'int', optional: true },
@@ -79,6 +80,10 @@ export const OrderSchema = {
         amount_mobile: { type: 'int', optional: true },
         isDelete: { type: 'int', optional: true, default: 1 },
         isWalkIn: { type: 'bool', optional: true },
+        notes: { type: 'string', optional: true },
+        refillPending: { type: 'string', optional: true },
+        emptiesDamaged: { type: 'string', optional: true },
+        emptiesReturned: { type: 'string', optional: true },
         amount_bank: { type: 'int', optional: true },
         amount_cheque: { type: 'int', optional: true },
         amountjibuCredit: { type: 'int', optional: true },
