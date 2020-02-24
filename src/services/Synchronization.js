@@ -109,7 +109,7 @@ class Synchronization {
 			CustomerSync.synchronizeCustomers();
 
 			//Synchronize receipts
-			this.synchReceipts();
+			//this.synchReceipts();
 		} else {
 
 		}
