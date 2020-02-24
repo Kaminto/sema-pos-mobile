@@ -8,7 +8,7 @@ export const REPORT_FILTER = 'REPORT_FILTER';
 
 import { parseISO, isSameDay} from 'date-fns';
 
-const getSalesData = (beginDate, endDate) => {
+const getSalesDatae = (beginDate, endDate) => {
 	return new Promise(async (resolve, reject) => {
 		const loggedReceipts = OrderRealm.getAllOrder();
 		const filteredReceipts = loggedReceipts.filter(receipt =>
@@ -108,8 +108,62 @@ const getSalesData = (beginDate, endDate) => {
 
 		finalData.mapping.clear();
 		delete finalData.mapping;
-		resolve({ ...finalData});
+		resolve({ ...finalData });
 	});
+};
+function groupBySku(objectArray, property) {
+	return objectArray.reduce(function (acc, obj) {
+		let key = obj.product[property];
+		if (!acc[key]) {
+			acc[key] = [];
+		}
+		acc[key].push(obj);
+		return acc;
+	}, {});
+}
+
+function totalByProperty(objectArray, property) {
+	return objectArray.reduce((accumulator, currentValue) => {
+		return accumulator + Number(currentValue[property]);
+	}, 0);
+}
+const getSalesData = (beginDate, endDate) => {
+	const orders = OrderRealm.getAllOrder();
+	const filteredOrders = orders.filter(receipt =>
+		moment
+			.tz(new Date(receipt.created_at), moment.tz.guess())
+			.isBetween(beginDate, endDate)
+	);
+
+	let filteredOrderItems = filteredOrders.reduce(function (accumulator, currentValue) {
+		return [...accumulator, ...currentValue.receipt_line_items]
+	}, []);
+
+	let groupedOrderItems = groupBySku(filteredOrderItems, "sku");
+
+	let todaySales = [];
+	for (let i of Object.getOwnPropertyNames(groupedOrderItems)) {
+		todaySales.push({
+			sku: groupedOrderItems[i][0].product.sku,
+			wastageName: groupedOrderItems[i][0].product.wastageName,
+			description: groupedOrderItems[i][0].product.description,
+			quantity: totalByProperty(groupedOrderItems[i], "quantity"),
+			category: groupedOrderItems[i][0].product.category_id ? Number(groupedOrderItems[i][0].product.category_id) : Number(groupedOrderItems[i][0].product.categoryId),
+			pricePerSku: parseFloat(groupedOrderItems[i][0].price_total) / totalByProperty(groupedOrderItems[i], "quantity"),
+			totalSales: parseFloat(groupedOrderItems[i][0].price_total) * totalByProperty(groupedOrderItems[i], "quantity"),
+			litersPerSku: groupedOrderItems[i][0].product.unit_per_product ? Number(groupedOrderItems[i][0].product.unit_per_product) : Number(groupedOrderItems[i][0].product.unitPerProduct),
+			totalLiters: groupedOrderItems[i][0].product.unit_per_product ? Number(groupedOrderItems[i][0].product.unit_per_product) * totalByProperty(groupedOrderItems[i], "quantity") : Number(groupedOrderItems[i][0].product.unitPerProduct) * totalByProperty(groupedOrderItems[i], "quantity")
+
+		}
+		);
+	}
+
+	const finalData = {
+		totalLiters: totalByProperty(todaySales, "totalLiters"),
+		totalSales: totalByProperty(todaySales, "totalSales"),
+		salesItems: todaySales,
+	}
+	return { ...finalData };
 };
 
 export const getMrps = products => {
@@ -125,6 +179,7 @@ export function GetInventoryReportData(beginDate, endDate, products) {
 	return dispatch => {
 		getWastageData(beginDate, endDate, getMrps(products))
 			.then(inventoryData => {
+				console.log('inventoryData', inventoryData);
 				dispatch({
 					type: INVENTORY_REPORT,
 					data: { inventoryData: inventoryData }
@@ -140,25 +195,21 @@ export function GetInventoryReportData(beginDate, endDate, products) {
 }
 
 export const getWastageData = (beginDate, endDate, products) => {
-	return new Promise((resolve, reject) => {
-		getSalesData(beginDate, endDate)
-			.then(salesData => {
+	return new Promise((resolve, reject) => {				
 				getInventoryItem(beginDate, products)
 					.then(inventorySettings => {
 						let inventoryData = createInventory(
-							salesData,
+							getSalesData(beginDate, endDate),
 							inventorySettings,
 							products
 						);
+						console.log('inventoryData', inventoryData);
 						resolve(inventoryData);
 					})
 					.catch(error => {
 						reject(error);
 					});
-			})
-			.catch(error => {
-				reject(error);
-			});
+		 
 	});
 };
 
@@ -242,10 +293,15 @@ const groupBy = key => array =>
 const getInventoryItem = (beginDate, products) => {
 	return new Promise(resolve => {
 		const promiseToday = PosStorage.getInventoryItem(beginDate);
-
+		promiseToday.then(resultToday => {
+			console.log('resultToday', resultToday);
+		});
 		const yesterday = new Date(beginDate.getTime() - 24 * 60 * 60 * 1000);
-
 		const promiseYesterday = PosStorage.getInventoryItem(yesterday);
+		promiseYesterday.then(resultYesterday => {
+			console.log('resultYesterday', resultYesterday);
+		});
+		 
 		Promise.all([promiseToday, promiseYesterday]).then(inventoryResults => {
 			if (inventoryResults[0] != null) {
 				if (inventoryResults[1]) {
@@ -331,6 +387,7 @@ const getInventoryItem = (beginDate, products) => {
 					newInventory.previousProductSkus = inventoryResults[1].currentProductSkus;
 					newInventory.previousMeter = inventoryResults[1].currentMeter;
 				}
+				console.log('newInventory', newInventory);
 				resolve(newInventory);
 			}
 		});
