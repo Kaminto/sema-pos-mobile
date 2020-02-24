@@ -103,7 +103,8 @@ class InventoryReport extends React.PureComponent {
 	};
 
 	render() {
-		console.log(JSON.stringify(this.getInventoryData()));
+		console.log('yut',JSON.stringify(this.getInventoryData()));
+		console.log('wastageData',this.props.wastageData);
 		return (
 			<View style={{ flex: 1 }}>
 				<View style={{ flex: .1, flexDirection: 'row' }}>
@@ -625,8 +626,8 @@ class InventoryReport extends React.PureComponent {
 
 function mapStateToProps(state, props) {
 	return {
-		inventoryData: state.reportReducer.inventoryData,
-		wastageData: state.reportReducer.inventoryData,
+		inventoryData: state.wastageReducer.inventoryData,
+		wastageData: state.wastageReducer.inventoryData,
 		products: state.productReducer.products,
 		dateFilter: state.reportReducer.dateFilter,
 		reportType: state.reportReducer.reportType,

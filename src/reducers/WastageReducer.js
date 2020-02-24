@@ -6,7 +6,7 @@ import {
 	REPORT_FILTER,
 	initializeSalesData,
 	initializeInventoryData
-} from '../actions/ReportActions';
+} from '../actions/WastageActions';
 
 let initialState = {
 	salesData: initializeSalesData(),

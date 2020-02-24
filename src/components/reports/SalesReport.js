@@ -12,10 +12,13 @@ import i18n from '../../app/i18n';
 class SalesReport extends React.PureComponent {
 	constructor(props) {
 		super(props);
-		this.startDate = null;
-		this.endDate = null;
+		this.startDate = new Date();
+		this.endDate = this.addDays(new Date(), 1);
 	}
 
+	addDays = (theDate, days) => {
+		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
+	};
 	render() {
 		return (
 			<View style={{ flex: 1 }}>
@@ -31,15 +34,15 @@ class SalesReport extends React.PureComponent {
 						<View style={{ flex: .7, height: 90, borderRadius: 10, flexDirection: 'row', marginTop: 10, backgroundColor: '#2462a0', overflow: 'hidden', color: '#fff' }}>
 							<View style={{ height: 90, flex: 1, color: '#fff' }} >
 								<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-liters').toUpperCase()}</Text>
-								<Text style={[styles.totalItem, { flex: .6 }]}>{this.getTotalLiters()} L</Text>
+								<Text style={[styles.totalItem, { flex: .6 }]}>{this.props.salesData.totalLiters} L</Text>
 							</View>
 							<View style={{ height: 90, flex: 1, color: '#fff' }} >
 								<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-sales').toUpperCase()}</Text>
-								<Text style={[styles.totalItem, { flex: .6 }]}>{Utilities.formatCurrency(this.getTotalSales())}</Text>
+								<Text style={[styles.totalItem, { flex: .6 }]}>{this.props.salesData.totalSales}</Text>
 							</View>
 							<View style={{ height: 90, flex: 1, color: '#fff' }} >
 								<Text style={[styles.totalLabel, { flex: .4 }]}>DEBT COLLECTED</Text>
-								<Text style={[styles.totalItem, { flex: .6 }]}>{Utilities.formatCurrency(this.getTotalDebt())}</Text>
+								<Text style={[styles.totalItem, { flex: .6 }]}>{this.props.salesData.totalDebt}</Text>
 							</View>
 						</View>
 					</View>
@@ -97,44 +100,6 @@ class SalesReport extends React.PureComponent {
 		return sales;
 	}
 
-	getTotalSales() {
-		if (this.props.salesData.totalSales) {
-			return this.props.salesData.totalSales;
-		} else {
-			return 0;
-		}
-	}
-
-	getTotalDebt() {
-		if (this.props.salesData.totalDebt) {
-			return this.props.salesData.totalDebt;
-		} else {
-			return 0;
-		}
-	}
-
-	getTotalLiters() {
-		if (this.props.salesData.totalLiters && this.props.salesData.totalLiters !== 'N/A') {
-			return this.props.salesData.totalLiters.toFixed(2);
-		} else {
-			return 0;
-		}
-
-	}
-
-	getItemTotalLiters(item) {
-		if (item.totalLiters && item.totalLiters !== 'N/A') {
-			return `${item.totalLiters.toFixed(2)} L`;
-		}
-		return 0;
-	}
-
-	getItemLitersPerSku(item) {
-		if (item.litersPerSku && item.litersPerSku !== 'N/A') {
-			return `${item.litersPerSku} L`;
-		}
-		return 0;
-	}
 
 	getTotalTypes() {
 		let groupedTypes = { ...this.groupPaymentTypes() };
@@ -151,7 +116,7 @@ class SalesReport extends React.PureComponent {
 		}
 		groupedTotals.push({
 			name: 'TOTAL',
-			totalAmount: this.getTotalSales()
+			totalAmount: this.props.salesData.totalSales
 		});
 
 		return groupedTotals;
@@ -169,7 +134,7 @@ class SalesReport extends React.PureComponent {
 
 	comparePaymentTypes() {
 		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
-		let filteredReceipts= [];
+		let filteredReceipts = [];
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
 			filteredReceipts = receiptsPaymentTypes.filter(receipt =>
 				moment
@@ -199,7 +164,7 @@ class SalesReport extends React.PureComponent {
 					<Text style={[styles.rowItemCenter]}>{item.quantity}</Text>
 				</View>
 				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.rowItemCenter]}>{this.getItemTotalLiters(item)}</Text>
+					<Text style={[styles.rowItemCenter]}>{item.totalLiters}</Text>
 				</View>
 				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.rowItemCenter]}>{item.totalSales.toFixed(2)}</Text>
@@ -229,13 +194,13 @@ class SalesReport extends React.PureComponent {
 				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.headerItem, styles.leftMargin]}>{'Product'.toUpperCase()}</Text>
 				</View>
-				<View style={[ {flex: 1}]}>
+				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('quantity').toUpperCase()}</Text>
 				</View>
-				<View style={ [{flex: 1}]}>
+				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('total-liters').toUpperCase()}</Text>
 				</View>
-				<View style={ [{flex: 1}]}>
+				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('total-sales').toUpperCase()}</Text>
 				</View>
 			</View>
@@ -245,10 +210,10 @@ class SalesReport extends React.PureComponent {
 	showPaymentHeader = () => {
 		return (
 			<View style={[{ flex: 1, flexDirection: 'row', height: 50, alignItems: 'center' }, styles.headerBackground]}>
-				<View style={ [{flex: 1}]}>
+				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.headerItemCenter]}>PAYMENT METHOD</Text>
 				</View>
-				<View style={ [{flex: 1}]}>
+				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.headerItemCenter]}>AMOUNT</Text>
 				</View>
 			</View>
