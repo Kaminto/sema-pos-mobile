@@ -1,20 +1,20 @@
-import CreditRealm from '../../database/credit/credit.operations';
-import CreditApi from '../api/credit.api';
+import ReminderRealm from '../../database/reminders/reminder.operations';
+import CustomerDebtApi from '../api/customer-debt.api';
+import SettingRealm from '../../database/settings/settings.operations';
 import * as _ from 'lodash';
+let settings = SettingRealm.getAllSetting();
+class ReminderSync {
 
-class CreditSync {
-
-    synchronizeCredits(lastCreditSync) {
+    synchronizeReminder(lastReminderSync) {
         return new Promise(resolve => {
-            CreditApi.getTopUps()
-                .then(remoteCredit => {
-                    let initlocalCredits = CreditRealm.getAllCredit();
-                    let localCredits = [...initlocalCredits];
-                    let remoteInventories = [...remoteCredit.topup];
-                    console.log('localCredits', localCredits);
-                    console.log('remoteInventories', remoteInventories);
-                    if (initlocalCredits.length === 0) {
-                        CreditRealm.createManycredits(remoteCredit.topup);
+            CustomerDebtApi.getReminder(settings.siteId,new Date(lastReminderSync))
+                .then(result => {
+                    let initlocalReminder = ReminderRealm.getReminder();
+                    let localReminder = [...initlocalReminder];
+                    let remoteReminder = [...result];
+
+                    if (initlocalReminder.length === 0) {
+                        ReminderRealm.createManyCustomerDebt(result, null);
                     }
 
                     let onlyLocally = [];
@@ -23,50 +23,50 @@ class CreditSync {
                     let inRemote = [];
                     let bothLocalRemote = {};
 
-                    if (initlocalCredits.length > 0) {
+                    if (initlocalReminder.length > 0) {
 
-                        console.log('initlocalCredits', initlocalCredits);
-                        console.log('localCredits', localCredits);
-                        console.log('remoteInventories', remoteInventories);
-                        initlocalCredits.forEach(localCredit => {
-                            let filteredObj = remoteInventories.filter(obj => obj.topUpId === localCredit.topUpId)
+                        console.log('initlocalReminder', initlocalReminder);
+                        console.log('localReminder', localReminder);
+                        console.log('remoteReminder', remoteReminder);
+                        initlocalReminder.forEach(localCustomerDebt => {
+                            let filteredObj = remoteReminder.filter(obj => obj.receipt_payment_type_id === localCustomerDebt.receipt_payment_type_id)
                             console.log('filteredObj', filteredObj);
                             if (filteredObj.length > 0) {
-                                const remoteIndex = remoteInventories.map(function (e) { return e.topUpId }).indexOf(filteredObj[0].topUpId);
-                                const localIndex = localCredits.map(function (e) { return e.topUpId }).indexOf(filteredObj[0].topUpId);
+                                const remoteIndex = remoteReminder.map(function (e) { return e.receipt_payment_type_id }).indexOf(filteredObj[0].receipt_payment_type_id);
+                                const localIndex = localReminder.map(function (e) { return e.receipt_payment_type_id }).indexOf(filteredObj[0].receipt_payment_type_id);
                                 console.log('remoteIndex', remoteIndex);
                                 console.log('localIndex', localIndex);
-                                remoteInventories.splice(remoteIndex, 1);
-                                localCredits.splice(localIndex, 1);
+                                remoteReminder.splice(remoteIndex, 1);
+                                localReminder.splice(localIndex, 1);
 
-                                inLocal.push(localCredit);
+                                inLocal.push(localCustomerDebt);
                                 inRemote.push(filteredObj[0]);
                             }
 
                             if (filteredObj.length === 0) {
-                                onlyLocally.push(localCredit);
-                                const localIndex = localCredits.map(function (e) { return e.topUpId }).indexOf(localCredit.topUpId);
+                                onlyLocally.push(localCustomerDebt);
+                                const localIndex = localReminder.map(function (e) { return e.receipt_payment_type_id }).indexOf(localCustomerDebt.receipt_payment_type_id);
                                 console.log('localIndex', localIndex);
-                                localCredits.splice(localIndex, 1);
+                                localReminder.splice(localIndex, 1);
                             }
                         });
 
-                        onlyRemote.push(...remoteInventories);
+                        onlyRemote.push(...remoteReminder);
                         bothLocalRemote.inLocal = inLocal;
                         bothLocalRemote.inRemote = inRemote;
 
 
                         if (onlyRemote.length > 0) {
-                            CreditRealm.createManyInventories(onlyRemote)
+                            ReminderRealm.createCustomerDebt(onlyRemote,null)
                         }
 
                         if (onlyLocally.length > 0) {
-                            onlyLocally.forEach(localCredit => {
-                                CreditApi.createTopUp(
-                                    localCredit
+                            onlyLocally.forEach(localCustomerDebt => {
+                                CustomerDebtApi.createCustomerDebt(
+                                    {...localCustomerDebt, kiosk_id: settings.siteId }
                                 )
                                     .then((response) => {
-                                        CreditRealm.synched(localCredit);
+                                        ReminderRealm.synched(localCustomerDebt);
                                         console.log(
                                             'Synchronization:synced to remote - ' +
                                             response
@@ -81,19 +81,19 @@ class CreditSync {
                         }
 
                         if (inLocal.length > 0 && inRemote.length > 0) {
-                            inLocal.forEach(localCredit => {
+                            inLocal.forEach(localCustomerDebt => {
 
-                                if (localCredit.active === true && localCredit.syncAction === 'delete') {
-                                    CreditApi.deleteTopUp(
-                                        localCredit
+                                if (localCustomerDebt.active === true && localCustomerDebt.syncAction === 'delete') {
+                                    CustomerDebtApi.deleteCustomerDebt(
+                                        localCustomerDebt
                                     )
                                         .then((response) => {
                                             console.log(
                                                 'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
                                                 response
                                             );
-                                            CreditRealm.hardDeleteCredit(
-                                                localCredit
+                                            ReminderRealm.hardDeleteCustomerDebt(
+                                                localCustomerDebt
                                             );
                                         })
                                         .catch(error => {
@@ -104,9 +104,9 @@ class CreditSync {
                                         });
                                 }
 
-                                if (localCredit.active === true && localCredit.syncAction === 'update') {
-                                    CreditApi.updateCustomerCredit(
-                                        localCredit
+                                if (localCustomerDebt.active === true && localCustomerDebt.syncAction === 'update') {
+                                    CustomerDebtApi.updateCustomerDebt(
+                                        localCustomerDebt
                                     )
                                         .then((response) => {
                                             console.log(
@@ -121,12 +121,12 @@ class CreditSync {
                                             );
                                         });
 
-                                } else if (localCredit.active === false && localCredit.syncAction === 'update') {
-                                    CreditApi.createTopUp(
-                                        localCredit
+                                } else if (localCustomerDebt.active === false && localCustomerDebt.syncAction === 'update') {
+                                    CustomerDebtApi.createCustomerDebt(
+                                        localCustomerDebt
                                     )
                                         .then((response) => {
-                                            CreditRealm.synched(localCredit);
+                                            ReminderRealm.synched(localCustomerDebt);
                                             console.log(
                                                 'Synchronization:synced to remote - ' +
                                                 response
@@ -145,14 +145,14 @@ class CreditSync {
                         console.log('onlyLocally', onlyLocally);
                         console.log('bothLocalRemote', bothLocalRemote);
 
-                        console.log('localCredits2', localCredits);
-                        console.log('remoteInventories2', remoteInventories);
+                        console.log('localReminder2', localReminder);
+                        console.log('remoteReminder2', remoteReminder);
 
                     }
                     resolve({
                         error: null,
-                        localCredit: onlyLocally.length,
-                        remoteCredit: onlyRemote.length
+                        localCustomerDebt: onlyLocally.length,
+                        result: onlyRemote.length
                     });
 
                 })
@@ -162,12 +162,12 @@ class CreditSync {
                     );
                     resolve({
                         error: error,
-                        localCredit: 0,
-                        remoteCredit: 0
+                        localCustomerDebt: 0,
+                        result: 0
                     });
                 });
         });
     }
 
 }
-export default new CreditSync();
+export default new ReminderSync();

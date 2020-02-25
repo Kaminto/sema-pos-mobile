@@ -56,7 +56,7 @@ class ReceiptPaymentTypeRealm {
             realm.write(() => {
                 let receiptPaymentTypeObj = realm.objects('ReceiptPaymentType').filtered(`receipt_payment_type_id = "${receiptPaymentType.receipt_payment_type_id}"`);
                 receiptPaymentTypeObj[0].id = receiptPaymentType.id;
-				receiptPaymentTypeObj[0].name = receiptPaymentType.name;
+                receiptPaymentTypeObj[0].name = receiptPaymentType.name;
                 receiptPaymentTypeObj[0].active = receiptPaymentType.active;
                 receiptPaymentTypeObj[0].description = receiptPaymentType.description;
                 receiptPaymentTypeObj[0].syncAction = receiptPaymentType.syncAction;
@@ -149,9 +149,12 @@ class ReceiptPaymentTypeRealm {
     }
 
     createManyReceiptPaymentType(receiptPaymentTypes, receiptId) {
+        console.log('testing sync');
         try {
+            console.log('testing sync2');
             realm.write(() => {
                 if (receiptId) {
+                    console.log('no sync');
                     receiptPaymentTypes.forEach(obj => {
                         realm.create('ReceiptPaymentType', {
                             receipt_id: receiptId ? receiptId : null,
@@ -165,45 +168,26 @@ class ReceiptPaymentTypeRealm {
                     });
                 }
                 if (!receiptId) {
+                    console.log('sync');
                     receiptPaymentTypes.forEach(obj => {
-                        realm.create('ReceiptPaymentType', obj);
-                    });
-                }
-            });
-
-        } catch (e) {
-            console.log("Error on creation", e);
-        }
-
-    }
-
-       createManyReceiptPaymentType(receiptPaymentTypes, receiptId) {
-        try {
-            realm.write(() => {
-                if (receiptId) {
-                    receiptPaymentTypes.forEach(obj => {
-                        realm.create('ReceiptPaymentType', {
-                            receipt_id: receiptId ? receiptId : null,
-                            payment_type_id: obj.id,
-                            receipt_payment_type_id: uuidv1(),
+                        let syncObj = {
+                            active: true,
                             amount: Number(obj.amount),
-                            syncAction: obj.syncAction ? obj.syncAction : 'CREATE',
-                            created_at: obj.created_at ? obj.created_at : null,
-                            updated_at: obj.updated_at ? obj.updated_at : null,
-                        });
-                    });
-                }
-                if (!receiptId) {
-                    receiptPaymentTypes.forEach(obj => {
-                        realm.create('ReceiptPaymentType', obj);
+                            created_at: obj.created_at,
+                            id: obj.id,
+                            payment_type_id: obj.payment_type_id,
+                            receipt_id: obj.receipt_id,
+                            receipt_payment_type_id: obj.receipt_payment_type_id,
+                            updated_at: obj.updated_at,
+                        }
+                        realm.create('ReceiptPaymentType', syncObj);
                     });
                 }
             });
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on Reciept payment creation", e);
         }
-
     }
 }
 
