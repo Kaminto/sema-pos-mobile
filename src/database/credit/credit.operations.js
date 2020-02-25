@@ -60,9 +60,9 @@ class CreditRealm {
 
 
     createCredit(customer_account_id, topup, balance) {
-		const now = new Date();
-		let topupno = Number(topup);
-		let balno = Number(balance);
+        const now = new Date();
+        let topupno = Number(topup);
+        let balno = Number(balance);
 
         const newCredit = {
             topUpId: uuidv1(),
@@ -145,7 +145,7 @@ class CreditRealm {
         try {
             realm.write(() => {
                 credits.forEach(obj => {
-                    realm.create('Credit', obj);
+                    realm.create('Credit', { ...obj, topup: Number(obj.topup) });
                 });
             });
 
