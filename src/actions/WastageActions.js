@@ -47,7 +47,6 @@ const getSalesData = (beginDate) => {
 			totalSales: parseFloat(groupedOrderItems[i][0].price_total) * totalByProperty(groupedOrderItems[i], "quantity"),
 			litersPerSku: groupedOrderItems[i][0].product.unit_per_product ? Number(groupedOrderItems[i][0].product.unit_per_product) : Number(groupedOrderItems[i][0].product.unitPerProduct),
 			totalLiters: groupedOrderItems[i][0].product.unit_per_product ? Number(groupedOrderItems[i][0].product.unit_per_product) * totalByProperty(groupedOrderItems[i], "quantity") : Number(groupedOrderItems[i][0].product.unitPerProduct) * totalByProperty(groupedOrderItems[i], "quantity")
-
 		}
 		);
 	}
@@ -63,7 +62,6 @@ const getSalesData = (beginDate) => {
 export const getMrps = products => {
 	let productMrp = ProductMRPRealm.getFilteredProductMRP();
 	let ids = Object.keys(productMrp).map(key => productMrp[key].productId);
-
 	let matchProducts = products.filter(prod => ids.includes(prod.productId));
 	let waterProducts = matchProducts.filter(prod => 3 === prod.categoryId);
 	return waterProducts;
