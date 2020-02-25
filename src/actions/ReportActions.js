@@ -1,7 +1,6 @@
 import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
 import OrderRealm from '../database/orders/orders.operations';
 import { format, parseISO, isSameDay } from 'date-fns';
-
 export const SALES_REPORT_FROM_ORDERS = 'SALES_REPORT_FROM_ORDERS';
 export const INVENTORY_REPORT = 'INVENTORY_REPORT';
 export const REPORT_FILTER = 'REPORT_FILTER';
@@ -75,9 +74,7 @@ const getSalesData = (beginDate, endDate) => {
 			totalSales: parseFloat(groupedOrderItems[i][0].price_total) * totalByProperty(groupedOrderItems[i], "quantity"),
 			litersPerSku: groupedOrderItems[i][0].product.unit_per_product ? Number(groupedOrderItems[i][0].product.unit_per_product) : Number(groupedOrderItems[i][0].product.unitPerProduct),
 			totalLiters: groupedOrderItems[i][0].product.unit_per_product ? Number(groupedOrderItems[i][0].product.unit_per_product) * totalByProperty(groupedOrderItems[i], "quantity") : Number(groupedOrderItems[i][0].product.unitPerProduct) * totalByProperty(groupedOrderItems[i], "quantity")
-
-		}
-		);
+		});
 	}
 
 	const finalData = {
