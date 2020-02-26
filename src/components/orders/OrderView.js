@@ -28,10 +28,6 @@ class OrderView extends React.PureComponent {
 		);
 	}
 
-	// componentDidMount(){
-	// 	this.props.navigation.setParams({ 'title': selectedCustomer.name });
-	// }
-
 	componentWillUnmount() {
 		this.props.orderActions.ClearOrder();
 	}
@@ -39,7 +35,6 @@ class OrderView extends React.PureComponent {
 }
 function mapStateToProps(state) {
 	return {
-		flow: state.orderReducer.flow,
 		selectedCustomer: state.customerReducer.selectedCustomer
 	};
 }

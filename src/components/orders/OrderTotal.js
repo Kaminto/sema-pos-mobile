@@ -4,9 +4,7 @@ if (process.env.NODE_ENV === 'development') {
 	whyDidYouRender(React);
   }
 import { View, Text,  StyleSheet } from "react-native";
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import * as OrderActions from "../../actions/OrderActions";
 import * as Utilities from "../../services/Utilities";
 import i18n from "../../app/i18n";
 import slowlog from 'react-native-slowlog';
@@ -60,13 +58,8 @@ function mapStateToProps(state, props) {
 		channel: state.orderReducer.channel
 	};
 }
-function mapDispatchToProps(dispatch) {
-	return {
-		orderActions: bindActionCreators(OrderActions, dispatch)
-	};
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrderTotal);
+export default connect(mapStateToProps)(OrderTotal);
 
 const styles = StyleSheet.create({
 	container: {

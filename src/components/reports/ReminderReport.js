@@ -6,9 +6,7 @@ if (process.env.NODE_ENV === 'development') {
 import { Text, View, StyleSheet, TouchableHighlight, Alert, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as reportActions from "../../actions/ReportActions";
 import * as customerActions from '../../actions/CustomerActions';
-import * as orderActions from "../../actions/OrderActions";
 import * as reminderActions from "../../actions/ReminderActions.js";
 import CustomerReminderRealm from '../../database/customer-reminder/customer-reminder.operations';
 import * as CustomerReminderActions from '../../actions/CustomerReminderActions';
@@ -261,10 +259,8 @@ function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		reportActions: bindActionCreators(reportActions, dispatch),
 		customerActions: bindActionCreators(customerActions, dispatch),
 		reminderActions: bindActionCreators(reminderActions, dispatch),
-		orderActions: bindActionCreators(orderActions, dispatch),
 		customerReminderActions: bindActionCreators(CustomerReminderActions, dispatch),
 	};
 }

@@ -5,7 +5,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 import { Text, View, StyleSheet, TouchableHighlight, FlatList, Modal, TextInput } from 'react-native';
 import { bindActionCreators } from "redux";
-// import * as reportActions from "../../actions/ReportActions";
 import * as WastageActions from "../../actions/WastageActions";
 import * as ProductActions from "../../actions/ProductActions";
 import * as InventoryActions from '../../actions/InventoryActions';
@@ -16,7 +15,6 @@ import slowlog from 'react-native-slowlog';
 import { isSameDay } from 'date-fns';
 
 import i18n from '../../app/i18n';
-const uuidv1 = require('uuid/v1');
 class InventoryEdit extends React.PureComponent {
 	constructor(props) {
 		super(props);
@@ -659,7 +657,7 @@ function mapStateToProps(state, props) {
 	return {
 		wastageData: state.wastageReducer.inventoryData,
 		products: state.productReducer.products,
-		dateFilter: state.wastageReducer.dateFilter,
+		dateFilter: state.reportReducer.dateFilter,
 		settings: state.settingsReducer.settings
 	};
 }
@@ -667,7 +665,6 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
 	return {
 		wastageActions: bindActionCreators(WastageActions, dispatch),
-		// reportActions: bindActionCreators(reportActions, dispatch),
 		productActions: bindActionCreators(ProductActions, dispatch),
 		inventoryActions: bindActionCreators(InventoryActions, dispatch),
 	};

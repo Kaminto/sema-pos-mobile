@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 
 import * as CustomerActions from '../actions/CustomerActions';
-import * as ToolbarActions from '../actions/ToolBarActions';
 import * as TopUpActions from '../actions/TopUpActions';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
@@ -380,7 +379,6 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
     return {
         customerActions: bindActionCreators(CustomerActions, dispatch),
-        toolbarActions: bindActionCreators(ToolbarActions, dispatch),
         topUpActions: bindActionCreators(TopUpActions, dispatch),
     };
 }

@@ -25,7 +25,6 @@ import OrderRealm from '../database/orders/orders.operations';
 import * as CustomerReminderActions from '../actions/CustomerReminderActions';
 import * as TopUpActions from '../actions/TopUpActions';
 import * as SettingsActions from '../actions/SettingsActions';
-import * as ToolbarActions from '../actions/ToolBarActions';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as NetworkActions from '../actions/NetworkActions';
 import * as AuthActions from '../actions/AuthActions';
@@ -33,7 +32,6 @@ import * as ProductActions from '../actions/ProductActions';
 import * as receiptActions from '../actions/ReceiptActions';
 import * as InventoryActions from '../actions/InventoryActions';
 import * as discountActions from '../actions/DiscountActions';
-import {format, sub, parseISO} from 'date-fns';
 
 import Events from 'react-native-simple-events';
 
@@ -42,7 +40,6 @@ import i18n from '../app/i18n';
 
 const { height, width } = Dimensions.get('window');
 const inputFontHeight = Math.round((24 * height) / 752);
-const inputTextWidth = 400;
 
 const supportedUILanguages = [
 	{ name: 'English', iso_code: 'en' },
@@ -132,7 +129,8 @@ class Login extends React.PureComponent {
 			this.setState({ isLoading: true });
 			Synchronization.synchronize().then(syncResult => {
 				this.setState({ isLoading: false });
- 
+
+				// Synchronization.getLatestSales();
 				this.loadSyncedData();
 				this.props.navigation.navigate('App')
 			});
@@ -269,7 +267,7 @@ class Login extends React.PureComponent {
 			OrderRealm.getAllOrder()
 		);
 
-		// this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
+		this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
 
 		this.props.customerReminderActions.setCustomerReminders(
 			CustomerReminderRealm.getCustomerReminders()
@@ -341,7 +339,6 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
 	return {
 		networkActions: bindActionCreators(NetworkActions, dispatch),
-		toolbarActions: bindActionCreators(ToolbarActions, dispatch),
 		topUpActions: bindActionCreators(TopUpActions, dispatch),
 		settingsActions: bindActionCreators(SettingsActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),

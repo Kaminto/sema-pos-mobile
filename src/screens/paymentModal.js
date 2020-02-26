@@ -5,7 +5,6 @@ if (process.env.NODE_ENV === 'development') {
   }
 import { View, Alert, TouchableOpacity, Text, TextInput, FlatList, ScrollView, TouchableHighlight, StyleSheet } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
-import * as OrderActions from "../actions/OrderActions";
 import * as CustomerActions from '../actions/CustomerActions';
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
 import * as receiptActions from '../actions/ReceiptActions';
@@ -432,7 +431,6 @@ function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		orderActions: bindActionCreators(OrderActions, dispatch),
 		receiptActions: bindActionCreators(receiptActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
 		paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch),

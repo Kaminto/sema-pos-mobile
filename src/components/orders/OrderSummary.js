@@ -4,8 +4,6 @@ if (process.env.NODE_ENV === 'development') {
 	whyDidYouRender(React);
   }
 import { View, Text, StyleSheet } from "react-native";
-import { bindActionCreators } from "redux";
-import * as OrderActions from "../../actions/OrderActions";
 import { connect } from "react-redux";
 import i18n from "../../app/i18n";
 
@@ -36,11 +34,8 @@ class OrderSummary extends React.PureComponent {
 function mapStateToProps(state, props) {
 	return { products: state.orderReducer.products };
 }
-function mapDispatchToProps(dispatch) {
-	return { orderActions: bindActionCreators(OrderActions, dispatch) };
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrderSummary);
+export default connect(mapStateToProps)(OrderSummary);
 
 const styles = StyleSheet.create({
 	container: {

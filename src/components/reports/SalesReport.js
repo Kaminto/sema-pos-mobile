@@ -8,7 +8,6 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as reportActions from "../../actions/ReportActions";
 import DateFilter from "./DateFilter";
-import * as Utilities from "../../services/Utilities";
 import { parseISO, isSameDay } from 'date-fns';
 import slowlog from 'react-native-slowlog';
 import i18n from '../../app/i18n';
@@ -169,7 +168,7 @@ class SalesReport extends React.PureComponent {
 					<Text style={[styles.rowItemCenter]}>{item.quantity}</Text>
 				</View>
 				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.rowItemCenter]}>{item.totalLiters}</Text>
+					<Text style={[styles.rowItemCenter]}>{!isNaN(item.totalLiters) ? item.totalLiters : 0}</Text>
 				</View>
 				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.rowItemCenter]}>{item.totalSales.toFixed(2)}</Text>
