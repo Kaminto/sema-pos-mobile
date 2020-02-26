@@ -3,8 +3,6 @@ import InventroyRealm from '../database/inventory/inventory.operations';
 import SettingRealm from '../database/settings/settings.operations';
 import Communications from '../services/Communications';
 
-
-import Events from 'react-native-simple-events';
 import * as _ from 'lodash';
 import InventorySync from './sync/inventory.sync';
 import CreditSync from './sync/credit.sync';

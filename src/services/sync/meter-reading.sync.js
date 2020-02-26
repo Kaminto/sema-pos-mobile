@@ -2,11 +2,11 @@ import InventroyRealm from '../../database/inventory/inventory.operations';
 import InventoryApi from '../api/inventory.api';
 import * as _ from 'lodash';
 
-class InventorySync {
+class MeterReadingSync {
 
-    synchronizeInventory(lastInventorySync) {
+    synchronizeInventory(lastMeterReadingSync) {
         return new Promise(resolve => {
-            InventoryApi.getInventories(new Date(lastInventorySync))
+            InventoryApi.getInventories(new Date(lastMeterReadingSync))
                 .then(remoteInventory => {
                     let initlocalInventories = InventroyRealm.getAllInventory();
                     let localInventories = [...initlocalInventories];
@@ -159,4 +159,4 @@ class InventorySync {
     }
 
 }
-export default new InventorySync();
+export default new MeterReadingSync();
