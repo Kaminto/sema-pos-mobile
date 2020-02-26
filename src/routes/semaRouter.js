@@ -82,7 +82,7 @@ const TabNavigator = createBottomTabNavigator({
 },
     {
         initialRouteName: 'Transaction',
-        headerMode: 'screen',
+        headerMode: 'none',
         swipeEnabled: true,
         animationEnabled: true,
         tabBarOptions: {

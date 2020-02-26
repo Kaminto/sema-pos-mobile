@@ -26,7 +26,7 @@ class InventroyRealm {
                 realm.delete(meterReading);
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on truncate inventory", e);
         }
     }
 
@@ -121,7 +121,7 @@ class InventroyRealm {
                 // realm.create('CustomerReminder', customerReminder);
             });
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on creation inventory meter reading", e);
         }
     }
 
@@ -175,7 +175,7 @@ class InventroyRealm {
                 }
             });
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on creation inventory", e);
         }
     }
 
@@ -196,7 +196,7 @@ class InventroyRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on update inventory", e);
         }
 
     }
@@ -210,7 +210,7 @@ class InventroyRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on synch inventory", e);
         }
 
     }
@@ -228,7 +228,7 @@ class InventroyRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on hard delete inventory", e);
         }
     }
 
@@ -242,7 +242,7 @@ class InventroyRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on soft delete inventory", e);
         }
     }
 
@@ -255,7 +255,7 @@ class InventroyRealm {
             });
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on creation many inventory", e);
         }
 
     }

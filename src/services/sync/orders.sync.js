@@ -87,7 +87,7 @@ class OrderSync {
                                     {
                                         active: 1,
                                         amountCash: localOrder.amount_cash,
-                                        isDelete: localOrder.isDelete,
+                                        is_delete: localOrder.is_delete,
                                         amountLoan: localOrder.amount_loan,
                                         amountMobile: localOrder.amount_mobile,
                                         isWalkIn: localOrder.isWalkIn,
@@ -134,7 +134,7 @@ class OrderSync {
                                     )
                                         .then((response) => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                                                'Synchronization:synchronizeOrder - Removing order from pending list - ' +
                                                 response
                                             );
                                             updateCount = updateCount + 1;
@@ -144,7 +144,7 @@ class OrderSync {
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Delete Inventory failed ' +
+                                                'Synchronization:synchronizeOrder Delete Order failed ' +
                                                 error
                                             );
                                         });
@@ -157,13 +157,13 @@ class OrderSync {
                                         .then((response) => {
                                             updateCount = updateCount + 1;
                                             console.log(
-                                                'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                                                'Synchronization:synchronizeOrder - Removing Order from pending list - ' +
                                                 response
                                             );
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Update Inventory failed ' +
+                                                'Synchronization:synchronizeOrder Update Order failed ' +
                                                 error
                                             );
                                         });
@@ -182,20 +182,12 @@ class OrderSync {
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Create Inventory failed',error
+                                                'Synchronization:synchronizeOrder Create Order failed',error
                                             );
                                         });
                                 }
                             })
                         }
-
-                        console.log('onlyRemote', onlyRemote);
-                        console.log('onlyLocally', onlyLocally);
-                        console.log('bothLocalRemote', bothLocalRemote);
-
-                        console.log('localOrders2', localOrders);
-                        console.log('remoteOrders2', remoteOrders);
-
                     }
                     resolve({
                         error: null,
@@ -205,7 +197,7 @@ class OrderSync {
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization.getInventory - error ' + error
+                        'Synchronization.getOrder - error ' + error
                     );
                     resolve({
                         error: error,

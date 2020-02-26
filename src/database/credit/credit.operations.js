@@ -1,5 +1,6 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
+import {format} from 'date-fns';
 
 class CreditRealm {
     constructor() {
@@ -24,7 +25,7 @@ class CreditRealm {
                 realm.delete(credits);
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on truncate", e);
         }
     }
 
@@ -60,7 +61,7 @@ class CreditRealm {
 
 
     createCredit(customer_account_id, topup, balance) {
-        const now = new Date();
+        const nowDate = format(new Date(), 'yyyy-MM-dd');
         let topupno = Number(topup);
         let balno = Number(balance);
 
@@ -69,8 +70,8 @@ class CreditRealm {
             customer_account_id,
             topupno,
             balno,
-            created_at: now,
-            updated_at: now,
+            created_at: nowDate,
+            updated_at: now,Date,
             syncAction: 'create',
             active: false
         };
@@ -80,7 +81,7 @@ class CreditRealm {
                 realm.create('Credit', newCredit);
             });
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on creation credit", e + now);
         }
     }
 
@@ -120,7 +121,7 @@ class CreditRealm {
                 realm.delete(deleteCredit);
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on hard delete", e);
         }
     }
 
@@ -131,7 +132,7 @@ class CreditRealm {
                 creditObj[0].syncAction = 'delete';
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on soft delete", e);
         }
     }
 
@@ -139,11 +140,12 @@ class CreditRealm {
         try {
             realm.write(() => {
                 credits.forEach(obj => {
+					console.log(obj);
                     realm.create('Credit', { ...obj, topup: Number(obj.topup), balance: Number(obj.balance) });
                 });
             });
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on many creation", e);
         }
     }
 }

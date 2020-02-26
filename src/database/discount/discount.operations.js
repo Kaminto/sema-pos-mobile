@@ -13,7 +13,7 @@ class DiscountRealm {
                 realm.delete(discounts);
             })
         } catch (e) {
-            console.log("Error on truncate", e);
+            console.log("Error on truncate discounts", e);
         }
     }
 
@@ -48,7 +48,7 @@ class DiscountRealm {
                 realm.create('Discount', discount);
             });
         } catch (e) {
-            console.log("Error on create discout", e);
+            console.log("Error on creation discounts", e);
         }
 
 
@@ -76,7 +76,7 @@ class DiscountRealm {
             })
 
         } catch (e) {
-            console.log("Error on update discount", e);
+            console.log("Error on update discounts", e);
         }
 
     }
@@ -95,7 +95,7 @@ class DiscountRealm {
             })
 
         } catch (e) {
-            console.log("Error on reset selected", e);
+            console.log("Error on reset discounts", e);
         }
 
     }
@@ -109,7 +109,7 @@ class DiscountRealm {
             })
 
         } catch (e) {
-            console.log("Error on is selected", e);
+            console.log("Error on select discounts", e);
         }
 
     }
@@ -123,7 +123,7 @@ class DiscountRealm {
             })
 
         } catch (e) {
-            console.log("Error on synched", e);
+            console.log("Error on synch discounts", e);
         }
 
     }
@@ -154,7 +154,7 @@ class DiscountRealm {
             })
 
         } catch (e) {
-            console.log("Error on soft delete", e);
+            console.log("Error on soft delete discounts", e);
         }
     }
 

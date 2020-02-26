@@ -175,10 +175,12 @@ class CreditHistory extends React.PureComponent {
                     balance: topup.balance,
                     totalCount
                 };
-            });
+			});
+
+			console.log("Topups Bron" + JSON.stringify(topups))
 
             topups.sort((a, b) => {
-                return  isBefore(new Date(a.createdAt), new Date(b.createdAt))
+                return  isBefore(parseISO(a.createdAt), parseISO(b.createdAt))
                     ? 1
                     : -1;
             });
@@ -288,7 +290,6 @@ class CreditHistory extends React.PureComponent {
 		return finalreceiptsPaymentTypes;
 	}
 
-
 	compareLoanPaymentTypes() {
 		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
 		let paymentTypes = [...this.props.paymentTypes];
@@ -331,10 +332,11 @@ class CreditHistory extends React.PureComponent {
                     currency: receipt.currency_code,
                     totalAmount: receipt.total
                 };
-            });
+			});
+			console.log("Bron" + JSON.stringify(remoteReceipts))
 
             remoteReceipts.sort((a, b) => {
-                return isBefore(new Date(a.createdAt), new Date(b.createdAt))
+                return isBefore(parseISO(a.createdAt), parseISO(b.createdAt))
                     ? 1
                     : -1;
             });
@@ -349,7 +351,6 @@ class CreditHistory extends React.PureComponent {
         }
 
     }
-
 
     getRowBackground = (index, isSelected) => {
         if (isSelected) {

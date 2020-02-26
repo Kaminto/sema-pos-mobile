@@ -33,7 +33,7 @@ import * as ProductActions from '../actions/ProductActions';
 import * as receiptActions from '../actions/ReceiptActions';
 import * as InventoryActions from '../actions/InventoryActions';
 import * as discountActions from '../actions/DiscountActions';
-
+import {format, sub, parseISO} from 'date-fns';
 
 import Events from 'react-native-simple-events';
 

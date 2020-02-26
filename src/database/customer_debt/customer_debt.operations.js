@@ -1,5 +1,6 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
+import {format} from 'date-fns';
 
 class CustomerDebtRealm {
     constructor() {
@@ -13,7 +14,7 @@ class CustomerDebtRealm {
                 realm.delete(customerDebts);
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on truncate customer debt", e);
         }
     }
 
@@ -47,7 +48,7 @@ class CustomerDebtRealm {
                 realm.create('CustomerDebt', customerDebt);
             });
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on creation customer debt", e);
         }
     }
 
@@ -65,7 +66,7 @@ class CustomerDebtRealm {
 
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on update customer debt", e);
         }
     }
 
@@ -78,7 +79,7 @@ class CustomerDebtRealm {
                 })
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on reset customer debt", e);
         }
     }
 
@@ -90,7 +91,7 @@ class CustomerDebtRealm {
 
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on isSelected customer debt", e);
         }
 
     }
@@ -103,7 +104,7 @@ class CustomerDebtRealm {
                 customerDebtObj[0].syncAction = null;
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on synched customer debt", e);
         }
     }
 
@@ -118,7 +119,7 @@ class CustomerDebtRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on hard delete customer debt", e);
         }
     }
 
@@ -131,7 +132,7 @@ class CustomerDebtRealm {
                 })
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on soft delete customer debt", e);
         }
     }
 
@@ -143,9 +144,9 @@ class CustomerDebtRealm {
                         realm.create('CustomerDebt', {
                             customer_account_id: customer_account_id ? customer_account_id : null,
                             customer_debt_id: uuidv1(),
-                            due_amount: obj.amount,
+                            due_amount: Number(obj.amount),
                             syncAction: obj.syncAction ? obj.syncAction : 'CREATE',
-                            created_at: new Date(),
+                            created_at: format(new Date(), 'yyyy-MM-dd'),
                             updated_at: obj.updated_at ? obj.updated_at : null,
                         });
                     });
@@ -157,7 +158,7 @@ class CustomerDebtRealm {
                 }
             });
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on create many customer debts", e);
         }
     }
 

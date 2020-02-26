@@ -13,7 +13,7 @@ class CustomerReminderRealm {
                 realm.delete(customerReminders);
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on truncate customer reminder", e);
         }
     }
 
@@ -75,7 +75,7 @@ class CustomerReminderRealm {
                 // realm.create('CustomerReminder', customerReminder);
             });
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on creation customer reminder", e);
         }
     }
 
@@ -91,7 +91,7 @@ class CustomerReminderRealm {
                 }
             });
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on set customer reminder", e);
         }
     }
 
@@ -127,7 +127,7 @@ class CustomerReminderRealm {
 
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on update customer reminder", e);
         }
     }
 
@@ -140,7 +140,7 @@ class CustomerReminderRealm {
                 })
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on reset customer reminder", e);
         }
     }
 
@@ -152,7 +152,7 @@ class CustomerReminderRealm {
 
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on select customer reminder", e);
         }
 
     }
@@ -165,7 +165,7 @@ class CustomerReminderRealm {
                 customerReminderObj[0].syncAction = null;
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on synch customer reminder", e);
         }
     }
 
@@ -180,7 +180,7 @@ class CustomerReminderRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on hard delete customer reminder", e);
         }
     }
 
@@ -193,7 +193,7 @@ class CustomerReminderRealm {
                 })
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on soft delete customer reminder", e);
         }
     }
 
@@ -207,7 +207,7 @@ class CustomerReminderRealm {
                             customerReminderId: uuidv1(),
                             due_amount: obj.amount,
                             syncAction: obj.syncAction ? obj.syncAction : 'CREATE',
-                            created_at: new Date(),
+                            created_at: format(new Date(), 'yyyy-MM-dd'),
                             updated_at: obj.updated_at ? obj.updated_at : null,
                         });
                     });
@@ -219,7 +219,7 @@ class CustomerReminderRealm {
                 }
             });
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on creation many customer reminder", e);
         }
     }
 

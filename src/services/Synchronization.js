@@ -192,25 +192,25 @@ class Synchronization {
 								return productMrpSync;
 							});
 
-							
 
-							const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId).then(
-								discountSync => {
-									syncResult.discounts = discountSync;
-									return discountSync;
-								}
-							);
 
-							
+							// const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId).then(
+							// 	discountSync => {
+							// 		syncResult.discounts = discountSync;
+							// 		return discountSync;
+							// 	}
+							// );
+
+
 
 							// This will make sure they run synchronously
 							[
+								promiseOrders,
 								promiseCustomers,
 								promiseTopUps,
 								promiseInventory,
 								promiseProducts,
 								promiseProductMrps,
-								promiseOrders,
 							]
 								.reduce((promiseChain, currentTask) => {
 									return promiseChain.then(chainResults =>
@@ -242,7 +242,7 @@ class Synchronization {
 			}
 		});
 	}
-	
+
 	_refreshToken() {
 		// Check if token exists or has expired
 		return new Promise((resolve, reject) => {
