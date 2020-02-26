@@ -210,7 +210,6 @@ class Login extends React.PureComponent {
 					Communications.setSiteId(result.response.data.kiosk.id);
 					SettingRealm.setTokenExpiration();
 
-
 					if (this.isSiteIdDifferent(result.response.data.kiosk.id, oldSettings.siteId)) {
 						this.onSynchronize();
 						this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
@@ -248,7 +247,6 @@ class Login extends React.PureComponent {
 					{ cancelable: true }
 				);
 			});
-
 	}
 
 	subtractDays = (theDate, days) => {

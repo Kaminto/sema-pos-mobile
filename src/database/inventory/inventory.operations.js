@@ -81,7 +81,7 @@ class InventroyRealm {
 
             if (filteredReading.length > 0 || filteredWastage.length > 0) {
                 resolve({
-                    currentMeter: filteredReading.length > 0 ? filteredReading[0].meterValue : 0,
+                    currentMeter: filteredReading.length > 0 ? filteredReading[0].meter_value : 0,
                     currentProductSkus: filteredWastage.length > 0 ? filteredWastage : []
                 })
             } else {
@@ -93,7 +93,7 @@ class InventroyRealm {
         })
     }
 
-    createMeterReading(meter, meterValue, date, kiosk_id) {
+    createMeterReading(meter, meter_value, date, kiosk_id) {
         console.log('date', date);
         date = this.addDays(date, 1);
         console.log('date-', date);
@@ -104,16 +104,16 @@ class InventroyRealm {
                     isSameDay(parseISO(element.created_at), date)
                 );
                 if (filteredReading.length > 0) {
-                    let meterUpdateObj = realm.objects('MeterReading').filtered(`meterReadingId = "${filteredReading[0].meterReadingId}"`);
-                    meterUpdateObj[0].meterValue = meterValue;
+                    let meterUpdateObj = realm.objects('MeterReading').filtered(`meter_reading_id = "${filteredReading[0].meter_reading_id}"`);
+                    meterUpdateObj[0].meter_value = meter_value;
                     meterUpdateObj[0].syncAction = 'UPDATE';
                     meterUpdateObj[0].updated_at = new Date();
                 } else {
                     realm.create('MeterReading', {
-                        meterReadingId: uuidv1(),
+                        meter_reading_id: uuidv1(),
                         kiosk_id,
                         created_at: new Date(date),
-                        meterValue: meterValue ? meterValue : 0,
+                        meter_value: meter_value ? meter_value : 0,
                         syncAction: 'CREATE',
                         active: false
                     });
