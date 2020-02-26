@@ -25,7 +25,6 @@ import * as discountActions from '../actions/DiscountActions';
 import * as paymentTypesActions from '../actions/PaymentTypesActions';
 import * as CustomerReminderActions from '../actions/CustomerReminderActions';
 
-import PosStorage from '../database/PosStorage';
 import CreditRealm from '../database/credit/credit.operations';
 import CustomerRealm from '../database/customers/customer.operations'
 import InventroyRealm from '../database/inventory/inventory.operations';
@@ -53,7 +52,6 @@ class AuthLoadingScreen extends React.PureComponent {
             animating: true,
             isConnected: false,
         };
-        this.posStorage = PosStorage;
     }
 
     componentDidMount() {
@@ -68,7 +66,6 @@ class AuthLoadingScreen extends React.PureComponent {
         );
 
         if (settings.site === "" && settings.siteId === 0) {
-            this.posStorage.initialLocalDb();
             this.props.settingsActions.setSettings({ ...settings, loginSync: true });
             this.props.navigation.navigate('Login');
         }
@@ -97,8 +94,6 @@ class AuthLoadingScreen extends React.PureComponent {
 	};
 
     loadSyncedData() {
-        this.posStorage.loadLocalData();
-        // this.posStorage.initialLocalDb();
         this.props.customerActions.setCustomers(
             CustomerRealm.getAllCustomer()
         );
@@ -114,9 +109,6 @@ class AuthLoadingScreen extends React.PureComponent {
         );
         this.props.productActions.setProducts(
             ProductsRealm.getProducts()
-        );
-        this.props.receiptActions.setRemoteReceipts(
-            this.posStorage.getRemoteReceipts()
         );
 
         this.props.receiptActions.setReceipts(

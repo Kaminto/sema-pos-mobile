@@ -184,9 +184,6 @@ class CustomSidebarMenu extends React.PureComponent {
       CreditRealm.getAllCredit()
     );
 
-    this.props.receiptActions.setRemoteReceipts(
-      this.posStorage.getRemoteReceipts()
-    );
 
     this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
     this.props.inventoryActions.setInventory(

@@ -101,7 +101,6 @@ class ProductMRPSync {
 								productMrps.productMRPs
 							)
 						) {
-							PosStorage.saveProductMrps(productMrps.productMRPs);
 							Events.trigger('ProductMrpsUpdated', {});
 						}
 						resolve({

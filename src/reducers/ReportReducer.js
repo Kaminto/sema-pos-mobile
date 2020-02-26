@@ -2,11 +2,10 @@ import {
 	SALES_REPORT_FROM_ORDERS,
 	REMINDER_REPORT,
 	REPORT_FILTER,
-	initializeSalesData
 } from '../actions/ReportActions';
 
 let initialState = {
-	salesData: initializeSalesData(),
+	salesData: { totalLiters: 0, totalSales: 0, totalDebt: 0, salesItems: [] },
 	dateFilter: {}
 };
 

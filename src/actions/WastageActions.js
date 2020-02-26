@@ -1,4 +1,3 @@
-import PosStorage from '../database/PosStorage';
 import ProductMRPRealm from '../database/productmrp/productmrp.operations';
 import OrderRealm from '../database/orders/orders.operations';
 import InventroyRealm from '../database/inventory/inventory.operations';
@@ -6,7 +5,25 @@ export const SALES_REPORT_FROM_ORDERS = 'SALES_REPORT_FROM_ORDERS';
 export const INVENTORY_REPORT = 'INVENTORY_REPORT';
 export const REPORT_TYPE = 'REPORT_TYPE';
 export const REPORT_FILTER = 'REPORT_FILTER';
-import { parseISO, isSameDay} from 'date-fns';
+import { parseISO, isSameDay } from 'date-fns';
+
+export function GetInventoryReportData(beginDate, endDate, products) {
+	return dispatch => {
+		getWastageData(beginDate, endDate, getMrps(products))
+			.then(inventoryData => {
+				dispatch({
+					type: INVENTORY_REPORT,
+					data: { inventoryData: inventoryData }
+				});
+			})
+			.catch(error => {
+				dispatch({
+					type: INVENTORY_REPORT,
+					data: { inventoryData: [] }
+				});
+			});
+	};
+}
 
 function groupBySku(objectArray, property) {
 	return objectArray.reduce(function (acc, obj) {
@@ -24,10 +41,11 @@ function totalByProperty(objectArray, property) {
 		return accumulator + Number(currentValue[property]);
 	}, 0);
 }
+
 const getSalesData = (beginDate) => {
 	const orders = OrderRealm.getAllOrder();
 	const filteredOrders = orders.filter(receipt =>
-			isSameDay(parseISO(receipt.created_at), beginDate)
+		isSameDay(parseISO(receipt.created_at), beginDate)
 	);
 
 	let filteredOrderItems = filteredOrders.reduce(function (accumulator, currentValue) {
@@ -68,40 +86,20 @@ export const getMrps = products => {
 	return waterProducts;
 };
 
-export function GetInventoryReportData(beginDate, endDate, products) {
-	return dispatch => {
-		getWastageData(beginDate, endDate, getMrps(products))
-			.then(inventoryData => {
-				console.log('inventoryData', inventoryData);
-				dispatch({
-					type: INVENTORY_REPORT,
-					data: { inventoryData: inventoryData }
-				});
-			})
-			.catch(error => {
-				dispatch({
-					type: INVENTORY_REPORT,
-					data: { inventoryData: [] }
-				});
-			});
-	};
-}
-
 export const getWastageData = (beginDate, endDate, products) => {
 	return new Promise((resolve, reject) => {
-				getInventoryItem(beginDate, products)
-					.then(inventorySettings => {
-						let inventoryData = createInventory(
-							getSalesData(beginDate, endDate),
-							inventorySettings,
-							products
-						);
-						console.log('inventoryData', inventoryData);
-						resolve(inventoryData);
-					})
-					.catch(error => {
-						reject(error);
-					});
+		getInventoryItem(beginDate, products)
+			.then(inventorySettings => {
+				let inventoryData = createInventory(
+					getSalesData(beginDate, endDate),
+					inventorySettings,
+					products
+				);
+				resolve(inventoryData);
+			})
+			.catch(error => {
+				reject(error);
+			});
 
 	});
 };
@@ -109,8 +107,6 @@ export const getWastageData = (beginDate, endDate, products) => {
 const createInventory = (salesData, inventorySettings, products) => {
 	let salesAndProducts = { ...salesData };
 	salesAndProducts.salesItems = salesData.salesItems.slice();
-
-	console.log("Well" + salesAndProducts.salesItems.length + JSON.stringify(salesAndProducts.salesItems))
 	let emptyProducts = [];
 	for (const prod of products) {
 		if (isNotIncluded(prod, salesAndProducts.salesItems)) {
@@ -183,153 +179,27 @@ const groupBy = key => array =>
 		return objectsByKeyValue;
 	}, {});
 
-	addDays = (theDate, days) => {
-		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
-	};
+addDays = (theDate, days) => {
+	return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
+};
 
-	SubtrabtDays = (theDate, days) => {
-		return new Date(theDate.getTime() - days * 24 * 60 * 60 * 1000);
-	};
-
-const getInventoryItem = (beginDate, products) => {
+const getInventoryItem = (beginDate) => {
 	return new Promise(resolve => {
-		console.log('yesterday', beginDate);
-		console.log('today', this.addDays(beginDate, 1));
 		const promiseToday = InventroyRealm.getWastageReportByDate(this.addDays(beginDate, 1));
-		// const newInvent = InventroyRealm.getAllInventory();
-		// const newMeter = InventroyRealm.getMeterReadingByDate(beginDate);
-		// console.log('newInvent', newInvent);
-		// console.log('newMeter', newMeter);
-		promiseToday.then(resultToday => {
-			console.log('resultToday', resultToday);
-		});
 		const yesterday = new Date(beginDate);
 		const promiseYesterday = InventroyRealm.getWastageReportByDate(yesterday);
-		promiseYesterday.then(resultYesterday => {
-			console.log('resultYesterday', resultYesterday);
-		});
-
 		Promise.all([promiseToday, promiseYesterday]).then(inventoryResults => {
-console.log('inventoryResults', inventoryResults);
 			resolve({
 				date: this.addDays(beginDate, 1),
-				currentMeter: inventoryResults[0].previousMeter,
+				currentMeter: inventoryResults[0].currentMeter,
 				currentProductSkus: inventoryResults[0].currentProductSkus,
-				previousMeter: inventoryResults[1].previousMeter,
+				previousMeter: inventoryResults[1].currentMeter,
 				previousProductSkus: inventoryResults[1].currentProductSkus
 			})
 
-
-			// if (inventoryResults[0] != null) {
-			// 	if (inventoryResults[1]) {
-			// 		inventoryResults[0].previousProductSkus = inventoryResults[1].currentProductSkus;
-			// 		inventoryResults[0].previousMeter = inventoryResults[1].currentMeter;
-			// 	}
-			// 	resolve(inventoryResults[0]);
-			// } else {
-			// 	let newInventory = initializeInventory();
-			// 	newInventory.date = beginDate;
-
-			// 	newInventory.currentProductSkus = products.map(product => {
-			// 		return { sku: product.sku, wastageName: product.wastageName, quantity: 0, inventory: 0 };
-			// 	});
-
-
-			// 	newInventory.previousProductSkus = products.map(product => {
-			// 		return { sku: product.sku, wastageName: product.wastageName, quantity: 0, inventory: 0 };
-			// 	});
-
-			// 	const groupWastageName = groupBy('wastageName');
-
-			// 	let previousArray = Object.values(groupWastageName(newInventory.previousProductSkus));
-			// 	let currentArray = Object.values(groupWastageName(newInventory.currentProductSkus));
-			// 	let newpreviousArray = [];
-			// 	for (var i in previousArray) {
-			// 		inventoryTotal = 0;
-			// 		quantityTotal = 0;
-			// 		notDispatchedTotal = 0;
-			// 		for (var a in previousArray[i]) {
-			// 			if (previousArray[i][a].wastageName != null) {
-			// 				inventoryTotal = inventoryTotal + previousArray[i][a].inventory;
-			// 				quantityTotal = quantityTotal + previousArray[i][a].quantity;
-			// 				notDispatchedTotal = notDispatchedTotal + previousArray[i][a].notDispatched;
-			// 			}
-			// 		}
-
-			// 		if (previousArray[i][0].wastageName != null) {
-			// 			newpreviousArray.push({
-			// 				wastageName: previousArray[i][0].wastageName,
-			// 				product_id: previousArray[i][0].wastageName,
-			// 				inventory: inventoryTotal,
-			// 				notDispatched: notDispatchedTotal,
-			// 				kiosk_id: "",
-			// 				closingStockId: "",
-			// 				created_at: "",
-			// 				quantity: quantityTotal
-			// 			});
-			// 		}
-			// 	}
-
-			// 	newInventory.previousProductSkus = newpreviousArray;
-
-			// 	let newcurrentArray = [];
-			// 	for (var i in currentArray) {
-			// 		inventoryTotal = 0;
-			// 		quantityTotal = 0;
-			// 		notDispatchedTotal = 0;
-			// 		for (var a in currentArray[i]) {
-			// 			if (currentArray[i][a].wastageName != null) {
-			// 				inventoryTotal = inventoryTotal + currentArray[i][a].inventory;
-			// 				quantityTotal = quantityTotal + currentArray[i][a].quantity;
-			// 				notDispatchedTotal = notDispatchedTotal + currentArray[i][a].notDispatched;
-			// 			}
-			// 		}
-
-			// 		if (currentArray[i][0].wastageName != null) {
-			// 			newcurrentArray.push({
-			// 				wastageName: currentArray[i][0].wastageName,
-			// 				product_id: previousArray[i][0].wastageName,
-			// 				inventory: inventoryTotal,
-			// 				notDispatched: notDispatchedTotal,
-			// 				kiosk_id: "",
-			// 				closingStockId: "",
-			// 				created_at: "",
-			// 				quantity: quantityTotal
-			// 			});
-			// 		}
-			// 	}
-			// 	newInventory.currentProductSkus = newcurrentArray;
-
-			// 	if (inventoryResults[1]) {
-			// 		newInventory.previousProductSkus = inventoryResults[1].currentProductSkus;
-			// 		newInventory.previousMeter = inventoryResults[1].currentMeter;
-			// 	}
-			// 	console.log('newInventory', newInventory);
-			// 	resolve(newInventory);
-			// }
 		});
 	});
 };
 
-const initializeInventory = () => {
-	return {
-		date: null,
-		currentMeter: null,
-		currentProductSkus: [],
-		previousMeter: null,
-		previousProductSkus: []
-	};
-};
-
-export const initializeSalesData = () => {
-	return { totalLiters: null, totalSales: null, totalDebt: null, salesItems: [] };
-};
-
-export const initializeInventoryData = () => {
-	return {
-		salesAndProducts: initializeSalesData(),
-		inventory: initializeInventory()
-	};
-};
 
 
