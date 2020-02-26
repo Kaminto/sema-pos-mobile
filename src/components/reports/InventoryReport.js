@@ -115,7 +115,8 @@ class InventoryReport extends React.PureComponent {
 	};
 
 	render() {
-		//InventroyRealm.truncate();
+		///InventroyRealm.truncate();
+		console.log('wastageData', this.props.wastageData.inventory);
 		return (
 			<View style={{ flex: 1 }}>
 				<View style={{ flex: .1, flexDirection: 'row' }}>
@@ -344,7 +345,7 @@ class InventoryReport extends React.PureComponent {
 					InventroyRealm.createInventory(this.props.wastageData.inventory.currentProductSkus[index], this.props.dateFilter.startDate);
 					break;
 				} else if (this.props.wastageData.inventory.currentProductSkus[index].wastageName != wastageName) {
-				
+
 					console.log('not available', wastageName);
 					InventroyRealm.createInventory({
 						type: 'notdispatched',
@@ -375,36 +376,69 @@ class InventoryReport extends React.PureComponent {
 		}
 		if (Number(update) > 0) {
 			console.log('currentProductSkus', this.props.wastageData.inventory.currentProductSkus);
-			for (let index = 0; index < this.props.wastageData.inventory.currentProductSkus.length; index++) {
-				if (this.props.wastageData.inventory.currentProductSkus[index].wastageName === wastageName) {
-					this.props.wastageData.inventory.currentProductSkus[index].inventory = update;
-					this.props.wastageData.inventory.currentProductSkus[index].product_id = wastageName;
-					this.props.wastageData.inventory.currentProductSkus[index].quantity = update;
-					this.props.wastageData.inventory.currentProductSkus[index].kiosk_id = this.props.settings.siteId;
-					//this.props.wastageData.inventory.currentProductSkus[index].createdDate = new Date(this.props.wastageData.inventory.date);
-					this.props.wastageData.inventory.currentProductSkus[index].created_at = new Date(this.props.dateFilter.startDate);
 
-					//this.props.wastageData.inventory.currentProductSkus[index].closingStockId = uuidv1();
-					//PosStorage.addOrUpdateInventoryItem(this.props.wastageData.inventory, this.props.wastageData.inventory.date);
-					InventroyRealm.createInventory(this.props.wastageData.inventory.currentProductSkus[index], this.props.dateFilter.startDate);
+			let checkWastageName = this.props.wastageData.inventory.currentProductSkus.filter(element =>
+				element.wastageName === wastageName
+			);
 
-					break;
-				} else if (this.props.wastageData.inventory.currentProductSkus[index].wastageName != wastageName) {
-					console.log('not available', wastageName);
-					InventroyRealm.createInventory({
-						type: 'closing',
-						inventory: update,
-						quantity: update,
-						kiosk_id: this.props.settings.siteId,
-						product_id: wastageName,
-						wastageName: wastageName
-					},
-						this.props.dateFilter.startDate);
+			console.log('checkWastageName', checkWastageName);
 
-					break;
-
-				}
+			if (checkWastageName.length > 0) {
+				console.log('update needed');
+				InventroyRealm.createInventory({
+					type: 'closing',
+					closingStockId: checkWastageName[0].closingStockId,
+					inventory: update,
+					quantity: update,
+					kiosk_id: this.props.settings.siteId,
+					product_id: wastageName,
+					wastageName: wastageName
+				},
+					this.props.dateFilter.startDate);
+			} else if (checkWastageName.length === 0) {
+				InventroyRealm.createInventory({
+					type: 'closing',
+					inventory: update,
+					quantity: update,
+					kiosk_id: this.props.settings.siteId,
+					product_id: wastageName,
+					wastageName: wastageName
+				},
+					this.props.dateFilter.startDate);
 			}
+			this.props.wastageActions.GetInventoryReportData(this.startDate, this.endDate, this.props.products);
+
+
+			// for (let index = 0; index < this.props.wastageData.inventory.currentProductSkus.length; index++) {
+			// 	if (this.props.wastageData.inventory.currentProductSkus[index].wastageName === wastageName) {
+			// 		this.props.wastageData.inventory.currentProductSkus[index].inventory = update;
+			// 		this.props.wastageData.inventory.currentProductSkus[index].product_id = wastageName;
+			// 		this.props.wastageData.inventory.currentProductSkus[index].quantity = update;
+			// 		this.props.wastageData.inventory.currentProductSkus[index].kiosk_id = this.props.settings.siteId;
+			// 		//this.props.wastageData.inventory.currentProductSkus[index].createdDate = new Date(this.props.wastageData.inventory.date);
+			// 		this.props.wastageData.inventory.currentProductSkus[index].created_at = new Date(this.props.dateFilter.startDate);
+
+			// 		//this.props.wastageData.inventory.currentProductSkus[index].closingStockId = uuidv1();
+			// 		//PosStorage.addOrUpdateInventoryItem(this.props.wastageData.inventory, this.props.wastageData.inventory.date);
+			// 		InventroyRealm.createInventory(this.props.wastageData.inventory.currentProductSkus[index], this.props.dateFilter.startDate);
+
+			// 		break;
+			// 	} else if (this.props.wastageData.inventory.currentProductSkus[index].wastageName != wastageName) {
+			// 		console.log('not available', wastageName);
+			// 		InventroyRealm.createInventory({
+			// 			type: 'closing',
+			// 			inventory: update,
+			// 			quantity: update,
+			// 			kiosk_id: this.props.settings.siteId,
+			// 			product_id: wastageName,
+			// 			wastageName: wastageName
+			// 		},
+			// 			this.props.dateFilter.startDate);
+
+			// 		break;
+
+			// 	}
+			// }
 			console.log('done');
 			//this.props.wastageActions.GetInventoryReportData(this.startDate, this.endDate, this.props.products);
 

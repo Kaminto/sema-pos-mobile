@@ -210,93 +210,103 @@ const getInventoryItem = (beginDate, products) => {
 		});
 
 		Promise.all([promiseToday, promiseYesterday]).then(inventoryResults => {
-			if (inventoryResults[0] != null) {
-				if (inventoryResults[1]) {
-					inventoryResults[0].previousProductSkus = inventoryResults[1].currentProductSkus;
-					inventoryResults[0].previousMeter = inventoryResults[1].currentMeter;
-				}
-				resolve(inventoryResults[0]);
-			} else {
-				let newInventory = initializeInventory();
-				newInventory.date = beginDate;
-
-				newInventory.currentProductSkus = products.map(product => {
-					return { sku: product.sku, wastageName: product.wastageName, quantity: 0, inventory: 0 };
-				});
+console.log('inventoryResults', inventoryResults);
+			resolve({
+				date: this.addDays(beginDate, 1),
+				currentMeter: inventoryResults[0].previousMeter,
+				currentProductSkus: inventoryResults[0].currentProductSkus,
+				previousMeter: inventoryResults[1].previousMeter,
+				previousProductSkus: inventoryResults[1].currentProductSkus
+			})
 
 
-				newInventory.previousProductSkus = products.map(product => {
-					return { sku: product.sku, wastageName: product.wastageName, quantity: 0, inventory: 0 };
-				});
+			// if (inventoryResults[0] != null) {
+			// 	if (inventoryResults[1]) {
+			// 		inventoryResults[0].previousProductSkus = inventoryResults[1].currentProductSkus;
+			// 		inventoryResults[0].previousMeter = inventoryResults[1].currentMeter;
+			// 	}
+			// 	resolve(inventoryResults[0]);
+			// } else {
+			// 	let newInventory = initializeInventory();
+			// 	newInventory.date = beginDate;
 
-				const groupWastageName = groupBy('wastageName');
+			// 	newInventory.currentProductSkus = products.map(product => {
+			// 		return { sku: product.sku, wastageName: product.wastageName, quantity: 0, inventory: 0 };
+			// 	});
 
-				let previousArray = Object.values(groupWastageName(newInventory.previousProductSkus));
-				let currentArray = Object.values(groupWastageName(newInventory.currentProductSkus));
-				let newpreviousArray = [];
-				for (var i in previousArray) {
-					inventoryTotal = 0;
-					quantityTotal = 0;
-					notDispatchedTotal = 0;
-					for (var a in previousArray[i]) {
-						if (previousArray[i][a].wastageName != null) {
-							inventoryTotal = inventoryTotal + previousArray[i][a].inventory;
-							quantityTotal = quantityTotal + previousArray[i][a].quantity;
-							notDispatchedTotal = notDispatchedTotal + previousArray[i][a].notDispatched;
-						}
-					}
 
-					if (previousArray[i][0].wastageName != null) {
-						newpreviousArray.push({
-							wastageName: previousArray[i][0].wastageName,
-							product_id: previousArray[i][0].wastageName,
-							inventory: inventoryTotal,
-							notDispatched: notDispatchedTotal,
-							kiosk_id: "",
-							closingStockId: "",
-							created_at: "",
-							quantity: quantityTotal
-						});
-					}
-				}
+			// 	newInventory.previousProductSkus = products.map(product => {
+			// 		return { sku: product.sku, wastageName: product.wastageName, quantity: 0, inventory: 0 };
+			// 	});
 
-				newInventory.previousProductSkus = newpreviousArray;
+			// 	const groupWastageName = groupBy('wastageName');
 
-				let newcurrentArray = [];
-				for (var i in currentArray) {
-					inventoryTotal = 0;
-					quantityTotal = 0;
-					notDispatchedTotal = 0;
-					for (var a in currentArray[i]) {
-						if (currentArray[i][a].wastageName != null) {
-							inventoryTotal = inventoryTotal + currentArray[i][a].inventory;
-							quantityTotal = quantityTotal + currentArray[i][a].quantity;
-							notDispatchedTotal = notDispatchedTotal + currentArray[i][a].notDispatched;
-						}
-					}
+			// 	let previousArray = Object.values(groupWastageName(newInventory.previousProductSkus));
+			// 	let currentArray = Object.values(groupWastageName(newInventory.currentProductSkus));
+			// 	let newpreviousArray = [];
+			// 	for (var i in previousArray) {
+			// 		inventoryTotal = 0;
+			// 		quantityTotal = 0;
+			// 		notDispatchedTotal = 0;
+			// 		for (var a in previousArray[i]) {
+			// 			if (previousArray[i][a].wastageName != null) {
+			// 				inventoryTotal = inventoryTotal + previousArray[i][a].inventory;
+			// 				quantityTotal = quantityTotal + previousArray[i][a].quantity;
+			// 				notDispatchedTotal = notDispatchedTotal + previousArray[i][a].notDispatched;
+			// 			}
+			// 		}
 
-					if (currentArray[i][0].wastageName != null) {
-						newcurrentArray.push({
-							wastageName: currentArray[i][0].wastageName,
-							product_id: previousArray[i][0].wastageName,
-							inventory: inventoryTotal,
-							notDispatched: notDispatchedTotal,
-							kiosk_id: "",
-							closingStockId: "",
-							created_at: "",
-							quantity: quantityTotal
-						});
-					}
-				}
-				newInventory.currentProductSkus = newcurrentArray;
+			// 		if (previousArray[i][0].wastageName != null) {
+			// 			newpreviousArray.push({
+			// 				wastageName: previousArray[i][0].wastageName,
+			// 				product_id: previousArray[i][0].wastageName,
+			// 				inventory: inventoryTotal,
+			// 				notDispatched: notDispatchedTotal,
+			// 				kiosk_id: "",
+			// 				closingStockId: "",
+			// 				created_at: "",
+			// 				quantity: quantityTotal
+			// 			});
+			// 		}
+			// 	}
 
-				if (inventoryResults[1]) {
-					newInventory.previousProductSkus = inventoryResults[1].currentProductSkus;
-					newInventory.previousMeter = inventoryResults[1].currentMeter;
-				}
-				console.log('newInventory', newInventory);
-				resolve(newInventory);
-			}
+			// 	newInventory.previousProductSkus = newpreviousArray;
+
+			// 	let newcurrentArray = [];
+			// 	for (var i in currentArray) {
+			// 		inventoryTotal = 0;
+			// 		quantityTotal = 0;
+			// 		notDispatchedTotal = 0;
+			// 		for (var a in currentArray[i]) {
+			// 			if (currentArray[i][a].wastageName != null) {
+			// 				inventoryTotal = inventoryTotal + currentArray[i][a].inventory;
+			// 				quantityTotal = quantityTotal + currentArray[i][a].quantity;
+			// 				notDispatchedTotal = notDispatchedTotal + currentArray[i][a].notDispatched;
+			// 			}
+			// 		}
+
+			// 		if (currentArray[i][0].wastageName != null) {
+			// 			newcurrentArray.push({
+			// 				wastageName: currentArray[i][0].wastageName,
+			// 				product_id: previousArray[i][0].wastageName,
+			// 				inventory: inventoryTotal,
+			// 				notDispatched: notDispatchedTotal,
+			// 				kiosk_id: "",
+			// 				closingStockId: "",
+			// 				created_at: "",
+			// 				quantity: quantityTotal
+			// 			});
+			// 		}
+			// 	}
+			// 	newInventory.currentProductSkus = newcurrentArray;
+
+			// 	if (inventoryResults[1]) {
+			// 		newInventory.previousProductSkus = inventoryResults[1].currentProductSkus;
+			// 		newInventory.previousMeter = inventoryResults[1].currentMeter;
+			// 	}
+			// 	console.log('newInventory', newInventory);
+			// 	resolve(newInventory);
+			// }
 		});
 	});
 };
