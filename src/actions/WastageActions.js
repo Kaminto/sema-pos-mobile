@@ -1,6 +1,7 @@
 import PosStorage from '../database/PosStorage';
 import ProductMRPRealm from '../database/productmrp/productmrp.operations';
 import OrderRealm from '../database/orders/orders.operations';
+import InventroyRealm from '../database/inventory/inventory.operations';
 export const SALES_REPORT_FROM_ORDERS = 'SALES_REPORT_FROM_ORDERS';
 export const INVENTORY_REPORT = 'INVENTORY_REPORT';
 export const REPORT_TYPE = 'REPORT_TYPE';
@@ -184,7 +185,12 @@ const groupBy = key => array =>
 
 const getInventoryItem = (beginDate, products) => {
 	return new Promise(resolve => {
+		console.log('beginDate', beginDate);
 		const promiseToday = PosStorage.getInventoryItem(beginDate);
+		const newInvent = InventroyRealm.getAllInventory();
+		const newMeter = InventroyRealm.getAllMeterReading();
+		console.log('newInvent', newInvent);
+		console.log('newMeter', newMeter);
 		promiseToday.then(resultToday => {
 			console.log('resultToday', resultToday);
 		});
