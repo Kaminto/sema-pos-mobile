@@ -2,7 +2,7 @@ import React from 'react';
 if (process.env.NODE_ENV === 'development') {
 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
 	whyDidYouRender(React);
-  }
+}
 import { Text, View, StyleSheet, TouchableHighlight, FlatList, Modal, TextInput } from 'react-native';
 import { bindActionCreators } from "redux";
 // import * as reportActions from "../../actions/ReportActions";
@@ -14,7 +14,7 @@ import DateFilter from "./DateFilter";
 import PosStorage from "../../database/PosStorage";
 import InventroyRealm from "../../database/inventory/inventory.operations";
 import slowlog from 'react-native-slowlog';
-import {isSameDay} from 'date-fns';
+import { isSameDay } from 'date-fns';
 
 import i18n from '../../app/i18n';
 const uuidv1 = require('uuid/v1');
@@ -57,7 +57,7 @@ class InventoryEdit extends React.PureComponent {
 							<View style={{ backgroundColor: "#2858a7", borderRadius: 10, flex: .3 }}>
 								<TouchableHighlight underlayColor='#c0c0c0' onPress={() => {
 									this.props.okMethod(this.props.wastageName, this.state.inventoryQuantity);
-									}}>
+								}}>
 									<Text style={styles.buttonText}>{i18n.t('ok')}</Text>
 								</TouchableHighlight>
 							</View>
@@ -115,6 +115,7 @@ class InventoryReport extends React.PureComponent {
 	};
 
 	render() {
+		//InventroyRealm.truncate();
 		return (
 			<View style={{ flex: 1 }}>
 				<View style={{ flex: .1, flexDirection: 'row' }}>
@@ -218,7 +219,7 @@ class InventoryReport extends React.PureComponent {
 
 	getInventoryData() {
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
-			if(isSameDay(this.props.dateFilter.startDate, this.startDate) && isSameDay(this.props.dateFilter.endDate, this.endDate)) {
+			if (isSameDay(this.props.dateFilter.startDate, this.startDate) && isSameDay(this.props.dateFilter.endDate, this.endDate)) {
 				return this.props.wastageData.salesAndProducts.salesItems;
 			} else {
 				this.startDate = this.props.dateFilter.startDate;
@@ -329,21 +330,38 @@ class InventoryReport extends React.PureComponent {
 		}
 		if (!isNaN(update)) {
 			for (let index = 0; index < this.props.wastageData.inventory.currentProductSkus.length; index++) {
+				console.log('currentProductSkus', this.props.wastageData.inventory.currentProductSkus);
 				if (this.props.wastageData.inventory.currentProductSkus[index].wastageName === wastageName) {
 					this.props.wastageData.inventory.currentProductSkus[index].notDispatched = update;
 					this.props.wastageData.inventory.currentProductSkus[index].product_id = wastageName;
 					this.props.wastageData.inventory.currentProductSkus[index].quantity = update;
 					this.props.wastageData.inventory.currentProductSkus[index].kiosk_id = this.props.settings.siteId;
 					//this.props.wastageData.inventory.currentProductSkus[index].createdDate = new Date(this.props.wastageData.inventory.date);
-					this.props.wastageData.inventory.currentProductSkus[index].created_at = new Date(this.props.wastageData.inventory.date);
-					
-					this.props.wastageData.inventory.currentProductSkus[index].closingStockId = uuidv1();
+					this.props.wastageData.inventory.currentProductSkus[index].created_at = new Date(this.props.dateFilter.startDate);
+
+					//this.props.wastageData.inventory.currentProductSkus[index].closingStockId = uuidv1();
 					//PosStorage.addOrUpdateInventoryItem(this.props.wastageData.inventory, this.props.wastageData.inventory.date);
-					InventroyRealm.createInventory(this.props.wastageData.inventory.currentProductSkus[index], this.props.wastageData.inventory.date, this.props.settings.siteId);
+					InventroyRealm.createInventory(this.props.wastageData.inventory.currentProductSkus[index], this.props.dateFilter.startDate);
 					break;
+				} else if (this.props.wastageData.inventory.currentProductSkus[index].wastageName != wastageName) {
+				
+					console.log('not available', wastageName);
+					InventroyRealm.createInventory({
+						type: 'notdispatched',
+						notDispatched: update,
+						quantity: update,
+						kiosk_id: this.props.settings.siteId,
+						product_id: wastageName,
+						wastageName: wastageName
+					},
+						this.props.dateFilter.startDate);
+					break;
+
 				}
 			}
-			this.setState({ refresh: !this.state.refresh });
+			//this.props.wastageActions.GetInventoryReportData(this.startDate, this.endDate, this.props.products);
+			console.log('done');
+			this.setState({ refresh: true });
 		} else {
 			// TODO - Show alert
 		}
@@ -355,7 +373,8 @@ class InventoryReport extends React.PureComponent {
 		if (newQuantity.trim().length > 0) {
 			update = parseInt(newQuantity);
 		}
-		if (!isNaN(update)) {
+		if (Number(update) > 0) {
+			console.log('currentProductSkus', this.props.wastageData.inventory.currentProductSkus);
 			for (let index = 0; index < this.props.wastageData.inventory.currentProductSkus.length; index++) {
 				if (this.props.wastageData.inventory.currentProductSkus[index].wastageName === wastageName) {
 					this.props.wastageData.inventory.currentProductSkus[index].inventory = update;
@@ -363,16 +382,33 @@ class InventoryReport extends React.PureComponent {
 					this.props.wastageData.inventory.currentProductSkus[index].quantity = update;
 					this.props.wastageData.inventory.currentProductSkus[index].kiosk_id = this.props.settings.siteId;
 					//this.props.wastageData.inventory.currentProductSkus[index].createdDate = new Date(this.props.wastageData.inventory.date);
-					this.props.wastageData.inventory.currentProductSkus[index].created_at = new Date(this.props.wastageData.inventory.date);
-					
-					this.props.wastageData.inventory.currentProductSkus[index].closingStockId = uuidv1();
+					this.props.wastageData.inventory.currentProductSkus[index].created_at = new Date(this.props.dateFilter.startDate);
+
+					//this.props.wastageData.inventory.currentProductSkus[index].closingStockId = uuidv1();
 					//PosStorage.addOrUpdateInventoryItem(this.props.wastageData.inventory, this.props.wastageData.inventory.date);
-					InventroyRealm.createInventory(this.props.wastageData.inventory.currentProductSkus[index], this.props.wastageData.inventory.date);
-					
+					InventroyRealm.createInventory(this.props.wastageData.inventory.currentProductSkus[index], this.props.dateFilter.startDate);
+
 					break;
+				} else if (this.props.wastageData.inventory.currentProductSkus[index].wastageName != wastageName) {
+					console.log('not available', wastageName);
+					InventroyRealm.createInventory({
+						type: 'closing',
+						inventory: update,
+						quantity: update,
+						kiosk_id: this.props.settings.siteId,
+						product_id: wastageName,
+						wastageName: wastageName
+					},
+						this.props.dateFilter.startDate);
+
+					break;
+
 				}
 			}
-			this.setState({ refresh: !this.state.refresh });
+			console.log('done');
+			//this.props.wastageActions.GetInventoryReportData(this.startDate, this.endDate, this.props.products);
+
+			this.setState({ refresh: true });
 		} else {
 			// TODO - Show alert
 		}
@@ -450,7 +486,7 @@ class InventoryReport extends React.PureComponent {
 				break;
 			}
 		}
-		return "-";		// No data
+		return 0;		// No data
 	}
 
 	getTotalForSkuDisplay(item) {
@@ -501,7 +537,7 @@ class InventoryReport extends React.PureComponent {
 			let valid = false;
 			for (let index = 0; index < this.props.wastageData.salesAndProducts.salesItems.length; index++) {
 				let inventoryItem = this.getTotalForSkuDisplayNotDispatched(this.props.wastageData.salesAndProducts.salesItems[index]);
-					if (inventoryItem != '-') {
+				if (inventoryItem != '-') {
 					valid = true;
 					result += parseFloat(inventoryItem);
 				}
@@ -624,8 +660,9 @@ class InventoryReport extends React.PureComponent {
 		if (!isNaN(update)) {
 			this.props.wastageData.inventory.currentMeter = update;
 			//PosStorage.addOrUpdateInventoryItem(this.props.wastageData.inventory, this.props.wastageData.inventory.date);
-			InventroyRealm.createMeterReading(this.props.wastageData.inventory, this.props.wastageData.inventory.date);
-					
+			//InventroyRealm.createMeterReading(this.props.wastageData.inventory, this.props.wastageData.inventory.date);
+			InventroyRealm.createMeterReading(this.props.wastageData.inventory, update, this.props.dateFilter.startDate, this.props.settings.siteId);
+
 			this.setState({ refresh: !this.state.refresh });
 		} else {
 			// TODO - Show alert

@@ -1,6 +1,6 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-
+import { parseISO, isSameDay } from 'date-fns';
 class InventroyRealm {
     constructor() {
         this.inventory = [];
@@ -21,7 +21,9 @@ class InventroyRealm {
         try {
             realm.write(() => {
                 let inventories = realm.objects('Inventory');
+                let meterReading = realm.objects('MeterReading');
                 realm.delete(inventories);
+                realm.delete(meterReading);
             })
         } catch (e) {
             console.log("Error on creation", e);
@@ -61,36 +63,57 @@ class InventroyRealm {
 
         return date = year + '-' + month + '-' + day;
     }
+	addDays = (theDate, days) => {
+		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
+    };
+    
+    getWastageReportByDate(date) {
+        return new Promise(resolve => {
+            let checkExistingMeter = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
+            const filteredReading = checkExistingMeter.filter(element =>
+                isSameDay(parseISO(element.created_at), date)
+            );
 
-    createMeterReading(meter, date,kiosk_id) {
-        console.log('meter-', meter);
+            let checkExistingWastage = Object.values(JSON.parse(JSON.stringify(realm.objects('Inventory'))));
+            const filteredWastage = checkExistingWastage.filter(element =>
+                isSameDay(parseISO(element.created_at), date)
+            );
+
+            if (filteredReading.length > 0 || filteredWastage.length > 0) {
+                resolve({
+                    currentMeter: filteredReading.length > 0 ? filteredReading[0].meterValue : 0,
+                    currentProductSkus: filteredWastage.length > 0 ? filteredWastage : []
+                })
+            } else {
+                resolve(null);
+            }
+        })
+    }
+
+    createMeterReading(meter, meterValue, date, kiosk_id) {
+        console.log('date', date);
+        date = this.addDays(date, 1);
         console.log('date-', date);
-        //getAllMeterReading
         try {
             realm.write(() => {
                 let checkExistingMeter = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
-
-                if (checkExistingMeter.length > 0) {
-                    console.log('existing neter')
-                    // let inventorUpdateObj = realm.objects('Inventory').filtered(`closingStockId = "${inventory.closingStockId}"`);
-                    // inventorUpdateObj[0].product_id = inventory.product_id;
-                    // inventorUpdateObj[0].notDispatched = inventory.notDispatched ? inventory.notDispatched : 0,
-                    // inventorUpdateObj[0].quantity = inventory.quantity ? inventory.quantity : 0,
-                    // inventorUpdateObj[0].kiosk_id = inventory.kiosk_id,
-                    // inventorUpdateObj[0].created_at = new Date(inventory.created_at);
-                    // inventorUpdateObj[0].inventory = inventory.inventory ? inventory.inventory : 0;
-                    // inventorUpdateObj[0].wastageName = inventory.wastageName;
-                    // inventorUpdateObj[0].syncAction = 'UPDATE';
-                    // inventorUpdateObj[0].updated_at = new Date();
+                const filteredReading = checkExistingMeter.filter(element =>
+                    isSameDay(parseISO(element.created_at), date)
+                );
+                if (filteredReading.length > 0) {
+                    let meterUpdateObj = realm.objects('MeterReading').filtered(`meterReadingId = "${filteredReading[0].meterReadingId}"`);
+                    meterUpdateObj[0].meterValue = meterValue;
+                    meterUpdateObj[0].syncAction = 'UPDATE';
+                    meterUpdateObj[0].updated_at = new Date();
                 } else {
-                    console.log('new meter')
                     realm.create('MeterReading', {
-                         meterReadingId: uuidv1(),
-                         kiosk_id,
-                         created_at: new Date(date),
-                         meterValue: meterValue ? meterValue : 0,
-                         syncAction: 'CREATE',
-                         active: false});
+                        meterReadingId: uuidv1(),
+                        kiosk_id,
+                        created_at: new Date(date),
+                        meterValue: meterValue ? meterValue : 0,
+                        syncAction: 'CREATE',
+                        active: false
+                    });
                 }
                 // realm.create('CustomerReminder', customerReminder);
             });
@@ -101,6 +124,8 @@ class InventroyRealm {
 
     createInventory(inventory, date) {
         console.log('inventory-', inventory);
+        console.log('date', date);
+        date = this.addDays(date, 1);
         console.log('date-', date);
         try {
             realm.write(() => {
@@ -111,10 +136,9 @@ class InventroyRealm {
                     let inventorUpdateObj = realm.objects('Inventory').filtered(`closingStockId = "${inventory.closingStockId}"`);
                     inventorUpdateObj[0].product_id = inventory.product_id;
                     inventorUpdateObj[0].notDispatched = inventory.notDispatched ? inventory.notDispatched : 0,
-                    inventorUpdateObj[0].quantity = inventory.quantity ? inventory.quantity : 0,
-                    inventorUpdateObj[0].kiosk_id = inventory.kiosk_id,
-                    inventorUpdateObj[0].created_at = new Date(inventory.created_at);
-                    inventorUpdateObj[0].inventory = inventory.inventory ? inventory.inventory : 0;
+                        inventorUpdateObj[0].quantity = inventory.quantity ? inventory.quantity : 0,
+                        inventorUpdateObj[0].kiosk_id = inventory.kiosk_id,
+                        inventorUpdateObj[0].inventory = inventory.inventory ? inventory.inventory : 0;
                     inventorUpdateObj[0].wastageName = inventory.wastageName;
                     inventorUpdateObj[0].syncAction = 'UPDATE';
                     inventorUpdateObj[0].updated_at = new Date();
@@ -122,11 +146,14 @@ class InventroyRealm {
                     console.log('new inv')
                     realm.create('Inventory', {
                         ...inventory,
-                         inventory: inventory.inventory ? inventory.inventory : 0,
-                         quantity: inventory.quantity ? inventory.quantity : 0,
-                         notDispatched: inventory.notDispatched ? inventory.notDispatched : 0,
-                         syncAction: 'CREATE',
-                         active: false});
+                        closingStockId: uuidv1(),
+                        created_at: date,
+                        inventory: inventory.inventory ? inventory.inventory : 0,
+                        quantity: inventory.quantity ? inventory.quantity : 0,
+                        notDispatched: inventory.notDispatched ? inventory.notDispatched : 0,
+                        syncAction: 'CREATE',
+                        active: false
+                    });
                 }
                 // realm.create('CustomerReminder', customerReminder);
             });
@@ -142,9 +169,9 @@ class InventroyRealm {
                 let inventoryObj = realm.objects('Inventory').filtered(`closingStockId = "${inventory.closingStockId}"`);
                 inventoryObj[0].product_id = inventory.product_id;
                 inventoryObj[0].notDispatched = inventory.notDispatched ? inventory.notDispatched : 0,
-                inventoryObj[0].quantity = inventory.quantity ? inventory.quantity : 0,
-                inventoryObj[0].kiosk_id = inventory.kiosk_id,
-                inventoryObj[0].created_at = new Date(inventory.created_at);
+                    inventoryObj[0].quantity = inventory.quantity ? inventory.quantity : 0,
+                    inventoryObj[0].kiosk_id = inventory.kiosk_id,
+                    inventoryObj[0].created_at = new Date(inventory.created_at);
                 inventoryObj[0].inventory = inventory.inventory ? inventory.inventory : 0;
                 inventoryObj[0].wastageName = inventory.wastageName;
                 inventoryObj[0].syncAction = 'UPDATE';
