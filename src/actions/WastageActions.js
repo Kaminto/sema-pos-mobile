@@ -1,11 +1,11 @@
 import PosStorage from '../database/PosStorage';
 import ProductMRPRealm from '../database/productmrp/productmrp.operations';
 import OrderRealm from '../database/orders/orders.operations';
+import InventroyRealm from '../database/inventory/inventory.operations';
 export const SALES_REPORT_FROM_ORDERS = 'SALES_REPORT_FROM_ORDERS';
 export const INVENTORY_REPORT = 'INVENTORY_REPORT';
 export const REPORT_TYPE = 'REPORT_TYPE';
 export const REPORT_FILTER = 'REPORT_FILTER';
-
 import { parseISO, isSameDay} from 'date-fns';
 
 function groupBySku(objectArray, property) {
@@ -24,7 +24,7 @@ function totalByProperty(objectArray, property) {
 		return accumulator + Number(currentValue[property]);
 	}, 0);
 }
-const getSalesData = (beginDate, endDate) => {
+const getSalesData = (beginDate) => {
 	const orders = OrderRealm.getAllOrder();
 	const filteredOrders = orders.filter(receipt =>
 			isSameDay(parseISO(receipt.created_at), beginDate)
@@ -48,7 +48,6 @@ const getSalesData = (beginDate, endDate) => {
 			totalSales: parseFloat(groupedOrderItems[i][0].price_total) * totalByProperty(groupedOrderItems[i], "quantity"),
 			litersPerSku: groupedOrderItems[i][0].product.unit_per_product ? Number(groupedOrderItems[i][0].product.unit_per_product) : Number(groupedOrderItems[i][0].product.unitPerProduct),
 			totalLiters: groupedOrderItems[i][0].product.unit_per_product ? Number(groupedOrderItems[i][0].product.unit_per_product) * totalByProperty(groupedOrderItems[i], "quantity") : Number(groupedOrderItems[i][0].product.unitPerProduct) * totalByProperty(groupedOrderItems[i], "quantity")
-
 		}
 		);
 	}
@@ -64,7 +63,6 @@ const getSalesData = (beginDate, endDate) => {
 export const getMrps = products => {
 	let productMrp = ProductMRPRealm.getFilteredProductMRP();
 	let ids = Object.keys(productMrp).map(key => productMrp[key].productId);
-
 	let matchProducts = products.filter(prod => ids.includes(prod.productId));
 	let waterProducts = matchProducts.filter(prod => 3 === prod.categoryId);
 	return waterProducts;
@@ -185,7 +183,12 @@ const groupBy = key => array =>
 
 const getInventoryItem = (beginDate, products) => {
 	return new Promise(resolve => {
+		console.log('beginDate', beginDate);
 		const promiseToday = PosStorage.getInventoryItem(beginDate);
+		const newInvent = InventroyRealm.getAllInventory();
+		const newMeter = InventroyRealm.getAllMeterReading();
+		console.log('newInvent', newInvent);
+		console.log('newMeter', newMeter);
 		promiseToday.then(resultToday => {
 			console.log('resultToday', resultToday);
 		});

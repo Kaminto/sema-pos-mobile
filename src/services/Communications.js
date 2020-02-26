@@ -171,7 +171,7 @@ class Communications {
 				'Content-Type': 'application/json'
 			},
 body: JSON.stringify({
-				usernameOrEmail: "training",
+				usernameOrEmail: "administrator",
 				password: "Let'sGrow"
 			})
 			// body: JSON.stringify({

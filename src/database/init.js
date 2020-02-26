@@ -10,7 +10,7 @@ import { SettingsSchema, TokenExpirySchema } from './settings/settings.model';
 import { CustomerObjSchema, ProductObjSchema, OrderItemsSchema, OrderSchema } from './orders/orders.model';
 import { DiscountSchema } from './discount/discount.model';
 import { CustomerDebtSchema } from './customer_debt/customer_debt.model';
-
+import { MeterReadingSchema } from './inventory/meter-reading.modal';
 import { CustomerReminderSchema } from './customer-reminder/customer-reminder.model';
 
 import { PaymentTypeSchema } from './payment_types/payment_type.model';
@@ -51,7 +51,8 @@ export default realm = new Realm({
         PaymentTypeSchema,
         ReceiptPaymentTypeSchema,
         CustomerDebtSchema,
-        CustomerReminderSchema
+        CustomerReminderSchema,
+        MeterReadingSchema
     ],
     schemaVersion: 78,
     migration: (oldRealm, newRealm) => {

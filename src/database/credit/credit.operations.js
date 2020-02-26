@@ -107,11 +107,9 @@ class CreditRealm {
                 let creditObj = realm.objects('Credit').filtered(`topUpId = "${credit.topUpId}"`);
                 creditObj[0].active = true;
             })
-
         } catch (e) {
             console.log("Error on creation", e);
         }
-
     }
 
     hardDeleteCredit(credit) {
@@ -121,7 +119,6 @@ class CreditRealm {
                 let deleteCredit = credits.filtered(`topUpId = "${credit.topUpId}"`);
                 realm.delete(deleteCredit);
             })
-
         } catch (e) {
             console.log("Error on creation", e);
         }
@@ -129,13 +126,10 @@ class CreditRealm {
 
     softDeleteCredit(credit) {
         try {
-
             realm.write(() => {
                 let creditObj = realm.objects('Credit').filtered(`topUpId = "${credit.topUpId}"`);
                 creditObj[0].syncAction = 'delete';
             })
-
-
         } catch (e) {
             console.log("Error on creation", e);
         }
@@ -145,14 +139,12 @@ class CreditRealm {
         try {
             realm.write(() => {
                 credits.forEach(obj => {
-                    realm.create('Credit', { ...obj, topup: Number(obj.topup) });
+                    realm.create('Credit', { ...obj, topup: Number(obj.topup), balance: Number(obj.balance) });
                 });
             });
-
         } catch (e) {
             console.log("Error on creation", e);
         }
-
     }
 }
 

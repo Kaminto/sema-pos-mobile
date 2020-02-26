@@ -30,13 +30,17 @@ class InventroyRealm {
 
     setLastInventorySync(lastSyncTime) {
         realm.write(() => {
-        let syncDate = realm.objects('InventorySyncDate');
-        syncDate[0].lastInventorySync = lastSyncTime.toISOString()
+            let syncDate = realm.objects('InventorySyncDate');
+            syncDate[0].lastInventorySync = lastSyncTime.toISOString()
         })
     }
 
     getAllInventory() {
         return this.inventory = Object.values(JSON.parse(JSON.stringify(realm.objects('Inventory'))));
+    }
+
+    getAllMeterReading() {
+        return Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
     }
 
     initialise() {
@@ -58,47 +62,93 @@ class InventroyRealm {
         return date = year + '-' + month + '-' + day;
     }
 
+    createMeterReading(meter, date,kiosk_id) {
+        console.log('meter-', meter);
+        console.log('date-', date);
+        //getAllMeterReading
+        try {
+            realm.write(() => {
+                let checkExistingMeter = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
 
-    createInventory(kiosk_id, product_id, quantity, notDispatched, filterDate) {
-        let existingInventory = this.getAllInventory().filter(inventory => this.formatDay(inventory.created_at) === this.formatDay(filterDate) && inventory.product_id === product_id);
-
-        const now = new Date();
-        if (existingInventory.length === 0) {
-            const newInventory = {
-                closingStockId: uuidv1(),
-                kiosk_id,
-                product_id,
-				quantity,
-				notDispatched,
-                created_at: now,
-                updated_at: now,
-                syncAction: 'create',
-                active: false
-            };
-            try {
-                realm.write(() => {
-                    realm.create('Inventory', newInventory);
-                });
-            } catch (e) {
-                console.log("Error on creation", e);
-            }
-        }
-
-        if (existingInventory.length > 0) {
-            return this.updateInventory(
-                { ...existingInventory[0], quantity: quantity, notDispatched: notDispatched, updated_at: now, syncAction: 'update' }
-            )
+                if (checkExistingMeter.length > 0) {
+                    console.log('existing neter')
+                    // let inventorUpdateObj = realm.objects('Inventory').filtered(`closingStockId = "${inventory.closingStockId}"`);
+                    // inventorUpdateObj[0].product_id = inventory.product_id;
+                    // inventorUpdateObj[0].notDispatched = inventory.notDispatched ? inventory.notDispatched : 0,
+                    // inventorUpdateObj[0].quantity = inventory.quantity ? inventory.quantity : 0,
+                    // inventorUpdateObj[0].kiosk_id = inventory.kiosk_id,
+                    // inventorUpdateObj[0].created_at = new Date(inventory.created_at);
+                    // inventorUpdateObj[0].inventory = inventory.inventory ? inventory.inventory : 0;
+                    // inventorUpdateObj[0].wastageName = inventory.wastageName;
+                    // inventorUpdateObj[0].syncAction = 'UPDATE';
+                    // inventorUpdateObj[0].updated_at = new Date();
+                } else {
+                    console.log('new meter')
+                    realm.create('MeterReading', {
+                         meterReadingId: uuidv1(),
+                         kiosk_id,
+                         created_at: new Date(date),
+                         meterValue: meterValue ? meterValue : 0,
+                         syncAction: 'CREATE',
+                         active: false});
+                }
+                // realm.create('CustomerReminder', customerReminder);
+            });
+        } catch (e) {
+            console.log("Error on creation", e);
         }
     }
+
+    createInventory(inventory, date) {
+        console.log('inventory-', inventory);
+        console.log('date-', date);
+        try {
+            realm.write(() => {
+                let checkExistingInventory = Object.values(JSON.parse(JSON.stringify(realm.objects('Inventory').filtered(`closingStockId = "${inventory.closingStockId}"`))));
+
+                if (checkExistingInventory.length > 0) {
+                    console.log('existing inv')
+                    let inventorUpdateObj = realm.objects('Inventory').filtered(`closingStockId = "${inventory.closingStockId}"`);
+                    inventorUpdateObj[0].product_id = inventory.product_id;
+                    inventorUpdateObj[0].notDispatched = inventory.notDispatched ? inventory.notDispatched : 0,
+                    inventorUpdateObj[0].quantity = inventory.quantity ? inventory.quantity : 0,
+                    inventorUpdateObj[0].kiosk_id = inventory.kiosk_id,
+                    inventorUpdateObj[0].created_at = new Date(inventory.created_at);
+                    inventorUpdateObj[0].inventory = inventory.inventory ? inventory.inventory : 0;
+                    inventorUpdateObj[0].wastageName = inventory.wastageName;
+                    inventorUpdateObj[0].syncAction = 'UPDATE';
+                    inventorUpdateObj[0].updated_at = new Date();
+                } else {
+                    console.log('new inv')
+                    realm.create('Inventory', {
+                        ...inventory,
+                         inventory: inventory.inventory ? inventory.inventory : 0,
+                         quantity: inventory.quantity ? inventory.quantity : 0,
+                         notDispatched: inventory.notDispatched ? inventory.notDispatched : 0,
+                         syncAction: 'CREATE',
+                         active: false});
+                }
+                // realm.create('CustomerReminder', customerReminder);
+            });
+        } catch (e) {
+            console.log("Error on creation", e);
+        }
+    }
+
 
     updateInventory(inventory) {
         try {
             realm.write(() => {
                 let inventoryObj = realm.objects('Inventory').filtered(`closingStockId = "${inventory.closingStockId}"`);
-				inventoryObj[0].quantity = inventory.quantity;
-				inventoryObj[0].notDispatched = inventory.notDispatched;
-                inventoryObj[0].updated_at = inventory.updated_at;
-                inventoryObj[0].syncAction = inventory.syncAction;
+                inventoryObj[0].product_id = inventory.product_id;
+                inventoryObj[0].notDispatched = inventory.notDispatched ? inventory.notDispatched : 0,
+                inventoryObj[0].quantity = inventory.quantity ? inventory.quantity : 0,
+                inventoryObj[0].kiosk_id = inventory.kiosk_id,
+                inventoryObj[0].created_at = new Date(inventory.created_at);
+                inventoryObj[0].inventory = inventory.inventory ? inventory.inventory : 0;
+                inventoryObj[0].wastageName = inventory.wastageName;
+                inventoryObj[0].syncAction = 'UPDATE';
+                inventoryObj[0].updated_at = new Date();
             })
 
         } catch (e) {
@@ -122,7 +172,7 @@ class InventroyRealm {
     }
 
 
-  // Hard delete when active property is false or when active property and syncAction is delete
+    // Hard delete when active property is false or when active property and syncAction is delete
 
     hardDeleteInventory(inventory) {
         try {

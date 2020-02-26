@@ -166,7 +166,6 @@ class CustomerRealm {
                 customerObj[0].syncAction = 'update';;
                 customerObj[0].walletBalance = walletBalance;
             })
-
         } catch (e) {
             console.log("Error on creation", e);
         }
