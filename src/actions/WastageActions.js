@@ -181,19 +181,28 @@ const groupBy = key => array =>
 		return objectsByKeyValue;
 	}, {});
 
+	addDays = (theDate, days) => {
+		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
+	};
+
+	SubtrabtDays = (theDate, days) => {
+		return new Date(theDate.getTime() - days * 24 * 60 * 60 * 1000);
+	};
+
 const getInventoryItem = (beginDate, products) => {
 	return new Promise(resolve => {
-		console.log('beginDate', beginDate);
-		const promiseToday = PosStorage.getInventoryItem(beginDate);
-		const newInvent = InventroyRealm.getAllInventory();
-		const newMeter = InventroyRealm.getAllMeterReading();
-		console.log('newInvent', newInvent);
-		console.log('newMeter', newMeter);
+		console.log('yesterday', beginDate);
+		console.log('today', this.addDays(beginDate, 1));
+		const promiseToday = InventroyRealm.getWastageReportByDate(this.addDays(beginDate, 1));
+		// const newInvent = InventroyRealm.getAllInventory();
+		// const newMeter = InventroyRealm.getMeterReadingByDate(beginDate);
+		// console.log('newInvent', newInvent);
+		// console.log('newMeter', newMeter);
 		promiseToday.then(resultToday => {
 			console.log('resultToday', resultToday);
 		});
-		const yesterday = new Date(beginDate.getTime() - 24 * 60 * 60 * 1000);
-		const promiseYesterday = PosStorage.getInventoryItem(yesterday);
+		const yesterday = new Date(beginDate);
+		const promiseYesterday = InventroyRealm.getWastageReportByDate(yesterday);
 		promiseYesterday.then(resultYesterday => {
 			console.log('resultYesterday', resultYesterday);
 		});
@@ -243,7 +252,7 @@ const getInventoryItem = (beginDate, products) => {
 							notDispatched: notDispatchedTotal,
 							kiosk_id: "",
 							closingStockId: "",
-							createdDate: "",
+							created_at: "",
 							quantity: quantityTotal
 						});
 					}
@@ -272,7 +281,7 @@ const getInventoryItem = (beginDate, products) => {
 							notDispatched: notDispatchedTotal,
 							kiosk_id: "",
 							closingStockId: "",
-							createdDate: "",
+							created_at: "",
 							quantity: quantityTotal
 						});
 					}
