@@ -134,7 +134,7 @@ class OrderSync {
                                     )
                                         .then((response) => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                                                'Synchronization:synchronizeOrder - Removing order from pending list - ' +
                                                 response
                                             );
                                             updateCount = updateCount + 1;
@@ -144,7 +144,7 @@ class OrderSync {
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Delete Inventory failed ' +
+                                                'Synchronization:synchronizeOrder Delete Order failed ' +
                                                 error
                                             );
                                         });
@@ -157,13 +157,13 @@ class OrderSync {
                                         .then((response) => {
                                             updateCount = updateCount + 1;
                                             console.log(
-                                                'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                                                'Synchronization:synchronizeOrder - Removing Order from pending list - ' +
                                                 response
                                             );
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Update Inventory failed ' +
+                                                'Synchronization:synchronizeOrder Update Order failed ' +
                                                 error
                                             );
                                         });
@@ -182,7 +182,7 @@ class OrderSync {
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Create Inventory failed',error
+                                                'Synchronization:synchronizeOrder Create Order failed',error
                                             );
                                         });
                                 }
@@ -205,7 +205,7 @@ class OrderSync {
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization.getInventory - error ' + error
+                        'Synchronization.getOrder - error ' + error
                     );
                     resolve({
                         error: error,
