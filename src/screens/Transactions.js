@@ -402,6 +402,8 @@ class Transactions extends React.PureComponent {
 		// Used for enumerating receipts
 		const totalCount = this.props.receipts.length;
 
+		console.log(" Britney " + format(sub(new Date(Date.now()), 60), 'yyyy-MM-dd'));
+
 		let receipts = this.comparePaymentTypeReceipts().map((receipt, index) => {
 			return {
 				active: receipt.active,

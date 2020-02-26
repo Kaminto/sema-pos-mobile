@@ -170,7 +170,6 @@ class Communications {
 				Accept: 'application/json',
 				'Content-Type': 'application/json'
 			},
-
 			body: JSON.stringify({
 				usernameOrEmail: usernameOrEmail,
 				password: password

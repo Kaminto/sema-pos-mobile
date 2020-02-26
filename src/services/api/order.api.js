@@ -1,4 +1,4 @@
-import { format, parseISO } from 'date-fns';
+import { format, sub } from 'date-fns';
 class OrderApi {
     constructor() {
         this._url = 'http://142.93.115.206:3002/';
@@ -88,7 +88,7 @@ class OrderApi {
 			}
 		};
 
-		let url = `sema/site/receipts/${siteId}?date=${format(new Date(Date.now()), 'yyyy-MM-dd')}`;
+		let url = `sema/site/receipts/${siteId}?date=${format(sub(new Date(), {days: 90}), 'yyyy-MM-dd')}`;
 		console.log('Communications:getReceipts: ');
 		return fetch(this._url + url, options)
 			.then(async response => await response.json())

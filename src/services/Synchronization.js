@@ -1,4 +1,3 @@
-import PosStorage from '../database/PosStorage';
 import CreditRealm from '../database/credit/credit.operations';
 import InventroyRealm from '../database/inventory/inventory.operations';
 import SettingRealm from '../database/settings/settings.operations';
@@ -52,8 +51,6 @@ class Synchronization {
 		}
 
 		if (
-			PosStorage.getCustomers().length == 0 ||
-			PosStorage.getProducts().length == 0 ||
 			CreditRealm.getAllCredit().length == 0 ||
 			InventroyRealm.getAllInventory().length == 0
 		) {
@@ -67,10 +64,9 @@ class Synchronization {
 			that.synchronize();
 		}, timeoutX);
 
-		let syncInterval = PosStorage.getGetSyncInterval();
 		//Sync sales separately every two minutes
 		setInterval(() => {
-			this.synchronizeSales();
+			//this.synchronizeSales();
 		}, 120000);
 
 		this.intervalId = setInterval(() => {
@@ -80,15 +76,12 @@ class Synchronization {
 
 	updateLastCustomerSync() {
 		this.lastCustomerSync = new Date();
-		PosStorage.setLastCustomerSync(this.lastCustomerSync);
 	}
 	updateLastProductSync() {
 		this.lastProductSync = new Date();
-		PosStorage.setLastProductSync(this.lastProductSync);
 	}
 	updateLastSalesSync() {
 		this.lastSalesSync = new Date();
-		PosStorage.setLastSalesSync(this.lastSalesSync);
 	}
 
 	updateLastTopUpSync() {
@@ -202,12 +195,7 @@ class Synchronization {
 							// 	}
 							// );
 
-							const promiseSales = this.synchronizeSales().then(
-								saleSync => {
-									syncResult.sales = saleSync;
-									return saleSync;
-								}
-							);
+							
 
 							// This will make sure they run synchronously
 							[
@@ -217,7 +205,6 @@ class Synchronization {
 								promiseProducts,
 								promiseProductMrps,
 								promiseOrders,
-								promiseSales
 							]
 								.reduce((promiseChain, currentTask) => {
 									return promiseChain.then(chainResults =>
@@ -249,74 +236,7 @@ class Synchronization {
 			}
 		});
 	}
-
-
-	synchronizeSales() {
-		return new Promise(resolve => {
-			PosStorage.loadSalesReceipts(this.lastSalesSync)
-				.then(salesReceipts => {
-					resolve({
-						error: null,
-						localReceipts: salesReceipts.length
-					});
-					salesReceipts.forEach(receipt => {
-
-						Communications.createReceipt(receipt.sale)
-							.then(result => {
-								PosStorage.removePendingSale(
-									receipt.key,
-									receipt.sale.id
-								);
-							})
-							.catch(error => {
-								if (error === 400) {
-									// This is unre-coverable... remove the pending sale
-									PosStorage.removePendingSale(
-										receipt.key,
-										receipt.sale.id
-									);
-								}
-							});
-					});
-				})
-				.catch(error => {
-					resolve({ error: error, localReceipts: null });
-				});
-		});
-	}
-
-
-
-	synchReceipts() {
-		let date = new Date();
-		let settings = SettingRealm.getAllSetting();
-		date.setMinutes(date.getMinutes() - 12);
-		Communications.getReceiptsBySiteIdAndDate(settings.siteId, date).then(
-			json => {
-				if (json) {
-					PosStorage.addRemoteReceipts(json).then(saved => {
-						Events.trigger('ReceiptsFetched', saved);
-					});
-				}
-			}
-		);
-	}
-
-	getLatestSales() {
-		let date = new Date();
-		//date.setDate(date.getDate() - 30);
-		date.setDate(date.getDate() - 7);
-		let settings = SettingRealm.getAllSetting();
-		Communications.getReceiptsBySiteIdAndDate(settings.siteId, date).then(
-			json => {
-				PosStorage.addRemoteReceipts(json).then(saved => {
-					Events.trigger('ReceiptsFetched', saved);
-				});
-			}
-		);
-	}
-
-
+	
 	_refreshToken() {
 		// Check if token exists or has expired
 		return new Promise((resolve, reject) => {

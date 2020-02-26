@@ -21,7 +21,6 @@ import { bindActionCreators } from 'redux';
 import Events from 'react-native-simple-events';
 
 import * as ToolbarActions from '../actions/ToolBarActions';
-import PosStorage from '../database/PosStorage';
 import CustomerRealm from '../database/customers/customer.operations';
 import SettingRealm from '../database/settings/settings.operations';
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
@@ -99,15 +98,7 @@ class ReceiptLineItem extends React.PureComponent {
 		};
 	}
 
-	deleteReceiptLineItem(receiptIndex, receiptLineItemIndex, updatedFields) {
-		this.props.receiptActions.updateReceiptLineItem(
-			receiptIndex,
-			receiptLineItemIndex,
-			updatedFields
-		);
-		PosStorage.saveRemoteReceipts(this.props.receipts);
-		this.props.handleUpdate();
-	}
+
 
 	getImage = item => {
 		const productImage =
@@ -469,34 +460,6 @@ class CustomerDetails extends React.PureComponent {
 		};
 	}
 
-	deleteReceipt(item, updatedFields) {
-		this.props.receiptActions.updateRemoteReceipt(
-			item.index,
-			updatedFields
-		);
-
-		PosStorage.updateLoggedReceipt(item.id, updatedFields);
-
-		PosStorage.updatePendingSale(item.id);
-
-		// Take care of customer due amount
-		if (item.amountLoan) {
-			item.customerAccount.dueAmount -= item.amountLoan;
-
-			CustomerRealm.updateCustomer(
-				item.customerAccount,
-				item.customerAccount.phoneNumber,
-				item.customerAccount.name,
-				item.customerAccount.address,
-				item.customerAccount.salesChannelId,
-				item.customerAccount.customerTypeId,
-				item.customerAccount.frequency,
-				item.customerAccount.secondPhoneNumber
-			);
-		}
-
-		this.setState({ refresh: !this.state.refresh });
-	}
 
 	renderReceipt({ item, index }) {
 		return (
@@ -639,10 +602,6 @@ class TransactionDetail extends React.PureComponent {
 			item.index,
 			updatedFields
 		);
-
-		PosStorage.updateLoggedReceipt(item.id, updatedFields);
-
-		PosStorage.updatePendingSale(item.id);
 
 		// Take care of customer due amount
 		if (item.amountLoan) {

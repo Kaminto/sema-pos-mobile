@@ -8,14 +8,16 @@ class DiscountSync {
         return new Promise(resolve => {
             DiscountApi.getDiscounts(siteId)
                 .then(remoteDiscount => {
+                    console.log('remoteDiscounts', remoteDiscounts);
                     let initlocalDiscounts = DiscountRealm.getDiscounts();
                     let localDiscounts = [...initlocalDiscounts];
-                    let remoteDiscounts = [...remoteDiscount.promotion[0].promotions];
+                    let remoteDiscounts = [...remoteDiscount.promotion];
+                    
                     console.log('initlocalDiscounts', initlocalDiscounts);
                     console.log('localDiscounts', localDiscounts);
-                    console.log('remoteDiscounts', remoteDiscounts);
+                    
                     if (initlocalDiscounts.length === 0) {
-                        DiscountRealm.createManyDiscount(remoteDiscount.promotion[0].promotions);
+                        DiscountRealm.createManyDiscount(remoteDiscount.promotion);
                     }
 
                     let onlyLocally = [];
@@ -75,7 +77,7 @@ class DiscountSync {
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization.Discounts - error ' + error
+                        'Get Remtote Discounts - error ' + error
                     );
                     resolve({
                         error: error,

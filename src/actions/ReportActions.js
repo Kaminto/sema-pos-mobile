@@ -85,7 +85,3 @@ const getSalesData = (beginDate, endDate) => {
 	return { ...finalData };
 };
 
-export const initializeSalesData = () => {
-	return { totalLiters: null, totalSales: null, totalDebt: null, salesItems: [] };
-};
-

@@ -140,7 +140,7 @@ class DiscountRealm {
             })
 
         } catch (e) {
-            console.log("Error on hard delete discounts", e);
+            console.log("Error on hard delete discount", e);
         }
     }
 
@@ -167,7 +167,7 @@ class DiscountRealm {
             });
 
         } catch (e) {
-            console.log("Error on creation many discounts", e);
+            console.log("Error on create many discounts", e);
         }
 
     }
