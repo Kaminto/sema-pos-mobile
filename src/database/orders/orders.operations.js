@@ -14,7 +14,7 @@ class OrderRealm {
                 realm.delete(orders);
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on truncate orders", e);
         }
     }
 
@@ -43,7 +43,7 @@ class OrderRealm {
 
                 resolve(orderObj2.filter(r => r.created_at === format(parseISO(date), 'yyyy-MM-dd')));
             } catch (e) {
-                console.log("Error on creation", e);
+                console.log("Error on get orders", e);
                 resolve(e);
             }
 
@@ -136,7 +136,7 @@ class OrderRealm {
                 realm.create('Order', newOrder);
             });
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on creation orders", e);
         }
 
 
@@ -176,7 +176,7 @@ class OrderRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on update orders", e);
         }
 
     }
@@ -190,7 +190,7 @@ class OrderRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on synch orders", e);
         }
 
     }
@@ -207,7 +207,7 @@ class OrderRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on hard delete orders", e);
         }
     }
 
@@ -220,7 +220,7 @@ class OrderRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on soft delete orders", e);
         }
     }
 
@@ -241,7 +241,7 @@ class OrderRealm {
             });
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on creation many orders", e);
         }
 
     }

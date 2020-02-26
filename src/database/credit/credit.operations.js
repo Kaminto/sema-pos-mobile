@@ -24,7 +24,7 @@ class CreditRealm {
                 realm.delete(credits);
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on truncate", e);
         }
     }
 
@@ -80,7 +80,7 @@ class CreditRealm {
                 realm.create('Credit', newCredit);
             });
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on creation credit", e + now);
         }
     }
 
@@ -120,7 +120,7 @@ class CreditRealm {
                 realm.delete(deleteCredit);
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on hard delete", e);
         }
     }
 
@@ -131,7 +131,7 @@ class CreditRealm {
                 creditObj[0].syncAction = 'delete';
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on soft delete", e);
         }
     }
 
@@ -139,11 +139,12 @@ class CreditRealm {
         try {
             realm.write(() => {
                 credits.forEach(obj => {
+					console.log(obj);
                     realm.create('Credit', { ...obj, topup: Number(obj.topup), balance: Number(obj.balance) });
                 });
             });
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on many creation", e);
         }
     }
 }

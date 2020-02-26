@@ -26,7 +26,7 @@ class InventroyRealm {
                 realm.delete(meterReading);
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on truncate inventory", e);
         }
     }
 
@@ -66,7 +66,7 @@ class InventroyRealm {
 	addDays = (theDate, days) => {
 		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
     };
-    
+
     getWastageReportByDate(date) {
         return new Promise(resolve => {
             let checkExistingMeter = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
@@ -118,7 +118,7 @@ class InventroyRealm {
                 // realm.create('CustomerReminder', customerReminder);
             });
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on creation inventory meter reading", e);
         }
     }
 
@@ -158,7 +158,7 @@ class InventroyRealm {
                 // realm.create('CustomerReminder', customerReminder);
             });
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on creation inventory", e);
         }
     }
 
@@ -179,7 +179,7 @@ class InventroyRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on update inventory", e);
         }
 
     }
@@ -193,7 +193,7 @@ class InventroyRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on synch inventory", e);
         }
 
     }
@@ -211,7 +211,7 @@ class InventroyRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on hard delete inventory", e);
         }
     }
 
@@ -225,7 +225,7 @@ class InventroyRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on soft delete inventory", e);
         }
     }
 
@@ -238,7 +238,7 @@ class InventroyRealm {
             });
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on creation many inventory", e);
         }
 
     }

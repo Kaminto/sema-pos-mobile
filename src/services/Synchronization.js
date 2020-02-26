@@ -193,14 +193,14 @@ class Synchronization {
 								return productMrpSync;
 							});
 
-							
 
-							const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId).then(
-								discountSync => {
-									syncResult.discounts = discountSync;
-									return discountSync;
-								}
-							);
+
+							// const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId).then(
+							// 	discountSync => {
+							// 		syncResult.discounts = discountSync;
+							// 		return discountSync;
+							// 	}
+							// );
 
 							const promiseSales = this.synchronizeSales().then(
 								saleSync => {

@@ -13,7 +13,7 @@ class CustomerDebtRealm {
                 realm.delete(customerDebts);
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on truncate customer debt", e);
         }
     }
 
@@ -47,7 +47,7 @@ class CustomerDebtRealm {
                 realm.create('CustomerDebt', customerDebt);
             });
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on creation customer debt", e);
         }
     }
 
@@ -65,7 +65,7 @@ class CustomerDebtRealm {
 
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on update customer debt", e);
         }
     }
 
@@ -78,7 +78,7 @@ class CustomerDebtRealm {
                 })
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on reset customer debt", e);
         }
     }
 
@@ -90,7 +90,7 @@ class CustomerDebtRealm {
 
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on isSelected customer debt", e);
         }
 
     }
@@ -103,7 +103,7 @@ class CustomerDebtRealm {
                 customerDebtObj[0].syncAction = null;
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on synched customer debt", e);
         }
     }
 
@@ -118,7 +118,7 @@ class CustomerDebtRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on hard delete customer debt", e);
         }
     }
 
@@ -131,7 +131,7 @@ class CustomerDebtRealm {
                 })
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on soft delete customer debt", e);
         }
     }
 
@@ -157,7 +157,7 @@ class CustomerDebtRealm {
                 }
             });
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on create many customer debts", e);
         }
     }
 
