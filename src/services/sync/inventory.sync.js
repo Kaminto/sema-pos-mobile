@@ -1,4 +1,5 @@
 import InventroyRealm from '../../database/inventory/inventory.operations';
+import PosStorage from '../../database/PosStorage';
 import InventoryApi from '../api/inventory.api';
 import * as _ from 'lodash';
 

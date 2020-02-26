@@ -131,20 +131,28 @@ class Synchronization {
 							promiseCustomerTypes,
 							promisePaymentTypes
 						]).then(values => {
+							let settings = SettingRealm.getAllSetting();
+							console.log('settings', settings);
+							const promiseOrders = OrderSync.synchronizeSales(settings.siteId).then(
+								saleSync => {
+									syncResult.sales = saleSync;
+									return saleSync;
+								}
+							);
 
 							const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts().then(
 								customerDebtSync => {
 
-									// syncResult.customers = customerSync;
-									// return customerSync;
+									syncResult.customerDebt = customerDebtSync;
+									return customerDebtSync;
 								}
 							);
 
 							const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes().then(
 								recieptPaymentTypesSync => {
 
-									// syncResult.customers = customerSync;
-									// return customerSync;
+									syncResult.recieptPaymentTypes = recieptPaymentTypesSync;
+									return recieptPaymentTypesSync;
 								}
 							);
 
@@ -185,13 +193,7 @@ class Synchronization {
 								return productMrpSync;
 							});
 
-							let settings = SettingRealm.getAllSetting();
-							const promiseOrders = OrderSync.synchronizeSales(settings.siteId).then(
-								saleSync => {
-									syncResult.sales = saleSync;
-									return saleSync;
-								}
-							);
+							
 
 							const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId).then(
 								discountSync => {
