@@ -19,7 +19,6 @@ import Events from 'react-native-simple-events';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import RNPickerSelect from 'react-native-picker-select';
 
-import * as ToolbarActions from '../actions/ToolBarActions';
 import CustomerRealm from '../database/customers/customer.operations';
 import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
 import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
@@ -710,7 +709,6 @@ function mapStateToProps(state, props) {
 }
 function mapDispatchToProps(dispatch) {
 	return {
-		toolbarActions: bindActionCreators(ToolbarActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch)
 	};
 }

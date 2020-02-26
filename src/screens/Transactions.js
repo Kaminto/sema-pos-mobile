@@ -22,12 +22,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Events from 'react-native-simple-events';
 
-import * as ToolbarActions from '../actions/ToolBarActions';
 import CustomerRealm from '../database/customers/customer.operations';
 import OrderRealm from '../database/orders/orders.operations';
 import * as CustomerActions from '../actions/CustomerActions';
-
-import * as reportActions from '../actions/ReportActions';
 import * as receiptActions from '../actions/ReceiptActions';
 
 import i18n from '../app/i18n';
@@ -221,7 +218,8 @@ class TransactionDetail extends React.PureComponent {
 			paymentTypes = {};
 		}
 
-
+       if(this.props.item.hasOwnProperty("customerAccount")) {
+		   console.log(this.props.item);
 		return (
 			<View style={{ padding: 15 }}>
 				<View style={styles.deleteButtonContainer}>
@@ -284,6 +282,13 @@ class TransactionDetail extends React.PureComponent {
 				</View>
 			</View>
 		)
+	} else {
+		return (
+			<View style={{ flex: 1 }}>
+
+			</View>
+		)
+	}
 	}
 
 }
@@ -298,7 +303,7 @@ class Transactions extends React.PureComponent {
 			searchString: '',
 			hasScrolled: false,
 			paymentTypeValue: '',
-			selected: this.prepareSectionedData()[0].data[0],
+			selected: this.prepareSectionedData().length > 0 ? this.prepareSectionedData()[0].data[0] : {},
 		};
 	}
 	componentDidMount() {
@@ -641,9 +646,7 @@ function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		toolbarActions: bindActionCreators(ToolbarActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
-		reportActions: bindActionCreators(reportActions, dispatch),
 		receiptActions: bindActionCreators(receiptActions, dispatch)
 	};
 }

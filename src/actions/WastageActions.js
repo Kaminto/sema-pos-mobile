@@ -160,6 +160,7 @@ const createInventory = (salesData, inventorySettings, products) => {
 		salesAndProducts: salesAndProducts,
 		inventory: inventorySettings
 	};
+	console.log("Manjeri" + JSON.stringify(inventoryData));
 	return inventoryData;
 };
 

@@ -6,8 +6,6 @@ if (process.env.NODE_ENV === 'development') {
 import { Dimensions, Animated } from "react-native";
 import ProductList from "./ProductList";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import * as OrderActions from "../../actions/OrderActions";
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 import slowlog from 'react-native-slowlog';
 
@@ -63,8 +61,4 @@ function mapStateToProps(state, props) {
 	};
 }
 
-function mapDispatchToProps(dispatch) {
-	return { orderActions: bindActionCreators(OrderActions, dispatch) };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProductListScreen);
+export default connect(mapStateToProps)(ProductListScreen);

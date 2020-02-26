@@ -255,9 +255,9 @@ class CustomerList extends React.PureComponent {
             return {
                 ...item,
                 walletBalance: item.walletBalance ? item.walletBalance : 0 ,
-                salesChannel: this.getCustomerSalesChannel(item).toLowerCase(),
+                salesChannel: item != undefined ? this.getCustomerSalesChannel(item).toLowerCase() : "",
                 searchString: item.name + ' ' + item.phoneNumber + ' ' + item.address,
-				customerType: this.getCustomerTypes(item).toLowerCase(),
+				customerType: item != undefined ? this.getCustomerTypes(item).toLowerCase() : "",
             }
         });
         // console.log('data', data)

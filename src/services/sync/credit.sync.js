@@ -11,8 +11,8 @@ class CreditSync {
                     let initlocalCredits = CreditRealm.getAllCredit();
                     let localCredits = [...initlocalCredits];
                     let remoteInventories = [...remoteCredit.topup];
-                    console.log('localCredits', localCredits);
-                    console.log('remoteInventories', remoteInventories);
+                    // console.log('localCredits', localCredits);
+                    // console.log('remoteInventories', remoteInventories);
                     if (initlocalCredits.length === 0) {
                         CreditRealm.createManycredits(remoteCredit.topup);
                     }
@@ -25,9 +25,9 @@ class CreditSync {
 
                     if (initlocalCredits.length > 0) {
 
-                        console.log('initlocalCredits', initlocalCredits);
-                        console.log('localCredits', localCredits);
-                        console.log('remoteInventories', remoteInventories);
+                        // console.log('initlocalCredits', initlocalCredits);
+                        // console.log('localCredits', localCredits);
+                        // console.log('remoteInventories', remoteInventories);
                         initlocalCredits.forEach(localCredit => {
                             let filteredObj = remoteInventories.filter(obj => obj.topUpId === localCredit.topUpId)
                             console.log('filteredObj', filteredObj);
@@ -141,12 +141,12 @@ class CreditSync {
                             })
                         }
 
-                        console.log('onlyRemote', onlyRemote);
-                        console.log('onlyLocally', onlyLocally);
-                        console.log('bothLocalRemote', bothLocalRemote);
+                        // console.log('onlyRemote', onlyRemote);
+                        // console.log('onlyLocally', onlyLocally);
+                        // console.log('bothLocalRemote', bothLocalRemote);
 
-                        console.log('localCredits2', localCredits);
-                        console.log('remoteInventories2', remoteInventories);
+                        // console.log('localCredits2', localCredits);
+                        // console.log('remoteInventories2', remoteInventories);
 
                     }
                     resolve({

@@ -54,7 +54,7 @@ export default realm = new Realm({
         CustomerReminderSchema,
         MeterReadingSchema
     ],
-    schemaVersion: 79,
+    schemaVersion: 80,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
         if (oldRealm.schemaVersion < 1) {

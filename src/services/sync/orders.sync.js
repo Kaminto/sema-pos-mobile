@@ -9,12 +9,12 @@ class OrderSync {
             OrderApi.getReceipts(siteId)
                 .then(remoteOrder => {
 
-                    console.log('remoteOrder', remoteOrder);
+                    // console.log('remoteOrder', remoteOrder);
 
                     let initlocalOrders = OrderRealm.getAllOrder();
                     let localOrders = [...initlocalOrders];
                     let remoteOrders = [...remoteOrder];
-                    console.log('remoteOrder', remoteOrder);
+                    // console.log('remoteOrder', remoteOrder);
                     if (initlocalOrders.length === 0) {
                         OrderRealm.createManyOrders(remoteOrder);
                     }

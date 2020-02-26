@@ -20,14 +20,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Events from 'react-native-simple-events';
 
-import * as ToolbarActions from '../actions/ToolBarActions';
 import CustomerRealm from '../database/customers/customer.operations';
 import SettingRealm from '../database/settings/settings.operations';
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
 
 import * as CustomerActions from '../actions/CustomerActions';
 import * as TopUpActions from '../actions/TopUpActions';
-import * as reportActions from '../actions/ReportActions';
 import * as receiptActions from '../actions/ReceiptActions';
 
 import SelectedCustomerDetails from './CustomerDetailSubHeader';
@@ -740,10 +738,8 @@ function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		toolbarActions: bindActionCreators(ToolbarActions, dispatch),
 		topUpActions: bindActionCreators(TopUpActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
-		reportActions: bindActionCreators(reportActions, dispatch),
 		paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch),
 		receiptActions: bindActionCreators(receiptActions, dispatch)
 	};

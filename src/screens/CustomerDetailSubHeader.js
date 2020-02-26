@@ -20,7 +20,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import * as CustomerActions from '../actions/CustomerActions';
 import * as TopUpActions from '../actions/TopUpActions';
-import * as reportActions from '../actions/ReportActions';
 import * as receiptActions from '../actions/ReceiptActions';
 
 import PaymentModal from './paymentModal';
@@ -181,7 +180,6 @@ function mapDispatchToProps(dispatch) {
 	return {
 		topUpActions: bindActionCreators(TopUpActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
-		reportActions: bindActionCreators(reportActions, dispatch),
 		paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch),
 		receiptActions: bindActionCreators(receiptActions, dispatch)
 	};
