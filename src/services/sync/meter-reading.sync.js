@@ -1,20 +1,20 @@
 import InventroyRealm from '../../database/inventory/inventory.operations';
-import InventoryApi from '../api/inventory.api';
+import MeterReadingApi from '../api/meter-reading.api';
 import * as _ from 'lodash';
 
 class MeterReadingSync {
 
-    synchronizeInventory(lastMeterReadingSync) {
+    synchronizeMeterReading(lastMeterReadingSync) {
         return new Promise(resolve => {
-            InventoryApi.getInventories(new Date(lastMeterReadingSync))
-                .then(remoteInventory => {
-                    let initlocalInventories = InventroyRealm.getAllInventory();
-                    let localInventories = [...initlocalInventories];
-                    let remoteInventories = [...remoteInventory.closingStock];
-                    console.log('remoteInventory', remoteInventory);
-                    console.log('initlocalInventories', initlocalInventories);
-                    if (initlocalInventories.length === 0) {
-                        InventroyRealm.createManyInventories(remoteInventory.closingStock);
+            MeterReadingApi.getMeterReading(new Date(lastMeterReadingSync))
+                .then(remoteMeterReading => {
+                    let initlocalMeterReadings = InventroyRealm.getAllMeterReading();
+                    let localMeterReadings = [...initlocalMeterReadings];
+                    let remoteMeterReadings = [...remoteMeterReading.data];
+                    console.log('remoteMeterReading', remoteMeterReading);
+                    console.log('initlocalMeterReadings', initlocalMeterReadings);
+                    if (initlocalMeterReadings.length === 0) {
+                        InventroyRealm.createManyMeterReadings(remoteMeterReading.data);
                     }
 
                     let onlyLocally = [];
@@ -23,46 +23,46 @@ class MeterReadingSync {
                     let inRemote = [];
                     let bothLocalRemote = {};
 
-                    if (initlocalInventories.length > 0) {
+                    if (initlocalMeterReadings.length > 0) {
 
-                        initlocalInventories.forEach(localInventory => {
-                            let filteredObj = remoteInventories.filter(obj => obj.closingStockId === localInventory.closingStockId)
+                        initlocalMeterReadings.forEach(localMeterReading => {
+                            let filteredObj = remoteMeterReadings.filter(obj => obj.meter_reading_id === localMeterReading.meter_reading_id)
 
                             if (filteredObj.length > 0) {
-                                const remoteIndex = remoteInventories.map(function (e) { return e.closingStockId }).indexOf(filteredObj[0].closingStockId);
-                                const localIndex = localInventories.map(function (e) { return e.closingStockId }).indexOf(filteredObj[0].closingStockId);
+                                const remoteIndex = remoteMeterReadings.map(function (e) { return e.meter_reading_id }).indexOf(filteredObj[0].meter_reading_id);
+                                const localIndex = localMeterReadings.map(function (e) { return e.meter_reading_id }).indexOf(filteredObj[0].meter_reading_id);
 
-                                remoteInventories.splice(remoteIndex, 1);
-                                localInventories.splice(localIndex, 1);
+                                remoteMeterReadings.splice(remoteIndex, 1);
+                                localMeterReadings.splice(localIndex, 1);
 
-                                inLocal.push(localInventory);
+                                inLocal.push(localMeterReading);
                                 inRemote.push(filteredObj[0]);
                             }
 
                             if (filteredObj.length === 0) {
-                                onlyLocally.push(localInventory);
-                                const localIndex = localInventories.map(function (e) { return e.closingStockId }).indexOf(localInventory.closingStockId);
+                                onlyLocally.push(localMeterReading);
+                                const localIndex = localMeterReadings.map(function (e) { return e.meter_reading_id }).indexOf(localMeterReading.meter_reading_id);
 
-                                localInventories.splice(localIndex, 1);
+                                localMeterReadings.splice(localIndex, 1);
                             }
                         });
 
-                        onlyRemote.push(...remoteInventories);
+                        onlyRemote.push(...remoteMeterReadings);
                         bothLocalRemote.inLocal = inLocal;
                         bothLocalRemote.inRemote = inRemote;
 
 
                         if (onlyRemote.length > 0) {
-                            InventroyRealm.createManyInventories(onlyRemote)
+                            InventroyRealm.createManyMeterReadings(onlyRemote)
                         }
 
                         if (onlyLocally.length > 0) {
-                            onlyLocally.forEach(localInventory => {
-                                InventoryApi.createInventory(
-                                    localInventory
+                            onlyLocally.forEach(localMeterReading => {
+                                MeterReadingApi.createMeterReading(
+                                    localMeterReading
                                 )
                                     .then((response) => {
-                                        InventroyRealm.synched(localInventory);
+                                        InventroyRealm.synched(localMeterReading);
                                         console.log(
                                             'Synchronization:synced to remote - ' +
                                             response
@@ -70,59 +70,59 @@ class MeterReadingSync {
                                     })
                                     .catch(error => {
                                         console.log(
-                                            'Synchronization:synchronizeInventory Create Inventory failed'
+                                            'Synchronization:synchronizeMeterReading Create MeterReading failed'
                                         );
                                     });
                             })
                         }
 
                         if (inLocal.length > 0 && inRemote.length > 0) {
-                            inLocal.forEach(localInventory => {
+                            inLocal.forEach(localMeterReading => {
 
-                                if (localInventory.active === true && localInventory.syncAction === 'delete') {
-                                    InventoryApi.deleteInventory(
-                                        localInventory
+                                if (localMeterReading.active === true && localMeterReading.syncAction === 'delete') {
+                                    MeterReadingApi.deleteMeterReading(
+                                        localMeterReading
                                     )
                                         .then((response) => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                                                'Synchronization:synchronizeMeterReading - Removing MeterReading from pending list - ' +
                                                 response
                                             );
-                                            InventroyRealm.hardDeleteInventory(
-                                                localInventory
+                                            InventroyRealm.hardDeleteMeterReading(
+                                                localMeterReading
                                             );
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Delete Inventory failed ' +
+                                                'Synchronization:synchronizeMeterReading Delete MeterReading failed ' +
                                                 error
                                             );
                                         });
                                 }
 
-                                if (localInventory.active === true && localInventory.syncAction === 'update') {
-                                    InventoryApi.updateInventory(
-                                        localInventory
+                                if (localMeterReading.active === true && localMeterReading.syncAction === 'update') {
+                                    MeterReadingApi.updateMeterReading(
+                                        localMeterReading
                                     )
                                         .then((response) => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                                                'Synchronization:synchronizeMeterReading - Removing MeterReading from pending list - ' +
                                                 response
                                             );
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Update Inventory failed ' +
+                                                'Synchronization:synchronizeMeterReading Update MeterReading failed ' +
                                                 error
                                             );
                                         });
 
-                                } else if (localInventory.active === false && localInventory.syncAction === 'update') {
-                                    InventoryApi.createInventory(
-                                        localInventory
+                                } else if (localMeterReading.active === false && localMeterReading.syncAction === 'update') {
+                                    MeterReadingApi.createMeterReading(
+                                        localMeterReading
                                     )
                                         .then((response) => {
-                                            InventroyRealm.synched(localInventory);
+                                            InventroyRealm.synched(localMeterReading);
                                             console.log(
                                                 'Synchronization:synced to remote - ' +
                                                 response
@@ -130,7 +130,7 @@ class MeterReadingSync {
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Create Inventory failed'
+                                                'Synchronization:synchronizeMeterReading Create MeterReading failed'
                                             );
                                         });
                                 }
@@ -140,19 +140,19 @@ class MeterReadingSync {
                     }
                     resolve({
                         error: null,
-                        localInventory: onlyLocally.length,
-                        remoteInventory: onlyRemote.length
+                        localMeterReading: onlyLocally.length,
+                        remoteMeterReading: onlyRemote.length
                     });
 
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization.getInventory - error ' + error
+                        'Synchronization.getMeterReading - error ' + error
                     );
                     resolve({
                         error: error,
-                        localInventory: 0,
-                        remoteInventory: 0
+                        localMeterReading: 0,
+                        remoteMeterReading: 0
                     });
                 });
         });

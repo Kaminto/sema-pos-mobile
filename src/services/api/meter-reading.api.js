@@ -27,14 +27,14 @@ class MeterReadingApi {
 		this._siteId = siteId;
 	}
 
-	getInventories(updatedSince) {
+	getMeterReading(updatedSince) {
 		let options = {
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-        let url = 'sema/kiosk_closing_stock?kiosk_id=' + this._siteId;
+        let url = 'sema/meter_reading?kiosk_id=' + this._siteId;
 
 		if (updatedSince) {
 			url = url + '&updated-date=' + updatedSince;
@@ -46,13 +46,13 @@ class MeterReadingApi {
 				return responseJson;
 			})
 			.catch(error => {
-				console.log('Communications:getInventories: ' + error);
+				console.log('Communications:getMeterReading: ' + error);
 				throw error;
 			});
 	}
 
-	createInventory(inventory) {
-		// TODO - Resolve inventory.... Is it needed, currently hardcoded...
+	createMeterReading(MeterReading) {
+		// TODO - Resolve MeterReading.... Is it needed, currently hardcoded...
 
 		let options = {
 			method: 'POST',
@@ -61,11 +61,11 @@ class MeterReadingApi {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + this._token
 			},
-			body: JSON.stringify(inventory)
+			body: JSON.stringify(MeterReading)
 		};
 		console.log('this._url', this._url);
 		return new Promise((resolve, reject) => {
-			fetch(this._url + 'sema/kiosk_closing_stock/', options)
+			fetch(this._url + 'sema/meter_reading/', options)
 				.then(response => {
 					if (response.status === 200) {
 						response
@@ -79,26 +79,26 @@ class MeterReadingApi {
 							})
 							.catch(error => {
 								console.log(
-									'createInventory - Parse JSON: ' +
+									'createMeterReading - Parse JSON: ' +
 									error
 								);
 								reject();
 							});
 					} else {
 						console.log(
-							'createInventory - Fetch status: ' + response.status
+							'createMeterReading - Fetch status: ' + response.status
 						);
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('createInventory - Fetch: ' + error);
+					console.log('createMeterReading - Fetch: ' + error);
 					reject();
 				});
 		});
 	}
-	// Note that deleting a inventory actually just deactivates the Inventory
-	deleteInventory(inventory) {
+	// Note that deleting a MeterReading actually just deactivates the MeterReading
+	deleteMeterReading(MeterReading) {
 		let options = {
 			method: 'DELETE',
 			headers: {
@@ -112,7 +112,7 @@ class MeterReadingApi {
 		};
 		return new Promise((resolve, reject) => {
 			fetch(
-				this._url + 'sema/kiosk_closing_stock/' + inventory.closingStockId,
+				this._url + 'sema/meter_reading/' + MeterReading.meter_reading_id,
 				options
 			)
 				.then(response => {
@@ -120,19 +120,19 @@ class MeterReadingApi {
 						resolve();
 					} else {
 						console.log(
-							'deleteInventory - Fetch status: ' + response.status
+							'deleteMeterReading - Fetch status: ' + response.status
 						);
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('deleteInventory - Fetch: ' + error);
+					console.log('deleteMeterReading - Fetch: ' + error);
 					reject();
 				});
 		});
 	}
 
-	updateInventory(inventory) {
+	updateMeterReading(MeterReading) {
 		let options = {
 			method: 'PUT',
 			headers: {
@@ -140,11 +140,11 @@ class MeterReadingApi {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + this._token
 			},
-			body: JSON.stringify(inventory)
+			body: JSON.stringify(MeterReading)
 		};
 		return new Promise((resolve, reject) => {
 			fetch(
-				this._url + 'sema/kiosk_closing_stock/' + inventory.closingStockId,
+				this._url + 'sema/meter_reading/' + MeterReading.meter_reading_id,
 				options
 			)
 				.then(response => {
@@ -156,27 +156,24 @@ class MeterReadingApi {
 							})
 							.catch(error => {
 								console.log(
-									'updateInventory - Parse JSON: ' +
+									'updateMeterReading - Parse JSON: ' +
 									error
 								);
 								reject();
 							});
 					} else {
 						console.log(
-							'updateInventory - Fetch status: ' + response.status
+							'updateMeterReading - Fetch status: ' + response.status
 						);
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('createInventory - Fetch: ' + error);
+					console.log('createMeterReading - Fetch: ' + error);
 					reject();
 				});
 		});
 	}
-
-
-
 
 }
 

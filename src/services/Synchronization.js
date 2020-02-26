@@ -6,6 +6,7 @@ import Communications from '../services/Communications';
 import * as _ from 'lodash';
 import InventorySync from './sync/inventory.sync';
 import CreditSync from './sync/credit.sync';
+import MeterReadingSync from './sync/meter-reading.sync'
 import CustomerSync from './sync/customer.sync';
 import ProductSync from './sync/product.sync';
 import ProductMRPSync from './sync/productmrp.sync';
@@ -128,6 +129,13 @@ class Synchronization {
 								saleSync => {
 									syncResult.sales = saleSync;
 									return saleSync;
+								}
+							);
+
+							const promiseMeterReading = MeterReadingSync.synchronizeMeterReading(settings.siteId).then(
+								meterReadingSync => {
+									syncResult.meterReading = meterReadingSync;
+									return meterReadingSync;
 								}
 							);
 
