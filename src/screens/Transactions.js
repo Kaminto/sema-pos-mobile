@@ -194,7 +194,7 @@ class TransactionDetail extends React.PureComponent {
 						receiptActions={this.props.receiptActions}
 						remoteReceipts={this.props.receipts}
 						item={lineItem}
-						key={lineItem.id + idx}
+						key={lineItem.receiptId}
 						lineItemIndex={idx}
 						products={this.props.products}
 						handleUpdate={this.handleUpdate.bind(this)}
