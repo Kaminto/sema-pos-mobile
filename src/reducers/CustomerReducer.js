@@ -1,7 +1,5 @@
 
 import { CUSTOMER_SELECTED, CUSTOMERS_PAYMENT_TYPE_SEARCH, CUSTOMERS_SET, CUSTOMERS_SEARCH, CUSTOMERS_TYPE_SEARCH, CUSTOMER_EDIT, CUSTOMERS_CHANNEL_SEARCH } from "../actions/CustomerActions";
-import PosStorage from "../database/PosStorage";
-
 let initialState = { selectedCustomer: {}, customers: [], searchString: "", paymentTypeFilter: "", customerTypeFilter: "", channelFilterString: "", isEdit: false };
 
 const customerReducer = (state = initialState, action) => {

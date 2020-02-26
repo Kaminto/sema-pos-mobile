@@ -15,7 +15,6 @@ import { bindActionCreators } from 'redux';
 import Synchronization from '../services/Synchronization';
 import * as WastageActions from "../actions/WastageActions";
 import CustomerReminderRealm from '../database/customer-reminder/customer-reminder.operations';
-import PosStorage from '../database/PosStorage';
 import SettingRealm from '../database/settings/settings.operations';
 import CreditRealm from '../database/credit/credit.operations';
 import CustomerRealm from '../database/customers/customer.operations';
@@ -145,7 +144,6 @@ class Login extends React.PureComponent {
 
 	_clearDataAndSync() {
 		try {
-			PosStorage.clearDataOnly();
 
 			Events.trigger('ClearLoggedSales', {});
 			this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
@@ -154,7 +152,6 @@ class Login extends React.PureComponent {
 			Synchronization.initialize(
 				CustomerRealm.getLastCustomerSync(),
 				ProductsRealm.getLastProductsync(),
-				PosStorage.getLastSalesSync(),
 				CreditRealm.getLastCreditSync(),
 				InventroyRealm.getLastInventorySync(),
 			);
@@ -259,7 +256,6 @@ class Login extends React.PureComponent {
 	};
 
 	loadSyncedData() {
-		PosStorage.loadLocalData();
 		this.props.customerActions.setCustomers(
 			CustomerRealm.getAllCustomer()
 		);
@@ -271,9 +267,6 @@ class Login extends React.PureComponent {
 		);
 		this.props.productActions.setProducts(
 			ProductsRealm.getProducts()
-		);
-		this.props.receiptActions.setRemoteReceipts(
-			PosStorage.getRemoteReceipts()
 		);
 		this.props.receiptActions.setReceipts(
 			OrderRealm.getAllOrder()
@@ -291,7 +284,6 @@ class Login extends React.PureComponent {
 		Synchronization.initialize(
 			CustomerRealm.getLastCustomerSync(),
 			ProductsRealm.getLastProductsync(),
-			PosStorage.getLastSalesSync(),
 			CreditRealm.getLastCreditSync(),
 			InventroyRealm.getLastInventorySync(),
 		);

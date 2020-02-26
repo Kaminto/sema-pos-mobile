@@ -63,10 +63,10 @@ class InventroyRealm {
 
         return date = year + '-' + month + '-' + day;
     }
-	addDays = (theDate, days) => {
-		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
+    addDays = (theDate, days) => {
+        return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
     };
-    
+
     getWastageReportByDate(date) {
         return new Promise(resolve => {
             let checkExistingMeter = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
@@ -85,7 +85,10 @@ class InventroyRealm {
                     currentProductSkus: filteredWastage.length > 0 ? filteredWastage : []
                 })
             } else {
-                resolve(null);
+                resolve({
+                    currentMeter: 0,
+                    currentProductSkus: []
+                });
             }
         })
     }
@@ -132,30 +135,44 @@ class InventroyRealm {
                 let checkExistingInventory = Object.values(JSON.parse(JSON.stringify(realm.objects('Inventory').filtered(`closingStockId = "${inventory.closingStockId}"`))));
 
                 if (checkExistingInventory.length > 0) {
-                    console.log('existing inv')
                     let inventorUpdateObj = realm.objects('Inventory').filtered(`closingStockId = "${inventory.closingStockId}"`);
                     inventorUpdateObj[0].product_id = inventory.product_id;
-                    inventorUpdateObj[0].notDispatched = inventory.notDispatched ? inventory.notDispatched : 0,
-                        inventorUpdateObj[0].quantity = inventory.quantity ? inventory.quantity : 0,
-                        inventorUpdateObj[0].kiosk_id = inventory.kiosk_id,
+                    if (inventory.type === 'closing') {
+                        inventorUpdateObj[0].quantity = inventory.quantity ? inventory.quantity : 0;
                         inventorUpdateObj[0].inventory = inventory.inventory ? inventory.inventory : 0;
+                    } else if (inventory.type === 'notdispatched') {
+                        inventorUpdateObj[0].notDispatched = inventory.notDispatched ? inventory.notDispatched : 0;
+
+                    } inventorUpdateObj[0].kiosk_id = inventory.kiosk_id;
                     inventorUpdateObj[0].wastageName = inventory.wastageName;
                     inventorUpdateObj[0].syncAction = 'UPDATE';
                     inventorUpdateObj[0].updated_at = new Date();
-                } else {
-                    console.log('new inv')
-                    realm.create('Inventory', {
-                        ...inventory,
-                        closingStockId: uuidv1(),
-                        created_at: date,
-                        inventory: inventory.inventory ? inventory.inventory : 0,
-                        quantity: inventory.quantity ? inventory.quantity : 0,
-                        notDispatched: inventory.notDispatched ? inventory.notDispatched : 0,
-                        syncAction: 'CREATE',
-                        active: false
-                    });
+                } else { let saveObj = {};
+                    if (inventory.type === 'closing') {
+                        saveObj = {
+                            ...inventory,
+                            closingStockId: uuidv1(),
+                            created_at: date,
+                            inventory: inventory.inventory ? inventory.inventory : 0,
+                            quantity: inventory.quantity ? inventory.quantity : 0,
+                            syncAction: 'CREATE',
+                            active: false
+                        }
+                    } else if (inventory.type === 'notdispatched') {
+                        console.log()
+                        saveObj = {
+                            ...inventory,
+                            closingStockId: uuidv1(),
+                            created_at: date,
+                            notDispatched: inventory.notDispatched ? inventory.notDispatched : 0,
+                            syncAction: 'CREATE',
+                            active: false
+                        }
+                    }
+
+
+                    realm.create('Inventory', saveObj);
                 }
-                // realm.create('CustomerReminder', customerReminder);
             });
         } catch (e) {
             console.log("Error on creation", e);

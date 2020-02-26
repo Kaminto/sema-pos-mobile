@@ -4,14 +4,21 @@ import {
 	REPORT_TYPE,
 	INVENTORY_REPORT,
 	REPORT_FILTER,
-	initializeSalesData,
-	initializeInventoryData
 } from '../actions/WastageActions';
 
 let initialState = {
-	salesData: initializeSalesData(),
+	salesData: { totalLiters: 0, totalSales: 0, totalDebt: 0, salesItems: [] },
 	reportType: 'sales',
-	inventoryData: initializeInventoryData(),
+	inventoryData: {
+		salesAndProducts: { totalLiters: 0, totalSales: 0, totalDebt: 0, salesItems: [] },
+		inventory: {
+			date: new Date(),
+			currentMeter: 0,
+			currentProductSkus: [],
+			previousMeter: 0,
+			previousProductSkus: []
+		}
+	},
 	dateFilter: {}
 };
 
