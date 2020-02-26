@@ -1,5 +1,6 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
+import {format} from 'date-fns';
 
 class CreditRealm {
     constructor() {
@@ -60,7 +61,7 @@ class CreditRealm {
 
 
     createCredit(customer_account_id, topup, balance) {
-        const now = new Date();
+        const nowDate = format(new Date(), 'yyyy-MM-dd');
         let topupno = Number(topup);
         let balno = Number(balance);
 
@@ -69,8 +70,8 @@ class CreditRealm {
             customer_account_id,
             topupno,
             balno,
-            created_at: now,
-            updated_at: now,
+            created_at: nowDate,
+            updated_at: now,Date,
             syncAction: 'create',
             active: false
         };

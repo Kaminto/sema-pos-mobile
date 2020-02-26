@@ -519,7 +519,7 @@ class CustomerDetails extends React.PureComponent {
 		for (let customerReceipt of customerReceipts) {
 			let paymentTypes = [];
 			for (let receiptsPaymentType of receiptsPaymentTypes) {
-				if (receiptsPaymentType.receipt_id === customerReceipt.receiptId) {
+				if (receiptsPaymentType.receipt_id === customerReceipt.id) {
 					paymentTypes.push(receiptsPaymentType);
 				}
 			}

@@ -298,7 +298,7 @@ class Transactions extends React.PureComponent {
 			searchString: '',
 			hasScrolled: false,
 			paymentTypeValue: '',
-			selected: this.prepareData()[0],
+			selected: this.prepareSectionedData()[0].data[0],
 		};
 	}
 	componentDidMount() {
@@ -341,7 +341,7 @@ class Transactions extends React.PureComponent {
 			return (
 				<View style={{ flex: 1, flexDirection: 'row' }}>
 					<View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 1, borderRightColor: '#CCC' }}>
-						<FlatList
+						{/* <FlatList
 							data={this.prepareData()}
 							renderItem={this.renderReceipt.bind(this)}
 							keyExtractor={(item, index) => item.id}
@@ -349,17 +349,18 @@ class Transactions extends React.PureComponent {
 							extraData={this.state}
 							windowSize={10}
 					        removeClippedSubviews={true}
-						/>
-						 {/* <SafeAreaView style={styles.container}>
+						/> */}
+						 <SafeAreaView style={styles.container}>
 								<SectionList
+								    ItemSeparatorComponent={this.renderSeparator}
 									sections={this.prepareSectionedData()}
 									keyExtractor={(item, index) => item + index}
 									renderItem={this.renderReceipt.bind(this)}
-									renderSectionHeader={({ section: { title } }) => (
-									<Text style={styles.header}>{title}</Text>
+									renderSectionHeader={({ section: {title} }) => (
+									<Text style={{ fontSize: 16, backgroundColor: '#ABC1DE', color: '#000', fontWeight: 'bold', padding: 10, textTransform:'uppercase' }}>{title}</Text>
 									)}
 								/>
-						</SafeAreaView> */}
+						</SafeAreaView>
 					</View>
 
 					<View style={{ flex: 2, backgroundColor: '#fff', paddingLeft: 20 }}>
@@ -402,8 +403,6 @@ class Transactions extends React.PureComponent {
 		// Used for enumerating receipts
 		const totalCount = this.props.receipts.length;
 
-		console.log(" Britney " + format(sub(new Date(Date.now()), 60), 'yyyy-MM-dd'));
-
 		let receipts = this.comparePaymentTypeReceipts().map((receipt, index) => {
 			return {
 				active: receipt.active,
@@ -436,15 +435,31 @@ class Transactions extends React.PureComponent {
 		return [...receipts];
 	}
 
+	groupBySectionTitle(objectArray, property) {
+		return objectArray.reduce(function (acc, obj) {
+			let key = obj[property];
+			if (!acc[key]) {
+				acc[key] = [];
+			}
+			acc[key].push(obj);
+			return acc;
+		}, {});
+	}
+
 	//{format(parseISO(item.createdAt), 'iii d MMM yyyy')}
 	prepareSectionedData() {
 		// Used for enumerating receipts
 		let receipts = this.prepareData();
+
+		let transformedarray = this.groupBySectionTitle(receipts, 'sectiontitle');
+
 		let newarray = [];
-		let sectionedlist = receipts.map((item, key) => {
-			newarray.push({'title':item.sectiontitle, 'data': item});
-			}
-		);
+		for (let i of Object.getOwnPropertyNames(transformedarray)) {
+			newarray.push({
+				title: i,
+				data: transformedarray[i],
+			});
+		}
 		return newarray;
 	}
 
@@ -478,13 +493,13 @@ class Transactions extends React.PureComponent {
 	};
 
 	comparePaymentTypeReceipts() {
-		let receiptsPaymentTypes = [...this.comparePaymentTypes()];
-		let customerReceipts = [...this.props.receipts];
+		let receiptsPaymentTypes = this.comparePaymentTypes();
+		let customerReceipts = this.props.receipts;
 		let finalCustomerReceiptsPaymentTypes = [];
 		for (let customerReceipt of customerReceipts) {
 			let paymentTypes = [];
 			for (let receiptsPaymentType of receiptsPaymentTypes) {
-				if (receiptsPaymentType.receipt_id === customerReceipt.receiptId) {
+				if (receiptsPaymentType.receipt_id === customerReceipt.id) {
 					paymentTypes.push(receiptsPaymentType);
 				}
 			}
@@ -534,12 +549,12 @@ class Transactions extends React.PureComponent {
 	renderReceipt({ item, index }) {
 		return (
 			<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
-				<View key={index} style={{ padding: 15 }}>
-					<View style={styles.label}>
+				<View key={index} style={{ padding: 10 }}>
+					{/* <View style={styles.label}>
 						<Text>
 								{format(parseISO(item.createdAt), 'iii d MMM yyyy')}
 						</Text>
-					</View>
+					</View> */}
 					<View style={styles.itemData}>
 						<Text style={styles.customername}>{item.customerAccount.name}</Text>
 					</View>

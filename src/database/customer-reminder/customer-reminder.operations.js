@@ -207,7 +207,7 @@ class CustomerReminderRealm {
                             customerReminderId: uuidv1(),
                             due_amount: obj.amount,
                             syncAction: obj.syncAction ? obj.syncAction : 'CREATE',
-                            created_at: new Date(),
+                            created_at: format(new Date(), 'yyyy-MM-dd'),
                             updated_at: obj.updated_at ? obj.updated_at : null,
                         });
                     });

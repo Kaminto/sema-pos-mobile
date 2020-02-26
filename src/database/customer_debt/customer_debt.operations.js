@@ -1,5 +1,6 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
+import {format} from 'date-fns';
 
 class CustomerDebtRealm {
     constructor() {
@@ -143,9 +144,9 @@ class CustomerDebtRealm {
                         realm.create('CustomerDebt', {
                             customer_account_id: customer_account_id ? customer_account_id : null,
                             customer_debt_id: uuidv1(),
-                            due_amount: obj.amount,
+                            due_amount: Number(obj.amount),
                             syncAction: obj.syncAction ? obj.syncAction : 'CREATE',
-                            created_at: new Date(),
+                            created_at: format(new Date(), 'yyyy-MM-dd'),
                             updated_at: obj.updated_at ? obj.updated_at : null,
                         });
                     });

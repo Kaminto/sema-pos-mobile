@@ -188,14 +188,6 @@ class OrderSync {
                                 }
                             })
                         }
-
-                        console.log('onlyRemote', onlyRemote);
-                        console.log('onlyLocally', onlyLocally);
-                        console.log('bothLocalRemote', bothLocalRemote);
-
-                        console.log('localOrders2', localOrders);
-                        console.log('remoteOrders2', remoteOrders);
-
                     }
                     resolve({
                         error: null,

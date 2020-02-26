@@ -11,7 +11,7 @@ class CustomerSync {
                     let initlocalCustomers = CustomerRealm.getAllCustomer();
                     let localCustomers = [...initlocalCustomers];
                     let remoteCustomers = [...remoteCustomer.customers];
-                    console.log('remoteCustomer', remoteCustomer);
+                    // console.log('remoteCustomer', remoteCustomer);
                     if (initlocalCustomers.length === 0) {
                         CustomerRealm.createManyCustomers(remoteCustomer.customers);
                     }
@@ -24,14 +24,14 @@ class CustomerSync {
                     let updateCount = 0;
                     if (initlocalCustomers.length > 0) {
 
-                       
+
                         initlocalCustomers.forEach(localCustomer => {
                             let filteredObj = remoteCustomers.filter(obj => obj.customerId === localCustomer.customerId)
-                           
+
                             if (filteredObj.length > 0) {
                                 const remoteIndex = remoteCustomers.map(function (e) { return e.customerId }).indexOf(filteredObj[0].customerId);
                                 const localIndex = localCustomers.map(function (e) { return e.customerId }).indexOf(filteredObj[0].customerId);
-                                
+
                                 remoteCustomers.splice(remoteIndex, 1);
                                 localCustomers.splice(localIndex, 1);
 
@@ -42,7 +42,7 @@ class CustomerSync {
                             if (filteredObj.length === 0) {
                                 onlyLocally.push(localCustomer);
                                 const localIndex = localCustomers.map(function (e) { return e.customerId }).indexOf(localCustomer.customerId);
-                               
+
                                 localCustomers.splice(localIndex, 1);
                             }
                         });
@@ -58,10 +58,10 @@ class CustomerSync {
 
                         if (onlyLocally.length > 0) {
                             onlyLocally.forEach(localCustomer => {
-                                console.log(
-                                    'localCustomer - ',
-                                    localCustomer
-                                );
+                                // console.log(
+                                //     'localCustomer - ',
+                                //     localCustomer
+                                // );
                                 CustomerApi.createCustomer(
                                     localCustomer
                                 )
@@ -80,10 +80,10 @@ class CustomerSync {
                             })
                         }
 
-                        
+
                         if (inLocal.length > 0 && inRemote.length > 0) {
-                            
-                            inLocal.forEach(localCustomer => {                                
+
+                            inLocal.forEach(localCustomer => {
                                 if (localCustomer.active === true && localCustomer.syncAction === 'delete') {
                                     CustomerApi.deleteCustomer(
                                         localCustomer
@@ -145,12 +145,12 @@ class CustomerSync {
                             })
                         }
 
-                        console.log('onlyRemote', onlyRemote);
-                        console.log('onlyLocally', onlyLocally);
-                        console.log('bothLocalRemote', bothLocalRemote);
+                        // console.log('onlyRemote', onlyRemote);
+                        // console.log('onlyLocally', onlyLocally);
+                        // console.log('bothLocalRemote', bothLocalRemote);
 
-                        console.log('localCustomers2', localCustomers);
-                        console.log('remoteCustomers2', remoteCustomers);
+                        // console.log('localCustomers2', localCustomers);
+                        // console.log('remoteCustomers2', remoteCustomers);
 
                     }
                     resolve({
