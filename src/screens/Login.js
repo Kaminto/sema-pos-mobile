@@ -132,8 +132,7 @@ class Login extends React.PureComponent {
 			this.setState({ isLoading: true });
 			Synchronization.synchronize().then(syncResult => {
 				this.setState({ isLoading: false });
-
-				Synchronization.getLatestSales();
+ 
 				this.loadSyncedData();
 				this.props.navigation.navigate('App')
 			});

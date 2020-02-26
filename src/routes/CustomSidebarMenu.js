@@ -245,8 +245,6 @@ class CustomSidebarMenu extends React.PureComponent {
           { cancelable: true }
         );
       });
-      //Added by Jean Pierre
-      Synchronization.getLatestSales();
     } catch (error) { }
   };
 
