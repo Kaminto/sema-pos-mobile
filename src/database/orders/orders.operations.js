@@ -216,7 +216,7 @@ class OrderRealm {
             realm.write(() => {
                     let orderObj = realm.objects('Order').filtered(`id = "${order.receiptId}"`);
                     orderObj[0].syncAction = 'delete';
-                    orderObj[0].isDelete = 0;
+                    orderObj[0].is_delete = 0;
             })
 
         } catch (e) {

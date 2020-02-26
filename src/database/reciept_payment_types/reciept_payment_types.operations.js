@@ -25,21 +25,6 @@ class ReceiptPaymentTypeRealm {
         return this.getReceiptPaymentTypes();
     }
 
-    formatDay(date) {
-        date = new Date(date);
-        var day = date.getDate(),
-            month = date.getMonth() + 1,
-            year = date.getFullYear();
-        if (month.toString().length == 1) {
-            month = "0" + month;
-        }
-        if (day.toString().length == 1) {
-            day = "0" + day;
-        }
-
-        return date = year + '-' + month + '-' + day;
-    }
-
 
     createReceiptPaymentType(receiptPaymentType) {
         try {

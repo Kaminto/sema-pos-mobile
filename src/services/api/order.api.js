@@ -88,11 +88,8 @@ class OrderApi {
 			}
 		};
 
-		let url = `sema/site/receipts/${siteId}?date=${format(parseISO('2019-11-01'), 'yyyy-MM-dd')}`;
+		let url = `sema/site/receipts/${siteId}`;
 		console.log('Communications:getReceipts: ');
-		console.log( "Freaking dates" +
-			format(new Date('2019-11-01'), 'yyyy-MM-dd')
-		);
 		return fetch(this._url + url, options)
 			.then(async response => await response.json())
 			.catch(error => {

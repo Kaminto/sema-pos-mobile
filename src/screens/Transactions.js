@@ -132,7 +132,7 @@ class TransactionDetail extends React.PureComponent {
 
 	onDeleteReceipt(item) {
 		return () => {
-			if (item.isDelete === 0) {
+			if (item.is_delete === 0) {
 				return ToastAndroid.show(
 					'Receipt already deleted',
 					ToastAndroid.SHORT
@@ -229,7 +229,7 @@ class TransactionDetail extends React.PureComponent {
 						onPress={this.onDeleteReceipt(this.props.item)}
 						style={[
 							styles.receiptDeleteButton,
-							{ backgroundColor: (this.props.item.isDelete != 0) ? 'red' : 'grey' }
+							{ backgroundColor: (this.props.item.is_delete != 0) ? 'red' : 'grey' }
 						]}>
 						<Text style={styles.receiptDeleteButtonText}>X</Text>
 					</TouchableOpacity>
@@ -244,7 +244,7 @@ class TransactionDetail extends React.PureComponent {
 
 				</View>
 				<View style={styles.receiptStats}>
-					{this.props.item.isDelete === 0 && (
+					{this.props.item.is_delete === 0 && (
 						<Text style={styles.receiptStatusText}>
 							{'Deleted'.toUpperCase()}
 						</Text>
@@ -416,7 +416,7 @@ class Transactions extends React.PureComponent {
 				key: receipt.isLocal ? receipt.key : null,
 				index,
 				updated: receipt.updated,
-				isDelete: receipt.isDelete,
+				is_delete: receipt.is_delete,
 				amountLoan: receipt.amount_loan,
 				totalCount,
 				currency: receipt.currency_code,

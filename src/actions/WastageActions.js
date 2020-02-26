@@ -111,8 +111,6 @@ export const getWastageData = (beginDate, endDate, products) => {
 const createInventory = (salesData, inventorySettings, products) => {
 	let salesAndProducts = { ...salesData };
 	salesAndProducts.salesItems = salesData.salesItems.slice();
-
-	console.log("Well" + salesAndProducts.salesItems.length + JSON.stringify(salesAndProducts.salesItems))
 	let emptyProducts = [];
 	for (const prod of products) {
 		if (isNotIncluded(prod, salesAndProducts.salesItems)) {
