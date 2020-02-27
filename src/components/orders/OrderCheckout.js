@@ -599,9 +599,6 @@ class OrderCheckout extends React.PureComponent {
 							underlineColorAndroid="transparent"
 							onChangeText={(textValue) => {
 
-								console.log('item', item);
-								console.log('selectedType', this.state.selectedType);
-
 								if (this.props.selectedPaymentTypes.length >= 0) {
 									const itemIndex2 = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
 									if (itemIndex2 >= 0) {
@@ -794,11 +791,9 @@ class OrderCheckout extends React.PureComponent {
 		let totalAmount = 0;
 		for (let i of this.props.products) {
 			if (i.product.description === 'discount') {
-				console.log('finalAmount', i.product.description);
 				totalAmount = totalAmount - i.finalAmount;
 			}
 			else if (i.product.description === 'delivery') {
-				console.log('finalAmount', i.product.description);
 				totalAmount = totalAmount + i.finalAmount;
 			} else {
 				totalAmount = totalAmount + i.finalAmount;
@@ -847,18 +842,16 @@ class OrderCheckout extends React.PureComponent {
 		this.setState({
 			buttonDisabled: true
 		});
-		console.log(this.props.selectedPaymentTypes);
 		let totalAmountPaid = this.props.selectedPaymentTypes.reduce((total, item) => { return (total + item.amount) }, 0);
 
 		if (this.currentCredit() > this.calculateOrderDue()) {
-			console.log('credit is more');
 
 			if (totalAmountPaid > this.calculateOrderDue()) {
 				this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
-				console.log('walletBalance red', this.props.selectedCustomer.walletBalance);
+
 				this.updateWallet(this.props.selectedCustomer.walletBalance);
 				let diff = Math.abs(totalAmountPaid - this.currentCredit());
-				console.log('topup red', diff);
+
 				if(diff > 0){
 					this.topUpWallet(Number(diff));
 				}
@@ -885,44 +878,32 @@ class OrderCheckout extends React.PureComponent {
 				} else if (this.calculateAmountDue() > 0) {
 					let postToLoan = Number(totalAmountPaid - this.calculateOrderDue());
 					if (totalAmountPaid > this.calculateAmountDue()) {
-						console.log("This loan fury wilder");
-						// clear loan balance and topup wallet
-						console.log('postToLoan', postToLoan);
-						console.log('calculateAmountDue', this.calculateAmountDue());
-						console.log('sap', Number(postToLoan - this.calculateAmountDue()));
 						const topUpExpected = Number(postToLoan - this.calculateAmountDue());
 						this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - Number(this.calculateAmountDue());
 						this.updateLoanBalance(this.props.selectedCustomer.dueAmount);
 						this.topUpWallet(topUpExpected);
-						console.log('walletBalance', this.props.selectedCustomer.walletBalance);
 						this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + topUpExpected;
-						console.log('walletBalance1', this.props.selectedCustomer.walletBalance);
-						console.log('sa', topUpExpected);
+
 						this.updateWallet(this.props.selectedCustomer.walletBalance);
 						this.saveOrder(true);
 					} else if (totalAmountPaid < this.calculateAmountDue()) {
-						console.log("This loan fury 6'9");
-						// clear loan balance
-						///this.setState({ loanPaid: postToLoan });
 						this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - postToLoan;
 						this.updateLoanBalance(this.props.selectedCustomer.dueAmount);
 						this.saveOrder(true);
 					}
 				}
 			} else  if (totalAmountPaid < this.calculateOrderDue()) {
-				//add loan payment type to reducer
-				//add loan to dueAmount
 
 				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) + (this.calculateOrderDue() - totalAmountPaid);
-				console.log('-this.props.selectedCustomer.dueAmount-', this.props.selectedCustomer.dueAmount);
+
 				this.updateLoanBalance(this.props.selectedCustomer.dueAmount);
 				const loanIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("loan");
 				if (loanIndex >= 0) {
 					this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[loanIndex], created_at: new Date(), isSelected: this.props.paymentTypes[loanIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() - totalAmountPaid });
 				}
-				console.log('walletBalance', this.props.selectedCustomer.walletBalance);
+
 				this.props.selectedCustomer.walletBalance = 0;
-				console.log('walletBalance1', this.props.selectedCustomer.walletBalance);
+
 				this.updateWallet(this.props.selectedCustomer.walletBalance);
 
 				this.saveOrder(false);
@@ -1041,9 +1022,6 @@ class OrderCheckout extends React.PureComponent {
 				OrderRealm.getAllOrder()
 			);
 
-			console.log('topUpExpected', this.state.topUpExpected);
-			console.log('loanPaid', this.state.loanPaid);
-
 			this.saveCustomerFrequency(OrderRealm.getAllOrder().filter(r => r.customer_account_id === this.props.selectedCustomer.customerId));
 			this.props.customerReminderActions.setCustomerReminders(
 				CustomerReminderRealm.getCustomerReminders()
@@ -1053,9 +1031,8 @@ class OrderCheckout extends React.PureComponent {
 				const rpIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("loan");
 
 				if (rpIndex >= 0) {
-					console.log('-rpIndex-', rpIndex);
 					this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) + Number(this.props.selectedPaymentTypes[rpIndex].amount);
-					console.log('-this.props.selectedCustomer.dueAmount-', this.props.selectedCustomer.dueAmount);
+
 					CustomerRealm.updateCustomerDueAmount(
 						this.props.selectedCustomer,
 						this.props.selectedCustomer.dueAmount

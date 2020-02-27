@@ -315,8 +315,6 @@ class PaymentModal extends React.PureComponent {
 				   let creditsurplus = Number(amountPaid) - Number(this.props.selectedCustomer.dueAmount);
 				    if(this.props.selectedCustomer.dueAmount > 0) {
 
-						console.log("Amount greater outside." + this.props.selectedCustomer.dueAmount);
-
 						this.props.selectedCustomer.dueAmount = 0;
 
 						CustomerRealm.updateCustomerDueAmount(

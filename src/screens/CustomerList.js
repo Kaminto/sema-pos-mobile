@@ -257,8 +257,8 @@ class CustomerList extends React.PureComponent {
                 searchString: item.name + ' ' + item.phoneNumber + ' ' + item.address,
 				customerType: item != undefined ? this.getCustomerTypes(item).toLowerCase() : "",
             }
-        });
-        // console.log('data', data)
+		});
+
         let filteredItems = data.filter(function (item) {
             for (var key in filter) {
                 if (
@@ -293,7 +293,7 @@ class CustomerList extends React.PureComponent {
                             alignItems: 'center'
                         }
                     ]}>
-                    <View style={{ flex: 1 }}>
+                    <View style={{ flex: 1.5 }}>
                         <Text style={[styles.baseItem, styles.leftMargin]}>
                             {item.name}
                         </Text>
@@ -304,7 +304,7 @@ class CustomerList extends React.PureComponent {
                         </Text>
                     </View>
 
-                    <View style={{ flex: 1 }}>
+                    <View style={{ flex: 1.5 }}>
                         <Text style={[styles.baseItem]}>{item.address}</Text>
                     </View>
                     <View style={{ flex: 1 }}>
@@ -459,7 +459,7 @@ class CustomerList extends React.PureComponent {
                     },
                     styles.headerBackground
                 ]}>
-                <View style={[{ flex: 1 }]}>
+                <View style={[{ flex: 1.5 }]}>
                     <Text style={[styles.headerItem, styles.leftMargin]}>
                         {i18n.t('account-name')}
                     </Text>
@@ -469,7 +469,7 @@ class CustomerList extends React.PureComponent {
                         {i18n.t('telephone-number')}
                     </Text>
                 </View>
-                <View style={[{ flex: 1 }]}>
+                <View style={[{ flex: 1.5 }]}>
                     <Text style={[styles.headerItem]}>{i18n.t('address')}</Text>
                 </View>
                 <View style={[{ flex: 1 }]}>

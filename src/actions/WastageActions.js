@@ -39,7 +39,7 @@ function groupBySku(objectArray, property) {
 
 function totalByProperty(objectArray, property) {
 	return objectArray.reduce((accumulator, currentValue) => {
-		return accumulator + Number(currentValue[property]);
+		return accumulator + (!isNaN(Number(currentValue[property])) ? Number(currentValue[property]): 0);
 	}, 0);
 }
 
@@ -63,7 +63,6 @@ const getSalesData = (beginDate) => {
 			description: groupedOrderItems[i][0].product.description,
 			quantity: totalByProperty(groupedOrderItems[i], "quantity"),
 			category: groupedOrderItems[i][0].product.category_id ? Number(groupedOrderItems[i][0].product.category_id) : Number(groupedOrderItems[i][0].product.categoryId),
-			pricePerSku: parseFloat(groupedOrderItems[i][0].price_total) / totalByProperty(groupedOrderItems[i], "quantity"),
 			litersPerSku: groupedOrderItems[i][0].product.unit_per_product ? Number(groupedOrderItems[i][0].product.unit_per_product) : Number(groupedOrderItems[i][0].product.unitPerProduct),
 			totalLiters: groupedOrderItems[i][0].product.unit_per_product ? Number(groupedOrderItems[i][0].product.unit_per_product) * totalByProperty(groupedOrderItems[i], "quantity") : Number(groupedOrderItems[i][0].product.unitPerProduct) * totalByProperty(groupedOrderItems[i], "quantity")
 		}
@@ -75,8 +74,6 @@ const getSalesData = (beginDate) => {
 		salesItems: todaySales,
 	}
 
-	console.log("Musumba " + finalData);
-	// console.log("Wastage" + JSON.stringify(finalData));
 	return { ...finalData };
 };
 

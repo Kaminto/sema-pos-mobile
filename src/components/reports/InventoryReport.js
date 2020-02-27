@@ -323,7 +323,6 @@ class InventoryReport extends React.PureComponent {
 				element.wastageName === wastageName
 			);
 			if (checkWastageName.length > 0) {
-				console.log('update needed');
 				InventroyRealm.createInventory({
 					type: 'notdispatched',
 					closingStockId: checkWastageName[0].closingStockId,
@@ -334,7 +333,6 @@ class InventoryReport extends React.PureComponent {
 				},
 					this.props.dateFilter.startDate);
 			} else if (checkWastageName.length === 0) {
-				console.log('notdispatched');
 				InventroyRealm.createInventory({
 					type: 'notdispatched',
 					notDispatched: update,
@@ -362,7 +360,6 @@ class InventoryReport extends React.PureComponent {
 				element.wastageName === wastageName
 			);
 			if (checkWastageName.length > 0) {
-				console.log('update needed');
 				InventroyRealm.createInventory({
 					type: 'closing',
 					closingStockId: checkWastageName[0].closingStockId,
@@ -531,7 +528,6 @@ class InventoryReport extends React.PureComponent {
 	}
 
 	getOutput() {
-		console.log("Final Wastage" + JSON.stringify(this.props.wastageData))
 		let sales = 0;
 		let inventory = 0;
 		let notDispatched = 0;

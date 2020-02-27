@@ -330,7 +330,6 @@ class CreditHistory extends React.PureComponent {
                     totalAmount: receipt.total
                 };
 			});
-			console.log("Bron" + JSON.stringify(remoteReceipts))
 
             remoteReceipts.sort((a, b) => {
                 return isBefore(parseISO(a.createdAt), parseISO(b.createdAt))

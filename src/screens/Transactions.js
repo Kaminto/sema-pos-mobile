@@ -75,11 +75,9 @@ class ReceiptLineItem extends React.PureComponent {
 			}, '');
 
 		if (productImage.startsWith('data:image')) {
-			// console.log(productImage);
 			return productImage;
 
 		} else {
-			// console.log(productImage);
 			return 'data:image/png;base64,' + productImage;
 		}
 	};
@@ -159,7 +157,6 @@ class TransactionDetail extends React.PureComponent {
 
 
 	deleteReceipt(item) {
-		console.log(item);
 		OrderRealm.softDeleteOrder(item);
 		const loanIndex = item.paymentTypes.map(function (e) { return e.name }).indexOf("loan");
 		if (loanIndex >= 0) {
@@ -185,7 +182,6 @@ class TransactionDetail extends React.PureComponent {
 		var paymentTypes;
 		if (this.props.item.receiptLineItems !== undefined) {
 			receiptLineItems = this.props.item.receiptLineItems.map((lineItem, idx) => {
-				// console.log('lineItem-lineItem-lineItem', lineItem);
 				return (
 					<ReceiptLineItem
 						receiptActions={this.props.receiptActions}
@@ -219,7 +215,6 @@ class TransactionDetail extends React.PureComponent {
 		}
 
        if(this.props.item.hasOwnProperty("customerAccount")) {
-		   console.log(this.props.item);
 		return (
 			<View style={{ padding: 15 }}>
 				<View style={styles.deleteButtonContainer}>
@@ -451,7 +446,6 @@ class Transactions extends React.PureComponent {
 		}, {});
 	}
 
-	//{format(parseISO(item.createdAt), 'iii d MMM yyyy')}
 	prepareSectionedData() {
 		// Used for enumerating receipts
 		let receipts = this.prepareData();
@@ -512,12 +506,13 @@ class Transactions extends React.PureComponent {
 			finalCustomerReceiptsPaymentTypes.push(customerReceipt);
 
 		}
+		console.log(JSON.stringify(finalCustomerReceiptsPaymentTypes))
 		return finalCustomerReceiptsPaymentTypes;
 	}
 
 	comparePaymentTypes() {
-		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
-		let paymentTypes = [...this.props.paymentTypes];
+		let receiptsPaymentTypes = this.props.receiptsPaymentTypes;
+		let paymentTypes = this.props.paymentTypes;
 
 		let finalreceiptsPaymentTypes = [];
 

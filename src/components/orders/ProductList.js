@@ -49,7 +49,6 @@ class ProductList extends React.PureComponent {
 	}
 
 	getItem = (item, index) => {
-		// console.log(JSON.stringify(item));
 		return (
 			<View
 				style={[
