@@ -218,20 +218,6 @@ class PaymentModal extends React.PureComponent {
 			return;
 		}
 
-		// if (this.props.selectedDebtPaymentTypes.length === 2) {
-		// 	Alert.alert(
-		// 		'Notice ',
-		// 		`You cannot select more than two payment methods.`,
-		// 		[{
-		// 			text: 'OK', onPress: () => {
-		// 				this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
-		// 			}
-		// 		}],
-		// 		{ cancelable: false }
-		// 	);
-		// 	return;
-		// }
-
 
 		this.setState({
 			checkedType: { ...item, isSelected: item.isSelected === true ? false : true }
@@ -344,14 +330,10 @@ class PaymentModal extends React.PureComponent {
 						);
 					}
 
-
-
-					console.log("Amount greater inside." + creditsurplus);
-
 					CreditRealm.createCredit(
 						this.props.selectedCustomer.customerId,
-						Number(creditsurplus),
-						Number(creditsurplus)
+						creditsurplus,
+						creditsurplus
 					);
 					this.setState({ topup: "" });
 					this.props.topUpActions.setTopups(CreditRealm.getAllCredit());

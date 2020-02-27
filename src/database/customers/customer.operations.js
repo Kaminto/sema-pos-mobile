@@ -81,7 +81,7 @@ class CustomerRealm {
             customerTypeId: customerTypeId,
             createdDate: now,
             updatedDate: now,
-            frequency: frequency,
+            frequency: frequency.toString(),
             secondPhoneNumber: secondPhoneNumber,
             syncAction: 'create',
             active: false
@@ -119,7 +119,7 @@ class CustomerRealm {
                 customerObj[0].customerTypeId = customerTypeId;
                 customerObj[0].updatedDate = new Date();
                 customerObj[0].syncAction = 'update';
-                customerObj[0].frequency = frequency;
+                customerObj[0].frequency = frequency.toString();
                 customerObj[0].secondPhoneNumber = secondPhoneNumber;
                 customerObj[0].dueAmount = customer.dueAmount;
 

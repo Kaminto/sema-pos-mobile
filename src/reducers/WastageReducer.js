@@ -1,6 +1,5 @@
 import {
 	SALES_REPORT_FROM_ORDERS,
-	REMINDER_REPORT,
 	REPORT_TYPE,
 	INVENTORY_REPORT,
 	REPORT_FILTER,
@@ -8,7 +7,6 @@ import {
 
 let initialState = {
 	salesData: { totalLiters: 0, totalSales: 0, totalDebt: 0, salesItems: [] },
-	reportType: 'sales',
 	inventoryData: {
 		salesAndProducts: { totalLiters: 0, totalSales: 0, totalDebt: 0, salesItems: [] },
 		inventory: {
@@ -30,11 +28,6 @@ const wastageReducer = (state = initialState, action) => {
 		case SALES_REPORT_FROM_ORDERS:
 			newState = { ...state };
 			newState.salesData = action.data.salesData;
-			return newState;
-
-		case REMINDER_REPORT:
-			newState = { ...state };
-			newState.reminderData = action.data.reminderdata;
 			return newState;
 
 		case INVENTORY_REPORT:

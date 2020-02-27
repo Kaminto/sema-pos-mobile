@@ -52,7 +52,7 @@ class CreditHistory extends React.PureComponent {
 
                 <View style={{ flexDirection: 'row', paddingTop: 20, flex: .75, width: '85%', alignSelf: 'center', backgroundColor: '#FFF' }}>
 
-                    <View style={{ flex: .6 }}>
+                    <View style={{ flex: 1 }}>
                         <FlatList
                             ref={ref => {
                                 this.flatListRef = ref;
@@ -72,7 +72,7 @@ class CreditHistory extends React.PureComponent {
                             initialNumToRender={50}
                         />
                     </View>
-                    <View style={{ flex: .4 }}>
+                    {/* <View style={{ flex: .4 }}>
                         <Card title={i18n.t('topup-placeholder')}>
                             <Input
                                 placeholder={i18n.t(
@@ -87,7 +87,7 @@ class CreditHistory extends React.PureComponent {
                                 buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10 }}
                                 title={i18n.t('topup')} />
                         </Card>
-                    </View>
+                    </View> */}
                 </View>
             </View>
         );
@@ -166,7 +166,7 @@ class CreditHistory extends React.PureComponent {
                 return {
                     active: topup.active,
                     //id: topup.id,
-                    createdAt: topup.createdDate,
+                    createdAt: topup.created_at,
                     topUpId: topup.topUpId,
                     customer_account_id: topup.customer_account_id,
                     total: topup.total,
@@ -175,8 +175,6 @@ class CreditHistory extends React.PureComponent {
                     totalCount
                 };
 			});
-
-			console.log("Topups Bron" + JSON.stringify(topups))
 
             topups.sort((a, b) => {
                 return  isBefore(parseISO(a.createdAt), parseISO(b.createdAt))
@@ -207,7 +205,7 @@ class CreditHistory extends React.PureComponent {
                 ]}>
                 <View style={{ flex: 1 }}>
                     <Text style={[styles.baseItem]}>
-						{format(parseISO(item.created_at), 'iiii d MMM yyyy')}
+						{format(parseISO(item.createdAt), 'iiii d MMM yyyy')}
                     </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -215,11 +213,11 @@ class CreditHistory extends React.PureComponent {
                         {item.topup}
                     </Text>
                 </View>
-                <View style={{ flex: 1 }}>
+                {/* <View style={{ flex: 1 }}>
                     <Text style={[styles.baseItem]}>
                         {item.balance}
                     </Text>
-                </View>
+                </View> */}
 
             </View>
         );
@@ -244,14 +242,14 @@ class CreditHistory extends React.PureComponent {
 
                 <View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem]}>
-                        Amount
+                        Topup Amount
                     </Text>
                 </View>
-                <View style={[{ flex: 1 }]}>
+                {/* <View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem]}>
                         Balance
                     </Text>
-                </View>
+                </View> */}
 
             </View>
         );

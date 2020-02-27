@@ -247,7 +247,6 @@ class CustomerList extends React.PureComponent {
 
     filterItems = data => {
         let filter = {
-            salesChannel: this.props.channelFilterString.length > 0 ? this.props.channelFilterString === 'all' ? "" : this.props.channelFilterString : "",
             searchString: this.props.searchString.length > 0 ? this.props.searchString : "",
             customerType: this.props.customerTypeFilter.length > 0 ? this.props.customerTypeFilter === 'all' ? "" : this.props.customerTypeFilter : "",
         };
@@ -255,7 +254,6 @@ class CustomerList extends React.PureComponent {
             return {
                 ...item,
                 walletBalance: item.walletBalance ? item.walletBalance : 0 ,
-                salesChannel: item != undefined ? this.getCustomerSalesChannel(item).toLowerCase() : "",
                 searchString: item.name + ' ' + item.phoneNumber + ' ' + item.address,
 				customerType: item != undefined ? this.getCustomerTypes(item).toLowerCase() : "",
             }

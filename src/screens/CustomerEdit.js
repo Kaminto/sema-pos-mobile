@@ -38,7 +38,7 @@ class CustomerEdit extends React.PureComponent {
 			phoneNumber: this.props.selectedCustomer.phoneNumber ? this.props.selectedCustomer.phoneNumber : "",
 			secondPhoneNumber: this.props.selectedCustomer.secondPhoneNumber ? this.props.selectedCustomer.secondPhoneNumber : "",
 			address: this.props.selectedCustomer.address ? this.props.selectedCustomer.address : "",
-			reference: this.props.selectedCustomer.frequency ? this.props.selectedCustomer.frequency : 1,
+			reference: '7',
 			customerType: this.props.selectedCustomer.customerTypeId ? this.props.selectedCustomer.customerTypeId : 0,
 			customerChannel: this.props.selectedCustomer.salesChannelId ? this.props.selectedCustomer.salesChannelId : 0
 		};
@@ -50,7 +50,6 @@ class CustomerEdit extends React.PureComponent {
 		this.name = React.createRef();
 		this.address = React.createRef();
 		this.customerType = React.createRef();
-		this.frequency = React.createRef();
 
 		this.customerTypes = CustomerTypeRealm.getCustomerTypesForDisplay(this.saleschannelid);
 		this.customerTypeOptions = this.customerTypes.map(customerType => {
@@ -214,21 +213,7 @@ class CustomerEdit extends React.PureComponent {
 								}
 							/>
 
-							<Input
-								placeholder="Frequency"
-								// label="Frequency"
-								value={this.state.reference}
-								keyboardType="number-pad"
-								onChangeText={this.onChangeReference.bind(this)}
-								inputContainerStyle={[styles.inputText]}
-								leftIcon={
-									<Ionicons
-										name='md-alarm'
-										size={24}
-										color='black'
-									/>
-								}
-							/>
+
 
 							<RNPickerSelect
 								placeholder={cplaceholder}
@@ -327,7 +312,6 @@ class CustomerEdit extends React.PureComponent {
 	};
 
 	onChangeReference = text => {
-		//if (this.props.reference === 'customerFrequency') {
 		if (text) {
 			if (/^\d+$/.test(text)) {
 				this.setState({
@@ -341,7 +325,6 @@ class CustomerEdit extends React.PureComponent {
 				reference: ''
 			});
 		}
-		//}
 	};
 
 	getTelephoneNumber(me) {
@@ -366,14 +349,6 @@ class CustomerEdit extends React.PureComponent {
 	getAddress(me) {
 		if (me.props.isEdit) {
 			return me.props.selectedCustomer.address;
-		} else {
-			return '';
-		}
-	}
-
-	getFrequency(me) {
-		if (me.props.isEdit) {
-			return me.props.selectedCustomer.frequency;
 		} else {
 			return '';
 		}
@@ -514,15 +489,6 @@ class CustomerEdit extends React.PureComponent {
 			return;
 		}
 
-		if (this._textIsEmpty(this.frequency.current.state.propertyText)) {
-			this.frequency.current.refs.customerFrequency.focus();
-			return;
-		} else {
-			salesChannelId = this.salesChannels[
-				this.customerChannel.current.state.selectedIndex
-			].id;
-		}
-
 		if (this.customerType.current.state.selectedIndex === -1) {
 			this.customerType.current.show();
 			return;
@@ -541,7 +507,7 @@ class CustomerEdit extends React.PureComponent {
 				this.address.current.state.propertyText,
 				salesChannelId,
 				customerTypeId,
-				this.frequency.current.state.propertyText,
+				'7',
 				this.secondPhoneNumber.current.state.propertyText
 			);
 			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
@@ -554,7 +520,7 @@ class CustomerEdit extends React.PureComponent {
 				this.props.settings.siteId,
 				salesChannelId,
 				customerTypeId,
-				this.frequency.current.state.propertyText,
+				'7',
 				this.secondPhoneNumber.current.state.propertyText
 			)
 			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
@@ -604,15 +570,6 @@ class CustomerEdit extends React.PureComponent {
 			return;
 		}
 
-		if (this._textIsEmpty(this.frequency.current.state.propertyText)) {
-			this.frequency.current.refs.customerFrequency.focus();
-			return;
-		} else {
-			salesChannelId = this.salesChannels[
-				this.customerChannel.current.state.selectedIndex
-			].id;
-		}
-
 		if (this.customerType.current.state.selectedIndex === -1) {
 			this.customerType.current.show();
 			return;
@@ -631,7 +588,7 @@ class CustomerEdit extends React.PureComponent {
 				this.address.current.state.propertyText,
 				salesChannelId,
 				customerTypeId,
-				this.frequency.current.state.propertyText,
+				'7',
 				this.secondPhoneNumber.current.state.propertyText);
 			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
 		} else {
@@ -642,7 +599,7 @@ class CustomerEdit extends React.PureComponent {
 				this.props.settings.siteId,
 				salesChannelId,
 				customerTypeId,
-				this.frequency.current.state.propertyText,
+				'7',
 				this.secondPhoneNumber.current.state.propertyText
 			);
 			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
@@ -651,13 +608,6 @@ class CustomerEdit extends React.PureComponent {
 		}
 
 		this.setState({ isEditInProgress: true });
-	}
-
-	setReminderIfExists(customer) {
-		if (customer.reminder_date && customer.frequency) {
-			Events.trigger('OnEdit', customer);
-		}
-		return;
 	}
 
 	onShowChannel() {

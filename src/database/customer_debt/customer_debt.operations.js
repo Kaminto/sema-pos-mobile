@@ -146,7 +146,7 @@ class CustomerDebtRealm {
                             customer_debt_id: uuidv1(),
                             due_amount: Number(obj.amount),
                             syncAction: obj.syncAction ? obj.syncAction : 'CREATE',
-                            created_at: format(new Date(), 'yyyy-MM-dd'),
+                            created_at: new Date(),
                             updated_at: obj.updated_at ? obj.updated_at : null,
                         });
                     });

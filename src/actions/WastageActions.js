@@ -11,6 +11,7 @@ export function GetInventoryReportData(beginDate, endDate, products) {
 	return dispatch => {
 		getWastageData(beginDate, endDate, getMrps(products))
 			.then(inventoryData => {
+
 				dispatch({
 					type: INVENTORY_REPORT,
 					data: { inventoryData: inventoryData }
@@ -58,23 +59,27 @@ const getSalesData = (beginDate) => {
 	for (let i of Object.getOwnPropertyNames(groupedOrderItems)) {
 		todaySales.push({
 			sku: groupedOrderItems[i][0].product.sku,
-			wastageName: groupedOrderItems[i][0].product.wastageName,
+			wastageName: groupedOrderItems[i][0].product.wastage_name ? groupedOrderItems[i][0].product.wastage_name : groupedOrderItems[i][0].product.wastageName,
 			description: groupedOrderItems[i][0].product.description,
 			quantity: totalByProperty(groupedOrderItems[i], "quantity"),
 			category: groupedOrderItems[i][0].product.category_id ? Number(groupedOrderItems[i][0].product.category_id) : Number(groupedOrderItems[i][0].product.categoryId),
 			pricePerSku: parseFloat(groupedOrderItems[i][0].price_total) / totalByProperty(groupedOrderItems[i], "quantity"),
-			totalSales: parseFloat(groupedOrderItems[i][0].price_total) * totalByProperty(groupedOrderItems[i], "quantity"),
 			litersPerSku: groupedOrderItems[i][0].product.unit_per_product ? Number(groupedOrderItems[i][0].product.unit_per_product) : Number(groupedOrderItems[i][0].product.unitPerProduct),
 			totalLiters: groupedOrderItems[i][0].product.unit_per_product ? Number(groupedOrderItems[i][0].product.unit_per_product) * totalByProperty(groupedOrderItems[i], "quantity") : Number(groupedOrderItems[i][0].product.unitPerProduct) * totalByProperty(groupedOrderItems[i], "quantity")
 		}
 		);
 	}
 
+
+
 	const finalData = {
 		totalLiters: totalByProperty(todaySales, "totalLiters"),
-		totalSales: totalByProperty(todaySales, "totalSales"),
 		salesItems: todaySales,
 	}
+
+	console.log("Musumba " + finalData);
+
+	// console.log("Wastage" + JSON.stringify(finalData));
 	return { ...finalData };
 };
 
@@ -95,6 +100,7 @@ export const getWastageData = (beginDate, endDate, products) => {
 					inventorySettings,
 					products
 				);
+
 				resolve(inventoryData);
 			})
 			.catch(error => {
@@ -114,7 +120,6 @@ const createInventory = (salesData, inventorySettings, products) => {
 				sku: prod.sku,
 				description: prod.description,
 				quantity: 0,
-				totalSales: 0,
 				totalLiters: 0,
 				litersPerSku: prod.unitPerProduct,
 				wastageName: prod.wastageName
@@ -126,28 +131,25 @@ const createInventory = (salesData, inventorySettings, products) => {
 	);
 
 	const groupWastageName = groupBy('wastageName');
-
 	let salesArray = Object.values(groupWastageName(salesAndProducts.salesItems));
 
 	let newSalesArray = [];
 	for (var i in salesArray) {
-		salesTotal = 0;
 		litersTotal = 0;
 		litersPerSkuTotal = 0;
 		quantityTotal = 0;
 		for (var a in salesArray[i]) {
 			if (salesArray[i][a].wastageName != null) {
-				salesTotal = salesTotal + salesArray[i][a].totalSales;
 				litersTotal = litersTotal + salesArray[i][a].totalLiters;
 				litersPerSkuTotal = litersPerSkuTotal + salesArray[i][a].litersPerSku;
 				quantityTotal = quantityTotal + salesArray[i][a].quantity;
+
 			}
 		}
-
 		if (salesArray[i][0].wastageName != null) {
 			newSalesArray.push({
 				wastageName: salesArray[i][0].wastageName,
-				totalSales: salesTotal,
+				// totalSales: salesTotal,
 				totalLiters: litersTotal,
 				litersPerSku: litersPerSkuTotal,
 				quantity: quantityTotal
@@ -160,7 +162,7 @@ const createInventory = (salesData, inventorySettings, products) => {
 		salesAndProducts: salesAndProducts,
 		inventory: inventorySettings
 	};
-	console.log("Manjeri" + JSON.stringify(inventoryData));
+
 	return inventoryData;
 };
 

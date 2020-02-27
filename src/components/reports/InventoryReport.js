@@ -112,8 +112,6 @@ class InventoryReport extends React.PureComponent {
 	};
 
 	render() {
-		///InventroyRealm.truncate();
-		console.log('wastageData', this.props.wastageData.inventory);
 		return (
 			<View style={{ flex: 1 }}>
 				<View style={{ flex: .1, flexDirection: 'row' }}>
@@ -228,13 +226,6 @@ class InventoryReport extends React.PureComponent {
 		}
 	}
 
-	getTotalSales() {
-		if (this.props.wastageData.salesAndProducts.totalSales) {
-			return this.props.wastageData.salesAndProducts.totalSales.toFixed(2);
-		} else {
-			return '-';
-		}
-	}
 
 	getTotalLiters() {
 		if (this.props.wastageData.salesAndProducts.totalLiters && this.props.wastageData.salesAndProducts.totalLiters !== 'N/A') {
@@ -540,6 +531,7 @@ class InventoryReport extends React.PureComponent {
 	}
 
 	getOutput() {
+		console.log("Final Wastage" + JSON.stringify(this.props.wastageData))
 		let sales = 0;
 		let inventory = 0;
 		let notDispatched = 0;
