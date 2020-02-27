@@ -4,9 +4,9 @@ import * as _ from 'lodash';
 
 class RecieptPaymentTypesSync {
 
-    synchronizeRecieptPaymentTypes(lastRecieptPaymentTypesSync) {
+    synchronizeRecieptPaymentTypes(kiosk_id) {
         return new Promise(resolve => {
-            RecieptPaymentTypesApi.getReceiptPaymentTypes(new Date(lastRecieptPaymentTypesSync))
+            RecieptPaymentTypesApi.getReceiptPaymentTypes(kiosk_id)
                 .then(result => {
                     let initlocalRecieptPaymentTypes = ReceiptPaymentTypeRealm.getReceiptPaymentTypes();
                     let localRecieptPaymentTypes = [...initlocalRecieptPaymentTypes];

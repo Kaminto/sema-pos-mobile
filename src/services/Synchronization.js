@@ -147,7 +147,7 @@ class Synchronization {
 								}
 							);
 
-							const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes().then(
+							const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId).then(
 								recieptPaymentTypesSync => {
 
 									syncResult.recieptPaymentTypes = recieptPaymentTypesSync;
