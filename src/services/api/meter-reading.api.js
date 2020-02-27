@@ -27,18 +27,18 @@ class MeterReadingApi {
 		this._siteId = siteId;
 	}
 
-	getMeterReading(updatedSince) {
+	getMeterReading(kiosk_id) {
 		let options = {
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-        let url = 'sema/meter_reading?kiosk_id=' + this._siteId;
+        let url = `sema/meter_reading/${kiosk_id}`;
 
-		if (updatedSince) {
-			url = url + '&updated-date=' + updatedSince;
-		}
+		// if (updatedSince) {
+		// 	url = url + '&updated-date=' + updatedSince;
+		// }
 
 		return fetch(this._url + url, options)
 		.then(response => response.json())
