@@ -28,18 +28,18 @@ class RecieptPaymentTypesApi {
 		this._siteId = siteId;
 	}
 
-	getReceiptPaymentTypes(updatedSince) {
+	getReceiptPaymentTypes(kiosk_id) {
 		let options = {
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-		let url = 'sema/receipt_payment_type';
+		let url = `sema/receipt_payment_type/${kiosk_id}`;
 		console.log('this._url', this._url);
-		if (updatedSince) {
-			url = url + '?updated-date=' + updatedSince;
-		}
+		// if (updatedSince) {
+		// 	url = url + '?updated-date=' + updatedSince;
+		// }
 
 		return fetch(this._url + url, options)
 		.then(response => response.json())

@@ -4,9 +4,9 @@ import * as _ from 'lodash';
 
 class MeterReadingSync {
 
-    synchronizeMeterReading(lastMeterReadingSync) {
+    synchronizeMeterReading(kiosk_id) {
         return new Promise(resolve => {
-            MeterReadingApi.getMeterReading(new Date(lastMeterReadingSync))
+            MeterReadingApi.getMeterReading(kiosk_id)
                 .then(remoteMeterReading => {
                     let initlocalMeterReadings = InventroyRealm.getAllMeterReading();
                     let localMeterReadings = [...initlocalMeterReadings];
