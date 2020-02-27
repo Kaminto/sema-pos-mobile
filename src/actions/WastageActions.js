@@ -70,15 +70,12 @@ const getSalesData = (beginDate) => {
 		);
 	}
 
-
-
 	const finalData = {
 		totalLiters: totalByProperty(todaySales, "totalLiters"),
 		salesItems: todaySales,
 	}
 
 	console.log("Musumba " + finalData);
-
 	// console.log("Wastage" + JSON.stringify(finalData));
 	return { ...finalData };
 };

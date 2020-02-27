@@ -88,7 +88,7 @@ class OrderApi {
 			}
 		};
 
-		let url = `sema/site/receipts/${siteId}?date=${format(sub(new Date(), {days: 90}), 'yyyy-MM-dd')}`;
+		let url = `sema/site/receipts/${siteId}?date=${format(sub(new Date(), {days: 60}), 'yyyy-MM-dd')}`;
 		console.log('Communications:getReceipts: ');
 		return fetch(this._url + url, options)
 			.then(async response => await response.json())

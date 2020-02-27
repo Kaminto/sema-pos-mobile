@@ -38,7 +38,7 @@ class SalesReport extends React.PureComponent {
 						<View style={{ flex: .7, height: 90, borderRadius: 10, flexDirection: 'row', marginTop: 10, backgroundColor: '#2462a0', overflow: 'hidden', color: '#fff' }}>
 							<View style={{ height: 90, flex: 1, color: '#fff' }} >
 								<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-liters').toUpperCase()}</Text>
-								<Text style={[styles.totalItem, { flex: .6 }]}>{this.props.salesData.totalLiters} L</Text>
+								<Text style={[styles.totalItem, { flex: .6 }]}>{this.props.salesData.totalLiters.toFixed(1)} L</Text>
 							</View>
 							<View style={{ height: 90, flex: 1, color: '#fff' }} >
 								<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-sales').toUpperCase()}</Text>
@@ -168,7 +168,7 @@ class SalesReport extends React.PureComponent {
 					<Text style={[styles.rowItemCenter]}>{item.quantity}</Text>
 				</View>
 				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.rowItemCenter]}>{!isNaN(item.totalLiters) ? item.totalLiters : 0}</Text>
+					<Text style={[styles.rowItemCenter]}>{!isNaN(item.totalLiters) ? item.totalLiters.toFixed(1) : 0}</Text>
 				</View>
 				<View style={[{ flex: 1 }]}>
 					<Text style={[styles.rowItemCenter]}>{item.totalSales.toFixed(2)}</Text>
