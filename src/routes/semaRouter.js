@@ -4,7 +4,6 @@ import { createSwitchNavigator } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
-
 // import { createDrawerNavigator } from '@react-navigation/drawer';
 // import { NavigationContainer } from '@react-navigation/native';
 import CustomerList from '../screens/CustomerList';
