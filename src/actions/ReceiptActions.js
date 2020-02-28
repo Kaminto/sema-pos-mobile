@@ -1,6 +1,6 @@
 export const SET_REMOTE_RECEIPTS = 'SET_REMOTE_RECEIPTS';
 export const ADD_REMOTE_RECEIPT = 'ADD_REMOTE_RECEIPT';
-export const SET_LOCAL_RECEIPTS = 'SET_LOCAL_RECEIPTS';
+export const SET_TRANSACTIONS = 'SET_TRANSACTIONS';
 export const UPDATE_REMOTE_RECEIPT = 'UPDATE_REMOTE_RECEIPT';
 export const UPDATE_LOCAL_RECEIPT = 'UPDATE_LOCAL_RECEIPT';
 export const UPDATE_RECEIPT_LINE_ITEM = 'UPDATE_RECEIPT_LINE_ITEM';
@@ -18,6 +18,10 @@ export function setReceipts(receipts) {
     return (dispatch) => { dispatch({ type: SET_RECEIPTS, data: { receipts } }) };
 }
 
+export function setTransactions(transactions) {
+    return dispatch => { dispatch({ type: SET_TRANSACTIONS, data: { transactions } }) };
+}
+
 
 export function addRemoteReceipt(receipt) {
     return dispatch => { dispatch({ type: ADD_REMOTE_RECEIPT, data: { receipt } }) };
@@ -27,9 +31,7 @@ export function clearLoggedReceipts(receipt) {
     return dispatch => { dispatch({ type: CLEAR_LOGGED_RECEIPTS, data: {} }) };
 }
 
-export function setLocalReceipts(localReceipts) {
-    return dispatch => { dispatch({ type: SET_LOCAL_RECEIPTS, data: { localReceipts } }) };
-}
+
 
 export function removeLocalReceipt(receiptId) {
     return dispatch => { dispatch({ type: REMOVE_LOCAL_RECEIPT, data: { receiptId } }) };

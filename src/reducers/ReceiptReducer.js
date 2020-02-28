@@ -2,7 +2,7 @@ import {
     SET_REMOTE_RECEIPTS,
     SET_RECEIPTS,
     ADD_REMOTE_RECEIPT,
-    SET_LOCAL_RECEIPTS,
+    SET_TRANSACTIONS,
     UPDATE_REMOTE_RECEIPT,
     UPDATE_LOCAL_RECEIPT,
     UPDATE_RECEIPT_LINE_ITEM,
@@ -13,7 +13,7 @@ import {
 // import { format, isSameDay, parseISO} from 'date-fns';
 
 let initialState = {
-    localReceipts: [],
+    transactions: [],
     remoteReceipts: [],
     receipts: [],
     updatedRemoteReceipts: [],
@@ -72,10 +72,10 @@ const receiptReducer = (state = initialState, action) => {
             newState = { ...state };
             newState.remoteReceipts.push(receipt);
             return newState;
-        case SET_LOCAL_RECEIPTS:
-            let { localReceipts } = action.data;
+        case SET_TRANSACTIONS:
+            let { transactions } = action.data;
             newState = { ...state };
-            newState.localReceipts = localReceipts;
+            newState.transactions = transactions;
             return newState;
         case UPDATE_REMOTE_RECEIPT:
             let {
@@ -105,7 +105,7 @@ const receiptReducer = (state = initialState, action) => {
                 updatedLocalFields
             } = action.data;
             newState = { ...state };
-            newState.localReceipts[localReceiptIndex] = { ...newState.localReceipts[localReceiptIndex], ...updatedLocalFields };
+            newState.transactions[localReceiptIndex] = { ...newState.transactions[localReceiptIndex], ...updatedLocalFields };
             return newState;
         case REMOVE_LOCAL_RECEIPT:
             let {

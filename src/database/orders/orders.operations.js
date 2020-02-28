@@ -1,10 +1,12 @@
 import realm from '../init';
-import { format, parseISO} from 'date-fns';
+
+import { format, parseISO, isBefore } from 'date-fns';
 class OrderRealm {
     constructor() {
         this.order = [];
         let firstSyncDate = new Date('November 7, 1973');
         this.lastOrderSync = firstSyncDate;
+        //this.paymentTypeRealm = new PaymentTypeRealm();
     }
 
     truncate() {
@@ -27,6 +29,8 @@ class OrderRealm {
 
         return this.order = formattedArray;
     }
+
+
 
     getOrdersByDate(date) {
         return new Promise(resolve => {
