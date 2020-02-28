@@ -138,7 +138,6 @@ class SalesReport extends React.PureComponent {
 	}
 
 	comparePaymentTypes() {
-		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
 		let filteredReceiptPaymentTypes = [];
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
 			filteredReceiptPaymentTypes = this.props.receiptsPaymentTypes.filter(receiptpayment =>

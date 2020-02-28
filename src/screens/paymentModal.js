@@ -253,8 +253,8 @@ class PaymentModal extends React.PureComponent {
 			if (secondItemObj.length > 0) {
 				const seconditemIndex2 = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(secondItemObj[0]);
 				if(Number(this.calculateOrderDue()) <= Number(textValue)){
-				this.props.selectedDebtPaymentTypes[seconditemIndex2].amount = Number(this.calculateOrderDue()) - Number(textValue);
-				this.props.paymentTypesActions.updateSelectedDebtPaymentType({ ...this.props.selectedDebtPaymentTypes[seconditemIndex2], amount: Number(this.calculateOrderDue()) - Number(textValue) }, seconditemIndex2);
+				this.props.selectedDebtPaymentTypes[seconditemIndex2].amount = Number(textValue);
+				this.props.paymentTypesActions.updateSelectedDebtPaymentType({ ...this.props.selectedDebtPaymentTypes[seconditemIndex2], amount:  Number(textValue) }, seconditemIndex2);
 				}
 			}
 		}
