@@ -19,11 +19,12 @@ class SalesReport extends React.PureComponent {
 		this.endDate = this.addDays(new Date(), 1);
 	}
 
+	static whyDidYouRender = true;
+
 	addDays = (theDate, days) => {
 		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
 	};
 	render() {
-		console.log(JSON.stringify(this.getSalesData()));
 		return (
 			<View style={{ flex: 1 }}>
 				<View style={{
@@ -89,7 +90,6 @@ class SalesReport extends React.PureComponent {
 	getSalesData() {
 		let sales = [];
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
-			console.log(this.props.dateFilter.startDate + " - " + this.props.dateFilter.endDate);
 			if (this.props.dateFilter.startDate == this.startDate && this.props.dateFilter.endDate == this.endDate) {
 				sales = this.props.salesData.salesItems;
 			} else {

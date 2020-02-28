@@ -65,6 +65,8 @@ class OrderCheckout extends React.PureComponent {
 	// 	return nextProps !== this.props && nextState !== this.state;
 	// }
 
+	static whyDidYouRender = true;
+
 	showDateTimePicker = () => {
 		this.setState({ isDateTimePickerVisible: true });
 	};
@@ -94,6 +96,10 @@ class OrderCheckout extends React.PureComponent {
 		let days = date.getDay() === 1 ? 2 : 1;
 		date.setDate(date.getDate() - days);
 		return date;
+	};
+
+	handleOnPress = () => {
+		this.onCompleteOrder();
 	};
 
 	render() {
@@ -328,7 +334,8 @@ class OrderCheckout extends React.PureComponent {
 									<TouchableHighlight
 										underlayColor="#c0c0c0"
 										disabled={this.state.buttonDisabled}
-										onPress={() => this.onCompleteOrder()}>
+										// onPress={() => this.onCompleteOrder()}>
+										onPress={() => this.handleOnPress()}>
 										<Text
 											style={[
 												{ paddingTop: 10, paddingBottom: 20 },

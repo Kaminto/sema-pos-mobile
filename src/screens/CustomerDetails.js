@@ -40,6 +40,7 @@ class ReceiptLineItem extends React.PureComponent {
 		slowlog(this, /.*/);
 	}
 
+
 	render() {
 		return (
 			<View

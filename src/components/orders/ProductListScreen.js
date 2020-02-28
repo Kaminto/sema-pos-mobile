@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 import slowlog from 'react-native-slowlog';
 
-class ProductListScreen extends React.PureComponent {
+class ProductListScreen extends React.Component {
 	constructor(props) {
 		super(props);
 		slowlog(this, /.*/);
@@ -25,6 +25,9 @@ class ProductListScreen extends React.PureComponent {
 		}
 	}
 
+
+	static whyDidYouRender = true;
+
 	componentDidMount() {
 		this.setState({
 			salesChannel: SalesChannelRealm.getSalesChannelFromId(this.props.selectedCustomer.salesChannelId)
@@ -38,6 +41,13 @@ class ProductListScreen extends React.PureComponent {
 				}
 			).start();
 		});
+
+		// this.props.navigation.setParams({ 'ordertitle': this.props.selectedCustomer.name });
+	}
+
+	shouldComponentUpdate(nextProps, nextState){
+		return nextState.salesChannel !== this.state.salesChannel;
+
 	}
 
 	render() {

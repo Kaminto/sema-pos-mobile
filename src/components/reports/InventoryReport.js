@@ -23,6 +23,9 @@ class InventoryEdit extends React.PureComponent {
 		this.quantityInput = React.createRef();
 	}
 
+
+	static whyDidYouRender = true;
+
 	render() {
 		return (
 			<Modal visible={this.isVisible()}
@@ -90,6 +93,7 @@ class InventoryEdit extends React.PureComponent {
 
 }
 
+
 class InventoryReport extends React.PureComponent {
 	constructor(props) {
 		super(props);
@@ -106,6 +110,9 @@ class InventoryReport extends React.PureComponent {
 			currentMeterVisible: false
 		};
 	}
+
+
+	static whyDidYouRender = true;
 
 	addDays = (theDate, days) => {
 		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);

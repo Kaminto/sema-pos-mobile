@@ -24,7 +24,14 @@ class ProductList extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		slowlog(this, /.*/);
-		// this.onPressItem = this.onPressItem.bind(this);
+		// this.handleOnPress = this.handleOnPress.bind(this);
+	}
+
+	static whyDidYouRender = true;
+
+	handleOnPress = (item) => {
+		const unitPrice = this.getItemPrice(item);
+		this.props.orderActions.AddProductToOrder(item, 1, unitPrice);
 	}
 
 	render() {
@@ -34,7 +41,7 @@ class ProductList extends React.PureComponent {
 					data={this.prepareData()}
 					renderItem={({ item, index, separators }) => (
 						<TouchableOpacity
-							onPress={() => this.onPressItem(item)}
+							onPress={() => this.handleOnPress(item)}
 							onShowUnderlay={separators.highlight}
 							onHideUnderlay={separators.unhighlight}>
 							{this.getItem(item, index, separators)}
@@ -43,6 +50,8 @@ class ProductList extends React.PureComponent {
 					keyExtractor={item => item.productId}
 					numColumns={4}
 					horizontal={false}
+					removeClippedSubviews={true}
+
 				/>
 			</View>
 		);
@@ -89,11 +98,6 @@ class ProductList extends React.PureComponent {
 		} else {
 			return 'data:image/png;base64,' + item.base64encoded_image;
 		}
-	};
-
-	onPressItem = item => {
-		const unitPrice = this.getItemPrice(item)
-		this.props.orderActions.AddProductToOrder(item, 1, unitPrice);
 	};
 
 	getItemBackground = index => {

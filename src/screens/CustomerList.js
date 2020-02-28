@@ -30,7 +30,7 @@ import slowlog from 'react-native-slowlog';
 
 import PaymentModal from './paymentModal';
 
-class CustomerList extends React.PureComponent {
+class CustomerList extends React.Component {
     constructor(props) {
 		super(props);
 		slowlog(this, /.*/);
@@ -50,19 +50,20 @@ class CustomerList extends React.PureComponent {
 		// this.onLongPressItem = this.onLongPressItem.bind(this);
 	}
 
+	shouldComponentUpdate(nextProps, nextState) {
+		return nextProps.navigation !== this.props.navigation;
+	}
+
     componentDidMount() {
-        this.props.navigation.setParams({ isCustomerSelected: false });
-        this.props.navigation.setParams({ isDueAmount: 0 });
-        this.props.navigation.setParams({ salesChannelValue: 'all' });
-        this.props.navigation.setParams({ customerTypeValue: 'all' });
-        this.props.navigation.setParams({ customerName: "" });
-        this.props.navigation.setParams({ searchCustomer: this.searchCustomer });
-        this.props.navigation.setParams({ checkfilter: this.checkfilter });
-        this.props.navigation.setParams({ checkCustomerTypefilter: this.checkCustomerTypefilter });
-        this.props.navigation.setParams({ onDelete: this.onDelete });
-        this.props.navigation.setParams({ clearLoan: this.clearLoan });
-        this.props.navigation.setParams({ checkSelectedCustomer: this.checkSelectedCustomer });
-        this.props.navigation.setParams({ editCustomer: this.editCustomer });
+		this.props.navigation.setParams({ isCustomerSelected: false ,
+										  customerTypeValue: 'all' ,
+										  customerName: "" ,
+										  searchCustomer: this.searchCustomer ,
+										  checkCustomerTypefilter: this.checkCustomerTypefilter ,
+										  onDelete: this.onDelete ,
+										   clearLoan: this.clearLoan ,
+										   checkSelectedCustomer: this.checkSelectedCustomer,
+										   editCustomer: this.editCustomer });
 
         this.props.customerActions.CustomerSelected({});
         this.props.customerActions.setCustomerEditStatus(false);
@@ -73,17 +74,10 @@ class CustomerList extends React.PureComponent {
             this.onScrollCustomerTo.bind(this)
         );
 	}
-
-
-	//static whyDidYouRender = true;
+	static whyDidYouRender = true;
 
     searchCustomer = (searchText) => {
         this.props.customerActions.SearchCustomers(searchText);
-    };
-
-    checkfilter = (searchText) => {
-        this.props.navigation.setParams({ salesChannelValue: searchText });
-        this.props.customerActions.SearchCustomersChannel(searchText);
     };
 
     checkCustomerTypefilter = (searchText) => {
@@ -105,7 +99,6 @@ class CustomerList extends React.PureComponent {
     clearLoan = () => {
         this.refs.modal6.open();
     }
-
 
     onDelete = () => {
         if (
@@ -164,7 +157,6 @@ class CustomerList extends React.PureComponent {
 
     checkSelectedCustomer = (text) => {
         return 'false';
-
     };
 
     componentWillUnmount() {
@@ -178,11 +170,31 @@ class CustomerList extends React.PureComponent {
         length: 50,
         offset: 50 * index,
         index
-    });
+	});
+
+	handleOnPress  = item => {
+			this.props.customerActions.CustomerSelected(item);
+			this.setState({ refresh: !this.state.refresh });
+			this.props.navigation.setParams({ isCustomerSelected: true });
+			this.props.navigation.setParams({ isDueAmount: item.dueAmount });
+			this.props.navigation.setParams({ customerName: item.name });
+			this.props.navigation.setParams({ 'title': item.name });
+			Events.trigger('onOrder', { customer: item });
+	};
+
+	onPressItem = item => {
+		this.props.customerActions.CustomerSelected(item);
+			this.props.navigation.setParams({ isDueAmount: item.dueAmount });
+			this.props.navigation.setParams({ isCustomerSelected: false });
+			this.props.navigation.setParams({ customerName: '' });
+			Events.trigger('onOrder', { customer: item });
+			this.props.navigation.navigate('OrderView');
+    };
+
 
     render() {
         return (
-            <View style={{ backgroundColor: '#fff', width: '100%', height: '100%' }}>
+            <View style={{ backgroundColor: '#fff', flex: 1 }}>
                 <FlatList
                     ref={ref => {
                         this.flatListRef = ref;
@@ -192,8 +204,8 @@ class CustomerList extends React.PureComponent {
                     extraData={this.state.refresh}
                     renderItem={({ item, index, separators }) => (
                         <TouchableHighlight
-							onPress={() => this.onLongPressItem(item)}
-							onLongPress={() => this.onPressItem(item)}
+							onLongPress={() => this.handleOnPress(item)}
+							onPress={() => this.onPressItem(item)}
                             onShowUnderlay={separators.highlight}
                             onHideUnderlay={separators.unhighlight}>
                             {this.getRow(item, index, separators)}
@@ -201,9 +213,9 @@ class CustomerList extends React.PureComponent {
 
                     )}
 					keyExtractor={item => item.customerId}
-					windowSize={10}
+					windowSize={20}
 					removeClippedSubviews={true}
-                    // initialNumToRender={50}
+                    maxToRenderPerBatch={20}
                 />
                 <FloatingAction
                     onOpen={name => {
@@ -288,8 +300,9 @@ class CustomerList extends React.PureComponent {
                         this.getRowBackground(index, isSelected),
                         {
                             flex: 1,
-                            flexDirection: 'row',
-                            height: 50,
+							flexDirection: 'row',
+							paddingTop: 15,
+							paddingBottom: 15,
                             alignItems: 'center'
                         }
                     ]}>
@@ -428,24 +441,6 @@ class CustomerList extends React.PureComponent {
         }
     }
 
-    onPressItem  = item => {
-        this.props.customerActions.CustomerSelected(item);
-        this.setState({ refresh: !this.state.refresh });
-        this.props.navigation.setParams({ isCustomerSelected: true });
-        this.props.navigation.setParams({ isDueAmount: item.dueAmount });
-        this.props.navigation.setParams({ customerName: item.name });
-        this.props.navigation.setParams({ 'title': item.name });
-        Events.trigger('onOrder', { customer: item });
-	};
-
-	onLongPressItem = item => {
-		this.props.customerActions.CustomerSelected(item);
-		this.props.navigation.setParams({ isDueAmount: item.dueAmount });
-		this.props.navigation.setParams({ isCustomerSelected: false });
-		this.props.navigation.setParams({ customerName: '' });
-		Events.trigger('onOrder', { customer: item });
-		this.props.navigation.navigate('OrderView');
-    };
 
     showHeader = () => {
         return (

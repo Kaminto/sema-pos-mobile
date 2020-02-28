@@ -36,6 +36,9 @@ class ReceiptLineItem extends React.PureComponent {
 		super(props);
 	}
 
+
+	static whyDidYouRender = true;
+
 	render() {
 		return (
 			<View
@@ -88,6 +91,9 @@ class PaymentTypeItem extends React.PureComponent {
 		super(props);
 	}
 
+
+	static whyDidYouRender = true;
+
 	render() {
 		return (
 			<View
@@ -124,6 +130,8 @@ class TransactionDetail extends React.PureComponent {
 		});
 	}
 
+
+	static whyDidYouRender = true;
 
 	onDeleteReceipt(item) {
 		return () => {
@@ -187,7 +195,7 @@ class TransactionDetail extends React.PureComponent {
 						receiptActions={this.props.receiptActions}
 						remoteReceipts={this.props.receipts}
 						item={lineItem}
-						key={lineItem.receiptId}
+						key={lineItem.receiptId + idx}
 						lineItemIndex={idx}
 						products={this.props.products}
 						handleUpdate={this.handleUpdate.bind(this)}
@@ -301,6 +309,9 @@ class Transactions extends React.PureComponent {
 			selected: this.prepareSectionedData().length > 0 ? this.prepareSectionedData()[0].data[0] : {},
 		};
 	}
+
+
+	static whyDidYouRender = true;
 	componentDidMount() {
 		this.props.navigation.setParams({ paymentTypeValue: 'all' });
 		this.props.navigation.setParams({ checkPaymentTypefilter: this.checkPaymentTypefilter });
@@ -506,7 +517,6 @@ class Transactions extends React.PureComponent {
 			finalCustomerReceiptsPaymentTypes.push(customerReceipt);
 
 		}
-		console.log(JSON.stringify(finalCustomerReceiptsPaymentTypes))
 		return finalCustomerReceiptsPaymentTypes;
 	}
 
