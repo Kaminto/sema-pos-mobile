@@ -43,6 +43,10 @@ class PaymentModal extends React.PureComponent {
 		};
 	}
 
+	handleOnPress = () => {
+		this.clearLoan();
+	};
+
 
 	render() {
 		return (
@@ -98,7 +102,7 @@ class PaymentModal extends React.PureComponent {
 								<TouchableHighlight
 									underlayColor="#c0c0c0"
 									disabled={this.state.buttonDisabled}
-									onPress={() => this.clearLoan()}>
+									onPress={() => this.handleOnPress()}>
 									<Text
 										style={[
 											{ paddingTop: 20, paddingBottom: 20 },
@@ -244,7 +248,8 @@ class PaymentModal extends React.PureComponent {
 
 			if (itemIndex2 >= 0) {
 				this.props.selectedDebtPaymentTypes[itemIndex].amount = Number(textValue);
-				this.props.paymentTypesActions.updateSelectedDebtPaymentType({ ...this.props.selectedDebtPaymentTypes[itemIndex2], amount: Number(textValue) }, itemIndex2);
+				this.props.paymentTypesActions.updateSelectedDebtPaymentType({ ...this.props.selectedDebtPaymentTypes[itemIndex2],
+					amount: Number(textValue) }, itemIndex2);
 				this.setState({
 					selectedType: { ...this.props.selectedDebtPaymentTypes[itemIndex2], amount: Number(textValue) }
 				});
@@ -254,7 +259,7 @@ class PaymentModal extends React.PureComponent {
 				const seconditemIndex2 = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(secondItemObj[0]);
 				if(Number(this.calculateOrderDue()) <= Number(textValue)){
 				this.props.selectedDebtPaymentTypes[seconditemIndex2].amount = Number(textValue);
-				this.props.paymentTypesActions.updateSelectedDebtPaymentType({ ...this.props.selectedDebtPaymentTypes[seconditemIndex2], amount:  Number(textValue) }, seconditemIndex2);
+				this.props.paymentTypesActions.updateSelectedDebtPaymentType({ ...this.props.selectedDebtPaymentTypes[seconditemIndex2], amount: Number(textValue) }, seconditemIndex2);
 				}
 			}
 		}

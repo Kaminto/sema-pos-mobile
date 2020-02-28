@@ -23,9 +23,12 @@ class OrderView extends React.PureComponent {
 			<View style={styles.orderView}>
 				<ProductListScreen />
 				<OrderSummaryScreen
-					navigation={this.props.navigation} />
+					 navigation={this.props.navigation} />
 			</View>
 		);
+	}
+	componentDidMount(){
+		this.props.navigation.setParams({ 'ordertitle': this.props.selectedCustomer.name + "'s Order" });
 	}
 
 	componentWillUnmount() {

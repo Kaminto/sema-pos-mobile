@@ -3,7 +3,7 @@ if (process.env.NODE_ENV === 'development') {
 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
 	whyDidYouRender(React);
   }
-import { View, Text, TouchableOpacity, ScrollView, FlatList, TextInput, Dimensions, TouchableHighlight, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, FlatList, TextInput, Dimensions, TouchableHighlight, StyleSheet, Alert } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
@@ -18,13 +18,10 @@ import DiscountRealm from '../../database/discount/discount.operations';
 import ToggleSwitch from 'toggle-switch-react-native';
 import slowlog from 'react-native-slowlog';
 
-const { height, width } = Dimensions.get('window');
 const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
 
-const inputFontHeight = Math.round((24 * height) / 752);
-
-class OrderItems extends React.PureComponent {
+class OrderItems extends React.Component {
 	constructor(props) {
 		super(props);
 		slowlog(this, /.*/);
@@ -39,15 +36,21 @@ class OrderItems extends React.PureComponent {
 			swipeToClose: true,
 			sliderValue: 0.3,
 		};
-
-		this.onPressItem = this.onPressItem.bind(this);
 	}
 
 	static whyDidYouRender = true;
 
-	// shouldComponentUpdate(nextProps, nextState) {
-	// 	return nextProps !== this.props && nextState !== this.state;
-	// }
+	shouldComponentUpdate(nextProps, nextState) {
+		return nextProps.products !== this.props.products;
+	}
+
+	handleOnPress = (item) => {
+		this.setState({ selectedItem: item });
+		this.setState({ accumulator: item.quantity });
+		this.setState({ firstKey: true });
+		this.refs.productModel.open();
+	  }
+
 
 	render() {
 		return (
@@ -58,7 +61,7 @@ class OrderItems extends React.PureComponent {
 					extraData={this.props.channel.salesChannel}
 					renderItem={({ item, index, separators }) => (
 						<TouchableHighlight
-							onPress={() => this.onPressItem(item)}
+							onPress={() => this.handleOnPress(item)}
 							onShowUnderlay={separators.highlight}
 							onHideUnderlay={separators.unhighlight}>
 							{this.getRow(item, index, separators)}
@@ -527,13 +530,6 @@ class OrderItems extends React.PureComponent {
 		this.props.toolbarActions.ShowScreen('quanityChanger');
 	}
 
-	onPressItem = (item) => {
-		this.setState({ selectedItem: item });
-		this.setState({ accumulator: item.quantity });
-		this.setState({ firstKey: true });
-		this.refs.productModel.open();
-	};
-
 	getRow = (item) => {
 		return (
 			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white', padding: 5 }}>
@@ -553,15 +549,25 @@ class OrderItems extends React.PureComponent {
 
 	customDiscount = searchText => {
 		const productIndex = this.props.selectedDiscounts.map(function (e) { return e.product.productId }).indexOf(this.state.selectedItem.product.productId);
+		if(Number(searchText) > (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product))) {
+			Alert.alert("Custom Discount",
+			 "Discount cannot exceed amount."
+			 [{
+				text: 'OK',
+				onPress: () => {
+				}
+			}],
+			{ cancelable: false }
+		   );
+			return;
+		}
 
 		if (productIndex >= 0) {
 			DiscountRealm.isSelected(this.state.selectedDiscounts, false);
 			this.props.discountActions.setDiscounts(DiscountRealm.getDiscounts());
 			if (this.props.selectedDiscounts[productIndex].discount.length > 0 && this.state.selectedDiscounts.length === 0) {
-
 				this.props.orderActions.SetOrderDiscounts('Custom', searchText, this.state.selectedItem.product, this.props.selectedDiscounts[productIndex].discount, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)));
 			} else {
-
 				this.props.orderActions.SetOrderDiscounts('Custom', searchText, this.state.selectedItem.product, this.state.selectedDiscounts, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)));
 
 			}
@@ -945,11 +951,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 
-	},
-	inputText: {
-		fontSize: inputFontHeight,
-		alignSelf: 'center',
-		backgroundColor: 'white',
 	},
 	digitContainer: {
 		flex: 1,

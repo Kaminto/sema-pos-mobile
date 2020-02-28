@@ -10,7 +10,8 @@ import OrderItems from "./OrderItems";
 import OrderCheckout from "./OrderCheckout";
 
 export default class OrderSummaryScreen extends React.PureComponent {
-	// static whyDidYouRender = true;
+
+	static whyDidYouRender = true;
 
 	render() {
 		return (
@@ -18,7 +19,8 @@ export default class OrderSummaryScreen extends React.PureComponent {
 				<OrderSummary/>
 				<OrderTotal/>
 				<OrderItems/>
-				<OrderCheckout navigation={this.props.navigation}/>
+				<OrderCheckout
+				navigation={this.props.navigation}/>
 			</View>
 		);
 	}

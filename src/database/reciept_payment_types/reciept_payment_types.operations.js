@@ -134,9 +134,9 @@ class ReceiptPaymentTypeRealm {
     }
 
     createManyReceiptPaymentType(receiptPaymentTypes, receiptId) {
-        console.log('testing sync');
+        // console.log('testing sync');
         try {
-            console.log('testing sync2');
+            // console.log('testing sync2');
             realm.write(() => {
                 if (receiptId) {
                     console.log('no sync');
