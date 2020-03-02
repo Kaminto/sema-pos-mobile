@@ -70,6 +70,11 @@ class CustomerList extends React.PureComponent {
         this.props.customerActions.SearchCustomers(searchText);
     };
 
+	shouldComponentUpdate(nextProps, nextState) {
+		return nextProps.navigation !== this.props.navigation;
+	}
+
+
     checkCustomerTypefilter = (searchText) => {
         this.props.navigation.setParams({ customerTypeValue: searchText });
         this.props.customerActions.SearchCustomerTypes(searchText);
