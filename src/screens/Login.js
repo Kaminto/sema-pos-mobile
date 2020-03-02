@@ -32,7 +32,7 @@ import * as ProductActions from '../actions/ProductActions';
 import * as receiptActions from '../actions/ReceiptActions';
 import * as InventoryActions from '../actions/InventoryActions';
 import * as discountActions from '../actions/DiscountActions';
-import TransactionOperations from '../database/operations/transactions.operatons';
+
 import Events from 'react-native-simple-events';
 
 import Communications from '../services/Communications';
@@ -266,10 +266,6 @@ class Login extends React.PureComponent {
 		this.props.receiptActions.setReceipts(
 			OrderRealm.getAllOrder()
 		);
-
-		this.props.receiptActions.setTransactions(
-            TransactionOperations.getTransactions()
-        );
 
 		this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
 
