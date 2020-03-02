@@ -20,7 +20,7 @@ import SalesChannelRealm from '../../database/sales-channels/sales-channels.oper
 import randomMC from 'random-material-color';
 import slowlog from 'react-native-slowlog';
 
-class ProductList extends React.PureComponent {
+class ProductList extends React.Component {
 	constructor(props) {
 		super(props);
 		slowlog(this, /.*/);

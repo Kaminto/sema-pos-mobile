@@ -9,7 +9,8 @@ import {
     FlatList,
     TouchableHighlight,
     StyleSheet,
-	Alert
+	Alert,
+	TouchableWithoutFeedback
 } from 'react-native';
 import { FloatingAction } from "react-native-floating-action";
 import * as CustomerActions from '../actions/CustomerActions';
@@ -27,16 +28,19 @@ import PaymentTypeRealm from '../database/payment_types/payment_types.operations
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
 import slowlog from 'react-native-slowlog';
 
+import Icons from 'react-native-vector-icons/FontAwesome';
+
 import PaymentModal from './paymentModal';
 
-class CustomerList extends React.PureComponent {
+class CustomerList extends React.Component {
     constructor(props) {
 		super(props);
 		slowlog(this, /.*/);
 
         this.state = {
             refresh: false,
-            searchString: '',
+			searchString: '',
+			debtcustomers: false,
             customerTypeFilter: '',
             customerTypeValue: '',
             hasScrolled: false
@@ -69,10 +73,6 @@ class CustomerList extends React.PureComponent {
     searchCustomer = (searchText) => {
         this.props.customerActions.SearchCustomers(searchText);
     };
-
-	shouldComponentUpdate(nextProps, nextState) {
-		return nextProps.navigation !== this.props.navigation;
-	}
 
 
     checkCustomerTypefilter = (searchText) => {
@@ -190,7 +190,6 @@ class CustomerList extends React.PureComponent {
 			this.props.navigation.navigate('OrderView');
     };
 
-
     render() {
         return (
             <View style={{ backgroundColor: '#fff', flex: 1 }}>
@@ -257,7 +256,7 @@ class CustomerList extends React.PureComponent {
     filterItems = data => {
         let filter = {
             searchString: this.props.searchString.length > 0 ? this.props.searchString : "",
-            customerType: this.props.customerTypeFilter.length > 0 ? this.props.customerTypeFilter === 'all' ? "" : this.props.customerTypeFilter : "",
+			customerType: this.props.customerTypeFilter.length > 0 ? this.props.customerTypeFilter === 'all' ? "" : this.props.customerTypeFilter : "",
         };
         data = data.map(item => {
             return {
@@ -267,6 +266,12 @@ class CustomerList extends React.PureComponent {
 				customerType: item != undefined ? this.getCustomerTypes(item).toLowerCase() : "",
             }
 		});
+
+		if(this.state.debtcustomers){
+			data.sort((a, b) => {
+				return Number(b.dueAmount)-Number(a.dueAmount);
+			});
+		}
 
         let filteredItems = data.filter(function (item) {
             for (var key in filter) {
@@ -278,7 +283,8 @@ class CustomerList extends React.PureComponent {
                     return false;
             }
             return true;
-        });
+		});
+
         return filteredItems;
     };
 
@@ -417,7 +423,6 @@ class CustomerList extends React.PureComponent {
         }
     }
 
-
     showHeader = () => {
         return (
             <View
@@ -446,8 +451,24 @@ class CustomerList extends React.PureComponent {
                 <View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem]}>{i18n.t('customer-type')}</Text>
                 </View>
-                <View style={[{ flex: 1 }]}>
-                    <Text style={[styles.headerItem]}>{i18n.t('balance')}</Text>
+                <View style={[{ flex: 1, flexDirection: 'row' }]}>
+					<TouchableWithoutFeedback onPress={() => {
+									this.setState({ debtcustomers: !this.state.debtcustomers });
+									this.setState({ refresh: !this.state.refresh });
+								}}>
+								<Text style={[styles.headerItem]}>{i18n.t('balance')}
+									<Icons
+										name='sort'
+										size={20}
+										color="white"
+										style={{
+											marginLeft: 5,
+											marginRight: 5,
+										}}
+									/>
+									</Text>
+
+						</TouchableWithoutFeedback>
                 </View>
 				<View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem]}>Wallet</Text>
