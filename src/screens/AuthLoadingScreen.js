@@ -30,9 +30,6 @@ import CustomerRealm from '../database/customers/customer.operations'
 import InventroyRealm from '../database/inventory/inventory.operations';
 import SettingRealm from '../database/settings/settings.operations';
 import ProductsRealm from '../database/products/product.operations';
-
-import TransactionOperations from '../database/operations/transactions.operatons';
-
 import OrderRealm from '../database/orders/orders.operations';
 import DiscountRealm from '../database/discount/discount.operations';
 
@@ -117,12 +114,6 @@ class AuthLoadingScreen extends React.PureComponent {
         this.props.receiptActions.setReceipts(
             OrderRealm.getAllOrder()
         );
-
-
-        this.props.receiptActions.setTransactions(
-            TransactionOperations.getTransactions()
-        );
-
         //PaymentTypeRealm.truncate();
         this.props.paymentTypesActions.setPaymentTypes(
             PaymentTypeRealm.getPaymentTypes()

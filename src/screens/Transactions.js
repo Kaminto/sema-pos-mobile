@@ -20,6 +20,8 @@ import {
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import Events from 'react-native-simple-events';
+
 import CustomerRealm from '../database/customers/customer.operations';
 import OrderRealm from '../database/orders/orders.operations';
 import * as CustomerActions from '../actions/CustomerActions';
@@ -191,6 +193,7 @@ class TransactionDetail extends React.PureComponent {
 				return (
 					<ReceiptLineItem
 						receiptActions={this.props.receiptActions}
+						remoteReceipts={this.props.receipts}
 						item={lineItem}
 						key={lineItem.receiptId + idx}
 						lineItemIndex={idx}
@@ -296,7 +299,7 @@ class TransactionDetail extends React.PureComponent {
 class Transactions extends React.PureComponent {
 	constructor(props) {
 		super(props);
-		//slowlog(this, /.*/);
+		slowlog(this, /.*/);
 
 		this.state = {
 			refresh: false,
@@ -312,6 +315,12 @@ class Transactions extends React.PureComponent {
 	componentDidMount() {
 		this.props.navigation.setParams({ paymentTypeValue: 'all' });
 		this.props.navigation.setParams({ checkPaymentTypefilter: this.checkPaymentTypefilter });
+
+		Events.on(
+			'ScrollCustomerTo',
+			'customerId1',
+			this.onScrollCustomerTo.bind(this)
+		);
 	}
 
 	checkPaymentTypefilter = (searchText) => {
@@ -320,6 +329,7 @@ class Transactions extends React.PureComponent {
 	};
 
 	componentWillUnmount() {
+		Events.rm('ScrollCustomerTo', 'customerId1');
 	}
 
 	onScrollCustomerTo(data) {
@@ -342,7 +352,16 @@ class Transactions extends React.PureComponent {
 			return (
 				<View style={{ flex: 1, flexDirection: 'row' }}>
 					<View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 1, borderRightColor: '#CCC' }}>
-						<SafeAreaView style={styles.container}>
+						{/* <FlatList
+							data={this.prepareData()}
+							renderItem={this.renderReceipt.bind(this)}
+							keyExtractor={(item, index) => item.id}
+							ItemSeparatorComponent={this.renderSeparator}
+							extraData={this.state}
+							windowSize={10}
+					        removeClippedSubviews={true}
+						/> */}
+						 <SafeAreaView style={styles.container}>
 								<SectionList
 								    ItemSeparatorComponent={this.renderSeparator}
 									sections={this.prepareSectionedData()}
@@ -361,6 +380,8 @@ class Transactions extends React.PureComponent {
 								item={this.state.selected}
 								products={this.props.products}
 								receiptActions={this.props.receiptActions}
+								receipts={this.props.receipts}
+								paymentTypes={this.props.receiptsPaymentTypes}
 							/>
 						</ScrollView>
 					</View>
@@ -387,7 +408,43 @@ class Transactions extends React.PureComponent {
 		);
 		return null;
 	}
- 
+
+
+	prepareData() {
+		// Used for enumerating receipts
+		const totalCount = this.props.receipts.length;
+
+		let receipts = this.comparePaymentTypeReceipts().map((receipt, index) => {
+			return {
+				active: receipt.active,
+				id: receipt.id,
+				receiptId: receipt.id,
+				createdAt: receipt.created_at,
+				sectiontitle: format(parseISO(receipt.created_at), 'iiii d MMM yyyy'),
+				customerAccount: receipt.customer_account,
+				receiptLineItems: receipt.receipt_line_items,
+				paymentTypes: receipt.paymentTypes,
+				isLocal: receipt.isLocal || false,
+				key: receipt.isLocal ? receipt.key : null,
+				index,
+				updated: receipt.updated,
+				is_delete: receipt.is_delete,
+				amountLoan: receipt.amount_loan,
+				totalCount,
+				currency: receipt.currency_code,
+				totalAmount: receipt.total
+			};
+		});
+
+		receipts.sort((a, b) => {
+			return isBefore(new Date(a.createdAt), new Date(b.createdAt))
+					? 1
+					: -1;
+		});
+		receipts = this.filterItems(receipts);
+
+		return [...receipts];
+	}
 
 	groupBySectionTitle(objectArray, property) {
 		return objectArray.reduce(function (acc, obj) {
@@ -401,7 +458,19 @@ class Transactions extends React.PureComponent {
 	}
 
 	prepareSectionedData() {
-		return this.props.transactions;
+		// Used for enumerating receipts
+		let receipts = this.prepareData();
+
+		let transformedarray = this.groupBySectionTitle(receipts, 'sectiontitle');
+
+		let newarray = [];
+		for (let i of Object.getOwnPropertyNames(transformedarray)) {
+			newarray.push({
+				title: i,
+				data: transformedarray[i],
+			});
+		}
+		return newarray;
 	}
 
 
@@ -433,7 +502,41 @@ class Transactions extends React.PureComponent {
 		return filteredItems;
 	};
 
- 
+	comparePaymentTypeReceipts() {
+		let receiptsPaymentTypes = this.comparePaymentTypes();
+		let customerReceipts = this.props.receipts;
+		let finalCustomerReceiptsPaymentTypes = [];
+		for (let customerReceipt of customerReceipts) {
+			let paymentTypes = [];
+			for (let receiptsPaymentType of receiptsPaymentTypes) {
+				if (receiptsPaymentType.receipt_id === customerReceipt.id) {
+					paymentTypes.push(receiptsPaymentType);
+				}
+			}
+			customerReceipt.paymentTypes = paymentTypes;
+			finalCustomerReceiptsPaymentTypes.push(customerReceipt);
+
+		}
+		return finalCustomerReceiptsPaymentTypes;
+	}
+
+	comparePaymentTypes() {
+		let receiptsPaymentTypes = this.props.receiptsPaymentTypes;
+		let paymentTypes = this.props.paymentTypes;
+
+		let finalreceiptsPaymentTypes = [];
+
+		for (let receiptsPaymentType of receiptsPaymentTypes) {
+			const rpIndex = paymentTypes.map(function (e) { return e.id }).indexOf(receiptsPaymentType.payment_type_id);
+			if (rpIndex >= 0) {
+				receiptsPaymentType.name = paymentTypes[rpIndex].name;
+				finalreceiptsPaymentTypes.push(receiptsPaymentType);
+
+			}
+		}
+		return finalreceiptsPaymentTypes;
+	}
+
 	renderSeparator() {
 		return (
 			<View
@@ -534,7 +637,12 @@ class SearchWatcher extends React.PureComponent {
 
 function mapStateToProps(state, props) {
 	return {
-		transactions: state.receiptReducer.transactions,
+		settings: state.settingsReducer.settings,
+		localReceipts: state.receiptReducer.localReceipts,
+		remoteReceipts: state.receiptReducer.remoteReceipts,
+		receipts: state.receiptReducer.receipts,
+		receiptsPaymentTypes: state.paymentTypesReducer.receiptsPaymentTypes,
+		paymentTypes: state.paymentTypesReducer.paymentTypes,
 		customers: state.customerReducer.customers,
 		products: state.productReducer.products,
 		paymentTypeFilter: state.customerReducer.paymentTypeFilter,

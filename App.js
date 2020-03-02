@@ -9,6 +9,7 @@ class App extends React.PureComponent {
     render() {
         return (
             <MainApp />
+
         );
     }
 }
