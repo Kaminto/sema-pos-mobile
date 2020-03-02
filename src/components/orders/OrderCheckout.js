@@ -1,8 +1,8 @@
 import React from "react";
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
+// if (process.env.NODE_ENV === 'development') {
+// 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+// 	whyDidYouRender(React);
+//   }
 import { View, TouchableOpacity, Alert, Text, TextInput, Button, FlatList, ScrollView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -12,6 +12,7 @@ import * as CustomerReminderActions from '../../actions/CustomerReminderActions'
 import * as CustomerActions from '../../actions/CustomerActions';
 import * as PaymentTypesActions from "../../actions/PaymentTypesActions";
 import * as receiptActions from '../../actions/ReceiptActions';
+import TransactionOperations from '../../database/operations/transactions.operatons';
 import * as TopUpActions from '../../actions/TopUpActions';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -65,7 +66,7 @@ class OrderCheckout extends React.PureComponent {
 	// 	return nextProps !== this.props && nextState !== this.state;
 	// }
 
-	static whyDidYouRender = true;
+	//static whyDidYouRender = true;
 
 	showDateTimePicker = () => {
 		this.setState({ isDateTimePickerVisible: true });
@@ -219,7 +220,7 @@ class OrderCheckout extends React.PureComponent {
 										<PaymentDescription
 											title={`${i18n.t('previous-amount-due')}:`}
 											total={Utilities.formatCurrency(
-												this.calculateAmountDue()
+												this.checkLoanBalance()
 											)}
 										/>
 										<PaymentDescription
@@ -728,7 +729,7 @@ class OrderCheckout extends React.PureComponent {
 
 	calculateTotalDue() {
 		return this._roundToDecimal(
-			this.calculateOrderDue() + this.calculateAmountDue()
+			this.calculateOrderDue() + this.checkLoanBalance()
 		);
 	}
 
@@ -809,7 +810,7 @@ class OrderCheckout extends React.PureComponent {
 		return totalAmount;
 	}
 
-	calculateAmountDue() {
+	checkLoanBalance() {
 		return this.props.selectedCustomer.dueAmount;
 	}
 
@@ -876,24 +877,26 @@ class OrderCheckout extends React.PureComponent {
 			// compare totalPaid with order due
 			if (totalAmountPaid > this.calculateOrderDue()) {
 				//compare amount due
-				if (this.calculateAmountDue() === 0) {
+				if (this.checkLoanBalance() === 0) {
 					//top up wallet
 					this.topUpWallet(Number(totalAmountPaid - this.calculateOrderDue()));
 					this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + Number(totalAmountPaid - this.calculateOrderDue());
 					this.updateWallet(this.props.selectedCustomer.walletBalance);
+					// console.log('checking here -',this.props.selectedPaymentTypes);
+					// this.props.paymentTypesActions.setSelectedPaymentTypes()
 					this.saveOrder(true);
-				} else if (this.calculateAmountDue() > 0) {
+				} else if (this.checkLoanBalance() > 0) {
 					let postToLoan = Number(totalAmountPaid - this.calculateOrderDue());
-					if (totalAmountPaid > this.calculateAmountDue()) {
-						const topUpExpected = Number(postToLoan - this.calculateAmountDue());
-						this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - Number(this.calculateAmountDue());
+					if (totalAmountPaid > this.checkLoanBalance()) {
+						const topUpExpected = Number(postToLoan - this.checkLoanBalance());
+						this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - Number(this.checkLoanBalance());
 						this.updateLoanBalance(this.props.selectedCustomer.dueAmount);
 						this.topUpWallet(topUpExpected);
 						this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + topUpExpected;
 
 						this.updateWallet(this.props.selectedCustomer.walletBalance);
 						this.saveOrder(true);
-					} else if (totalAmountPaid < this.calculateAmountDue()) {
+					} else if (totalAmountPaid < this.checkLoanBalance()) {
 						this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - postToLoan;
 						this.updateLoanBalance(this.props.selectedCustomer.dueAmount);
 						this.saveOrder(true);
@@ -1027,6 +1030,10 @@ class OrderCheckout extends React.PureComponent {
 			OrderRealm.createOrder(receipt);
 			this.props.receiptActions.setReceipts(
 				OrderRealm.getAllOrder()
+			);
+
+			this.props.receiptActions.setTransactions(
+				TransactionOperations.getTransactions()
 			);
 
 			this.saveCustomerFrequency(OrderRealm.getAllOrder().filter(r => r.customer_account_id === this.props.selectedCustomer.customerId));

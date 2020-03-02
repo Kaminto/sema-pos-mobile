@@ -144,8 +144,6 @@ class AuthLoadingScreen extends React.PureComponent {
             DiscountRealm.getDiscounts()
         );
 
-
-
         Synchronization.initialize(
             CustomerRealm.getLastCustomerSync(),
             ProductsRealm.getLastProductsync(),

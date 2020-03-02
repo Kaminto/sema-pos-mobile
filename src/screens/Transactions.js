@@ -338,7 +338,6 @@ class Transactions extends React.PureComponent {
 
 	getTransactionDetail() {
 		if (this.state.selected) {
-			// this.prepareSectionedData();
 			return (
 				<View style={{ flex: 1, flexDirection: 'row' }}>
 					<View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 1, borderRightColor: '#CCC' }}>

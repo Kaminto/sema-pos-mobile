@@ -80,7 +80,6 @@ class TransactionOperations {
 			finalCustomerReceiptsPaymentTypes.push(customerReceipt);
 
 		}
-		console.log(JSON.stringify(finalCustomerReceiptsPaymentTypes))
 		return finalCustomerReceiptsPaymentTypes;
 	}
 

@@ -51,6 +51,10 @@ class CustomerList extends React.Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
+        console.log('nextProps', nextProps);
+        console.log('nextProps', this.props);
+        console.log('nextState', nextState);
+        console.log('nextState', nextState);
 		return nextProps.navigation !== this.props.navigation;
 	}
 
