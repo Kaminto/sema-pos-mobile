@@ -32,7 +32,10 @@ import * as ProductActions from '../actions/ProductActions';
 import * as receiptActions from '../actions/ReceiptActions';
 import * as InventoryActions from '../actions/InventoryActions';
 import * as discountActions from '../actions/DiscountActions';
-
+import * as paymentTypesActions from '../actions/PaymentTypesActions';
+import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
+import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_payment_types.operations';
+import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
 import Events from 'react-native-simple-events';
 
 import Communications from '../services/Communications';
@@ -254,37 +257,59 @@ class Login extends React.PureComponent {
 		this.props.customerActions.setCustomers(
 			CustomerRealm.getAllCustomer()
 		);
+
+		//PaymentTypeRealm.truncate();
+		this.props.paymentTypesActions.setPaymentTypes(
+			PaymentTypeRealm.getPaymentTypes()
+		);
+
+		this.props.paymentTypesActions.setRecieptPaymentTypes(
+			ReceiptPaymentTypeRealm.getReceiptPaymentTypes()
+		);
+
 		this.props.topUpActions.setTopups(
 			CreditRealm.getAllCredit()
 		);
+
+		this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
+
+
 		this.props.inventoryActions.setInventory(
 			InventroyRealm.getAllInventory()
 		);
 		this.props.productActions.setProducts(
 			ProductsRealm.getProducts()
 		);
+
 		this.props.receiptActions.setReceipts(
 			OrderRealm.getAllOrder()
 		);
 
-		this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
 
 		this.props.customerReminderActions.setCustomerReminders(
 			CustomerReminderRealm.getCustomerReminders()
 		);
 
+		this.props.paymentTypesActions.setCustomerPaidDebt(
+			CustomerDebtRealm.getCustomerDebts()
+		);
+
 		this.props.discountActions.setDiscounts(
 			DiscountRealm.getDiscounts()
 		);
+
+
+
 		Synchronization.initialize(
 			CustomerRealm.getLastCustomerSync(),
 			ProductsRealm.getLastProductsync(),
+			'',
 			CreditRealm.getLastCreditSync(),
 			InventroyRealm.getLastInventorySync(),
 		);
-
 		Synchronization.setConnected(this.props.network.isNWConnected);
-	}
+	};
+
 
 	isSiteIdDifferent(newSiteID, oldSiteID) {
 		//Check is locally stored siteID is different from the remote returned siteID
@@ -333,7 +358,8 @@ function mapStateToProps(state, props) {
 		settings: state.settingsReducer.settings,
 		auth: state.authReducer,
 		network: state.networkReducer.network,
-		discounts: state.discountReducer.discounts
+		discounts: state.discountReducer.discounts,
+		products: state.productReducer.products,
 	};
 }
 function mapDispatchToProps(dispatch) {
@@ -349,6 +375,7 @@ function mapDispatchToProps(dispatch) {
 		receiptActions: bindActionCreators(receiptActions, dispatch),
 		discountActions: bindActionCreators(discountActions, dispatch),
 		customerReminderActions: bindActionCreators(CustomerReminderActions, dispatch),
+		paymentTypesActions: bindActionCreators(paymentTypesActions, dispatch),
 	};
 }
 
