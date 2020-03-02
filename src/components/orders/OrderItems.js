@@ -21,7 +21,7 @@ import slowlog from 'react-native-slowlog';
 const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
 
-class OrderItems extends React.Component {
+class OrderItems extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		slowlog(this, /.*/);
@@ -39,10 +39,6 @@ class OrderItems extends React.Component {
 	}
 
 	static whyDidYouRender = true;
-
-	shouldComponentUpdate(nextProps, nextState) {
-		return nextProps.products !== this.props.products;
-	}
 
 	handleOnPress = (item) => {
 		this.setState({ selectedItem: item });

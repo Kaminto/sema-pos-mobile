@@ -1,6 +1,5 @@
 import {ADD_REMINDER}  from "../actions/ReminderActions.js";
 
-
 let initialState = {
     localReminders : []
 

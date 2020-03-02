@@ -20,7 +20,6 @@ import Modal from 'react-native-modalbox';
 
 import CustomerRealm from '../database/customers/customer.operations';
 import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
-import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
 import Events from 'react-native-simple-events';
 import i18n from '../app/i18n';
 
@@ -30,28 +29,19 @@ import slowlog from 'react-native-slowlog';
 
 import PaymentModal from './paymentModal';
 
-class CustomerList extends React.Component {
+class CustomerList extends React.PureComponent {
     constructor(props) {
 		super(props);
 		slowlog(this, /.*/);
 
         this.state = {
             refresh: false,
-            // selectedCustomer: null,
             searchString: '',
             customerTypeFilter: '',
-            channelFilterString: '',
-            salesChannelValue: '',
             customerTypeValue: '',
             hasScrolled: false
 		};
 
-		// this.onPressItem = this.onPressItem.bind(this);
-		// this.onLongPressItem = this.onLongPressItem.bind(this);
-	}
-
-	shouldComponentUpdate(nextProps, nextState) {
-		return nextProps.navigation !== this.props.navigation;
 	}
 
     componentDidMount() {
@@ -61,18 +51,18 @@ class CustomerList extends React.Component {
 										  searchCustomer: this.searchCustomer ,
 										  checkCustomerTypefilter: this.checkCustomerTypefilter ,
 										  onDelete: this.onDelete ,
-										   clearLoan: this.clearLoan ,
-										   checkSelectedCustomer: this.checkSelectedCustomer,
-										   editCustomer: this.editCustomer });
+										  clearLoan: this.clearLoan ,
+										  checkSelectedCustomer: this.checkSelectedCustomer,
+										  editCustomer: this.editCustomer });
 
         this.props.customerActions.CustomerSelected({});
         this.props.customerActions.setCustomerEditStatus(false);
 
-        Events.on(
-            'ScrollCustomerTo',
-            'customerId1',
-            this.onScrollCustomerTo.bind(this)
-        );
+        // Events.on(
+        //     'ScrollCustomerTo',
+        //     'customerId1',
+        //     this.onScrollCustomerTo.bind(this)
+        // );
 	}
 	static whyDidYouRender = true;
 
@@ -159,31 +149,35 @@ class CustomerList extends React.Component {
         return 'false';
     };
 
-    componentWillUnmount() {
-        Events.rm('ScrollCustomerTo', 'customerId1');
-    }
+    // componentWillUnmount() {
+    //     Events.rm('ScrollCustomerTo', 'customerId1');
+    // }
 
-    onScrollCustomerTo(data) {
-	}
-
-    getItemLayout = (data, index) => ({
-        length: 50,
-        offset: 50 * index,
-        index
-	});
+    // onScrollCustomerTo(data) {
+	// }
 
 	handleOnPress  = item => {
-			this.props.customerActions.CustomerSelected(item);
-			this.setState({ refresh: !this.state.refresh });
-			this.props.navigation.setParams({ isCustomerSelected: true });
-			this.props.navigation.setParams({ isDueAmount: item.dueAmount });
-			this.props.navigation.setParams({ customerName: item.name });
-			this.props.navigation.setParams({ 'title': item.name });
-			Events.trigger('onOrder', { customer: item });
+		this.setState({ refresh: !this.state.refresh });
+		this.props.customerActions.CustomerSelected(item);
+		this.props.navigation.setParams({ isDueAmount: item.dueAmount });
+		this.props.navigation.setParams({ isCustomerSelected: false });
+		this.props.navigation.setParams({ customerName: '' });
+		Events.trigger('onOrder', { customer: item });
+		this.props.navigation.navigate('OrderView');
 	};
+	OnLongPressItem  = item => {
+		this.props.customerActions.CustomerSelected(item);
+		this.setState({ refresh: !this.state.refresh });
+		this.props.navigation.setParams({ isCustomerSelected: true });
+		this.props.navigation.setParams({ isDueAmount: item.dueAmount });
+		this.props.navigation.setParams({ customerName: item.name });
+		this.props.navigation.setParams({ 'title': item.name });
+		Events.trigger('onOrder', { customer: item });
+  };
 
 	onPressItem = item => {
-		this.props.customerActions.CustomerSelected(item);
+		    this.setState({ refresh: !this.state.refresh });
+			this.props.customerActions.CustomerSelected(item);
 			this.props.navigation.setParams({ isDueAmount: item.dueAmount });
 			this.props.navigation.setParams({ isCustomerSelected: false });
 			this.props.navigation.setParams({ customerName: '' });
@@ -204,8 +198,8 @@ class CustomerList extends React.Component {
                     extraData={this.state.refresh}
                     renderItem={({ item, index, separators }) => (
                         <TouchableHighlight
-							onLongPress={() => this.handleOnPress(item)}
-							onPress={() => this.onPressItem(item)}
+							onLongPress={() => this.OnLongPressItem(item)}
+							onPress={() => this.handleOnPress(item)}
                             onShowUnderlay={separators.highlight}
                             onHideUnderlay={separators.unhighlight}>
                             {this.getRow(item, index, separators)}
@@ -222,7 +216,6 @@ class CustomerList extends React.Component {
                         this.props.customerActions.CustomerSelected({});
                         this.props.customerActions.setCustomerEditStatus(false);
                         this.props.navigation.setParams({ isCustomerSelected: false });
-                        this.props.navigation.setParams({ isDueAmount: 0 });
                         this.props.navigation.setParams({ customerName: '' });
                         this.props.navigation.navigate('EditCustomer');
                     }}
@@ -248,7 +241,6 @@ class CustomerList extends React.Component {
     }
 
     prepareData = () => {
-        this.salesChannels = SalesChannelRealm.getSalesChannelsForDisplay();
         this.customerTypes = CustomerTypeRealm.getCustomerTypes();
         let data = [];
         if (this.props.customers.length > 0) {
@@ -344,18 +336,6 @@ class CustomerList extends React.Component {
         }
     };
 
-    getCustomerSalesChannel(item) {
-        try {
-            for (let i = 0; i < this.salesChannels.length; i++) {
-                if (this.salesChannels[i].id === item.salesChannelId) {
-                    return this.salesChannels[i].displayName;
-                }
-            }
-        } catch (error) {
-            return 'Walk-up';
-        }
-    }
-
     getCustomerTypes(item) {
         try {
             for (let i = 0; i < this.customerTypes.length; i++) {
@@ -366,15 +346,6 @@ class CustomerList extends React.Component {
         } catch (error) {
             return 'Walk-up';
         }
-    }
-
-    _getSalesChannelName(channelId, salesChannels) {
-        for (let i = 0; i < salesChannels.length; i++) {
-            if (salesChannels[i].id === channelId) {
-                return salesChannels[i].name;
-            }
-        }
-        return 'direct';
     }
 
     _isAnonymousCustomer(customer) {
@@ -523,7 +494,6 @@ function mapStateToProps(state, props) {
         selectedCustomer: state.customerReducer.selectedCustomer,
         customers: state.customerReducer.customers,
         searchString: state.customerReducer.searchString,
-        channelFilterString: state.customerReducer.channelFilterString,
 		customerTypeFilter: state.customerReducer.customerTypeFilter,
 		paymentTypes: state.paymentTypesReducer.paymentTypes,
     };

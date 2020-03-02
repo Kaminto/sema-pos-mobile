@@ -9,9 +9,13 @@ import OrderTotal from "./OrderTotal";
 import OrderItems from "./OrderItems";
 import OrderCheckout from "./OrderCheckout";
 
-export default class OrderSummaryScreen extends React.PureComponent {
+export default class OrderSummaryScreen extends React.Component {
 
 	static whyDidYouRender = true;
+
+	// shouldComponentUpdate(nextProps, nextState) {
+	// 	return this.props.navigation !== nextProps.navigation;
+	// }
 
 	render() {
 		return (

@@ -1,9 +1,5 @@
 
 import React from 'react';
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
 import { View, StyleSheet, Image, Text, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
@@ -35,6 +31,7 @@ import * as CustomerReminderActions from '../actions/CustomerReminderActions';
 import i18n from '../app/i18n';
 
 import slowlog from 'react-native-slowlog';
+import { ScrollView } from 'react-native-gesture-handler';
 
 class CustomSidebarMenu extends React.PureComponent {
   constructor() {
@@ -91,24 +88,27 @@ class CustomSidebarMenu extends React.PureComponent {
 
     return (
       <View style={styles.sideMenuContainer}>
+		<ScrollView style={{ flex: 1 }}>
         <Image source={require('../images/jibulogo.png')} resizeMode='stretch' style={{
           width: 100,
-          height: 100,
+		  height: 100,
+		  alignSelf: 'center'
         }} />
         {/*Divider between Top Image and Sidebar Option*/}
         <View
           style={{
-            width: '100%',
+            flex: 1,
             height: 1,
             backgroundColor: '#e2e2e2',
             marginTop: 15,
           }}
         />
         {/*Setting up Navigation Options from option array using loop*/}
-        <View style={{ width: '100%' }}>
+        <View style={{ flex: 1 }}>
           {this.items.map((item, key) => (
             <View
               style={{
+				flex: 1,
                 flexDirection: 'row',
                 alignItems: 'center',
                 paddingTop: 10,
@@ -146,11 +146,10 @@ class CustomSidebarMenu extends React.PureComponent {
         </View>
         {
           this.state.isLoading && (
-
             <ActivityIndicator size={60} color="#ABC1DE" />
-
           )
         }
+    	</ScrollView>
       </View>
     );
   }
@@ -219,7 +218,6 @@ class CustomSidebarMenu extends React.PureComponent {
 
 
   };
-
 
   onSynchronize() {
     try {
@@ -339,10 +337,8 @@ export default connect(
 
 const styles = StyleSheet.create({
   sideMenuContainer: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
     paddingTop: 20,
   },
   sideMenuProfileIcon: {

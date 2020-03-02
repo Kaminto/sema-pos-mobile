@@ -24,10 +24,14 @@ class ProductList extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		slowlog(this, /.*/);
-		// this.handleOnPress = this.handleOnPress.bind(this);
 	}
 
 	static whyDidYouRender = true;
+
+	shouldComponentUpdate(nextProps, nextState){
+		return this.props.filter != nextProps.filter;
+
+	}
 
 	handleOnPress = (item) => {
 		const unitPrice = this.getItemPrice(item);
@@ -136,7 +140,6 @@ class ProductList extends React.PureComponent {
 function mapStateToProps(state, props) {
 	return {
 		products: state.productReducer.products,
-		selectedCustomer: state.customerReducer.selectedCustomer
 	};
 }
 

@@ -62,7 +62,7 @@ class OrderCheckout extends React.PureComponent {
 	}
 
 	// shouldComponentUpdate(nextProps, nextState) {
-	// 	return nextProps !== this.props && nextState !== this.state;
+	// 	return this.props.navigation !== nextProps.navigation;
 	// }
 
 	static whyDidYouRender = true;
@@ -922,7 +922,6 @@ class OrderCheckout extends React.PureComponent {
 
 
 	};
-
 
 	saveOrder = (checkDueAmount) => {
 		// if

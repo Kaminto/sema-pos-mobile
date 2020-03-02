@@ -10,7 +10,6 @@ import {
     RECEIPT_SEARCH,
     CLEAR_LOGGED_RECEIPTS
 } from "../actions/ReceiptActions";
-// import { format, isSameDay, parseISO} from 'date-fns';
 
 let initialState = {
     localReceipts: [],
@@ -35,14 +34,8 @@ const receiptReducer = (state = initialState, action) => {
                 }
 				receipt.isLocal = false;
                 return receipt;
-            })
-                // Take care of receipts that are not from this weeks
-                // .filter(receipt => {
-                //     let date = new Date(Date.now());
-				// 	date.setDate(date.getDate() - 7);
-				// 	let this_week = format(date, 'yyyy-MM-dd');
-				// 	return isSameDay(new Date(receipt.created_at), parseISO(this_week));
-                // });
+			});
+
             newState.receipts = receipts;
             return newState;
         case SET_REMOTE_RECEIPTS:
@@ -56,15 +49,8 @@ const receiptReducer = (state = initialState, action) => {
                 }
 				receipt.isLocal = false;
                 return receipt;
-            })
-                // Take care of receipts that are not from this weeks
-                // .filter(receipt => {
-                //     let date = new Date(Date.now());
-				// 	date.setDate(date.getDate() - 7);
-				// 	let this_week = format(date, 'yyyy-MM-dd');
-				// 	return isSameDay(new Date(receipt.created_at), parseISO(this_week));
+			})
 
-                // });
             newState.remoteReceipts = remoteReceipts;
             return newState;
         case ADD_REMOTE_RECEIPT:

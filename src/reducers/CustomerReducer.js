@@ -1,6 +1,12 @@
 
-import { CUSTOMER_SELECTED, CUSTOMERS_PAYMENT_TYPE_SEARCH, CUSTOMERS_SET, CUSTOMERS_SEARCH, CUSTOMERS_TYPE_SEARCH, CUSTOMER_EDIT, CUSTOMERS_CHANNEL_SEARCH } from "../actions/CustomerActions";
-let initialState = { selectedCustomer: {}, customers: [], searchString: "", paymentTypeFilter: "", customerTypeFilter: "", channelFilterString: "", isEdit: false };
+import {
+	CUSTOMER_SELECTED,
+	CUSTOMERS_PAYMENT_TYPE_SEARCH,
+	CUSTOMERS_SET, CUSTOMERS_SEARCH,
+	CUSTOMERS_TYPE_SEARCH,
+	CUSTOMER_EDIT,
+	CUSTOMERS_CHANNEL_SEARCH } from "../actions/CustomerActions";
+let initialState = { selectedCustomer: {}, customers: [], searchString: "", paymentTypeFilter: "", customerTypeFilter: "", isEdit: false };
 
 const customerReducer = (state = initialState, action) => {
 	let newState;
@@ -16,10 +22,6 @@ const customerReducer = (state = initialState, action) => {
 		case CUSTOMERS_SEARCH:
 			newState = { ...state };
 			newState.searchString = action.data;
-			return newState;
-		case CUSTOMERS_CHANNEL_SEARCH:
-			newState = { ...state };
-			newState.channelFilterString = action.data;
 			return newState;
 		case CUSTOMERS_TYPE_SEARCH:
 			newState = { ...state };

@@ -54,8 +54,7 @@ class OrderTotal extends React.PureComponent {
 
 function mapStateToProps(state, props) {
 	return {
-		products: state.orderReducer.products,
-		channel: state.orderReducer.channel
+		products: state.orderReducer.products
 	};
 }
 

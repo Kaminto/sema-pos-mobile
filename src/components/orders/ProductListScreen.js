@@ -41,12 +41,10 @@ class ProductListScreen extends React.Component {
 				}
 			).start();
 		});
-
-		// this.props.navigation.setParams({ 'ordertitle': this.props.selectedCustomer.name });
 	}
 
 	shouldComponentUpdate(nextProps, nextState){
-		return nextState.salesChannel !== this.state.salesChannel;
+		return this.state.salesChannel !== nextState.salesChannel;
 
 	}
 
@@ -65,7 +63,6 @@ class ProductListScreen extends React.Component {
 
 function mapStateToProps(state, props) {
 	return {
-		products: state.orderReducer.products,
 		selectedCustomer: state.customerReducer.selectedCustomer,
 		channel: state.orderReducer.channel
 	};
