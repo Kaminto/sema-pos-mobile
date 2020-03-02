@@ -34,6 +34,7 @@ const uuidv1 = require('uuid/v1');
 const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
 import slowlog from 'react-native-slowlog';
+import { withNavigation } from 'react-navigation';
 
 class OrderCheckout extends React.PureComponent {
 
@@ -60,10 +61,6 @@ class OrderCheckout extends React.PureComponent {
 		};
 		this.onPay = this.onPay.bind(this);
 	}
-
-	// shouldComponentUpdate(nextProps, nextState) {
-	// 	return this.props.navigation !== nextProps.navigation;
-	// }
 
 	static whyDidYouRender = true;
 
@@ -1180,7 +1177,7 @@ function mapDispatchToProps(dispatch) {
 		customerReminderActions: bindActionCreators(CustomerReminderActions, dispatch),
 	};
 }
-export default connect(mapStateToProps, mapDispatchToProps)(OrderCheckout);
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(OrderCheckout));
 
 
 const styles = StyleSheet.create({

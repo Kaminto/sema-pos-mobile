@@ -159,29 +159,29 @@ class CustomerList extends React.PureComponent {
 	handleOnPress  = item => {
 		this.setState({ refresh: !this.state.refresh });
 		this.props.customerActions.CustomerSelected(item);
-		this.props.navigation.setParams({ isDueAmount: item.dueAmount });
-		this.props.navigation.setParams({ isCustomerSelected: false });
-		this.props.navigation.setParams({ customerName: '' });
-		Events.trigger('onOrder', { customer: item });
+		this.props.navigation.setParams({ isDueAmount: item.dueAmount,
+											 isCustomerSelected: false,
+											  customerName: '' });
+		// Events.trigger('onOrder', { customer: item });
 		this.props.navigation.navigate('OrderView');
 	};
 	OnLongPressItem  = item => {
 		this.props.customerActions.CustomerSelected(item);
 		this.setState({ refresh: !this.state.refresh });
-		this.props.navigation.setParams({ isCustomerSelected: true });
-		this.props.navigation.setParams({ isDueAmount: item.dueAmount });
-		this.props.navigation.setParams({ customerName: item.name });
-		this.props.navigation.setParams({ 'title': item.name });
-		Events.trigger('onOrder', { customer: item });
+		this.props.navigation.setParams({ isCustomerSelected: true,
+										 isDueAmount: item.dueAmount,
+										 customerName: item.name,
+										 'title': item.name });
+		// Events.trigger('onOrder', { customer: item });
   };
 
 	onPressItem = item => {
 		    this.setState({ refresh: !this.state.refresh });
 			this.props.customerActions.CustomerSelected(item);
-			this.props.navigation.setParams({ isDueAmount: item.dueAmount });
-			this.props.navigation.setParams({ isCustomerSelected: false });
-			this.props.navigation.setParams({ customerName: '' });
-			Events.trigger('onOrder', { customer: item });
+			this.props.navigation.setParams({ isDueAmount: item.dueAmount ,
+											  isCustomerSelected: false ,
+											  customerName: '' });
+			// Events.trigger('onOrder', { customer: item });
 			this.props.navigation.navigate('OrderView');
     };
 

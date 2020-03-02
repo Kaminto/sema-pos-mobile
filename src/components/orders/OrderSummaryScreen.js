@@ -13,18 +13,13 @@ export default class OrderSummaryScreen extends React.Component {
 
 	static whyDidYouRender = true;
 
-	// shouldComponentUpdate(nextProps, nextState) {
-	// 	return this.props.navigation !== nextProps.navigation;
-	// }
-
 	render() {
 		return (
 			<View style = {{flex:.6, backgroundColor:"blue", borderColor: '#2858a7', borderLeftWidth:5}}>
 				<OrderSummary/>
 				<OrderTotal/>
 				<OrderItems/>
-				<OrderCheckout
-				navigation={this.props.navigation}/>
+				<OrderCheckout />
 			</View>
 		);
 	}

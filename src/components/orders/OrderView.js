@@ -14,16 +14,11 @@ class OrderView extends React.PureComponent {
 	}
 	static whyDidYouRender = true;
 
-	// shouldComponentUpdate(nextProps, nextState){
-	// 	return this.props.navigation !== nextProps.navigation;
-	// }
-
 	render() {
 		return (
 			<View style={styles.orderView}>
 				<ProductListScreen />
-				<OrderSummaryScreen
-					 navigation={this.props.navigation} />
+				<OrderSummaryScreen />
 			</View>
 		);
 	}
