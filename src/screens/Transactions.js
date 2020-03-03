@@ -1,8 +1,5 @@
 import React from 'react';
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
+
 import {
 	View,
 	Text,
@@ -29,7 +26,7 @@ import * as receiptActions from '../actions/ReceiptActions';
 
 import i18n from '../app/i18n';
 import { format, parseISO, isBefore } from 'date-fns';
-import slowlog from 'react-native-slowlog';
+
 
 class ReceiptLineItem extends React.PureComponent {
 	constructor(props) {
@@ -37,7 +34,7 @@ class ReceiptLineItem extends React.PureComponent {
 	}
 
 
-	static whyDidYouRender = true;
+
 
 	render() {
 		return (
@@ -92,7 +89,7 @@ class PaymentTypeItem extends React.PureComponent {
 	}
 
 
-	static whyDidYouRender = true;
+
 
 	render() {
 		return (
@@ -131,7 +128,7 @@ class TransactionDetail extends React.PureComponent {
 	}
 
 
-	static whyDidYouRender = true;
+
 
 	onDeleteReceipt(item) {
 		return () => {
@@ -299,7 +296,7 @@ class TransactionDetail extends React.PureComponent {
 class Transactions extends React.PureComponent {
 	constructor(props) {
 		super(props);
-		slowlog(this, /.*/);
+
 
 		this.state = {
 			refresh: false,
@@ -311,7 +308,7 @@ class Transactions extends React.PureComponent {
 	}
 
 
-	static whyDidYouRender = true;
+
 	componentDidMount() {
 		this.props.navigation.setParams({ paymentTypeValue: 'all' });
 		this.props.navigation.setParams({ checkPaymentTypefilter: this.checkPaymentTypefilter });

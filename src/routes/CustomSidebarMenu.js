@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { View, StyleSheet, Image, Text, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -29,14 +28,11 @@ import * as discountActions from '../actions/DiscountActions';
 import * as paymentTypesActions from '../actions/PaymentTypesActions';
 import * as CustomerReminderActions from '../actions/CustomerReminderActions';
 import i18n from '../app/i18n';
-
-import slowlog from 'react-native-slowlog';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-navigation';
 
 class CustomSidebarMenu extends React.PureComponent {
   constructor() {
 	super();
-	slowlog(this, /.*/);
     this.state = {
       animating: false,
       language: '',
@@ -44,7 +40,7 @@ class CustomSidebarMenu extends React.PureComponent {
       password: "",
       selectedLanguage: {},
       isLoading: false
-    };
+	};
 
     this.items = [
       {
@@ -84,6 +80,8 @@ class CustomSidebarMenu extends React.PureComponent {
       }
     ];
   }
+
+
   render() {
 
     return (
@@ -234,7 +232,6 @@ class CustomSidebarMenu extends React.PureComponent {
         this.props.receiptActions.setReceipts(
           OrderRealm.getAllOrder()
         );
-
 
         Alert.alert(
           i18n.t('sync-results'),

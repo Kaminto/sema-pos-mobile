@@ -1,8 +1,5 @@
 import React from 'react';
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
+
 import { Text, View, StyleSheet, TouchableHighlight, Alert, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -13,12 +10,12 @@ import * as CustomerReminderActions from '../../actions/CustomerReminderActions'
 import DateFilter from './ReminderDateFilter';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { format, parseISO, isSameDay } from 'date-fns';
-import slowlog from 'react-native-slowlog';
+
 
 class RemindersReport extends React.PureComponent {
 	constructor(props) {
 		super(props);
-		slowlog(this, /.*/);
+
 		this.state = {
 			refresh: false,
 			filterDate: new Date(),

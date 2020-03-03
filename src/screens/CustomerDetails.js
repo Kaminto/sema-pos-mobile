@@ -1,8 +1,5 @@
 import React from 'react';
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
+
 import {
 	View,
 	Text,
@@ -31,13 +28,13 @@ import * as receiptActions from '../actions/ReceiptActions';
 import SelectedCustomerDetails from './CustomerDetailSubHeader';
 
 import i18n from '../app/i18n';
-import slowlog from 'react-native-slowlog';
+
 import { format, parseISO, isBefore } from 'date-fns';
 
 class ReceiptLineItem extends React.PureComponent {
 	constructor(props) {
 		super(props);
-		slowlog(this, /.*/);
+
 	}
 
 

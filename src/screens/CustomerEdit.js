@@ -1,16 +1,13 @@
 import React from 'react';
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
+
 import {
 	View,
 	Text,
 	StyleSheet,
-	Modal
+	Modal,
+	ScrollView
 } from 'react-native';
 import { Card, Button, Input} from 'react-native-elements';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -23,13 +20,13 @@ import CustomerRealm from '../database/customers/customer.operations';
 import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
 import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
 import * as CustomerActions from '../actions/CustomerActions';
-import slowlog from 'react-native-slowlog';
+
 import i18n from '../app/i18n';
 
 class CustomerEdit extends React.PureComponent {
 	constructor(props) {
 		super(props);
-		slowlog(this, /.*/);
+
 		this.state = {
 			isEditInProgress: false,
 			salescid: 0,
@@ -89,7 +86,7 @@ class CustomerEdit extends React.PureComponent {
 		let salesChannelId = this.state.customerChannel > 0 ? this.state.customerChannel : -1;
 		let customerTypeId = this.state.customerType > 0 ? this.state.customerType : -1;
 		if (this.props.isEdit) {
-			this.setReminderIfExists(this.props.selectedCustomer);
+			// this.setReminderIfExists(this.props.selectedCustomer);
 
 			CustomerRealm.updateCustomer(
 				this.props.selectedCustomer,
@@ -134,10 +131,9 @@ class CustomerEdit extends React.PureComponent {
 
 		return (
 			<View style={{ flex: 1, backgroundColor: '#f1f1f1', justifyContent: 'center' }}>
-				<KeyboardAwareScrollView
+				<ScrollView
 					style={{ flex: 1 }}
-					resetScrollToCoords={{ x: 0, y: 0 }}
-					scrollEnabled={true}>
+					>
 					<View style={{ flex: 1, alignItems: 'center' }}>
 
 						<Card containerStyle={{ width: '55%', marginTop: 30, padding: 0, borderRadius: 8 }}>
@@ -260,7 +256,7 @@ class CustomerEdit extends React.PureComponent {
 							{this.showEditInProgress()}
 						</Modal>
 					</View>
-				</KeyboardAwareScrollView>
+				</ScrollView>
 			</View>
 		);
 	}

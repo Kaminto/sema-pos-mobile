@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, Picker } from 'react-native';
-import { createSwitchNavigator } from 'react-navigation';
+import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
@@ -30,7 +30,7 @@ import i18n from '../app/i18n';
 class NavigationDrawerStructure extends React.PureComponent {
     toggleDrawer = () => {
         this.props.navigationProps.toggleDrawer();
-    };
+	};
 
     render() {
         return (
@@ -55,8 +55,8 @@ const CreditHistoryStack = createStackNavigator({
     CreditHistory: {
         screen: CreditHistory,
         navigationOptions: {
-            title: 'Customer Wallet'
-        }
+			title: 'Customer Wallet',
+		}
     }
 },
     {
@@ -100,20 +100,6 @@ const TabNavigator = createBottomTabNavigator({
         }
     });
 
-const OrderStack = createStackNavigator({
-    CustomerEdit: {
-        screen: CustomerEdit,
-        navigationOptions: ({ navigation }) => ({
-            title: 'Add Customers',
-            headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
-            headerStyle: {
-                backgroundColor: '#FF9800',
-            },
-            headerTintColor: '#fff'
-        }),
-    },
-});
-
 const ListCustomerStack = createStackNavigator({
     CustomerList: {
         screen: CustomerList,
@@ -135,7 +121,6 @@ const ListCustomerStack = createStackNavigator({
 							flexDirection: 'row',
 							marginTop: 15
                         }}>
-                        {/* && navigation.getParam('isDueAmount') > 0 */}
                         {navigation.getParam('isCustomerSelected') && (
                             <Icons
                                 name='balance-scale'
@@ -148,12 +133,6 @@ const ListCustomerStack = createStackNavigator({
                             />
 
                         )}
-                    {/* </View>
-                    <View
-                        style={{
-                            marginTop: 12,
-                            flex: 1
-                        }}> */}
                         {navigation.getParam('isCustomerSelected') && (
                             <Icon
                                 name='md-cart'
@@ -170,12 +149,6 @@ const ListCustomerStack = createStackNavigator({
                             />
 
                         )}
-                    {/* </View>
-                    <View
-                        style={{
-                            marginTop: 12,
-                            flex: 1
-                        }}> */}
                         {navigation.getParam('isCustomerSelected') && (
                             <Icon
                                 name='md-more'
@@ -186,14 +159,7 @@ const ListCustomerStack = createStackNavigator({
                                 }}
                             />
                         )}
-                    {/* </View>
-                    <View
-                        style={{
-                            marginTop: 12,
-                            flex: 1
-                        }}> */}
                         {navigation.getParam('isCustomerSelected') && (
-
                             <Icon
                                 name='md-information-circle-outline'
                                 size={25}
@@ -209,12 +175,6 @@ const ListCustomerStack = createStackNavigator({
 
                             />
                         )}
-                    {/* </View>
-                    <View
-                        style={{
-                            marginTop: 12,
-                            flex: 1
-                        }}> */}
                         {navigation.getParam('isCustomerSelected') && (
                             <Icon
                                 name='md-trash'
@@ -226,13 +186,6 @@ const ListCustomerStack = createStackNavigator({
                                 onPress={navigation.getParam('onDelete')}
                             />
                         )}
-                    {/* </View>
-
-                    <View
-                        style={{
-                            marginTop: 12,
-                            flex: 1
-                        }}> */}
                         {navigation.getParam('isCustomerSelected') && (
                             <Icon
                                 name='md-create'
@@ -288,49 +241,11 @@ const ListCustomerStack = createStackNavigator({
     EditCustomer: {
         screen: CustomerEdit,
         navigationOptions: ({ navigation }) => ({
+			title: navigation.getParam('isEdit') ? 'Edit Customer' : 'New Customer',
             headerStyle: {
                 backgroundColor: '#00549C',
             },
             headerTintColor: '#fff',
-            headerLeft: (
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        flex: 1,
-                        justifyContent: 'space-between',
-                    }}>
-
-                    <View style={{
-                        flex: 1,
-                    }}>
-                        <Icon name='md-arrow-back' style={{
-                            marginRight: 15,
-                            marginLeft: 15,
-                            color: 'white',
-                            fontWeight: 'bold',
-                        }} size={30} onPress={() => { navigation.goBack() }} />
-                    </View>
-
-                    <View style={{
-                        flex: 1,
-                    }}>
-                        {!navigation.getParam('isEdit') && (
-                            <Text style={{
-                                fontWeight: 'bold',
-                                fontSize: 20,
-                                color: 'white'
-                            }}>New Customer</Text>
-                        )}
-
-                        {navigation.getParam('isEdit') && (
-                            <Text style={{
-                                fontWeight: 'bold',
-                                fontSize: 20,
-                                color: 'white'
-                            }}>Edit Customer</Text>
-                        )}
-                    </View>
-                </View >),
         })
     },
     CustomerDetails: {
@@ -491,7 +406,7 @@ const JibuDrawerNavigation = createDrawerNavigator({
 },
     {
         contentOptions: {
-            activeTintColor: '#e91e63',
+            activeTintColor: '#ABC1DE',
         },
         initialRouteName: 'ListCustomers',
         contentComponent: CustomSidebarMenu,
@@ -513,6 +428,4 @@ const JibuRouter = createSwitchNavigator(
     }
 );
 
-
-
-export default JibuRouter;
+export default createAppContainer(JibuRouter);

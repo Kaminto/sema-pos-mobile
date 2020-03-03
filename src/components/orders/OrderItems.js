@@ -1,8 +1,5 @@
 import React from "react";
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
+
 import { View, Text, TouchableOpacity, ScrollView, FlatList, TextInput, Dimensions, TouchableHighlight, StyleSheet, Alert } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -16,7 +13,7 @@ import SalesChannelRealm from '../../database/sales-channels/sales-channels.oper
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import DiscountRealm from '../../database/discount/discount.operations';
 import ToggleSwitch from 'toggle-switch-react-native';
-import slowlog from 'react-native-slowlog';
+
 
 const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
@@ -24,7 +21,7 @@ const heightQuanityModal = 500;
 class OrderItems extends React.PureComponent {
 	constructor(props) {
 		super(props);
-		slowlog(this, /.*/);
+
 		this.state = {
 			selectedItem: {},
 			accumulator: 0,
@@ -38,7 +35,7 @@ class OrderItems extends React.PureComponent {
 		};
 	}
 
-	static whyDidYouRender = true;
+
 
 	handleOnPress = (item) => {
 		this.setState({ selectedItem: item });

@@ -1,8 +1,5 @@
 import React from "react";
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
+
 import { View, TouchableOpacity, Alert, Text, TextInput, Button, FlatList, ScrollView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -33,14 +30,14 @@ import * as Utilities from "../../services/Utilities";
 const uuidv1 = require('uuid/v1');
 const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
-import slowlog from 'react-native-slowlog';
+
 import { withNavigation } from 'react-navigation';
 
 class OrderCheckout extends React.PureComponent {
 
 	constructor(props) {
 		super(props);
-		slowlog(this, /.*/);
+
 		this.saleSuccess = false;
 		this.state = {
 			isWalkIn: true,
@@ -62,7 +59,7 @@ class OrderCheckout extends React.PureComponent {
 		this.onPay = this.onPay.bind(this);
 	}
 
-	static whyDidYouRender = true;
+
 
 	showDateTimePicker = () => {
 		this.setState({ isDateTimePickerVisible: true });

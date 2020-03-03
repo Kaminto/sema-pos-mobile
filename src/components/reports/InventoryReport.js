@@ -11,20 +11,20 @@ import * as InventoryActions from '../../actions/InventoryActions';
 import { connect } from "react-redux";
 import DateFilter from "./DateFilter";
 import InventroyRealm from "../../database/inventory/inventory.operations";
-import slowlog from 'react-native-slowlog';
+
 import { isSameDay } from 'date-fns';
 
 import i18n from '../../app/i18n';
 class InventoryEdit extends React.PureComponent {
 	constructor(props) {
 		super(props);
-		slowlog(this, /.*/);
+
 		this.state = { inventoryQuantity: this.props.quantity };
 		this.quantityInput = React.createRef();
 	}
 
 
-	static whyDidYouRender = true;
+
 
 	render() {
 		return (
@@ -97,7 +97,7 @@ class InventoryEdit extends React.PureComponent {
 class InventoryReport extends React.PureComponent {
 	constructor(props) {
 		super(props);
-		slowlog(this, /.*/);
+
 		// this.startDate = new Date();
 		// this.endDate = this.addDays(new Date(), 1);
 		let currentDate = new Date();
@@ -112,7 +112,7 @@ class InventoryReport extends React.PureComponent {
 	}
 
 
-	static whyDidYouRender = true;
+
 
 	addDays = (theDate, days) => {
 		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);

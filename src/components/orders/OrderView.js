@@ -5,14 +5,14 @@ import OrderSummaryScreen from "./OrderSummaryScreen";
 import * as OrderActions from "../../actions/OrderActions";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import slowlog from 'react-native-slowlog';
+
 
 class OrderView extends React.PureComponent {
 	constructor(props) {
 		super(props);
-		slowlog(this, /.*/);
+
 	}
-	static whyDidYouRender = true;
+
 
 	render() {
 		return (

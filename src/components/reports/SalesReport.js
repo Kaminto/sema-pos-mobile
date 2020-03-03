@@ -1,15 +1,12 @@
 import React from 'react';
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
+
 import { Text, View, StyleSheet, FlatList } from 'react-native';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as reportActions from "../../actions/ReportActions";
 import DateFilter from "./DateFilter";
 import { parseISO, isSameDay } from 'date-fns';
-import slowlog from 'react-native-slowlog';
+
 import i18n from '../../app/i18n';
 
 class SalesReport extends React.PureComponent {
@@ -19,7 +16,7 @@ class SalesReport extends React.PureComponent {
 		this.endDate = this.addDays(new Date(), 1);
 	}
 
-	static whyDidYouRender = true;
+
 
 	addDays = (theDate, days) => {
 		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);

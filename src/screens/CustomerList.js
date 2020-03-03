@@ -1,12 +1,8 @@
 import React from 'react';
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
+
 import {
     View,
     Text,
-    FlatList,
     TouchableHighlight,
     StyleSheet,
 	Alert,
@@ -21,21 +17,22 @@ import Modal from 'react-native-modalbox';
 
 import CustomerRealm from '../database/customers/customer.operations';
 import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
-import Events from 'react-native-simple-events';
 import i18n from '../app/i18n';
 
 import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
-import slowlog from 'react-native-slowlog';
+
 
 import Icons from 'react-native-vector-icons/FontAwesome';
 
 import PaymentModal from './paymentModal';
 
+import { FlatList } from 'react-navigation';
+
 class CustomerList extends React.Component {
     constructor(props) {
 		super(props);
-		slowlog(this, /.*/);
+
 
         this.state = {
             refresh: false,
@@ -46,29 +43,20 @@ class CustomerList extends React.Component {
             hasScrolled: false
 		};
 
-	}
-
-    componentDidMount() {
-		this.props.navigation.setParams({ isCustomerSelected: false ,
-										  customerTypeValue: 'all' ,
-										  customerName: "" ,
-										  searchCustomer: this.searchCustomer ,
-										  checkCustomerTypefilter: this.checkCustomerTypefilter ,
-										  onDelete: this.onDelete ,
-										  clearLoan: this.clearLoan ,
-										  checkSelectedCustomer: this.checkSelectedCustomer,
-										  editCustomer: this.editCustomer });
+		this.props.navigation.setParams({
+			isCustomerSelected: false ,
+			customerTypeValue: 'all' ,
+			customerName: "" ,
+			searchCustomer: this.searchCustomer ,
+			checkCustomerTypefilter: this.checkCustomerTypefilter ,
+			onDelete: this.onDelete ,
+			clearLoan: this.clearLoan ,
+			isEditCustomer: this.isEditCustomer });
 
         this.props.customerActions.CustomerSelected({});
-        this.props.customerActions.setCustomerEditStatus(false);
-
-        // Events.on(
-        //     'ScrollCustomerTo',
-        //     'customerId1',
-        //     this.onScrollCustomerTo.bind(this)
-        // );
+		this.props.customerActions.setCustomerEditStatus(false);
+		this.handleOnPress = this.handleOnPress.bind(this);
 	}
-	static whyDidYouRender = true;
 
     searchCustomer = (searchText) => {
         this.props.customerActions.SearchCustomers(searchText);
@@ -89,7 +77,10 @@ class CustomerList extends React.Component {
 
     closePaymentModal = () => {
         this.refs.modal6.close();
-    };
+	};
+	isEditCustomer() {
+
+	}
 
     clearLoan = () => {
         this.refs.modal6.open();
@@ -150,53 +141,33 @@ class CustomerList extends React.Component {
         }
     };
 
-    checkSelectedCustomer = (text) => {
-        return 'false';
-    };
-
-    // componentWillUnmount() {
-    //     Events.rm('ScrollCustomerTo', 'customerId1');
-    // }
-
-    // onScrollCustomerTo(data) {
-	// }
-
-	handleOnPress  = item => {
-		this.setState({ refresh: !this.state.refresh });
+	handleOnPress  = (item) => {
+		// this.setState({ refresh: !this.state.refresh });
 		this.props.customerActions.CustomerSelected(item);
 		this.props.navigation.setParams({ isDueAmount: item.dueAmount,
 											 isCustomerSelected: false,
 											  customerName: '' });
-		// Events.trigger('onOrder', { customer: item });
 		this.props.navigation.navigate('OrderView');
 	};
-	OnLongPressItem  = item => {
+
+	OnLongPressItem  = (item) => {
 		this.props.customerActions.CustomerSelected(item);
 		this.setState({ refresh: !this.state.refresh });
 		this.props.navigation.setParams({ isCustomerSelected: true,
 										 isDueAmount: item.dueAmount,
 										 customerName: item.name,
 										 'title': item.name });
+		this.props.customerActions.setCustomerEditStatus(true);
 		// Events.trigger('onOrder', { customer: item });
-  };
-
-	onPressItem = item => {
-		    this.setState({ refresh: !this.state.refresh });
-			this.props.customerActions.CustomerSelected(item);
-			this.props.navigation.setParams({ isDueAmount: item.dueAmount ,
-											  isCustomerSelected: false ,
-											  customerName: '' });
-			// Events.trigger('onOrder', { customer: item });
-			this.props.navigation.navigate('OrderView');
-    };
+  	};
 
     render() {
         return (
             <View style={{ backgroundColor: '#fff', flex: 1 }}>
                 <FlatList
-                    ref={ref => {
-                        this.flatListRef = ref;
-                    }}
+                    // ref={ref => {
+                    //     this.flatListRef = ref;
+                    // }}
 					data={this.prepareData()}
                     ListHeaderComponent={this.showHeader}
                     extraData={this.state.refresh}
@@ -213,7 +184,7 @@ class CustomerList extends React.Component {
 					keyExtractor={item => item.customerId}
 					windowSize={20}
 					removeClippedSubviews={true}
-                    maxToRenderPerBatch={20}
+                    maxToRenderPerBatch={1}
                 />
                 <FloatingAction
                     onOpen={name => {
@@ -221,7 +192,8 @@ class CustomerList extends React.Component {
                         this.props.customerActions.setCustomerEditStatus(false);
                         this.props.navigation.setParams({ isCustomerSelected: false });
                         this.props.navigation.setParams({ customerName: '' });
-                        this.props.navigation.navigate('EditCustomer');
+						this.props.navigation.navigate('EditCustomer');
+						console.log("AMG" + JSON.stringify(this.props));
                     }}
                 />
 
@@ -242,7 +214,7 @@ class CustomerList extends React.Component {
                 </SearchWatcher>
             </View>
         );
-    }
+    };
 
     prepareData = () => {
         this.customerTypes = CustomerTypeRealm.getCustomerTypes();
@@ -366,15 +338,6 @@ class CustomerList extends React.Component {
             : false;
     }
 
-    onPopupEvent(eventName, index) {
-        if (eventName !== 'itemSelected') return;
-        if (index === 0) {
-            this.props.toolbarActions.ShowScreen('editCustomer');
-        } else if (index === 1) {
-            this.deleteCustomer();
-        }
-	}
-
     deleteCustomer() {
         let alertMessage = i18n.t('delete-specific-customer', {
             customerName: this.props.selectedCustomer.name
@@ -459,10 +422,10 @@ class CustomerList extends React.Component {
 								<Text style={[styles.headerItem]}>{i18n.t('balance')}
 									<Icons
 										name='sort'
-										size={20}
+										size={18}
 										color="white"
 										style={{
-											marginLeft: 5,
+											marginLeft: 10,
 											marginRight: 5,
 										}}
 									/>
