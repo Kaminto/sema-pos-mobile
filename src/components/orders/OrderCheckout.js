@@ -957,8 +957,7 @@ class OrderCheckout extends React.PureComponent {
 		}
 		let cogs_total = 0;
 
-		receipt.products = this.props.products.map(product => {
-			
+		receipt.products = this.props.products.map(product => {			
 			let receiptLineItem = {};
 			let tempValue = this.getItemCogs(product.product) * product.quantity;
 			receiptLineItem.price_total = product.finalAmount;
