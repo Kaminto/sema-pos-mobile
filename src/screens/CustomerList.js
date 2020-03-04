@@ -142,14 +142,14 @@ class CustomerList extends React.Component {
     };
 
 	handleOnPress  = (item) => {
-		// requestAnimationFrame(() => {
-		// alert("Fast");
-		// this.setState({ refresh: !this.state.refresh });
 		this.props.customerActions.CustomerSelected(item);
 		// this.props.navigation.setParams({ isDueAmount: item.dueAmount,
 		// 									 isCustomerSelected: false,
 		// 									  customerName: '' });
 		this.props.navigation.navigate('OrderView');
+		// this.props.navigation.navigate( 'ListCustomerStack', {
+		// 	key: this.props.navigation.getParam('n', 1) + 1 // <= Works OK
+		// } );
 		// });
 	};
 
@@ -177,9 +177,9 @@ class CustomerList extends React.Component {
                     renderItem={({ item, index, separators }) => (
                         <TouchableHighlight
 							onLongPress={() => this.OnLongPressItem(item)}
-							onPress={() => this.handleOnPress(item)}
-                            onShowUnderlay={separators.highlight}
-                            onHideUnderlay={separators.unhighlight}>
+							onPress={() => this.handleOnPress(item)}>
+                            {/* onShowUnderlay={separators.highlight}
+                            onHideUnderlay={separators.unhighlight}> */}
                             {this.getRow(item, index, separators)}
 						</TouchableHighlight>
 

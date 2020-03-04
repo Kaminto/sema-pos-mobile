@@ -26,6 +26,8 @@ import CustomSidebarMenu from './CustomSidebarMenu';
 import Icons from 'react-native-vector-icons/FontAwesome';
 
 import i18n from '../app/i18n';
+import { enableScreens } from 'react-native-screens';
+enableScreens();
 
 class NavigationDrawerStructure extends React.PureComponent {
     toggleDrawer = () => {
