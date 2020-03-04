@@ -79,7 +79,7 @@ class OrderItems extends React.PureComponent {
 							</View>
 							<View style={{ flex: .6 }}>
 								<Text style={[{ textAlign: 'center' }, styles.baseItem]}>
-									{this.getCurrency(this.state.selectedItem)} {this.getDiscountPrice((this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)), this.state.selectedItem)}</Text>
+									{this.getCurrency(this.state.selectedItem)} {this.getDiscountPrice((this.state.selectedItem.quantity * this.state.selectedItem.unitPrice), this.state.selectedItem)}</Text>
 							</View>
 							<View
 								style={{

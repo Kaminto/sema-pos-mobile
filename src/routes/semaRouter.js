@@ -273,7 +273,7 @@ const ListCustomerStack = createStackNavigator({
 
     {
         initialRouteName: 'CustomerList',
-        headerMode: 'screen',
+		headerMode: 'screen'
     }
 );
 

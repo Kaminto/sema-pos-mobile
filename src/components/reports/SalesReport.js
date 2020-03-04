@@ -14,8 +14,14 @@ class SalesReport extends React.PureComponent {
 		super(props);
 		this.startDate = new Date();
 		this.endDate = this.addDays(new Date(), 1);
+		this.state = {
+			refresh: false
+		};
 	}
 
+	componentDidMount(){
+		this.setState({ refresh: !this.state.refresh });
+	}
 
 
 	addDays = (theDate, days) => {
@@ -54,7 +60,7 @@ class SalesReport extends React.PureComponent {
 						<FlatList
 							data={this.getSalesData()}
 							ListHeaderComponent={this.showHeader}
-							// extraData={this.state.refresh}
+							extraData={this.state.refresh}
 							renderItem={({ item, index, separators }) => (
 								<View>
 									{this.getRow(item, index, separators)}
@@ -68,7 +74,7 @@ class SalesReport extends React.PureComponent {
 						<FlatList
 							data={this.getTotalTypes()}
 							ListHeaderComponent={this.showPaymentHeader}
-							// extraData={this.state.refresh}
+							extraData={this.state.refresh}
 							renderItem={({ item, index, separators }) => (
 								<View>
 									{this.getPaymentRow(item, index, separators)}
@@ -107,18 +113,20 @@ class SalesReport extends React.PureComponent {
 		let groupedTypes = { ...this.groupPaymentTypes() };
 		let groupedTotals = [];
 		let objKeys = [...Object.keys(groupedTypes)];
+		let totalEarnings = 0;
 		for (let key of objKeys) {
+			let amount = groupedTypes[key].reduce((total, item) => {
+				return total + item.amount;
+			}, 0);
 			groupedTotals.push({
 				name: key,
-				totalAmount: groupedTypes[key].reduce((total, item) => {
-					return total + item.amount;
-				}, 0)
+				totalAmount: amount
 			});
-
+			totalEarnings = totalEarnings + amount;
 		}
 		groupedTotals.push({
-			name: 'TOTAL REVENUE',
-			totalAmount: this.props.salesData.totalSales
+			name: 'TOTAL EARNINGS',
+			totalAmount: totalEarnings
 		});
 
 		return groupedTotals;
@@ -158,7 +166,8 @@ class SalesReport extends React.PureComponent {
 		return (
 			<View style={[{ flex: 1, flexDirection: 'row', alignItems: 'center' }, styles.rowBackground]}>
 				<View style={[{ flex: 1 }]}>
-					<Text numberOfLines={1} style={[styles.rowItem, styles.leftMargin]}>{item.description}</Text>
+					<Text numberOfLines={1} style={[styles.rowItem, styles.leftMargin]}>
+						{item.description}</Text>
 				</View>
 				<View style={[{ flex: 1, }]}>
 					<Text style={[styles.rowItemCenter]}>{item.quantity}</Text>
@@ -178,7 +187,9 @@ class SalesReport extends React.PureComponent {
 			<View style={[{ flex: 1, flexDirection: 'row', alignItems: 'center' }, styles.rowBackground]}>
 
 				<View style={[{ flex: 1, }]}>
-					<Text style={[styles.rowItemCenter]}>{item.name.toUpperCase()}</Text>
+					<Text style={[styles.rowItemCenter]}>
+					{item.name == 'credit' ? 'WALLET' : item.name.toUpperCase()}
+					</Text>
 				</View>
 
 				<View style={[{ flex: 1 }]}>

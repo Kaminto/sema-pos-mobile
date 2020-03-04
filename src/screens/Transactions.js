@@ -27,6 +27,8 @@ import * as receiptActions from '../actions/ReceiptActions';
 import i18n from '../app/i18n';
 import { format, parseISO, isBefore } from 'date-fns';
 
+import { withNavigation } from 'react-navigation';
+
 
 class ReceiptLineItem extends React.PureComponent {
 	constructor(props) {
@@ -34,7 +36,6 @@ class ReceiptLineItem extends React.PureComponent {
 	}
 
 	render() {
-		console.log('this.props.item',this.props.item);
 		return (
 			<View
 				style={{
@@ -86,9 +87,6 @@ class PaymentTypeItem extends React.PureComponent {
 		super(props);
 	}
 
-
-
-
 	render() {
 		return (
 			<View
@@ -99,7 +97,8 @@ class PaymentTypeItem extends React.PureComponent {
 					marginTop: 5
 				}}>
 				<View style={[styles.itemData, { flex: 3 }]}>
-					<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>{this.props.item.name}</Text>
+					<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
+						{this.props.item.name == 'credit' ? 'Wallet' : this.props.item.name}</Text>
 				</View>
 				<View style={[styles.itemData, { flex: 1 }]}>
 					<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold' }]}>{this.props.item.amount} </Text>
@@ -304,7 +303,6 @@ class Transactions extends React.PureComponent {
 			selected: this.prepareSectionedData().length > 0 ? this.prepareSectionedData()[0].data[0] : {},
 		};
 	}
-
 
 
 	componentDidMount() {
@@ -654,7 +652,7 @@ function mapDispatchToProps(dispatch) {
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(Transactions);
+)(withNavigation(Transactions));
 
 const styles = StyleSheet.create({
 	container: {

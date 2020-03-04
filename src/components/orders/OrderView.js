@@ -3,6 +3,8 @@ import { View, StyleSheet } from 'react-native';
 import ProductListScreen from './ProductListScreen';
 import OrderSummaryScreen from "./OrderSummaryScreen";
 import * as OrderActions from "../../actions/OrderActions";
+
+import * as CustomerActions from "../../actions/CustomerActions";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
@@ -10,7 +12,6 @@ import { bindActionCreators } from "redux";
 class OrderView extends React.PureComponent {
 	constructor(props) {
 		super(props);
-
 	}
 
 
@@ -38,7 +39,8 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
 	return {
-		orderActions: bindActionCreators(OrderActions, dispatch)
+		orderActions: bindActionCreators(OrderActions, dispatch),
+		customerActions: bindActionCreators(CustomerActions, dispatch),
 	};
 }
 
