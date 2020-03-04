@@ -13,17 +13,25 @@ import i18n from '../app/i18n';
 class CustomerTitle extends React.PureComponent {
 
     render() {
-        console.log('header props', this.props.customerProps)
+        console.log('header props', this.props.customerProps);
         return (
             <View
                 style={{
-                    flexDirection: 'row',
+					flexDirection: 'row',
+					color: 'white',
+					fontSize: 18
                 }}>
                 {this.props.customerProps.isCustomerSelected && (
-                    <Text>{this.props.customerProps.customerName}</Text>
+                    <Text style={{
+						color: 'white',
+						fontSize: 18
+					}}>{this.props.customerProps.customerName}</Text>
                 )}
                 {!this.props.customerProps.isCustomerSelected && (
-                    <Text>Customers</Text>
+                    <Text style={{
+						color: 'white',
+						fontSize: 24
+					}}>Customers</Text>
                 )}
             </View>
 
