@@ -1,12 +1,15 @@
 import React from 'react';
-
+if (process.env.NODE_ENV === 'development') {
+    const whyDidYouRender = require('@welldone-software/why-did-you-render');
+    whyDidYouRender(React);
+}
 import {
     View,
     Text,
     TouchableHighlight,
     StyleSheet,
-	Alert,
-	TouchableWithoutFeedback
+    Alert,
+    TouchableWithoutFeedback
 } from 'react-native';
 import { FloatingAction } from "react-native-floating-action";
 import * as CustomerActions from '../actions/CustomerActions';
@@ -31,32 +34,35 @@ import { FlatList } from 'react-navigation';
 
 class CustomerList extends React.Component {
     constructor(props) {
-		super(props);
+        super(props);
 
 
         this.state = {
             refresh: false,
-			searchString: '',
-			debtcustomers: false,
+            searchString: '',
+            debtcustomers: false,
             customerTypeFilter: '',
             customerTypeValue: '',
             hasScrolled: false
-		};
+        };
 
-		this.props.navigation.setParams({
-			isCustomerSelected: false ,
-			customerTypeValue: 'all' ,
-			customerName: "" ,
-			searchCustomer: this.searchCustomer ,
-			checkCustomerTypefilter: this.checkCustomerTypefilter ,
-			onDelete: this.onDelete ,
-			clearLoan: this.clearLoan ,
-			isEditCustomer: this.isEditCustomer });
+        this.props.navigation.setParams({
+            isCustomerSelected: false,
+            customerTypeValue: 'all',
+            customerName: "",
+            searchCustomer: this.searchCustomer,
+            checkCustomerTypefilter: this.checkCustomerTypefilter,
+            onDelete: this.onDelete,
+            clearLoan: this.clearLoan,
+            isEditCustomer: this.isEditCustomer
+        });
 
         this.props.customerActions.CustomerSelected({});
-		this.props.customerActions.setCustomerEditStatus(false);
-		this.handleOnPress = this.handleOnPress.bind(this);
-	}
+        this.props.customerActions.setCustomerEditStatus(false);
+        this.handleOnPress = this.handleOnPress.bind(this);
+    }
+
+    static whyDidYouRender = true;
 
     searchCustomer = (searchText) => {
         this.props.customerActions.SearchCustomers(searchText);
@@ -77,10 +83,10 @@ class CustomerList extends React.Component {
 
     closePaymentModal = () => {
         this.refs.modal6.close();
-	};
-	isEditCustomer() {
+    };
+    isEditCustomer() {
 
-	}
+    }
 
     clearLoan = () => {
         this.refs.modal6.open();
@@ -141,28 +147,50 @@ class CustomerList extends React.Component {
         }
     };
 
-	handleOnPress  = (item) => {
-		// requestAnimationFrame(() => {
-		// alert("Fast");
-		// this.setState({ refresh: !this.state.refresh });
-		this.props.customerActions.CustomerSelected(item);
-		// this.props.navigation.setParams({ isDueAmount: item.dueAmount,
-		// 									 isCustomerSelected: false,
-		// 									  customerName: '' });
-		this.props.navigation.navigate('OrderView');
-		// });
-	};
+    handleOnPress = (item) => {
+        // requestAnimationFrame(() => {
+        // alert("Fast");
+        // this.setState({ refresh: !this.state.refresh });
+        this.props.customerActions.CustomerSelected(item);
+        // this.props.navigation.setParams({
+        //     isDueAmount: item.dueAmount,
+        //     isCustomerSelected: false,
+        //     customerName: ''
+        // });
+        this.props.customerActions.SetCustomerProp(
+            {
+                isDueAmount: item.dueAmount,
+                isCustomerSelected: false,
+                customerName: ''
+            }
+        );
+        // this.props.navigation.navigate('OrderView');
+        this.props.navigation.navigate('Transactions');
+        // });
+    };
 
-	OnLongPressItem  = (item) => {
-		this.props.customerActions.CustomerSelected(item);
-		// this.setState({ refresh: !this.state.refresh });
-		this.props.navigation.setParams({ isCustomerSelected: true,
-										 isDueAmount: item.dueAmount,
-										 customerName: item.name,
-										 'title': item.name });
-		this.props.customerActions.setCustomerEditStatus(true);
-		// Events.trigger('onOrder', { customer: item });
-  	};
+    OnLongPressItem = (item) => {
+        this.props.customerActions.CustomerSelected(item);
+        // this.setState({ refresh: !this.state.refresh });
+        // this.props.navigation.setParams({
+        //     isCustomerSelected: true,
+        //     isDueAmount: item.dueAmount,
+        //     customerName: item.name,
+        //     'title': item.name
+        // });
+
+        this.props.customerActions.SetCustomerProp(
+            {
+                isCustomerSelected: true,
+                isDueAmount: item.dueAmount,
+                customerName: item.name,
+                'title': item.name
+            }
+        );
+
+        this.props.customerActions.setCustomerEditStatus(true);
+        // Events.trigger('onOrder', { customer: item });
+    };
 
     render() {
         return (
@@ -171,22 +199,22 @@ class CustomerList extends React.Component {
                     ref={ref => {
                         this.flatListRef = ref;
                     }}
-					data={this.prepareData()}
+                    data={this.prepareData()}
                     ListHeaderComponent={this.showHeader}
                     extraData={this.state.refresh}
                     renderItem={({ item, index, separators }) => (
                         <TouchableHighlight
-							onLongPress={() => this.OnLongPressItem(item)}
-							onPress={() => this.handleOnPress(item)}
+                            onLongPress={() => this.OnLongPressItem(item)}
+                            onPress={() => this.handleOnPress(item)}
                             onShowUnderlay={separators.highlight}
                             onHideUnderlay={separators.unhighlight}>
                             {this.getRow(item, index, separators)}
-						</TouchableHighlight>
+                        </TouchableHighlight>
 
                     )}
-					keyExtractor={item => item.customerId}
-					windowSize={20}
-					removeClippedSubviews={true}
+                    keyExtractor={item => item.customerId}
+                    windowSize={20}
+                    removeClippedSubviews={true}
                     maxToRenderPerBatch={20}
                 />
                 <FloatingAction
@@ -195,7 +223,7 @@ class CustomerList extends React.Component {
                         this.props.customerActions.setCustomerEditStatus(false);
                         this.props.navigation.setParams({ isCustomerSelected: false });
                         this.props.navigation.setParams({ customerName: '' });
-						this.props.navigation.navigate('EditCustomer');
+                        this.props.navigation.navigate('EditCustomer');
                     }}
                 />
 
@@ -230,22 +258,22 @@ class CustomerList extends React.Component {
     filterItems = data => {
         let filter = {
             searchString: this.props.searchString.length > 0 ? this.props.searchString : "",
-			customerType: this.props.customerTypeFilter.length > 0 ? this.props.customerTypeFilter === 'all' ? "" : this.props.customerTypeFilter : "",
+            customerType: this.props.customerTypeFilter.length > 0 ? this.props.customerTypeFilter === 'all' ? "" : this.props.customerTypeFilter : "",
         };
         data = data.map(item => {
             return {
                 ...item,
-                walletBalance: item.walletBalance ? item.walletBalance : 0 ,
+                walletBalance: item.walletBalance ? item.walletBalance : 0,
                 searchString: item.name + ' ' + item.phoneNumber + ' ' + item.address,
-				customerType: item != undefined ? this.getCustomerTypes(item).toLowerCase() : "",
+                customerType: item != undefined ? this.getCustomerTypes(item).toLowerCase() : "",
             }
-		});
+        });
 
-		if(this.state.debtcustomers){
-			data.sort((a, b) => {
-				return Number(b.dueAmount)-Number(a.dueAmount);
-			});
-		}
+        if (this.state.debtcustomers) {
+            data.sort((a, b) => {
+                return Number(b.dueAmount) - Number(a.dueAmount);
+            });
+        }
 
         let filteredItems = data.filter(function (item) {
             for (var key in filter) {
@@ -257,7 +285,7 @@ class CustomerList extends React.Component {
                     return false;
             }
             return true;
-		});
+        });
 
         return filteredItems;
     };
@@ -277,9 +305,9 @@ class CustomerList extends React.Component {
                         this.getRowBackground(index, isSelected),
                         {
                             flex: 1,
-							flexDirection: 'row',
-							paddingTop: 15,
-							paddingBottom: 15,
+                            flexDirection: 'row',
+                            paddingTop: 15,
+                            paddingBottom: 15,
                             alignItems: 'center'
                         }
                     ]}>
@@ -307,7 +335,7 @@ class CustomerList extends React.Component {
                             {item.dueAmount.toFixed(2)}
                         </Text>
                     </View>
-					<View style={{ flex: 1 }}>
+                    <View style={{ flex: 1 }}>
                         <Text style={[styles.baseItem]}>
                             {item.walletBalance.toFixed(2)}
                         </Text>
@@ -417,31 +445,31 @@ class CustomerList extends React.Component {
                     <Text style={[styles.headerItem]}>{i18n.t('customer-type')}</Text>
                 </View>
                 <View style={[{ flex: 1, flexDirection: 'row' }]}>
-					<TouchableWithoutFeedback onPress={() => {
-									this.setState({ debtcustomers: !this.state.debtcustomers });
-									this.setState({ refresh: !this.state.refresh });
-								}}>
-								<Text style={[styles.headerItem]}>{i18n.t('balance')}
-									<Icons
-										name='sort'
-										size={18}
-										color="white"
-										style={{
-											marginLeft: 10,
-											marginRight: 5,
-										}}
-									/>
-									</Text>
+                    <TouchableWithoutFeedback onPress={() => {
+                        this.setState({ debtcustomers: !this.state.debtcustomers });
+                        this.setState({ refresh: !this.state.refresh });
+                    }}>
+                        <Text style={[styles.headerItem]}>{i18n.t('balance')}
+                            <Icons
+                                name='sort'
+                                size={18}
+                                color="white"
+                                style={{
+                                    marginLeft: 10,
+                                    marginRight: 5,
+                                }}
+                            />
+                        </Text>
 
-						</TouchableWithoutFeedback>
+                    </TouchableWithoutFeedback>
                 </View>
-				<View style={[{ flex: 1 }]}>
+                <View style={[{ flex: 1 }]}>
                     <Text style={[styles.headerItem]}>Wallet</Text>
                 </View>
 
             </View>
         );
-	};
+    };
 
     getRowBackground = (index, isSelected) => {
         if (isSelected) {
@@ -485,15 +513,15 @@ function mapStateToProps(state, props) {
         selectedCustomer: state.customerReducer.selectedCustomer,
         customers: state.customerReducer.customers,
         searchString: state.customerReducer.searchString,
-		customerTypeFilter: state.customerReducer.customerTypeFilter,
-		paymentTypes: state.paymentTypesReducer.paymentTypes,
+        customerTypeFilter: state.customerReducer.customerTypeFilter,
+        paymentTypes: state.paymentTypesReducer.paymentTypes,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-		customerActions: bindActionCreators(CustomerActions, dispatch),
-		paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch),
+        customerActions: bindActionCreators(CustomerActions, dispatch),
+        paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch),
     };
 }
 

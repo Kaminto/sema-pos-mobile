@@ -5,8 +5,16 @@ import {
 	CUSTOMERS_SET, CUSTOMERS_SEARCH,
 	CUSTOMERS_TYPE_SEARCH,
 	CUSTOMER_EDIT,
-	CUSTOMERS_CHANNEL_SEARCH } from "../actions/CustomerActions";
-let initialState = { selectedCustomer: {}, customers: [], searchString: "", paymentTypeFilter: "", customerTypeFilter: "", isEdit: false };
+	CUSTOMER_PROPS,
+	CUSTOMERS_CHANNEL_SEARCH
+} from "../actions/CustomerActions";
+let initialState = {
+	selectedCustomer: {}, customers: [], searchString: "", paymentTypeFilter: "", customerProps: {
+		isDueAmount: 0,
+		isCustomerSelected: false,
+		customerName: ''
+	}, customerTypeFilter: "", isEdit: false
+};
 
 const customerReducer = (state = initialState, action) => {
 	let newState;
@@ -14,6 +22,10 @@ const customerReducer = (state = initialState, action) => {
 		case CUSTOMER_SELECTED:
 			newState = { ...state };
 			newState.selectedCustomer = action.data;
+			return newState;
+		case CUSTOMER_PROPS:
+			newState = { ...state };
+			newState.customerProps = action.data;
 			return newState;
 		case CUSTOMERS_SET:
 			newState = { ...state };

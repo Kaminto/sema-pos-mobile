@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, Picker } from 'react-native';
-import { createSwitchNavigator, createAppContainer} from 'react-navigation';
+import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
@@ -8,7 +8,7 @@ import CustomerList from '../screens/CustomerList';
 import CustomerEdit from '../screens/CustomerEdit';
 import CustomerDetails from '../screens/CustomerDetails';
 import CreditHistory from '../screens/CreditHistory';
-
+import * as CustomerActions from '../actions/CustomerActions';
 import Login from '../screens/Login';
 import AuthLoadingScreen from '../screens/AuthLoadingScreen';
 import Transactions from '../screens/Transactions';
@@ -23,14 +23,16 @@ import SalesReport from '../components/reports/SalesReport';
 import { Input } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomSidebarMenu from './CustomSidebarMenu';
+import CustomerListHeader from './CustomerListHeader';
 import Icons from 'react-native-vector-icons/FontAwesome';
-
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import i18n from '../app/i18n';
 
 class NavigationDrawerStructure extends React.PureComponent {
     toggleDrawer = () => {
         this.props.navigationProps.toggleDrawer();
-	};
+    };
 
     render() {
         return (
@@ -50,12 +52,16 @@ class NavigationDrawerStructure extends React.PureComponent {
     }
 }
 
+
+
+
+
 const CreditHistoryStack = createStackNavigator({
     CreditHistory: {
         screen: CreditHistory,
         navigationOptions: {
-			title: 'Customer Wallet',
-		}
+            title: 'Customer Wallet',
+        }
     }
 },
     {
@@ -97,7 +103,7 @@ const TabNavigator = createBottomTabNavigator({
                 textTransform: 'uppercase'
             },
         }
-});
+    });
 
 const ListCustomerStack = createStackNavigator({
     CustomerList: {
@@ -109,137 +115,13 @@ const ListCustomerStack = createStackNavigator({
                 backgroundColor: '#00549C',
             },
             headerTintColor: '#fff',
-            headerRight: () =>
-                <View
-                    style={{
-                        flexDirection: 'row',
-                    }}>
-                    <View
-                        style={{
-							flex: 1,
-							flexDirection: 'row',
-							marginTop: 15
-                        }}>
-                        {navigation.getParam('isCustomerSelected') && (
-                            <Icons
-                                name='balance-scale'
-                                size={25}
-                                color="white"
-                                style={{
-                                    marginRight: 20,
-                                }}
-                                onPress={navigation.getParam('clearLoan')}
-                            />
-
-                        )}
-                        {navigation.getParam('isCustomerSelected') && (
-                            <Icon
-                                name='md-cart'
-                                size={25}
-                                color="white"
-                                style={{
-                                    marginRight: 20,
-                                }}
-                                onPress={() => {
-                                    navigation.setParams({ isCustomerSelected: false });
-                                    navigation.setParams({ customerName: '' });
-                                    navigation.navigate('OrderView');
-                                }}
-                            />
-
-                        )}
-                        {navigation.getParam('isCustomerSelected') && (
-                            <Icon
-                                name='md-more'
-                                size={25}
-                                color="white"
-                                style={{
-                                    marginRight: 20,
-                                }}
-                            />
-                        )}
-                        {navigation.getParam('isCustomerSelected') && (
-                            <Icon
-                                name='md-information-circle-outline'
-                                size={25}
-                                color="white"
-                                style={{
-                                    marginRight: 20,
-                                }}
-                                onPress={() => {
-                                    navigation.setParams({ isCustomerSelected: false });
-                                    navigation.setParams({ customerName: '' });
-                                    navigation.navigate('CustomerDetails');
-                                }}
-
-                            />
-                        )}
-                        {navigation.getParam('isCustomerSelected') && (
-                            <Icon
-                                name='md-trash'
-                                size={25}
-                                color="white"
-                                style={{
-                                    marginRight: 20,
-                                }}
-                                onPress={navigation.getParam('onDelete')}
-                            />
-                        )}
-                        {navigation.getParam('isCustomerSelected') && (
-                            <Icon
-                                name='md-create'
-                                size={25}
-                                color="white"
-                                style={{
-                                    marginRight: 20,
-                                }}
-                                onPress={() => {
-                                    navigation.setParams({ isCustomerSelected: false });
-                                    navigation.setParams({ customerName: '' });
-                                    navigation.navigate('EditCustomer');
-                                }}
-                            />
-                        )}
-                    </View>
-
-                    <View>
-                        <Input
-                            onChangeText={navigation.getParam('searchCustomer')}
-                            placeholder={i18n.t('search-placeholder')}
-                            placeholderTextColor='white'
-                            inputStyle={{ flex: .8, color: 'white' }}
-                        />
-                    </View>
-
-                    <View
-                        style={{
-                            marginTop: 12,
-                            flex: 1
-                        }}>
-                        <Picker
-                            mode="dropdown"
-                            selectedValue={navigation.getParam('customerTypeValue')}
-                            style={{ height: 50, width: 200, color: 'white' }}
-                            onValueChange={navigation.getParam('checkCustomerTypefilter')}>
-
-                            <Picker.Item label="All Customer Types" value="all" />
-                            <Picker.Item label="Business" value="Business" />
-                            <Picker.Item label="Household" value="Household" />
-                            <Picker.Item label="Retailer" value="Retailer" />
-                            <Picker.Item label="Outlet Franchise" value="Outlet Franchise" />
-                            <Picker.Item label="Anonymous" value="Anonymous" />
-                        </Picker>
-
-                    </View>
-
-                </View>
-
+            headerRight: () => <CustomerListHeader navigation={navigation}/>
         }),
     },
     EditCustomer: {
         screen: CustomerEdit,
         navigationOptions: ({ navigation }) => ({
-			title: navigation.getParam('isEdit') ? 'Edit Customer' : 'New Customer',
+            title: navigation.getParam('isEdit') ? 'Edit Customer' : 'New Customer',
             headerStyle: {
                 backgroundColor: '#00549C',
             },
@@ -260,7 +142,7 @@ const ListCustomerStack = createStackNavigator({
     OrderView: {
         screen: OrderView,
         navigationOptions: ({ navigation }) => ({
-			title: navigation.getParam('ordertitle', 'Order'),
+            title: navigation.getParam('ordertitle', 'Order'),
             headerStyle: {
                 backgroundColor: '#00549C',
             },
@@ -381,7 +263,7 @@ const JibuDrawerNavigation = createDrawerNavigator({
         navigationOptions: {
             drawerLabel: 'Transactions',
         },
-	},
+    },
     SalesReport: {
         screen: SalesReportStack,
         navigationOptions: {
