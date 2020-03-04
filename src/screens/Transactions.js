@@ -391,6 +391,7 @@ class Transactions extends React.PureComponent {
 	}
 
 	render() {
+		console.log('poperty', this.props.customerProps);
 		return (
 			<View style={{ flex: 1 }}>
 				{this.getTransactionDetail()}
@@ -637,6 +638,7 @@ function mapStateToProps(state, props) {
 		receiptsPaymentTypes: state.paymentTypesReducer.receiptsPaymentTypes,
 		paymentTypes: state.paymentTypesReducer.paymentTypes,
 		customers: state.customerReducer.customers,
+		customerProps: state.customerReducer.customerProps,
 		products: state.productReducer.products,
 		paymentTypeFilter: state.customerReducer.paymentTypeFilter,
 	};
