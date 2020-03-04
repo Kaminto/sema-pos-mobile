@@ -33,10 +33,8 @@ class ReceiptLineItem extends React.PureComponent {
 		super(props);
 	}
 
-
-
-
 	render() {
+		console.log('this.props.item',this.props.item);
 		return (
 			<View
 				style={{
@@ -58,7 +56,7 @@ class ReceiptLineItem extends React.PureComponent {
 					</View>
 				</View>
 				<View style={[styles.itemData, { flex: .3 }]}>
-					<Text style={[styles.label, { fontSize: 15, padding: 10 }]}>{this.props.item.currency_code.toUpperCase()} {this.props.item.price_total}</Text>
+					<Text style={[styles.label, { fontSize: 15, padding: 10 }]}>{this.props.item.currency_code.toUpperCase()} {this.props.item.totalAmount}</Text>
 				</View>
 			</View>
 		);
