@@ -30,8 +30,8 @@ class CustomerTitle extends React.PureComponent {
                 {!this.props.customerProps.isCustomerSelected && (
                     <Text style={{
 						color: 'white',
-						fontSize: 24
-					}}>Customers</Text>
+						fontSize: 18
+					}}>{this.props.title}</Text>
                 )}
             </View>
 

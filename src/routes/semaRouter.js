@@ -113,7 +113,7 @@ const ListCustomerStack = createStackNavigator({
     CustomerList: {
         screen: CustomerList,
         navigationOptions: ({ navigation }) => ({
-            headerTitle: () => <CustomerTitle/>,
+            headerTitle: () => <CustomerTitle title={`Customers`}/>,
             headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
             headerStyle: {
                 backgroundColor: '#00549C',
@@ -146,7 +146,7 @@ const ListCustomerStack = createStackNavigator({
     OrderView: {
         screen: OrderView,
         navigationOptions: ({ navigation }) => ({
-            title: navigation.getParam('ordertitle', 'Order'),
+            headerTitle: () => <CustomerTitle title={`Orders`}/>,
             headerStyle: {
                 backgroundColor: '#00549C',
             },
