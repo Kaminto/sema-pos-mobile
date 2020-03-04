@@ -9,9 +9,7 @@ export const CUSTOMERS_PAYMENT_TYPE_SEARCH = 'CUSTOMERS_PAYMENT_TYPE_SEARCH';
 
 export function CustomerSelected(customer) {
 	const data = customer;
-	return (dispatch) => {
-		dispatch({ type: CUSTOMER_SELECTED, data: data });
-	};
+	return (dispatch) => { dispatch({ type: CUSTOMER_SELECTED, data: data });	};
 }
 
 export function setCustomers(customers) {

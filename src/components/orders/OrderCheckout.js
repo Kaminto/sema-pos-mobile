@@ -172,7 +172,7 @@ class OrderCheckout extends React.PureComponent {
 					isDisabled={this.state.isDisabled}>
 
 					<ScrollView>
-					<TouchableOpacity>
+					{/* <TouchableOpacity> */}
 						<View style={{ flex: 1, padding: 0, margin: 0 }}>
 							<View
 								style={{
@@ -341,7 +341,7 @@ class OrderCheckout extends React.PureComponent {
 								</View>
 							</View>
 						</View>
-						</TouchableOpacity>
+						{/* </TouchableOpacity> */}
 					</ScrollView>
 				</Modal>
 

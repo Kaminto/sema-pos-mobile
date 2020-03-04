@@ -82,7 +82,7 @@ class Login extends React.PureComponent {
 							title={'Welcome to SEMA'}
 							titleStyle={{ fontSize: 26 }}
 							dividerStyle={{ display: 'none' }}
-							containerStyle={{ width: '40%', marginTop: 30, borderRadius: 5, elevation: 10 }}>
+							containerStyle={{ width: '50%', marginTop: 30, borderRadius: 5, elevation: 10 }}>
 
 							<Input
 								label={i18n.t('username-or-email-placeholder')}

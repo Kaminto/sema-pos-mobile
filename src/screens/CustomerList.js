@@ -142,17 +142,20 @@ class CustomerList extends React.Component {
     };
 
 	handleOnPress  = (item) => {
+		// requestAnimationFrame(() => {
+		// alert("Fast");
 		// this.setState({ refresh: !this.state.refresh });
 		this.props.customerActions.CustomerSelected(item);
-		this.props.navigation.setParams({ isDueAmount: item.dueAmount,
-											 isCustomerSelected: false,
-											  customerName: '' });
+		// this.props.navigation.setParams({ isDueAmount: item.dueAmount,
+		// 									 isCustomerSelected: false,
+		// 									  customerName: '' });
 		this.props.navigation.navigate('OrderView');
+		// });
 	};
 
 	OnLongPressItem  = (item) => {
 		this.props.customerActions.CustomerSelected(item);
-		this.setState({ refresh: !this.state.refresh });
+		// this.setState({ refresh: !this.state.refresh });
 		this.props.navigation.setParams({ isCustomerSelected: true,
 										 isDueAmount: item.dueAmount,
 										 customerName: item.name,
@@ -165,9 +168,9 @@ class CustomerList extends React.Component {
         return (
             <View style={{ backgroundColor: '#fff', flex: 1 }}>
                 <FlatList
-                    // ref={ref => {
-                    //     this.flatListRef = ref;
-                    // }}
+                    ref={ref => {
+                        this.flatListRef = ref;
+                    }}
 					data={this.prepareData()}
                     ListHeaderComponent={this.showHeader}
                     extraData={this.state.refresh}
@@ -184,7 +187,7 @@ class CustomerList extends React.Component {
 					keyExtractor={item => item.customerId}
 					windowSize={20}
 					removeClippedSubviews={true}
-                    maxToRenderPerBatch={1}
+                    maxToRenderPerBatch={20}
                 />
                 <FloatingAction
                     onOpen={name => {
@@ -193,7 +196,6 @@ class CustomerList extends React.Component {
                         this.props.navigation.setParams({ isCustomerSelected: false });
                         this.props.navigation.setParams({ customerName: '' });
 						this.props.navigation.navigate('EditCustomer');
-						console.log("AMG" + JSON.stringify(this.props));
                     }}
                 />
 

@@ -23,7 +23,7 @@ class SalesReport extends React.PureComponent {
 	};
 	render() {
 		return (
-			<View style={{ flex: 1 }}>
+			<View style={{ flex: 1, backgroundColor: 'white' }}>
 				<View style={{
 					flex: .2,
 					backgroundColor: 'white',
@@ -135,7 +135,6 @@ class SalesReport extends React.PureComponent {
 	}
 
 	comparePaymentTypes() {
-		let receiptsPaymentTypes = [...this.props.receiptsPaymentTypes];
 		let filteredReceiptPaymentTypes = [];
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
 			filteredReceiptPaymentTypes = this.props.receiptsPaymentTypes.filter(receiptpayment =>

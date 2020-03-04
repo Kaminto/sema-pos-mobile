@@ -83,7 +83,6 @@ class CustomSidebarMenu extends React.PureComponent {
 
 
   render() {
-
     return (
       <View style={styles.sideMenuContainer}>
 		<ScrollView style={{ flex: 1 }}>
@@ -107,6 +106,7 @@ class CustomSidebarMenu extends React.PureComponent {
             <View
               style={{
 				flex: 1,
+				width: '100%',
                 flexDirection: 'row',
                 alignItems: 'center',
                 paddingTop: 10,
@@ -324,7 +324,6 @@ function mapDispatchToProps(dispatch) {
     customerReminderActions: bindActionCreators(CustomerReminderActions, dispatch),
   };
 }
-
 
 export default connect(
   mapStateToProps,

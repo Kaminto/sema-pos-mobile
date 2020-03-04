@@ -71,10 +71,7 @@ class InventoryApi {
 						response
 							.json()
 							.then(responseJson => {
-								console.log(
-									'responseJson - Parse JSON: ' +
-									responseJson
-								);
+
 								resolve(responseJson);
 							})
 							.catch(error => {

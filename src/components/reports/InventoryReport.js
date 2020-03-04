@@ -120,7 +120,7 @@ class InventoryReport extends React.PureComponent {
 
 	render() {
 		return (
-			<View style={{ flex: 1 }}>
+			<View style={{ flex: 1, backgroundColor: 'white' }}>
 				<View style={{ flex: .1, flexDirection: 'row' }}>
 					<DateFilter />
 				</View>

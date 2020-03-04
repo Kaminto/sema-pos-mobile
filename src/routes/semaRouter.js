@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, Picker } from 'react-native';
-import { createSwitchNavigator, createAppContainer } from 'react-navigation';
+import { createSwitchNavigator, createAppContainer} from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
@@ -50,7 +50,6 @@ class NavigationDrawerStructure extends React.PureComponent {
     }
 }
 
-
 const CreditHistoryStack = createStackNavigator({
     CreditHistory: {
         screen: CreditHistory,
@@ -98,19 +97,19 @@ const TabNavigator = createBottomTabNavigator({
                 textTransform: 'uppercase'
             },
         }
-    });
+});
 
 const ListCustomerStack = createStackNavigator({
     CustomerList: {
         screen: CustomerList,
         navigationOptions: ({ navigation }) => ({
             title: navigation.getParam('isCustomerSelected') ? navigation.getParam('title', 'Customers') : 'Customers',
-            headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+            headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
             headerStyle: {
                 backgroundColor: '#00549C',
             },
             headerTintColor: '#fff',
-            headerRight: (
+            headerRight: () =>
                 <View
                     style={{
                         flexDirection: 'row',
@@ -235,7 +234,6 @@ const ListCustomerStack = createStackNavigator({
 
                 </View>
 
-            ),
         }),
     },
     EditCustomer: {
@@ -282,12 +280,12 @@ const TransactionStack = createStackNavigator({
         screen: Transactions,
         navigationOptions: ({ navigation }) => ({
             title: 'Transactions',
-            headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+            headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
             headerStyle: {
                 backgroundColor: '#00549C',
             },
             headerTintColor: '#fff',
-            headerRight: (
+            headerRight: () => (
                 <View
                     style={{
                         flexDirection: 'row',
@@ -322,7 +320,7 @@ const SalesReportStack = createStackNavigator({
         screen: SalesReport,
         navigationOptions: ({ navigation }) => ({
             title: 'Sales Report',
-            headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+            headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
             headerStyle: {
                 backgroundColor: '#00549C',
             },
@@ -336,7 +334,7 @@ const InventoryStack = createStackNavigator({
         screen: InventoryReport,
         navigationOptions: ({ navigation }) => ({
             title: 'Wastage Report',
-            headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+            headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
             headerStyle: {
                 backgroundColor: '#00549C',
             },
@@ -350,7 +348,7 @@ const ReminderStack = createStackNavigator({
         screen: RemindersReport,
         navigationOptions: ({ navigation }) => ({
             title: 'Reminders',
-            headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+            headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
             headerStyle: {
                 backgroundColor: '#00549C',
             },
@@ -429,3 +427,4 @@ const JibuRouter = createSwitchNavigator(
 );
 
 export default createAppContainer(JibuRouter);
+// export default JibuRouter;

@@ -387,7 +387,7 @@ class Transactions extends React.PureComponent {
 		} else {
 			return (
 				<View style={{ flex: 1, flexDirection: 'row' }}>
-					<Text style={{ fontSize: 20, fontWeight: 'bold', alignSelf: "center", alignContent: "center" }}>Record customers sales.</Text>
+					<Text style={{ fontSize: 20, fontWeight: 'bold', alignSelf: "center", alignContent: "center", padding: 20}}>Record customers sales.</Text>
 
 				</View>
 			);

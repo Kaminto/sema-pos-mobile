@@ -418,7 +418,7 @@ class CustomerEdit extends React.PureComponent {
 			: i18n.t('create-customer');
 	}
 	onCancelEdit() {
-		this.props.toolbarActions.ShowScreen('main');
+		this.props.navigation.navigate('ListCustomers');
 		var that = this;
 		setTimeout(() => {
 			Events.trigger('ScrollCustomerTo', {

@@ -228,7 +228,7 @@ class RemindersReport extends React.PureComponent {
 
 	render() {
 		return (
-			<View style={{ flex: 1, flexDirection: 'column' }}>
+			<View style={{ flex: 1, flexDirection: 'column', backgroundColor: 'white' }}>
 				<View style={{ flex: .15, flexDirection: 'row' }}>
 					<DateFilter />
 				</View>
@@ -364,6 +364,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center'
 	  },
 	  emptyMessageStyle: {
+		marginTop: '40%',
 		textAlign: 'center',
 		fontWeight: 'bold',
 		fontSize: 18

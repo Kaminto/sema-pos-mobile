@@ -4,7 +4,6 @@ import { View, Alert, TouchableOpacity, Text, TextInput, FlatList, ScrollView, T
 import { CheckBox, Card } from 'react-native-elements';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
-import * as receiptActions from '../actions/ReceiptActions';
 import * as TopUpActions from '../actions/TopUpActions';
 
 import { bindActionCreators } from "redux";
@@ -21,15 +20,12 @@ import CustomerRealm from '../database/customers/customer.operations';
 
 import * as Utilities from "../services/Utilities";
 const widthQuanityModal = '75%';
-const heightQuanityModal = 150;
-
-
+const heightQuanityModal = 100;
 
 class PaymentModal extends React.PureComponent {
 
 	constructor(props) {
 		super(props);
-
 
 		this.state = {
 			selectedPaymentTypes: [],
@@ -40,15 +36,10 @@ class PaymentModal extends React.PureComponent {
 		};
 	}
 
-	handleOnPress = () => {
-		this.clearLoan();
-	};
-
-
 	render() {
 		return (
 			<ScrollView>
-				<TouchableOpacity>
+				{/* <TouchableOpacity> */}
 				<View
 						style={{
 							flex: 1,
@@ -111,7 +102,7 @@ class PaymentModal extends React.PureComponent {
 							</View>
 						</View>
 					</View>
-					</TouchableOpacity>
+					{/* </TouchableOpacity> */}
 				</ScrollView>
 
 		);
@@ -265,7 +256,7 @@ class PaymentModal extends React.PureComponent {
 
 	};
 
-	clearLoan = () => {
+	handleOnPress = () => {
 		this.setState({
 			buttonDisabled: true
 		});
@@ -381,6 +372,7 @@ class PaymentModal extends React.PureComponent {
 		);
 	}
 
+	//Isn't this cyclic
 	calculateOrderDue() {
 			// If this is a loan payoff then the loan payment is negative the loan amount due
 			return this.calculateAmountDue();
@@ -402,8 +394,6 @@ function mapStateToProps(state, props) {
 		paymentTypes: state.paymentTypesReducer.paymentTypes,
 		selectedPaymentTypes: state.paymentTypesReducer.selectedPaymentTypes,
 		selectedDebtPaymentTypes: state.paymentTypesReducer.selectedDebtPaymentTypes,
-		receiptsPaymentTypes: state.paymentTypesReducer.receiptsPaymentTypes,
-		receipts: state.receiptReducer.receipts,
 		payment: state.orderReducer.payment,
 		selectedCustomer: state.customerReducer.selectedCustomer,
 		topups: state.topupReducer.topups,
@@ -413,7 +403,6 @@ function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		receiptActions: bindActionCreators(receiptActions, dispatch),
 		customerActions: bindActionCreators(CustomerActions, dispatch),
 		paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch),
 		topUpActions: bindActionCreators(TopUpActions, dispatch),
