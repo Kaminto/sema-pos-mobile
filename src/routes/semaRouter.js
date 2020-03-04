@@ -28,6 +28,8 @@ import Icons from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import i18n from '../app/i18n';
+import { enableScreens } from 'react-native-screens';
+enableScreens();
 
 class NavigationDrawerStructure extends React.PureComponent {
     toggleDrawer = () => {

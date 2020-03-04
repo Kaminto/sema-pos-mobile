@@ -106,7 +106,6 @@ class CustomSidebarMenu extends React.PureComponent {
             <View
               style={{
 				flex: 1,
-				width: '100%',
                 flexDirection: 'row',
                 alignItems: 'center',
                 paddingTop: 10,
