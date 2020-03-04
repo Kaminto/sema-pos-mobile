@@ -148,15 +148,7 @@ class CustomerList extends React.Component {
     };
 
     handleOnPress = (item) => {
-        // requestAnimationFrame(() => {
-        // alert("Fast");
-        // this.setState({ refresh: !this.state.refresh });
         this.props.customerActions.CustomerSelected(item);
-        // this.props.navigation.setParams({
-        //     isDueAmount: item.dueAmount,
-        //     isCustomerSelected: false,
-        //     customerName: ''
-        // });
         this.props.customerActions.SetCustomerProp(
             {
                 isDueAmount: item.dueAmount,
@@ -199,14 +191,9 @@ class CustomerList extends React.Component {
                     ref={ref => {
                         this.flatListRef = ref;
                     }}
-<<<<<<< HEAD
 					data={this.prepareData()}
 					ListHeaderComponent={this.showHeader}
 					stickyHeaderIndices={[0]}
-=======
-                    data={this.prepareData()}
-                    ListHeaderComponent={this.showHeader}
->>>>>>> cbed16382dd962c49f9ae1f40ef1d4d80470d5d1
                     extraData={this.state.refresh}
                     renderItem={({ item, index, separators }) => (
                         <TouchableHighlight
