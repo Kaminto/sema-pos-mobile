@@ -24,6 +24,8 @@ import { Input } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomSidebarMenu from './CustomSidebarMenu';
 import CustomerListHeader from './CustomerListHeader';
+import CustomerTitle from './CustomerTitle';
+
 import Icons from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -111,7 +113,7 @@ const ListCustomerStack = createStackNavigator({
     CustomerList: {
         screen: CustomerList,
         navigationOptions: ({ navigation }) => ({
-            title: navigation.getParam('isCustomerSelected') ? navigation.getParam('title', 'Customers') : 'Customers',
+            headerTitle: () => <CustomerTitle/>,
             headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
             headerStyle: {
                 backgroundColor: '#00549C',
