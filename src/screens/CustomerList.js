@@ -29,7 +29,7 @@ import slowlog from 'react-native-slowlog';
 
 import PaymentModal from './paymentModal';
 
-class CustomerList extends React.PureComponent {
+class CustomerList extends React.Component {
     constructor(props) {
 		super(props);
 		slowlog(this, /.*/);
@@ -40,12 +40,9 @@ class CustomerList extends React.PureComponent {
             customerTypeFilter: '',
             customerTypeValue: '',
             hasScrolled: false
-		};
-
-	}
-
-    componentDidMount() {
-		this.props.navigation.setParams({ isCustomerSelected: false ,
+        };
+        
+        this.props.navigation.setParams({ isCustomerSelected: false ,
 										  customerTypeValue: 'all' ,
 										  customerName: "" ,
 										  searchCustomer: this.searchCustomer ,
@@ -57,6 +54,13 @@ class CustomerList extends React.PureComponent {
 
         this.props.customerActions.CustomerSelected({});
         this.props.customerActions.setCustomerEditStatus(false);
+
+	}
+
+    componentDidMount() {
+
+        console.log('mouted');
+		
 
         // Events.on(
         //     'ScrollCustomerTo',
@@ -71,7 +75,12 @@ class CustomerList extends React.PureComponent {
     };
 
 	shouldComponentUpdate(nextProps, nextState) {
-		return nextProps.navigation !== this.props.navigation;
+        console.log('nextProps', nextProps.navigation.state.routeName);
+        console.log('props', this.props.navigation.state.routeName);
+        console.log('nextState', nextState);
+        console.log(nextProps.navigation.state.routeName != this.props.navigation.state.routeName)
+        return nextProps.navigation.state.routeName != this.props.navigation.state.routeName;
+        ///return false;
 	}
 
 

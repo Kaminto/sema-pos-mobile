@@ -33,7 +33,7 @@ import i18n from '../app/i18n';
 import slowlog from 'react-native-slowlog';
 import { ScrollView } from 'react-native-gesture-handler';
 
-class CustomSidebarMenu extends React.PureComponent {
+class CustomSidebarMenu extends React.Component {
   constructor() {
 	super();
 	slowlog(this, /.*/);
@@ -84,6 +84,16 @@ class CustomSidebarMenu extends React.PureComponent {
       }
     ];
   }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('nextProps', nextProps);
+    console.log('props', this.props);
+    console.log('nextState', nextState);
+    //return nextProps.navigation !== this.props.navigation;
+    return false;
+}
+
+
   render() {
 
     return (

@@ -1,8 +1,8 @@
 import React from 'react';
 if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-  }
+    const whyDidYouRender = require('@welldone-software/why-did-you-render');
+    whyDidYouRender(React);
+}
 import {
     View,
     StyleSheet,
@@ -43,8 +43,7 @@ import PaymentTypeRealm from '../database/payment_types/payment_types.operations
 import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_payment_types.operations';
 import Communications from '../services/Communications';
 import NetInfo from "@react-native-community/netinfo";
-
-class AuthLoadingScreen extends React.PureComponent {
+class AuthLoadingScreen extends React.Component {
 
     constructor(props) {
         super(props);
@@ -89,9 +88,19 @@ class AuthLoadingScreen extends React.PureComponent {
         });
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        console.log('nextProps', nextProps);
+        console.log('props', this.props);
+        console.log('nextState', nextState);
+        //return nextProps.navigation !== this.props.navigation;
+        return false;
+    }
+
     subtractDays = (theDate, days) => {
-		return new Date(theDate.getTime() - days * 24 * 60 * 60 * 1000);
-	};
+        return new Date(theDate.getTime() - days * 24 * 60 * 60 * 1000);
+    };
+
+
 
     loadSyncedData() {
         this.props.customerActions.setCustomers(
