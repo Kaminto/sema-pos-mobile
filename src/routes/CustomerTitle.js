@@ -23,7 +23,7 @@ class CustomerTitle extends React.PureComponent {
                     <Text>{this.props.customerProps.customerName}</Text>
                 )}
                 {!this.props.customerProps.isCustomerSelected && (
-                    <Text>Customers</Text>
+                    <Text>{this.props.title}</Text>
                 )}
             </View>
 
