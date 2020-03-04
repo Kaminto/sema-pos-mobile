@@ -5,9 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 class App extends React.PureComponent {
     render() {
         return (
-			<NavigationContainer>
-			   <JibuRouter />
-			</NavigationContainer>
+            <JibuRouter />
         );
     }
 }
