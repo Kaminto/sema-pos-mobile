@@ -539,7 +539,7 @@ export default connect(
 
 const styles = StyleSheet.create({
     baseItem: {
-        fontSize: 15
+        fontSize: 16
     },
     leftMargin: {
         left: 10
