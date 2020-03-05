@@ -327,7 +327,6 @@ class CustomerDetails extends React.PureComponent {
 	getTransactionDetail() {
 		if (this.state.selected) {
 			return (
-
 				<View style={{ flex: .75, flexDirection: 'row', paddingTop: 20, width: '85%', alignSelf: 'center' }}>
 					<View style={{ flex: .3, borderRightWidth: 1, borderRightColor: '#CCC' }}>
 						<FlatList
@@ -338,7 +337,6 @@ class CustomerDetails extends React.PureComponent {
 							extraData={this.state.refresh}
 						/>
 					</View>
-
 					<View style={{ flex: .7, backgroundColor: '#fff' }}>
 						<ScrollView>
 							<TransactionDetail

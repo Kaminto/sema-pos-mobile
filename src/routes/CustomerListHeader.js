@@ -44,16 +44,6 @@ class CustomerListHeader extends React.PureComponent {
                                 marginRight: 20,
                             }}
                             onPress={() => {
-                                this.props.customerActions.SetCustomerProp(
-                                    {
-                                        isCustomerSelected: true,
-                                        isDueAmount: 0,
-                                        customerName: '',
-                                        'title': '',
-                                    }
-                                );
-
-
                                 this.props.navigation.navigate('OrderView');
                             }}
                         />
@@ -77,15 +67,7 @@ class CustomerListHeader extends React.PureComponent {
                             style={{
                                 marginRight: 20,
                             }}
-                            onPress={() => {
-                                this.props.customerActions.SetCustomerProp(
-                                    {
-                                        isCustomerSelected: false,
-                                        isDueAmount: 0,
-                                        customerName: '',
-                                        'title': '',
-                                    }
-                                );
+                            onPress={() => {                               
                                 this.props.navigation.navigate('CustomerDetails');
                             }}
 
