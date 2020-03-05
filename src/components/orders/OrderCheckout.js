@@ -97,7 +97,9 @@ class OrderCheckout extends React.PureComponent {
 	};
 
 	handleOnPress() {
-		this.onCompleteOrder();
+		requestAnimationFrame(() => {
+			this.onCompleteOrder();
+		});
 	};
 
 	deliveryMode = () => {

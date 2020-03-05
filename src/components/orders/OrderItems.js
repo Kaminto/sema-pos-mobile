@@ -40,10 +40,12 @@ class OrderItems extends React.PureComponent {
 	static whyDidYouRender = true;
 
 	handleOnPress(item){
+		requestAnimationFrame(() => {
 		this.setState({ selectedItem: item });
 		this.setState({ accumulator: item.quantity });
 		this.setState({ firstKey: true });
 		this.refs.productModel.open();
+		});
 	  }
 
 

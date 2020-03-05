@@ -111,7 +111,7 @@ class CustomerList extends React.Component {
                                     this.props.selectedCustomer
                                 ); // Delete from storage
                                 this.props.customerActions.CustomerSelected({}); // Clear selected customer
-                              
+
                                 this.props.customerActions.SetCustomerProp(
                                     {
                                         isDueAmount: 0,
@@ -139,7 +139,7 @@ class CustomerList extends React.Component {
                     [{
                         text: 'OK', onPress: () => {
                             this.props.customerActions.CustomerSelected({}); // Clear selected customer
-                            
+
                             this.props.customerActions.SetCustomerProp(
                                 {
                                     isDueAmount: 0,
@@ -157,6 +157,7 @@ class CustomerList extends React.Component {
     };
 
     handleOnPress(item) {
+		requestAnimationFrame(() => {
 			this.props.customerActions.CustomerSelected(item);
 			this.props.customerActions.SetCustomerProp(
 			    {
@@ -167,6 +168,7 @@ class CustomerList extends React.Component {
 			    }
 			);
 			this.props.navigation.navigate('OrderView');
+		});
 
     };
 
@@ -321,7 +323,7 @@ class CustomerList extends React.Component {
                         </Text>
                     </View>
                     <View style={{ flex: 1 }}>
-                        <Text style={[styles.baseItem]}>
+                        <Text style={styles.baseItem}>
                             {item.phoneNumber}
                         </Text>
                     </View>
@@ -330,17 +332,17 @@ class CustomerList extends React.Component {
                         <Text style={[styles.baseItem]}>{item.address}</Text>
                     </View>
                     <View style={{ flex: 1 }}>
-                        <Text style={[styles.baseItem]}>
+                        <Text style={styles.baseItem}>
                             {this.getCustomerTypes(item)}
                         </Text>
                     </View>
                     <View style={{ flex: 1 }}>
-                        <Text style={[styles.baseItem]}>
+                        <Text style={styles.baseItem}>
                             {item.dueAmount.toFixed(2)}
                         </Text>
                     </View>
                     <View style={{ flex: 1 }}>
-                        <Text style={[styles.baseItem]}>
+                        <Text style={styles.baseItem}>
                             {item.walletBalance.toFixed(2)}
                         </Text>
                     </View>
@@ -537,7 +539,7 @@ export default connect(
 
 const styles = StyleSheet.create({
     baseItem: {
-        fontSize: 18
+        fontSize: 15
     },
     leftMargin: {
         left: 10
