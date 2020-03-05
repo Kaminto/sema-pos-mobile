@@ -64,6 +64,7 @@ const getSalesData = (beginDate) => {
 
 	let todaySales = [];
 	for (let i of Object.getOwnPropertyNames(groupedOrderItems)) {
+		console.log('groupedOrderItems[i][0].product', groupedOrderItems[i][0])
 		todaySales.push({
 			sku: groupedOrderItems[i][0].product.sku,
 			wastageName: groupedOrderItems[i][0].product.wastageName,
@@ -74,14 +75,11 @@ const getSalesData = (beginDate) => {
 			category: groupedOrderItems[i][0].product.category_id
 			? Number(groupedOrderItems[i][0].product.category_id) : Number(groupedOrderItems[i][0].product.categoryId),
 			pricePerSku: parseFloat(groupedOrderItems[i][0].price_total) / totalByProperty(groupedOrderItems[i], "quantity"),
-			totalSales: groupedOrderItems[i][0].product.description.includes('delivery')
-			 || groupedOrderItems[i][0].product.description.includes('discount')? parseFloat(groupedOrderItems[i][0].price_total)
-			: parseFloat(groupedOrderItems[i][0].price_total) * totalByProperty(groupedOrderItems[i], "quantity"),
-			litersPerSku: groupedOrderItems[i][0].product.unit_per_product
-			? Number(groupedOrderItems[i][0].product.unit_per_product) : Number(groupedOrderItems[i][0].product.unitPerProduct),
-			totalLiters: groupedOrderItems[i][0].product.unit_per_product
-			? Number(groupedOrderItems[i][0].product.unit_per_product) * totalByProperty(groupedOrderItems[i], "quantity")
-			: Number(groupedOrderItems[i][0].product.unitPerProduct) * totalByProperty(groupedOrderItems[i], "quantity")
+			totalSales: groupedOrderItems[i][0].product.description.includes('delivery')  || groupedOrderItems[i][0].product.description.includes('discount')?
+			parseFloat(groupedOrderItems[i][0].totalAmount)
+			: parseFloat(groupedOrderItems[i][0].totalAmount) * totalByProperty(groupedOrderItems[i], "quantity"),
+			litersPerSku: groupedOrderItems[i][0].product.unit_per_product ? Number(groupedOrderItems[i][0].product.unit_per_product) : Number(groupedOrderItems[i][0].product.unitPerProduct),
+			totalLiters: groupedOrderItems[i][0].product.unit_per_product ? Number(groupedOrderItems[i][0].product.unit_per_product) * totalByProperty(groupedOrderItems[i], "quantity") : Number(groupedOrderItems[i][0].product.unitPerProduct) * totalByProperty(groupedOrderItems[i], "quantity")
 		});
 	}
 
