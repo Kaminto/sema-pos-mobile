@@ -34,6 +34,9 @@ class PaymentModal extends React.PureComponent {
 			topup: "",
 			buttonDisabled: false,
 		};
+
+		this.handleOnPress = this.handleOnPress.bind(this);
+		this.closePaymentModal = this.closePaymentModal.bind(this);
 	}
 
 	render() {
@@ -145,7 +148,7 @@ class PaymentModal extends React.PureComponent {
 										color="black"
 									/>}
 									checked={item.isSelected || isSelectedAvailable}
-									onPress={this.checkBoxType(item)}
+									onPress={() => this.checkBoxType(item)}
 								/>
 							</View>
 							<View style={[{ flex: 1 }]}>{this.showTextInput(item)}</View>
@@ -185,7 +188,7 @@ class PaymentModal extends React.PureComponent {
 		}
 	}
 
-	checkBoxType = (item) => {
+	checkBoxType(item) {
 			const itemIndex = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(item.id);
 
 		if (itemIndex >= 0) {
@@ -254,7 +257,7 @@ class PaymentModal extends React.PureComponent {
 
 	};
 
-	handleOnPress = () => {
+	handleOnPress() {
 		this.setState({
 			buttonDisabled: true
 		});
@@ -381,7 +384,7 @@ class PaymentModal extends React.PureComponent {
 		return this.props.selectedCustomer.dueAmount;
 	}
 
-	closePaymentModal = () => {
+	closePaymentModal() {
 		this.props.closePaymentModal();
 	};
 

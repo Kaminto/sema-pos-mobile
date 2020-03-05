@@ -15,7 +15,7 @@ class CustomerTitle extends React.PureComponent {
                     <Text style={styles.tooltitle}>{this.props.customerProps.customerName}</Text>
                 )}
                 {!this.props.customerProps.isCustomerSelected && (
-                    <Text style={styles.tooltitle}>{this.props.customerProps.title}</Text>
+                    <Text style={styles.tooltitle}>{this.props.title ? this.props.title : this.props.customerProps.title}</Text>
 				)}
             </View>
 
