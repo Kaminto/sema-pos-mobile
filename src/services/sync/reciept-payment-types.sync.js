@@ -62,7 +62,10 @@ class RecieptPaymentTypesSync {
                         if (onlyLocally.length > 0) {
                             onlyLocally.forEach(localRecieptPaymentType => {
                                 RecieptPaymentTypesApi.createReceiptPaymentType(
-                                    localRecieptPaymentType
+                                    {
+                                        ...localRecieptPaymentType,
+                                        kiosk_id
+                                    }
                                 )
                                     .then((response) => {
                                         ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);

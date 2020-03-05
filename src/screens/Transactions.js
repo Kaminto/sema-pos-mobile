@@ -61,7 +61,7 @@ class ReceiptLineItem extends React.PureComponent {
 					</View>
 				</View>
 				<View style={[styles.itemData, { flex: .3 }]}>
-					<Text style={[styles.label, { fontSize: 15, padding: 10, alignItems: 'flex-end' }]}>{this.props.item.currency_code.toUpperCase()} {this.props.item.totalAmount}</Text>
+					<Text style={[styles.label, { fontSize: 15, padding: 10, alignItems: 'flex-end' }]}>{this.props.item.currency_code.toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}</Text>
 				</View>
 			</View>
 		);
@@ -276,7 +276,7 @@ class TransactionDetail extends React.PureComponent {
 				<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
 					<Text style={[styles.customername, { flex: .7, fontWeight: 'bold' }]}>TOTAL AMOUNT</Text>
 					<Text style={[styles.customername, { flex: .3, fontWeight: 'bold' }]}>
-						{this.props.item.currency.toUpperCase()} {this.props.item.totalAmount}
+						{this.props.item.currency.toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}
 					</Text>
 				</View>
 
