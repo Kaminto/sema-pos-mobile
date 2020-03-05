@@ -55,7 +55,6 @@ class CustomerList extends React.Component {
             checkCustomerTypefilter: this.checkCustomerTypefilter,
             onDelete: this.onDelete,
             clearLoan: this.clearLoan,
-            isEditCustomer: this.isEditCustomer
         });
 
         this.props.customerActions.CustomerSelected({});
@@ -70,7 +69,6 @@ class CustomerList extends React.Component {
 
 
     checkCustomerTypefilter = (searchText) => {
-        this.props.navigation.setParams({ customerTypeValue: searchText });
         this.props.customerActions.SearchCustomerTypes(searchText);
     };
 
@@ -84,9 +82,6 @@ class CustomerList extends React.Component {
     closePaymentModal = () => {
         this.refs.modal6.close();
     };
-    isEditCustomer() {
-
-    }
 
     clearLoan = () => {
         this.refs.modal6.open();
@@ -116,9 +111,17 @@ class CustomerList extends React.Component {
                                     this.props.selectedCustomer
                                 ); // Delete from storage
                                 this.props.customerActions.CustomerSelected({}); // Clear selected customer
-                                this.props.navigation.setParams({ isCustomerSelected: false });
-                                this.props.navigation.setParams({ isDueAmount: 0 });
-                                this.props.navigation.setParams({ customerName: "" });
+                              
+                                this.props.customerActions.SetCustomerProp(
+                                    {
+                                        isDueAmount: 0,
+                                        isCustomerSelected: false,
+                                        customerName: '',
+                                        'title': ""
+                                    }
+                                );
+
+
                                 this.props.customerActions.setCustomers(
                                     CustomerRealm.getAllCustomer()
                                 );
@@ -136,9 +139,15 @@ class CustomerList extends React.Component {
                     [{
                         text: 'OK', onPress: () => {
                             this.props.customerActions.CustomerSelected({}); // Clear selected customer
-                            this.props.navigation.setParams({ isCustomerSelected: false });
-                            this.props.navigation.setParams({ isDueAmount: 0 });
-                            this.props.navigation.setParams({ customerName: "" });
+                            
+                            this.props.customerActions.SetCustomerProp(
+                                {
+                                    isDueAmount: 0,
+                                    isCustomerSelected: false,
+                                    customerName: '',
+                                    'title': ""
+                                }
+                            );
                         }
                     }],
                     { cancelable: true }
@@ -215,7 +224,7 @@ class CustomerList extends React.Component {
 								isCustomerSelected: false,
 								isDueAmount: 0,
 								customerName: '',
-								'title': ''
+								'title': '',
 							}
 						);
                         this.props.navigation.navigate('EditCustomer');

@@ -15,9 +15,10 @@ let initialState = {
 		customerProps: {
 			isDueAmount: 0,
 			isCustomerSelected: false,
-			customerName: ''
+			customerName: '',
+			customerTypeValue: 'all',
 		},
-		customerTypeFilter: "",
+		customerTypeFilter: "all",
 		isEdit: false
 };
 

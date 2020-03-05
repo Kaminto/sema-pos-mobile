@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { View,  Picker } from 'react-native';
+import { View, Picker } from 'react-native';
 import * as CustomerActions from '../actions/CustomerActions';
 import { Input } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -44,8 +44,16 @@ class CustomerListHeader extends React.PureComponent {
                                 marginRight: 20,
                             }}
                             onPress={() => {
-                                this.props.navigation.setParams({ isCustomerSelected: false });
-                                this.props.navigation.setParams({ customerName: '' });
+                                this.props.customerActions.SetCustomerProp(
+                                    {
+                                        isCustomerSelected: false,
+                                        isDueAmount: 0,
+                                        customerName: '',
+                                        'title': '',
+                                    }
+                                );
+
+
                                 this.props.navigation.navigate('OrderView');
                             }}
                         />
@@ -70,8 +78,16 @@ class CustomerListHeader extends React.PureComponent {
                                 marginRight: 20,
                             }}
                             onPress={() => {
-                                this.props.navigation.setParams({ isCustomerSelected: false });
-                                this.props.navigation.setParams({ customerName: '' });
+                                this.props.customerActions.SetCustomerProp(
+                                    {
+                                        isCustomerSelected: false,
+                                        isDueAmount: 0,
+                                        customerName: '',
+                                        'title': '',
+                                    }
+                                );
+
+
                                 this.props.navigation.navigate('CustomerDetails');
                             }}
 
@@ -97,8 +113,14 @@ class CustomerListHeader extends React.PureComponent {
                                 marginRight: 20,
                             }}
                             onPress={() => {
-                                this.props.navigation.setParams({ isCustomerSelected: false });
-                                this.props.navigation.setParams({ customerName: '' });
+                                this.props.customerActions.SetCustomerProp(
+                                    {
+                                        isCustomerSelected: false,
+                                        isDueAmount: 0,
+                                        customerName: '',
+                                        'title': '',
+                                    }
+                                );
                                 this.props.navigation.navigate('EditCustomer');
                             }}
                         />
@@ -107,7 +129,9 @@ class CustomerListHeader extends React.PureComponent {
 
                 <View>
                     <Input
-                        onChangeText={this.props.navigation.getParam('searchCustomer')}
+                        onChangeText={(searchText) => {
+                            this.searchCustomer(searchText)
+                        }}
                         placeholder={i18n.t('search-placeholder')}
                         placeholderTextColor='white'
                         inputStyle={{ flex: .8, color: 'white' }}
@@ -121,9 +145,11 @@ class CustomerListHeader extends React.PureComponent {
                     }}>
                     <Picker
                         mode="dropdown"
-                        selectedValue={this.props.navigation.getParam('customerTypeValue')}
+                        selectedValue={this.props.customerTypeFilter}
                         style={{ height: 50, width: 200, color: 'white' }}
-                        onValueChange={this.props.navigation.getParam('checkCustomerTypefilter')}>
+                        onValueChange={(searchText) => {
+                            this.checkCustomerTypefilter(searchText)
+                        }}>
 
                         <Picker.Item label="All Customer Types" value="all" />
                         <Picker.Item label="Business" value="Business" />
@@ -139,6 +165,14 @@ class CustomerListHeader extends React.PureComponent {
 
         );
     }
+
+    searchCustomer = (searchText) => {
+        this.props.customerActions.SearchCustomers(searchText);
+    };
+
+    checkCustomerTypefilter = (searchText) => {
+        this.props.customerActions.SearchCustomerTypes(searchText);
+    };
 }
 
 function mapStateToProps(state, props) {

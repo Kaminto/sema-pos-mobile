@@ -23,9 +23,6 @@ class InventoryEdit extends React.PureComponent {
 		this.quantityInput = React.createRef();
 	}
 
-
-
-
 	render() {
 		return (
 			<Modal visible={this.isVisible()}
@@ -321,11 +318,11 @@ class InventoryReport extends React.PureComponent {
 	onOkNotDispatchedEdit(wastageName, newQuantity) {
 		this.setState({ notDispatchedEdit: "" });
 		let update = null;
-		if (newQuantity.trim().length > 0) {
+		if (newQuantity.trim().length >= 0) {
 			update = parseInt(newQuantity);
 		}
 
-		if (Number(update) > 0) {
+		if (Number(update) >= 0) {
 			let checkWastageName = this.props.wastageData.inventory.currentProductSkus.filter(element =>
 				element.wastageName === wastageName
 			);
@@ -359,10 +356,10 @@ class InventoryReport extends React.PureComponent {
 	onOkEditCurrentSku(wastageName, newQuantity) {
 		this.setState({ currentSkuEdit: "" });
 		let update = null;
-		if (newQuantity.trim().length > 0) {
+		if (newQuantity.trim().length >= 0) {
 			update = parseInt(newQuantity);
 		}
-		if (Number(update) > 0) {
+		if (Number(update) >= 0) {
 			let checkWastageName = this.props.wastageData.inventory.currentProductSkus.filter(element =>
 				element.wastageName === wastageName
 			);
