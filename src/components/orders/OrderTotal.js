@@ -1,5 +1,8 @@
 import React from "react";
-
+if (process.env.NODE_ENV === 'development') {
+    const whyDidYouRender = require('@welldone-software/why-did-you-render');
+    whyDidYouRender(React);
+}
 import { View, Text,  StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import * as Utilities from "../../services/Utilities";
@@ -12,6 +15,8 @@ class OrderTotal extends React.PureComponent {
 		super(props);
 
 	}
+
+	static whyDidYouRender = true;
 
 	render() {
 		return (

@@ -1,30 +1,22 @@
 
 import React from 'react';
-import { View, TouchableOpacity, Text, Picker } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import * as CustomerActions from '../actions/CustomerActions';
-import { Input } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/Ionicons';
-import CustomSidebarMenu from './CustomSidebarMenu';
-import Icons from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import i18n from '../app/i18n';
 
 class CustomerTitle extends React.PureComponent {
 
     render() {
-        console.log('header props', this.props.customerProps)
         return (
             <View
-                style={{
-                    flexDirection: 'row',
-                }}>
+                style={styles.container}>
                 {this.props.customerProps.isCustomerSelected && (
-                    <Text>{this.props.customerProps.customerName}</Text>
+                    <Text style={styles.tooltitle}>{this.props.customerProps.customerName}</Text>
                 )}
                 {!this.props.customerProps.isCustomerSelected && (
-                    <Text>{this.props.title}</Text>
-                )}
+                    <Text style={styles.tooltitle}>{this.props.title ? this.props.title : this.props.customerProps.title}</Text>
+				)}
             </View>
 
         );
@@ -52,3 +44,17 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(CustomerTitle);
+
+const styles = StyleSheet.create({
+	tooltitle: {
+		color: 'white',
+						fontSize: 18
+	},
+
+	container: {
+		            flexDirection: 'row',
+					color: 'white',
+					fontSize: 18
+	}
+
+  });

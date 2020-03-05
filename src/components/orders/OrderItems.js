@@ -1,5 +1,8 @@
 import React from "react";
-
+if (process.env.NODE_ENV === 'development') {
+    const whyDidYouRender = require('@welldone-software/why-did-you-render');
+    whyDidYouRender(React);
+}
 import { View, Text, TouchableOpacity, ScrollView, FlatList, TextInput, Dimensions, TouchableHighlight, StyleSheet, Alert } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -13,7 +16,6 @@ import SalesChannelRealm from '../../database/sales-channels/sales-channels.oper
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import DiscountRealm from '../../database/discount/discount.operations';
 import ToggleSwitch from 'toggle-switch-react-native';
-
 
 const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
@@ -35,9 +37,9 @@ class OrderItems extends React.PureComponent {
 		};
 	}
 
+	static whyDidYouRender = true;
 
-
-	handleOnPress = (item) => {
+	handleOnPress(item){
 		this.setState({ selectedItem: item });
 		this.setState({ accumulator: item.quantity });
 		this.setState({ firstKey: true });
@@ -79,7 +81,7 @@ class OrderItems extends React.PureComponent {
 							</View>
 							<View style={{ flex: .6 }}>
 								<Text style={[{ textAlign: 'center' }, styles.baseItem]}>
-									{this.getCurrency(this.state.selectedItem)} {this.getDiscountPrice((this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)), this.state.selectedItem)}</Text>
+									{this.getCurrency(this.state.selectedItem)} {this.getDiscountPrice((this.state.selectedItem.quantity * this.state.selectedItem.unitPrice), this.state.selectedItem)}</Text>
 							</View>
 							<View
 								style={{
@@ -243,7 +245,7 @@ class OrderItems extends React.PureComponent {
 							}}>
 								<View style={{ flex: .2, height: 40 }}>
 									<TouchableHighlight style={{ flex: 1 }}
-										onPress={() => this.counterChangedHandler('dec')}>
+										onPress={this.counterChangedHandler.bind(this, 'dec')}>
 										<Icon
 											size={40}
 											style={[{ textAlign: 'center' }, styles.leftMargin]}
@@ -259,7 +261,7 @@ class OrderItems extends React.PureComponent {
 								</View>
 								<View style={{ flex: .2, height: 40 }}>
 									<TouchableHighlight style={{ flex: 1 }}
-										onPress={() => this.counterChangedHandler('inc')}>
+										onPress={this.counterChangedHandler.bind(this, 'inc')}>
 										<Icon
 											size={40}
 											style={[{ textAlign: 'center' }, styles.leftMargin]}
@@ -514,7 +516,7 @@ class OrderItems extends React.PureComponent {
 		);
 	}
 
-	onCancelOrder = () => {
+	onCancelOrder() {
 		this.refs.productModel.close();
 	};
 
@@ -780,7 +782,7 @@ class OrderItems extends React.PureComponent {
 		);
 	};
 
-	counterChangedHandler = (action) => {
+	counterChangedHandler(action) {
 		let unitPrice = this.getItemPrice(this.state.selectedItem.product);
 		switch (action) {
 			case 'inc':
@@ -813,6 +815,7 @@ class OrderItems extends React.PureComponent {
 				break;
 		}
 	}
+
 	// Wrong sales channel for Retailers or Resellers.
 	getItemPrice = (item) => {
 		if (!item) {

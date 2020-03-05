@@ -1,10 +1,9 @@
 
 import React from 'react';
-import { View, TouchableOpacity, Text, Picker } from 'react-native';
+import { View,  Picker } from 'react-native';
 import * as CustomerActions from '../actions/CustomerActions';
 import { Input } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
-import CustomSidebarMenu from './CustomSidebarMenu';
 import Icons from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -12,7 +11,7 @@ import i18n from '../app/i18n';
 class CustomerListHeader extends React.PureComponent {
 
     render() {
-        console.log('header props', this.props.customerProps)
+        // console.log('header props', this.props.customerProps);
         return (
             <View
                 style={{
@@ -182,6 +181,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-    mapStateToProps,
-    mapDispatchToProps
+    mapStateToProps, mapDispatchToProps
 )(CustomerListHeader);

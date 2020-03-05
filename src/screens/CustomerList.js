@@ -25,17 +25,18 @@ import i18n from '../app/i18n';
 import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
 
-
 import Icons from 'react-native-vector-icons/FontAwesome';
 
 import PaymentModal from './paymentModal';
+
+import slowlog from 'react-native-slowlog';
 
 import { FlatList } from 'react-navigation';
 
 class CustomerList extends React.Component {
     constructor(props) {
         super(props);
-
+		slowlog(this, /.*/)
 
         this.state = {
             refresh: false,
@@ -58,8 +59,7 @@ class CustomerList extends React.Component {
         });
 
         this.props.customerActions.CustomerSelected({});
-        this.props.customerActions.setCustomerEditStatus(false);
-        this.handleOnPress = this.handleOnPress.bind(this);
+		this.props.customerActions.setCustomerEditStatus(false);
     }
 
     static whyDidYouRender = true;
@@ -147,50 +147,38 @@ class CustomerList extends React.Component {
         }
     };
 
-    handleOnPress = (item) => {
-        // requestAnimationFrame(() => {
-        // alert("Fast");
-        // this.setState({ refresh: !this.state.refresh });
-        this.props.customerActions.CustomerSelected(item);
-        // this.props.navigation.setParams({
-        //     isDueAmount: item.dueAmount,
-        //     isCustomerSelected: false,
-        //     customerName: ''
-        // });
-        this.props.customerActions.SetCustomerProp(
-            {
-                isDueAmount: item.dueAmount,
-                isCustomerSelected: false,
-                customerName: ''
-            }
-        );
-        // this.props.navigation.navigate('OrderView');
-        this.props.navigation.navigate('Transactions');
-        // });
+    handleOnPress(item) {
+			this.props.customerActions.CustomerSelected(item);
+			this.props.customerActions.SetCustomerProp(
+			    {
+			        isDueAmount: item.dueAmount,
+			        isCustomerSelected: false,
+					customerName: '',
+					'title': item.name + "'s Order"
+			    }
+			);
+			this.props.navigation.navigate('OrderView');
+
     };
 
-    OnLongPressItem = (item) => {
-        this.props.customerActions.CustomerSelected(item);
-        // this.setState({ refresh: !this.state.refresh });
-        // this.props.navigation.setParams({
-        //     isCustomerSelected: true,
-        //     isDueAmount: item.dueAmount,
-        //     customerName: item.name,
-        //     'title': item.name
-        // });
+    onLongPressItem(item) {
 
-        this.props.customerActions.SetCustomerProp(
-            {
-                isCustomerSelected: true,
-                isDueAmount: item.dueAmount,
-                customerName: item.name,
-                'title': item.name
-            }
-        );
+			this.props.customerActions.CustomerSelected(item);
 
-        this.props.customerActions.setCustomerEditStatus(true);
-        // Events.trigger('onOrder', { customer: item });
-    };
+			this.props.customerActions.SetCustomerProp(
+				{
+					isCustomerSelected: true,
+					isDueAmount: item.dueAmount,
+					customerName: item.name,
+					'title': item.name
+				}
+			);
+
+			this.props.customerActions.setCustomerEditStatus(true);
+
+	};
+
+
 
     render() {
         return (
@@ -199,12 +187,13 @@ class CustomerList extends React.Component {
                     ref={ref => {
                         this.flatListRef = ref;
                     }}
-                    data={this.prepareData()}
-                    ListHeaderComponent={this.showHeader}
+					data={this.prepareData()}
+					ListHeaderComponent={this.showHeader}
+					stickyHeaderIndices={[0]}
                     extraData={this.state.refresh}
                     renderItem={({ item, index, separators }) => (
                         <TouchableHighlight
-                            onLongPress={() => this.OnLongPressItem(item)}
+                            onLongPress={() => this.onLongPressItem(item)}
                             onPress={() => this.handleOnPress(item)}
                             onShowUnderlay={separators.highlight}
                             onHideUnderlay={separators.unhighlight}>
@@ -221,8 +210,14 @@ class CustomerList extends React.Component {
                     onOpen={name => {
                         this.props.customerActions.CustomerSelected({});
                         this.props.customerActions.setCustomerEditStatus(false);
-                        this.props.navigation.setParams({ isCustomerSelected: false });
-                        this.props.navigation.setParams({ customerName: '' });
+						this.props.customerActions.SetCustomerProp(
+							{
+								isCustomerSelected: false,
+								isDueAmount: 0,
+								customerName: '',
+								'title': ''
+							}
+						);
                         this.props.navigation.navigate('EditCustomer');
                     }}
                 />
