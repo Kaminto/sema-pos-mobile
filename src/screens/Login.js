@@ -257,6 +257,10 @@ class Login extends React.PureComponent {
 		this.props.customerActions.setCustomers(
 			CustomerRealm.getAllCustomer()
 		);
+		
+		this.props.productActions.setProducts(
+			ProductsRealm.getProducts()
+		);
 
 		//PaymentTypeRealm.truncate();
 		this.props.paymentTypesActions.setPaymentTypes(
@@ -277,9 +281,7 @@ class Login extends React.PureComponent {
 		this.props.inventoryActions.setInventory(
 			InventroyRealm.getAllInventory()
 		);
-		this.props.productActions.setProducts(
-			ProductsRealm.getProducts()
-		);
+	
 
 		this.props.receiptActions.setReceipts(
 			OrderRealm.getAllOrder()
