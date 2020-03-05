@@ -39,7 +39,7 @@ class OrderApi {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + this._token
 			},
-			body: JSON.stringify(this._remoteReceiptFromReceipt(receipt))
+			body: JSON.stringify(receipt)
 		};
 		return new Promise((resolve, reject) => {
 			fetch(this._url + 'sema/site/receipts', options)
