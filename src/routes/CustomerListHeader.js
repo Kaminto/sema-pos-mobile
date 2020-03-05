@@ -46,7 +46,7 @@ class CustomerListHeader extends React.PureComponent {
                             onPress={() => {
                                 this.props.customerActions.SetCustomerProp(
                                     {
-                                        isCustomerSelected: false,
+                                        isCustomerSelected: true,
                                         isDueAmount: 0,
                                         customerName: '',
                                         'title': '',
@@ -86,8 +86,6 @@ class CustomerListHeader extends React.PureComponent {
                                         'title': '',
                                     }
                                 );
-
-
                                 this.props.navigation.navigate('CustomerDetails');
                             }}
 
