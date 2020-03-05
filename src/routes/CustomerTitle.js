@@ -8,16 +8,15 @@ import { bindActionCreators } from 'redux';
 class CustomerTitle extends React.PureComponent {
 
     render() {
-        console.log('header title props', this.props.customerProps);
         return (
             <View
                 style={styles.container}>
-                {/* {this.props.customerProps.isCustomerSelected && (
+                {this.props.customerProps.isCustomerSelected && (
                     <Text style={styles.tooltitle}>{this.props.customerProps.customerName}</Text>
                 )}
-                {!this.props.customerProps.isCustomerSelected && ( */}
+                {!this.props.customerProps.isCustomerSelected && (
                     <Text style={styles.tooltitle}>{this.props.customerProps.title}</Text>
-                {/* )} */}
+				)}
             </View>
 
         );

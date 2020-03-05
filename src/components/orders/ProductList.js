@@ -23,12 +23,13 @@ import slowlog from 'react-native-slowlog';
 class ProductList extends React.Component {
 	constructor(props) {
 		super(props);
-		slowlog(this, /.*/)
+		slowlog(this, /.*/);
 	}
 
 	static whyDidYouRender = true;
 
 	handleOnPress(item){
+		console.log("Run how many");
 		const unitPrice = this.getItemPrice(item);
 		this.props.orderActions.AddProductToOrder(item, 1, unitPrice);
 	}

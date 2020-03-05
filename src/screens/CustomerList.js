@@ -25,7 +25,6 @@ import i18n from '../app/i18n';
 import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
 
-
 import Icons from 'react-native-vector-icons/FontAwesome';
 
 import PaymentModal from './paymentModal';
