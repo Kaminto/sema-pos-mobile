@@ -45,8 +45,16 @@ class CustomerListHeader extends React.PureComponent {
                                 marginRight: 20,
                             }}
                             onPress={() => {
-                                this.props.navigation.setParams({ isCustomerSelected: false });
-                                this.props.navigation.setParams({ customerName: '' });
+                               this.props.customerActions.SetCustomerProp(
+                                    {
+                                        isCustomerSelected: false,
+                                        isDueAmount: 0,
+                                        customerName: '',
+                                        'title': ''
+                                    }
+                                );
+
+
                                 this.props.navigation.navigate('OrderView');
                             }}
                         />
@@ -70,9 +78,17 @@ class CustomerListHeader extends React.PureComponent {
                             style={{
                                 marginRight: 20,
                             }}
-                            onPress={() => {
-                                this.props.navigation.setParams({ isCustomerSelected: false });
-                                this.props.navigation.setParams({ customerName: '' });
+                            onPress={() => { 
+                                this.props.customerActions.SetCustomerProp(
+                                    {
+                                        isCustomerSelected: false,
+                                        isDueAmount: 0,
+                                        customerName: '',
+                                        'title': ''
+                                    }
+                                );
+
+
                                 this.props.navigation.navigate('CustomerDetails');
                             }}
 
@@ -98,8 +114,14 @@ class CustomerListHeader extends React.PureComponent {
                                 marginRight: 20,
                             }}
                             onPress={() => {
-                                this.props.navigation.setParams({ isCustomerSelected: false });
-                                this.props.navigation.setParams({ customerName: '' });
+                                this.props.customerActions.SetCustomerProp(
+                                    {
+                                        isCustomerSelected: false,
+                                        isDueAmount: 0,
+                                        customerName: '',
+                                        'title': ''
+                                    }
+                                );
                                 this.props.navigation.navigate('EditCustomer');
                             }}
                         />
