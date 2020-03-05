@@ -75,7 +75,7 @@ class OrderApi {
 		});
 	}
 
-	_remoteReceiptFromReceipt(receipt) {
+	deleteOrder(receipt) {
 		return receipt;
 	}
 
