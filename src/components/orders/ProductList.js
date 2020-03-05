@@ -1,5 +1,8 @@
 import React from 'react';
-
+if (process.env.NODE_ENV === 'development') {
+    const whyDidYouRender = require('@welldone-software/why-did-you-render');
+    whyDidYouRender(React);
+}
 import {
 	View,
 	Text,
@@ -15,22 +18,17 @@ import * as OrderActions from '../../actions/OrderActions';
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 import randomMC from 'random-material-color';
-
+import slowlog from 'react-native-slowlog';
 
 class ProductList extends React.Component {
 	constructor(props) {
 		super(props);
-
+		slowlog(this, /.*/)
 	}
 
+	static whyDidYouRender = true;
 
-
-	shouldComponentUpdate(nextProps, nextState){
-		return this.props.filter != nextProps.filter;
-
-	}
-
-	handleOnPress = (item) => {
+	handleOnPress(item){
 		const unitPrice = this.getItemPrice(item);
 		this.props.orderActions.AddProductToOrder(item, 1, unitPrice);
 	}

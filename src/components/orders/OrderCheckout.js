@@ -1,5 +1,8 @@
 import React from "react";
-
+if (process.env.NODE_ENV === 'development') {
+    const whyDidYouRender = require('@welldone-software/why-did-you-render');
+    whyDidYouRender(React);
+}
 import { View, TouchableOpacity, Alert, Text, TextInput, Button, FlatList, ScrollView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -57,9 +60,10 @@ class OrderCheckout extends React.PureComponent {
 			selectedPaymentType: "Cash",
 		};
 		this.onPay = this.onPay.bind(this);
+		this.handleOnPress = this.handleOnPress.bind(this);
 	}
 
-
+	static whyDidYouRender = true;
 
 	showDateTimePicker = () => {
 		this.setState({ isDateTimePickerVisible: true });
@@ -92,9 +96,18 @@ class OrderCheckout extends React.PureComponent {
 		return date;
 	};
 
-	handleOnPress = () => {
+	handleOnPress() {
 		this.onCompleteOrder();
 	};
+
+	deliveryMode = () => {
+		this.setState({ isWalkIn: false });
+		if (this.props.delivery === 'delivery') {
+			this.props.paymentTypesActions.setDelivery('walkin');
+			return;
+		}
+		this.props.paymentTypesActions.setDelivery('delivery');
+	}
 
 	render() {
 		const state = this.state;
@@ -296,7 +309,7 @@ class OrderCheckout extends React.PureComponent {
 
 									{isRefill.length > 0 && (
 										<TouchableHighlight underlayColor='#c0c0c0'
-											onPress={() => this.onBottles()}>
+											onPress={this.onBottles}>
 											<Text
 												style={{ padding: 10, margin: 10, borderRadius: 5, color: 'white', backgroundColor: '#036', textAlign: 'center', alignSelf: 'flex-end' }}>Bottles returned</Text>
 										</TouchableHighlight>
@@ -328,8 +341,7 @@ class OrderCheckout extends React.PureComponent {
 									<TouchableHighlight
 										underlayColor="#c0c0c0"
 										disabled={this.state.buttonDisabled}
-										// onPress={() => this.onCompleteOrder()}>
-										onPress={() => this.handleOnPress()}>
+										onPress={this.handleOnPress}>
 										<Text
 											style={[
 												{ paddingTop: 10, paddingBottom: 20 },
@@ -957,7 +969,7 @@ class OrderCheckout extends React.PureComponent {
 		}
 		let cogs_total = 0;
 
-		receipt.products = this.props.products.map(product => {			
+		receipt.products = this.props.products.map(product => {
 			let receiptLineItem = {};
 			let tempValue = this.getItemCogs(product.product) * product.quantity;
 			receiptLineItem.price_total = product.finalAmount;

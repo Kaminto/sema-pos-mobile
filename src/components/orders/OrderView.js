@@ -1,4 +1,8 @@
 import React from "react";
+if (process.env.NODE_ENV === 'development') {
+    const whyDidYouRender = require('@welldone-software/why-did-you-render');
+    whyDidYouRender(React);
+}
 import { View, StyleSheet } from 'react-native';
 import ProductListScreen from './ProductListScreen';
 import OrderSummaryScreen from "./OrderSummaryScreen";
@@ -14,6 +18,7 @@ class OrderView extends React.PureComponent {
 		super(props);
 	}
 
+	static whyDidYouRender = true;
 
 	render() {
 		return (
@@ -22,9 +27,6 @@ class OrderView extends React.PureComponent {
 				<OrderSummaryScreen />
 			</View>
 		);
-	}
-	componentDidMount(){
-		this.props.navigation.setParams({ 'ordertitle': this.props.selectedCustomer.name + "'s Order" });
 	}
 
 	componentWillUnmount() {

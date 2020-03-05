@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image, Text, Alert, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Image, Text, Alert, ActivityIndicator, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -101,43 +101,46 @@ class CustomSidebarMenu extends React.PureComponent {
           }}
         />
         {/*Setting up Navigation Options from option array using loop*/}
-        <View style={{ flex: 1 }}>
+        <View style={{ width: '100%' }}>
           {this.items.map((item, key) => (
-            <View
-              style={{
-				flex: 1,
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingTop: 10,
-                paddingBottom: 10,
-                backgroundColor: global.currentScreenIndex === key ? '#e0dbdb' : '#ffffff',
-              }}
-              key={key}>
-              <View style={{ marginRight: 10, marginLeft: 20 }}>
-                <Icon name={item.navOptionThumb} size={25} color="#808080" />
-              </View>
-              <Text
-                style={{
-                  fontSize: 15,
-                  color: global.currentScreenIndex === key ? 'red' : 'black',
-                }}
-                onPress={() => {
-                  global.currentScreenIndex = key;
+            <View style={{ flex: 1 }}  key={key}>
+				  <TouchableOpacity
+				 	style={{
+						flex: 1,
+						flexDirection: 'row',
+						alignItems: 'center',
+						paddingTop: 10,
+						paddingBottom: 10,
+						backgroundColor: global.currentScreenIndex === key ? '#e0dbdb' : '#ffffff',
+					  }}
 
-                  if (item.screenToNavigate === 'LogOut') {
-                    this.onLogout();
-                  }
+					onPress={() => {
+							global.currentScreenIndex = key;
 
-                  if (item.screenToNavigate != 'LogOut' || item.screenToNavigate != 'Sync') {
-                    this.props.navigation.navigate(item.screenToNavigate);
-                  }
-                  if (item.screenToNavigate === 'Sync') {
-                    this.onSynchronize();
-                  }
+							if (item.screenToNavigate === 'LogOut') {
+								this.onLogout();
+							}
 
-                }}>
-                {item.navOptionName}
-              </Text>
+							if (item.screenToNavigate != 'LogOut' || item.screenToNavigate != 'Sync') {
+								this.props.navigation.navigate(item.screenToNavigate);
+							}
+							if (item.screenToNavigate === 'Sync') {
+								this.onSynchronize();
+							}
+
+							}}>
+					<View style={{ marginRight: 10, marginLeft: 20 }}>
+						<Icon name={item.navOptionThumb} size={25} color="#808080" />
+					</View>
+					<Text
+						style={{
+						fontSize: 15,
+						color: global.currentScreenIndex === key ? 'red' : 'black',
+						}}
+						>
+						{item.navOptionName}
+					</Text>
+					</TouchableOpacity>
             </View>
           ))}
         </View>

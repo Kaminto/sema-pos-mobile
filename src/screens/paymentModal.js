@@ -90,7 +90,7 @@ class PaymentModal extends React.PureComponent {
 								<TouchableHighlight
 									underlayColor="#c0c0c0"
 									disabled={this.state.buttonDisabled}
-									onPress={() => this.handleOnPress()}>
+									onPress={this.handleOnPress}>
 									<Text
 										style={[
 											{ paddingTop: 20, paddingBottom: 20 },
@@ -145,9 +145,7 @@ class PaymentModal extends React.PureComponent {
 										color="black"
 									/>}
 									checked={item.isSelected || isSelectedAvailable}
-									onPress={() => {
-										this.checkBoxType(item);
-									}}
+									onPress={this.checkBoxType(item)}
 								/>
 							</View>
 							<View style={[{ flex: 1 }]}>{this.showTextInput(item)}</View>

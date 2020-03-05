@@ -68,14 +68,20 @@ const getSalesData = (beginDate) => {
 			sku: groupedOrderItems[i][0].product.sku,
 			wastageName: groupedOrderItems[i][0].product.wastageName,
 			description: groupedOrderItems[i][0].product.description,
-			quantity: groupedOrderItems[i][0].product.description.includes('delivery')  || groupedOrderItems[i][0].product.description.includes('discount')? 1 : totalByProperty(groupedOrderItems[i], "quantity"),
-			category: groupedOrderItems[i][0].product.category_id ? Number(groupedOrderItems[i][0].product.category_id) : Number(groupedOrderItems[i][0].product.categoryId),
+			quantity: groupedOrderItems[i][0].product.description.includes('delivery')
+			 || groupedOrderItems[i][0].product.description.includes('discount')
+			 ? 1 : totalByProperty(groupedOrderItems[i], "quantity"),
+			category: groupedOrderItems[i][0].product.category_id
+			? Number(groupedOrderItems[i][0].product.category_id) : Number(groupedOrderItems[i][0].product.categoryId),
 			pricePerSku: parseFloat(groupedOrderItems[i][0].price_total) / totalByProperty(groupedOrderItems[i], "quantity"),
-			totalSales: groupedOrderItems[i][0].product.description.includes('delivery')  || groupedOrderItems[i][0].product.description.includes('discount')?
-			parseFloat(groupedOrderItems[i][0].price_total)
+			totalSales: groupedOrderItems[i][0].product.description.includes('delivery')
+			 || groupedOrderItems[i][0].product.description.includes('discount')? parseFloat(groupedOrderItems[i][0].price_total)
 			: parseFloat(groupedOrderItems[i][0].price_total) * totalByProperty(groupedOrderItems[i], "quantity"),
-			litersPerSku: groupedOrderItems[i][0].product.unit_per_product ? Number(groupedOrderItems[i][0].product.unit_per_product) : Number(groupedOrderItems[i][0].product.unitPerProduct),
-			totalLiters: groupedOrderItems[i][0].product.unit_per_product ? Number(groupedOrderItems[i][0].product.unit_per_product) * totalByProperty(groupedOrderItems[i], "quantity") : Number(groupedOrderItems[i][0].product.unitPerProduct) * totalByProperty(groupedOrderItems[i], "quantity")
+			litersPerSku: groupedOrderItems[i][0].product.unit_per_product
+			? Number(groupedOrderItems[i][0].product.unit_per_product) : Number(groupedOrderItems[i][0].product.unitPerProduct),
+			totalLiters: groupedOrderItems[i][0].product.unit_per_product
+			? Number(groupedOrderItems[i][0].product.unit_per_product) * totalByProperty(groupedOrderItems[i], "quantity")
+			: Number(groupedOrderItems[i][0].product.unitPerProduct) * totalByProperty(groupedOrderItems[i], "quantity")
 		});
 	}
 

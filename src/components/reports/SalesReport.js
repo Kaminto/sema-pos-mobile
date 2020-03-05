@@ -15,12 +15,15 @@ class SalesReport extends React.PureComponent {
 		this.startDate = new Date();
 		this.endDate = this.addDays(new Date(), 1);
 		this.state = {
-			refresh: false
+			refresh: false,
+			refresh1: false
 		};
 	}
 
 	componentDidMount(){
-		this.setState({ refresh: !this.state.refresh });
+		this.setState({ refresh: !this.state.refresh,
+			refresh1: !this.state.refresh1
+		 });
 	}
 
 
@@ -74,7 +77,7 @@ class SalesReport extends React.PureComponent {
 						<FlatList
 							data={this.getTotalTypes()}
 							ListHeaderComponent={this.showPaymentHeader}
-							extraData={this.state.refresh}
+							extraData={this.state.refresh1}
 							renderItem={({ item, index, separators }) => (
 								<View>
 									{this.getPaymentRow(item, index, separators)}

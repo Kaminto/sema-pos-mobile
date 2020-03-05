@@ -1,38 +1,23 @@
 
 import React from 'react';
-import { View, TouchableOpacity, Text, Picker } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import * as CustomerActions from '../actions/CustomerActions';
-import { Input } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/Ionicons';
-import CustomSidebarMenu from './CustomSidebarMenu';
-import Icons from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import i18n from '../app/i18n';
 
 class CustomerTitle extends React.PureComponent {
 
     render() {
-        console.log('header props', this.props.customerProps);
+        console.log('header title props', this.props.customerProps);
         return (
             <View
-                style={{
-					flexDirection: 'row',
-					color: 'white',
-					fontSize: 18
-                }}>
-                {this.props.customerProps.isCustomerSelected && (
-                    <Text style={{
-						color: 'white',
-						fontSize: 18
-					}}>{this.props.customerProps.customerName}</Text>
+                style={styles.container}>
+                {/* {this.props.customerProps.isCustomerSelected && (
+                    <Text style={styles.tooltitle}>{this.props.customerProps.customerName}</Text>
                 )}
-                {!this.props.customerProps.isCustomerSelected && (
-                    <Text style={{
-						color: 'white',
-						fontSize: 18
-					}}>{this.props.title}</Text>
-                )}
+                {!this.props.customerProps.isCustomerSelected && ( */}
+                    <Text style={styles.tooltitle}>{this.props.customerProps.title}</Text>
+                {/* )} */}
             </View>
 
         );
@@ -60,3 +45,17 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(CustomerTitle);
+
+const styles = StyleSheet.create({
+	tooltitle: {
+		color: 'white',
+						fontSize: 18
+	},
+
+	container: {
+		            flexDirection: 'row',
+					color: 'white',
+					fontSize: 18
+	}
+
+  });

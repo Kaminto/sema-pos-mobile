@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, Picker } from 'react-native';
+import { View, TouchableOpacity, Text, Dimensions, Picker } from 'react-native';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -20,16 +20,11 @@ import RemindersReport from '../components/reports/ReminderReport';
 
 import SalesReport from '../components/reports/SalesReport';
 
-import { Input } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomSidebarMenu from './CustomSidebarMenu';
 import CustomerListHeader from './CustomerListHeader';
 import CustomerTitle from './CustomerTitle';
 
-import Icons from 'react-native-vector-icons/FontAwesome';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import i18n from '../app/i18n';
 import { enableScreens } from 'react-native-screens';
 enableScreens();
 
@@ -47,7 +42,7 @@ class NavigationDrawerStructure extends React.PureComponent {
                         size={30}
                         color="white"
                         style={{
-                            width: 30, height: 30, marginLeft: 10
+                            width: 50, height: 30, marginLeft: 10, paddingRight:20
                         }}
                     />
                 </TouchableOpacity>
@@ -146,7 +141,8 @@ const ListCustomerStack = createStackNavigator({
     OrderView: {
         screen: OrderView,
         navigationOptions: ({ navigation }) => ({
-            headerTitle: () => <CustomerTitle title={`Orders`}/>,
+			headerTitle: () => <CustomerTitle title={`Orders`}/>,
+			// title: navigation.getParam('title', 'Orders'),
             headerStyle: {
                 backgroundColor: '#00549C',
             },
@@ -298,7 +294,8 @@ const JibuDrawerNavigation = createDrawerNavigator({
             light: '#eee',
             dark: 'rgba(40,40,40,1)',
         },
-        drawerType: 'slide'
+		drawerType: 'slide',
+		drawerWidth: Dimensions.get('window').width * .3,
     });
 
 const JibuRouter = createSwitchNavigator(

@@ -1,4 +1,3 @@
-
 import {
 	CUSTOMER_SELECTED,
 	CUSTOMERS_PAYMENT_TYPE_SEARCH,
@@ -9,11 +8,17 @@ import {
 	CUSTOMERS_CHANNEL_SEARCH
 } from "../actions/CustomerActions";
 let initialState = {
-	selectedCustomer: {}, customers: [], searchString: "", paymentTypeFilter: "", customerProps: {
-		isDueAmount: 0,
-		isCustomerSelected: false,
-		customerName: ''
-	}, customerTypeFilter: "", isEdit: false
+		selectedCustomer: {},
+		customers: [],
+		searchString: "",
+		paymentTypeFilter: "",
+		customerProps: {
+			isDueAmount: 0,
+			isCustomerSelected: false,
+			customerName: ''
+		},
+		customerTypeFilter: "",
+		isEdit: false
 };
 
 const customerReducer = (state = initialState, action) => {

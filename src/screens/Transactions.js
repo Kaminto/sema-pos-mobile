@@ -1,10 +1,12 @@
 import React from 'react';
-
+if (process.env.NODE_ENV === 'development') {
+    const whyDidYouRender = require('@welldone-software/why-did-you-render');
+    whyDidYouRender(React);
+}
 import {
 	View,
 	Text,
 	StyleSheet,
-	FlatList,
 	Image,
 	TouchableOpacity,
 	TouchableNativeFeedback,
@@ -35,6 +37,8 @@ class ReceiptLineItem extends React.PureComponent {
 		super(props);
 	}
 
+	static whyDidYouRender = true;
+
 	render() {
 		return (
 			<View
@@ -57,7 +61,7 @@ class ReceiptLineItem extends React.PureComponent {
 					</View>
 				</View>
 				<View style={[styles.itemData, { flex: .3 }]}>
-					<Text style={[styles.label, { fontSize: 15, padding: 10 }]}>{this.props.item.currency_code.toUpperCase()} {this.props.item.totalAmount}</Text>
+					<Text style={[styles.label, { fontSize: 15, padding: 10, alignItems: 'flex-end' }]}>{this.props.item.currency_code.toUpperCase()} {this.props.item.totalAmount}</Text>
 				</View>
 			</View>
 		);
@@ -124,9 +128,6 @@ class TransactionDetail extends React.PureComponent {
 		});
 	}
 
-
-
-
 	onDeleteReceipt(item) {
 		return () => {
 			if (item.is_delete === 0) {
@@ -149,6 +150,7 @@ class TransactionDetail extends React.PureComponent {
 						text: i18n.t('yes'),
 						onPress: () => {
 							this.deleteReceipt(item);
+							this.setState({ refresh: !this.state.refresh });
 						}
 					}
 				],
@@ -175,7 +177,7 @@ class TransactionDetail extends React.PureComponent {
 		this.props.receiptActions.setReceipts(
             OrderRealm.getAllOrder()
         );
-		this.setState({ refresh: !this.state.refresh });
+
 	}
 
 	render() {
@@ -277,6 +279,7 @@ class TransactionDetail extends React.PureComponent {
 						{this.props.item.currency.toUpperCase()} {this.props.item.totalAmount}
 					</Text>
 				</View>
+
 			</View>
 		)
 	} else {
@@ -293,7 +296,6 @@ class TransactionDetail extends React.PureComponent {
 class Transactions extends React.PureComponent {
 	constructor(props) {
 		super(props);
-
 
 		this.state = {
 			refresh: false,
@@ -341,19 +343,9 @@ class Transactions extends React.PureComponent {
 
 	getTransactionDetail() {
 		if (this.state.selected) {
-			// this.prepareSectionedData();
 			return (
 				<View style={{ flex: 1, flexDirection: 'row' }}>
 					<View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 1, borderRightColor: '#CCC' }}>
-						{/* <FlatList
-							data={this.prepareData()}
-							renderItem={this.renderReceipt.bind(this)}
-							keyExtractor={(item, index) => item.id}
-							ItemSeparatorComponent={this.renderSeparator}
-							extraData={this.state}
-							windowSize={10}
-					        removeClippedSubviews={true}
-						/> */}
 						 <SafeAreaView style={styles.container}>
 								<SectionList
 								    ItemSeparatorComponent={this.renderSeparator}
@@ -370,6 +362,7 @@ class Transactions extends React.PureComponent {
 					<View style={{ flex: 2, backgroundColor: '#fff', paddingLeft: 20 }}>
 						<ScrollView>
 							<TransactionDetail
+								// key={}
 								item={this.state.selected}
 								products={this.props.products}
 								receiptActions={this.props.receiptActions}
@@ -391,7 +384,6 @@ class Transactions extends React.PureComponent {
 	}
 
 	render() {
-		console.log('poperty', this.props.customerProps);
 		return (
 			<View style={{ flex: 1 }}>
 				{this.getTransactionDetail()}
@@ -554,11 +546,6 @@ class Transactions extends React.PureComponent {
 		return (
 			<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
 				<View key={index} style={{ padding: 10 }}>
-					{/* <View style={styles.label}>
-						<Text>
-								{format(parseISO(item.createdAt), 'iii d MMM yyyy')}
-						</Text>
-					</View> */}
 					<View style={styles.itemData}>
 						<Text style={styles.customername}>{item.customerAccount.name}</Text>
 					</View>
@@ -605,7 +592,6 @@ class Transactions extends React.PureComponent {
 
 class SearchWatcher extends React.PureComponent {
 	render() {
-
 		return this.searchEvent();
 	}
 

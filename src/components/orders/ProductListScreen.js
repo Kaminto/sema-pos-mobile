@@ -1,6 +1,9 @@
 import React from "react";
-
-import { Dimensions, Animated } from "react-native";
+if (process.env.NODE_ENV === 'development') {
+    const whyDidYouRender = require('@welldone-software/why-did-you-render');
+    whyDidYouRender(React);
+}
+import { Dimensions } from "react-native";
 import ProductList from "./ProductList";
 import { connect } from "react-redux";
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
@@ -18,40 +21,16 @@ class ProductListScreen extends React.Component {
 		this.viewWidth = 1 / 1.6 * width;
 		this.salesChannel;
 		this.state = {
-			fadeAnim: new Animated.Value(-this.viewWidth)  // Initial value for sliding in from left
+			salesChannel: SalesChannelRealm.getSalesChannelFromId(this.props.selectedCustomer.salesChannelId)
 		}
 	}
 
-
-
-
-	componentDidMount() {
-		this.setState({
-			salesChannel: SalesChannelRealm.getSalesChannelFromId(this.props.selectedCustomer.salesChannelId)
-		}, () => {
-			Animated.timing(                  // Animate over time
-				this.state.fadeAnim,            // The animated value to drive
-				{
-					toValue: 0,                   // Animate to opacity: 1 (opaque)
-					duration: 150,
-					useNativeDriver: true,
-				}
-			).start();
-		});
-	}
-
-	shouldComponentUpdate(nextProps, nextState){
-		return this.state.salesChannel !== nextState.salesChannel;
-
-	}
+	static whyDidYouRender = true;
 
 	render() {
-		let { fadeAnim } = this.state;
 		if (this.state.salesChannel) {
 			return (
-				<Animated.View style={{ flex: 1, backgroundColor: '#ABC1DE', transform: [{ translateX: fadeAnim }] }}>
 					<ProductList filter={this.state.salesChannel.name} viewWidth={this.viewWidth} />
-				</Animated.View>
 			);
 		}
 		return null;
