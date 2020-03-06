@@ -15,7 +15,6 @@ class SalesReport extends React.PureComponent {
 		this.startDate = new Date();
 		this.endDate = this.addDays(new Date(), 1);
 		this.state = {
-			refresh: false,
 			refreshing: false,
 		};
 	}
@@ -26,17 +25,12 @@ class SalesReport extends React.PureComponent {
 		});
 
 		await this.getTotalTypes();
+		await this.getSalesData();
 
 		this.setState({
 			refreshing: false
 		});
 	  }
-
-	componentDidMount(){
-		this.setState({
-			refresh: !this.state.refresh
-		 });
-	}
 
 
 	addDays = (theDate, days) => {
@@ -45,6 +39,13 @@ class SalesReport extends React.PureComponent {
 	render() {
 		return (
 			<View style={{ flex: 1, backgroundColor: 'white' }}>
+				<ScrollView
+						refreshControl={
+						<RefreshControl
+							refreshing={this.state.refreshing}
+							onRefresh={this._onRefresh}
+						/>
+					}>
 				<View style={{
 					flex: .2,
 					backgroundColor: 'white',
@@ -75,7 +76,7 @@ class SalesReport extends React.PureComponent {
 						<FlatList
 							data={this.getSalesData()}
 							ListHeaderComponent={this.showHeader}
-							extraData={this.state.refresh}
+							extraData={this.state.refreshing}
 							renderItem={({ item, index, separators }) => (
 								<View>
 									{this.getRow(item, index, separators)}
@@ -86,15 +87,8 @@ class SalesReport extends React.PureComponent {
 						/>
 					</View>
 					<View style={{ flex: .4, padding: 10 }}>
-					<ScrollView
-						refreshControl={
-						<RefreshControl
-							refreshing={this.state.refreshing}
-							onRefresh={this._onRefresh}
-						/>
-					}>
 						<FlatList
-							onRefresh={this._onRefresh}
+							// onRefresh={this._onRefresh}
 							data={this.getTotalTypes()}
 							ListHeaderComponent={this.showPaymentHeader}
 							extraData={this.state.refreshing}
@@ -105,10 +99,10 @@ class SalesReport extends React.PureComponent {
 							)}
 							keyExtractor={item => item.name}
 						/>
-						</ScrollView>
 					</View>
 
 				</View>
+				</ScrollView>
 			</View>
 		);
 	}
@@ -139,14 +133,14 @@ class SalesReport extends React.PureComponent {
 		let totalEarnings = 0;
 		for (let key of objKeys) {
 			let amount = groupedTypes[key].reduce((total, item) => {
+				console.log("Final tests "  + key + " = " + total + " - " +  item.amount, + " - " + totalEarnings)
 				return total + item.amount;
 			}, 0);
 			groupedTotals.push({
 				name: key,
 				totalAmount: amount
 			});
-			totalEarnings = totalEarnings + amount;
-
+			totalEarnings = totalEarnings + Number(amount);
 		}
 
 		groupedTotals.push({

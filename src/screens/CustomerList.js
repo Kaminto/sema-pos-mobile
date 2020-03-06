@@ -9,7 +9,8 @@ import {
     TouchableHighlight,
     StyleSheet,
     Alert,
-    TouchableWithoutFeedback
+	TouchableWithoutFeedback,
+	FlatList
 } from 'react-native';
 import { FloatingAction } from "react-native-floating-action";
 import * as CustomerActions from '../actions/CustomerActions';
@@ -31,7 +32,7 @@ import PaymentModal from './paymentModal';
 
 import slowlog from 'react-native-slowlog';
 
-import { FlatList } from 'react-navigation';
+// import { FlatList } from 'react-navigation';
 
 class CustomerList extends React.Component {
     constructor(props) {
@@ -207,8 +208,9 @@ class CustomerList extends React.Component {
                         <TouchableHighlight
                             onLongPress={() => this.onLongPressItem(item)}
                             onPress={() => this.handleOnPress(item)}
-                            onShowUnderlay={separators.highlight}
-                            onHideUnderlay={separators.unhighlight}>
+                            // onShowUnderlay={separators.highlight}
+                            // onHideUnderlay={separators.unhighlight}
+							>
                             {this.getRow(item, index, separators)}
                         </TouchableHighlight>
 

@@ -53,7 +53,7 @@ function totalByProperty(objectArray, property) {
 const getSalesData = (beginDate) => {
 	const orders = OrderRealm.getAllOrder();
 	const filteredOrders = orders.filter(receipt =>
-		isSameDay(parseISO(receipt.created_at), beginDate)
+		isSameDay(parseISO(receipt.created_at), beginDate) && receipt.is_delete !== 0
 	);
 
 	let filteredOrderItems = filteredOrders.reduce(function (accumulator, currentValue) {
@@ -63,7 +63,7 @@ const getSalesData = (beginDate) => {
 	let groupedOrderItems = groupBySku(filteredOrderItems, "sku");
 	let todaySales = [];
 	for (let i of Object.getOwnPropertyNames(groupedOrderItems)) {
-		
+
 		let totalAmount = totalByProperty(groupedOrderItems[i], "price_total");
 		todaySales.push({
 			sku: groupedOrderItems[i][0].product.sku,
