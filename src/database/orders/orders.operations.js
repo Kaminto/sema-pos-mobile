@@ -28,6 +28,17 @@ class OrderRealm {
         return this.order = formattedArray;
     }
 
+    
+    getActiveOrders() {
+        let formattedArray = [...Object.values(JSON.parse(JSON.stringify(realm.objects('Order').filtered(`is_delete = "${1}"`))))];
+        for (let i in formattedArray) {
+            formattedArray[i].customer_account = JSON.parse(formattedArray[i].customer_account);
+            formattedArray[i].receipt_line_items = JSON.parse(formattedArray[i].receipt_line_items);
+        }
+
+        return this.order = formattedArray;
+    }
+
     getOrdersByDate(date) {
         return new Promise(resolve => {
 
