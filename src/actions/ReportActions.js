@@ -7,6 +7,10 @@ export const REPORT_FILTER = 'REPORT_FILTER';
 export const REMINDER_REPORT = 'REMINDER_REPORT';
 export const ADD_REMINDER = 'ADD_REMINDER';
 
+import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
+import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_payment_types.operations';
+
+
 export function GetSalesReportData(beginDate, endDate) {
 	return dispatch => {
 		dispatch({
@@ -50,11 +54,84 @@ function totalByProperty(objectArray, property) {
 	}, 0);
 }
 
+
+function getTotalTypes(beginDate, filteredOrders) {
+	let groupedTypes = { ...groupPaymentTypes(beginDate, filteredOrders) };
+	let groupedTotals = [];
+	let objKeys = [...Object.keys(groupedTypes)];
+	let totalEarnings = 0;
+	for (let key of objKeys) {
+		let amount = groupedTypes[key].reduce((total, item) => {
+			return total + item.amount;
+		}, 0);
+		groupedTotals.push({
+			name: key,
+			totalAmount: amount
+		});
+		totalEarnings = totalEarnings + amount;
+	}
+	groupedTotals.push({
+		name: 'TOTAL EARNINGS',
+		totalAmount: totalEarnings
+	});
+
+	return groupedTotals;
+}
+
+function groupPaymentTypes(beginDate, filteredOrders) {
+	let types = [...comparePaymentTypeReceipts(beginDate, filteredOrders)],
+		result = types.reduce(function (r, a) {
+			r[a.name] = r[a.name] || [];
+			r[a.name].push(a);
+			return r;
+		}, Object.create(null));
+	return result;
+}
+
+function comparePaymentTypes(beginDate) {
+	let filteredReceiptPaymentTypes = [];
+		filteredReceiptPaymentTypes = ReceiptPaymentTypeRealm.getReceiptPaymentTypes().filter(receiptpayment =>
+			isSameDay(parseISO(receiptpayment.created_at), beginDate)
+		);
+	
+
+	let paymentTypes = [...PaymentTypeRealm.getPaymentTypes()];
+	let finalreceiptsPaymentTypes = [];
+	for (let receiptsPaymentType of filteredReceiptPaymentTypes) {
+		const rpIndex = paymentTypes.map(function (e) { return e.id }).indexOf(receiptsPaymentType.payment_type_id);
+		if (rpIndex >= 0) {
+			receiptsPaymentType.name = paymentTypes[rpIndex].name;
+			finalreceiptsPaymentTypes.push(receiptsPaymentType);
+		}
+	}
+	return finalreceiptsPaymentTypes;
+}
+
+function comparePaymentTypeReceipts(beginDate, receipts) {
+	let receiptsPaymentTypes = comparePaymentTypes(beginDate);
+	let customerReceipts = receipts;
+	let finalCustomerReceiptsPaymentTypes = [];
+	for (let customerReceipt of customerReceipts) {
+		let paymentTypes = [];
+		for (let receiptsPaymentType of receiptsPaymentTypes) {
+			if (receiptsPaymentType.receipt_id === customerReceipt.id) {
+				paymentTypes.push(receiptsPaymentType);
+			}
+		}
+		customerReceipt.paymentTypes = paymentTypes;
+		finalCustomerReceiptsPaymentTypes.push(customerReceipt);
+	}
+	return finalCustomerReceiptsPaymentTypes;
+}
+
+
 const getSalesData = (beginDate) => {
 	const orders = OrderRealm.getActiveOrders();
 	const filteredOrders = orders.filter(receipt =>
 		isSameDay(parseISO(receipt.created_at), beginDate) && receipt.is_delete !== 0
 	);
+
+	let totalTypes = getTotalTypes(beginDate, filteredOrders);
 
 	let filteredOrderItems = filteredOrders.reduce(function (accumulator, currentValue) {
 		return [...accumulator, ...currentValue.receipt_line_items]
@@ -85,6 +162,7 @@ const getSalesData = (beginDate) => {
 		totalLiters: totalByProperty(todaySales, "totalLiters"),
 		totalSales: totalByProperty(todaySales, "totalSales"),
 		salesItems: todaySales,
+		totalTypes: totalTypes
 	}
 	return { ...finalData };
 };

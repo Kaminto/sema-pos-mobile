@@ -5,7 +5,7 @@ import {
 } from '../actions/ReportActions';
 
 let initialState = {
-	salesData: { totalLiters: 0, totalSales: 0, totalDebt: 0, salesItems: [] },
+	salesData: { totalLiters: 0, totalSales: 0, totalDebt: 0, salesItems: [], totalTypes: [] },
 	dateFilter: {}
 };
 
