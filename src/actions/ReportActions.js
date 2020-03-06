@@ -51,7 +51,7 @@ function totalByProperty(objectArray, property) {
 }
 
 const getSalesData = (beginDate) => {
-	const orders = OrderRealm.getAllOrder();
+	const orders = OrderRealm.getActiveOrders();
 	const filteredOrders = orders.filter(receipt =>
 		isSameDay(parseISO(receipt.created_at), beginDate)
 	);
