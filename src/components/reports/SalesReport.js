@@ -36,16 +36,10 @@ class SalesReport extends React.PureComponent {
 	addDays = (theDate, days) => {
 		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
 	};
+
 	render() {
 		return (
 			<View style={{ flex: 1, backgroundColor: 'white' }}>
-				<ScrollView
-						refreshControl={
-						<RefreshControl
-							refreshing={this.state.refreshing}
-							onRefresh={this._onRefresh}
-						/>
-					}>
 				<View style={{
 					flex: .2,
 					backgroundColor: 'white',
@@ -73,6 +67,13 @@ class SalesReport extends React.PureComponent {
 				</View>
 				<View style={{ flex: .8, flexDirection: 'row', backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10, }}>
 					<View style={{ flex: .6, padding: 10 }}>
+					<ScrollView
+						refreshControl={
+						<RefreshControl
+							refreshing={this.state.refreshing}
+							onRefresh={this._onRefresh}
+						/>
+					}>
 						<FlatList
 							data={this.getSalesData()}
 							ListHeaderComponent={this.showHeader}
@@ -85,8 +86,17 @@ class SalesReport extends React.PureComponent {
 							keyExtractor={item => item.sku}
 							initialNumToRender={50}
 						/>
+						</ScrollView>
 					</View>
 					<View style={{ flex: .4, padding: 10 }}>
+					<ScrollView
+						refreshControl={
+						<RefreshControl
+							refreshing={this.state.refreshing}
+							onRefresh={this._onRefresh}
+						/>
+					}>
+
 						<FlatList
 							// onRefresh={this._onRefresh}
 							data={this.getTotalTypes()}
@@ -99,10 +109,11 @@ class SalesReport extends React.PureComponent {
 							)}
 							keyExtractor={item => item.name}
 						/>
+						</ScrollView>
 					</View>
 
 				</View>
-				</ScrollView>
+
 			</View>
 		);
 	}
@@ -127,7 +138,7 @@ class SalesReport extends React.PureComponent {
 
 
 	getTotalTypes() {
-		let groupedTypes = { ...this.groupPaymentTypes() };
+		let groupedTypes = { ...this.comparePaymentTypes() };
 		let groupedTotals = [];
 		let objKeys = [...Object.keys(groupedTypes)];
 		let totalEarnings = 0;
@@ -159,6 +170,24 @@ class SalesReport extends React.PureComponent {
 				return r;
 			}, Object.create(null));
 		return result;
+	}
+
+	comparePaymentTypeReceipts() {
+		let receiptsPaymentTypes = this.comparePaymentTypes();
+		let customerReceipts = this.props.salesData.salesItems;
+		let finalCustomerReceiptsPaymentTypes = [];
+		for (let customerReceipt of customerReceipts) {
+			let paymentTypes = [];
+			for (let receiptsPaymentType of receiptsPaymentTypes) {
+				if (receiptsPaymentType.receipt_id === customerReceipt.id) {
+					paymentTypes.push(receiptsPaymentType);
+				}
+			}
+			customerReceipt.paymentTypes = paymentTypes;
+			finalCustomerReceiptsPaymentTypes.push(customerReceipt);
+
+		}
+		return finalCustomerReceiptsPaymentTypes;
 	}
 
 	comparePaymentTypes() {
