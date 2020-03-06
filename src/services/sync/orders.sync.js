@@ -130,7 +130,7 @@ class OrderSync {
                             inLocal.forEach(localOrder => {
                                 if (localOrder.active === true && localOrder.syncAction === 'delete') {
                                     OrderApi.deleteOrder(
-                                        localOrder
+                                        localOrder,siteId
                                     )
                                         .then((response) => {
                                             console.log(
