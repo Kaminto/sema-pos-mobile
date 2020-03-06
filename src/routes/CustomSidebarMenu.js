@@ -81,6 +81,23 @@ class CustomSidebarMenu extends React.PureComponent {
     ];
   }
 
+  handleOnPress(item, key){
+	requestAnimationFrame(() => {
+	global.currentScreenIndex = key;
+
+	if (item.screenToNavigate === 'LogOut') {
+		this.onLogout();
+	}
+
+	if (item.screenToNavigate != 'LogOut' || item.screenToNavigate != 'Sync') {
+		this.props.navigation.navigate(item.screenToNavigate);
+	}
+	if (item.screenToNavigate === 'Sync') {
+		this.onSynchronize();
+	}
+  });
+  }
+
 
   render() {
     return (
@@ -114,21 +131,7 @@ class CustomSidebarMenu extends React.PureComponent {
 						backgroundColor: global.currentScreenIndex === key ? '#e0dbdb' : '#ffffff',
 					  }}
 
-					onPress={() => {
-							global.currentScreenIndex = key;
-
-							if (item.screenToNavigate === 'LogOut') {
-								this.onLogout();
-							}
-
-							if (item.screenToNavigate != 'LogOut' || item.screenToNavigate != 'Sync') {
-								this.props.navigation.navigate(item.screenToNavigate);
-							}
-							if (item.screenToNavigate === 'Sync') {
-								this.onSynchronize();
-							}
-
-							}}>
+					onPress={() => this.handleOnPress(item, key)}>
 					<View style={{ marginRight: 10, marginLeft: 20 }}>
 						<Icon name={item.navOptionThumb} size={25} color="#808080" />
 					</View>

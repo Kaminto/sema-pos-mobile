@@ -805,7 +805,7 @@ class OrderCheckout extends React.PureComponent {
 		let totalAmount = 0;
 		for (let i of this.props.products) {
 			if (i.product.description === 'discount') {
-				totalAmount = totalAmount - i.finalAmount;
+				totalAmount = totalAmount + i.finalAmount;
 			}
 			else if (i.product.description === 'delivery') {
 				totalAmount = totalAmount + i.finalAmount;

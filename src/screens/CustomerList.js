@@ -157,7 +157,7 @@ class CustomerList extends React.Component {
     };
 
     handleOnPress(item) {
-		requestAnimationFrame(() => {
+		// requestAnimationFrame(() => {
 			this.props.customerActions.CustomerSelected(item);
 			this.props.customerActions.SetCustomerProp(
 			    {
@@ -168,7 +168,7 @@ class CustomerList extends React.Component {
 			    }
 			);
 			this.props.navigation.navigate('OrderView');
-		});
+		// });
 
     };
 
@@ -197,7 +197,8 @@ class CustomerList extends React.Component {
                 <FlatList
                     ref={ref => {
                         this.flatListRef = ref;
-                    }}
+					}}
+					getItemLayout={this.getItemLayout}
 					data={this.prepareData()}
 					ListHeaderComponent={this.showHeader}
 					stickyHeaderIndices={[0]}
@@ -215,7 +216,7 @@ class CustomerList extends React.Component {
                     keyExtractor={item => item.customerId}
                     windowSize={20}
                     removeClippedSubviews={true}
-                    maxToRenderPerBatch={20}
+                    maxToRenderPerBatch={1}
                 />
                 <FloatingAction
                     onOpen={name => {
@@ -250,7 +251,13 @@ class CustomerList extends React.Component {
                 </SearchWatcher>
             </View>
         );
-    };
+	};
+
+	getItemLayout = (data, index) => ({
+		length: 50,
+		offset: 50 * index,
+		index
+	});
 
     prepareData = () => {
         this.customerTypes = CustomerTypeRealm.getCustomerTypes();
@@ -539,7 +546,7 @@ export default connect(
 
 const styles = StyleSheet.create({
     baseItem: {
-        fontSize: 16
+        fontSize: 17
     },
     leftMargin: {
         left: 10
