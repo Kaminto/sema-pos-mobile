@@ -61,10 +61,10 @@ const getSalesData = (beginDate) => {
 	}, []);
 
 	let groupedOrderItems = groupBySku(filteredOrderItems, "sku");
-
 	let todaySales = [];
 	for (let i of Object.getOwnPropertyNames(groupedOrderItems)) {
-		let totalAmount = groupedOrderItems[i][0].totalAmount ? groupedOrderItems[i][0].totalAmount : groupedOrderItems[i][0].price_total;
+		
+		let totalAmount = totalByProperty(groupedOrderItems[i], "price_total");
 		todaySales.push({
 			sku: groupedOrderItems[i][0].product.sku,
 			wastageName: groupedOrderItems[i][0].product.wastageName,

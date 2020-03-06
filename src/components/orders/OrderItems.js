@@ -1,7 +1,7 @@
 import React from "react";
 if (process.env.NODE_ENV === 'development') {
-    const whyDidYouRender = require('@welldone-software/why-did-you-render');
-    whyDidYouRender(React);
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	whyDidYouRender(React);
 }
 import { View, Text, TouchableOpacity, ScrollView, FlatList, TextInput, Dimensions, TouchableHighlight, StyleSheet, Alert } from "react-native";
 import { connect } from "react-redux";
@@ -39,14 +39,12 @@ class OrderItems extends React.PureComponent {
 
 	static whyDidYouRender = true;
 
-	handleOnPress(item){
-		requestAnimationFrame(() => {
+	handleOnPress(item) {
 		this.setState({ selectedItem: item });
 		this.setState({ accumulator: item.quantity });
 		this.setState({ firstKey: true });
 		this.refs.productModel.open();
-		});
-	  }
+	}
 
 
 	render() {
@@ -76,39 +74,26 @@ class OrderItems extends React.PureComponent {
 					sDisabled={this.state.isDisabled}>
 
 					<ScrollView>
-					<TouchableOpacity>
-						<View style={[styles.headerBackground, { flex: 1, flexDirection: 'row', paddingLeft: 20, margin: 0 }]}>
-							<View style={{ flex: .3 }}>
-								{this.getProductDescripion()}
+						<TouchableOpacity>
+							<View style={[styles.headerBackground, { flex: 1, flexDirection: 'row', paddingLeft: 20, margin: 0 }]}>
+								<View style={{ flex: .3 }}>
+									{this.getProductDescripion()}
+								</View>
+								<View style={{ flex: .6 }}>
+									<Text style={[{ textAlign: 'center' }, styles.baseItem]}>
+										{this.getCurrency(this.state.selectedItem)} {this.getDiscountPrice((this.state.selectedItem.quantity * this.state.selectedItem.unitPrice), this.state.selectedItem)}</Text>
+								</View>
+								<View
+									style={{
+										flex: .1,
+										justifyContent: 'flex-end',
+										flexDirection: 'row',
+										right: 0,
+										top: 0
+									}}>
+									{this.getCancelButton()}
+								</View>
 							</View>
-							<View style={{ flex: .6 }}>
-								<Text style={[{ textAlign: 'center' }, styles.baseItem]}>
-									{this.getCurrency(this.state.selectedItem)} {this.getDiscountPrice((this.state.selectedItem.quantity * this.state.selectedItem.unitPrice), this.state.selectedItem)}</Text>
-							</View>
-							<View
-								style={{
-									flex: .1,
-									justifyContent: 'flex-end',
-									flexDirection: 'row',
-									right: 0,
-									top: 0
-								}}>
-								{this.getCancelButton()}
-							</View>
-						</View>
-						<View
-							style={{
-								height: 1,
-								backgroundColor: '#ddd',
-								marginBottom: 10,
-								width: '100%'
-							}}
-						/>
-						<View style={{ flex: 1, paddingRight: 20, paddingLeft: 20 }}>
-							{this.qtyAmount()}
-
-							{this.bottlesReturned()}
-
 							<View
 								style={{
 									height: 1,
@@ -117,47 +102,60 @@ class OrderItems extends React.PureComponent {
 									width: '100%'
 								}}
 							/>
+							<View style={{ flex: 1, paddingRight: 20, paddingLeft: 20 }}>
+								{this.qtyAmount()}
 
-							<View style={{ flex: 1, flexDirection: 'row' }}>
-								<View style={{ flex: 1 }}>
-									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>NOTES</Text>
+								{this.bottlesReturned()}
+
+								<View
+									style={{
+										height: 1,
+										backgroundColor: '#ddd',
+										marginBottom: 10,
+										width: '100%'
+									}}
+								/>
+
+								<View style={{ flex: 1, flexDirection: 'row' }}>
+									<View style={{ flex: 1 }}>
+										<Text style={[{ textAlign: 'left' }, styles.baseItem]}>NOTES</Text>
+									</View>
 								</View>
-							</View>
 
-							<View style={{ flex: 1, flexDirection: 'row' }}>
-								<View style={{ flex: 1, height: 50 }}>
-									{this.notesValue()}
+								<View style={{ flex: 1, flexDirection: 'row' }}>
+									<View style={{ flex: 1, height: 50 }}>
+										{this.notesValue()}
+									</View>
 								</View>
-							</View>
 
-							<View
-								style={{
-									height: 1,
-									backgroundColor: '#ddd',
-									marginBottom: 10,
-									width: '100%'
-								}}
-							/>
+								<View
+									style={{
+										height: 1,
+										backgroundColor: '#ddd',
+										marginBottom: 10,
+										width: '100%'
+									}}
+								/>
 
-							{this.discountCmpt()}
+								{this.discountCmpt()}
 
-							<View
-								style={{
-									flex: .2,
-									width: 100,
-									marginTop: 10,
-									alignSelf: 'flex-end',
-									flexDirection: 'row',
-									right: 0,
-									bottom: 0
-								}}>
-								<TouchableHighlight style={{ flex: 1 }}
+								<View
+									style={{
+										flex: .2,
+										width: 100,
+										marginTop: 10,
+										alignSelf: 'flex-end',
+										flexDirection: 'row',
+										right: 0,
+										bottom: 0
+									}}>
+									<TouchableHighlight style={{ flex: 1 }}
 										onPress={() => this.onCancelOrder()}>
 										<Text style={{ padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#036' }}>SAVE</Text>
 									</TouchableHighlight>
-							</View>
+								</View>
 
-						</View>
+							</View>
 						</TouchableOpacity>
 					</ScrollView>
 
@@ -168,117 +166,117 @@ class OrderItems extends React.PureComponent {
 		);
 	}
 
-	discountCmpt(){
+	discountCmpt() {
 		if (this.state.selectedItem.hasOwnProperty('product')) {
 			if (!this.state.selectedItem.product.description.includes('delivery') &&
-			!this.state.selectedItem.product.description.includes('discount')
+				!this.state.selectedItem.product.description.includes('discount')
 			) {
-		return (
-			<View>
-		        	<View style={{ flex: 1, flexDirection: 'row' }}>
-								<View style={{ flex: 1, height: 50 }}>
-									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>DISCOUNTS</Text>
-								</View>
+				return (
+					<View>
+						<View style={{ flex: 1, flexDirection: 'row' }}>
+							<View style={{ flex: 1, height: 50 }}>
+								<Text style={[{ textAlign: 'left' }, styles.baseItem]}>DISCOUNTS</Text>
 							</View>
+						</View>
 
 
-							<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
-								<FlatList
-									data={this.props.discounts}
-									extraData={this.state.selectedDiscounts}
-									renderItem={({ item, index, separators }) => (
-										this.discountRows(item, index, separators)
-									)}
-								/>
-							</View>
-
-							<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
-								<View style={{ flex: 1, height: 50 }}>
-									<Text style={[styles.baseItem, {
-										marginLeft: 12, padding: 10
-									}]}>Custom</Text>
-								</View>
-								<View style={{ flex: 1, height: 50 }}>
-									{this.customDiscountValue()}
-								</View>
-							</View>
-							<View
-								style={{
-									height: 1,
-									backgroundColor: '#ddd',
-									width: '100%'
-								}}
+						<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
+							<FlatList
+								data={this.props.discounts}
+								extraData={this.state.selectedDiscounts}
+								renderItem={({ item, index, separators }) => (
+									this.discountRows(item, index, separators)
+								)}
 							/>
+						</View>
+
+						<View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
+							<View style={{ flex: 1, height: 50 }}>
+								<Text style={[styles.baseItem, {
+									marginLeft: 12, padding: 10
+								}]}>Custom</Text>
 							</View>
-						);
-								}
-							}
+							<View style={{ flex: 1, height: 50 }}>
+								{this.customDiscountValue()}
+							</View>
+						</View>
+						<View
+							style={{
+								height: 1,
+								backgroundColor: '#ddd',
+								width: '100%'
+							}}
+						/>
+					</View>
+				);
+			}
+		}
 	}
 
 	qtyAmount() {
 		if (this.state.selectedItem.hasOwnProperty('product')) {
-		if (this.state.selectedItem.product.description.includes('delivery') ||
-		this.state.selectedItem.product.description.includes('discount')
-		) {
-			return (
-			<View style={{ flex: 1 }}>
-				<View style={{ flex: 1 }}>
-					<Text style={[{ textAlign: 'left' }, styles.baseItem]}>AMOUNT</Text>
-				</View>
-				<View style={{ flex: 1, height: 40, textAlign: 'center' }} >
-					{this.qtyValue()}
-				</View>
-			</View>
-			);
-		} else {
-			return(
-				<View>
-		                    <View style={{ flex: 1, flexDirection: 'row' }}>
-								<View style={{ flex: 1 }}>
-									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>QUANTITY</Text>
-								</View>
-							</View>
-							<View style={{
-								flex: 1,
-								width: "100%",
-								flexDirection: 'row',
-								alignItems: 'stretch',
-
-							}}>
-								<View style={{ flex: .2, height: 40 }}>
-									<TouchableHighlight style={{ flex: 1 }}
-										onPress={this.counterChangedHandler.bind(this, 'dec')}>
-										<Icon
-											size={40}
-											style={[{ textAlign: 'center' }, styles.leftMargin]}
-											name="md-remove-circle-outline"
-											color="black"
-										/>
-									</TouchableHighlight>
-								</View>
-								<View style={{ flex: .6, height: 40, textAlign: 'center' }} >
-									<View style={{ flex: .5, alignSelf: 'center' }}>
-										{this.qtyValue()}
-									</View>
-								</View>
-								<View style={{ flex: .2, height: 40 }}>
-									<TouchableHighlight style={{ flex: 1 }}
-										onPress={this.counterChangedHandler.bind(this, 'inc')}>
-										<Icon
-											size={40}
-											style={[{ textAlign: 'center' }, styles.leftMargin]}
-											name="md-add-circle-outline"
-											color="black"
-										/>
-									</TouchableHighlight>
-								</View>
+			if (this.state.selectedItem.product.description.includes('delivery') ||
+				this.state.selectedItem.product.description.includes('discount')
+			) {
+				return (
+					<View style={{ flex: 1 }}>
+						<View style={{ flex: 1 }}>
+							<Text style={[{ textAlign: 'left' }, styles.baseItem]}>AMOUNT</Text>
+						</View>
+						<View style={{ flex: 1, height: 40, textAlign: 'center' }} >
+							{this.qtyValue()}
+						</View>
+					</View>
+				);
+			} else {
+				return (
+					<View>
+						<View style={{ flex: 1, flexDirection: 'row' }}>
+							<View style={{ flex: 1 }}>
+								<Text style={[{ textAlign: 'left' }, styles.baseItem]}>QUANTITY</Text>
 							</View>
 						</View>
-			);
-		}
-	}
+						<View style={{
+							flex: 1,
+							width: "100%",
+							flexDirection: 'row',
+							alignItems: 'stretch',
 
-}
+						}}>
+							<View style={{ flex: .2, height: 40 }}>
+								<TouchableHighlight style={{ flex: 1 }}
+									onPress={this.counterChangedHandler.bind(this, 'dec')}>
+									<Icon
+										size={40}
+										style={[{ textAlign: 'center' }, styles.leftMargin]}
+										name="md-remove-circle-outline"
+										color="black"
+									/>
+								</TouchableHighlight>
+							</View>
+							<View style={{ flex: .6, height: 40, textAlign: 'center' }} >
+								<View style={{ flex: .5, alignSelf: 'center' }}>
+									{this.qtyValue()}
+								</View>
+							</View>
+							<View style={{ flex: .2, height: 40 }}>
+								<TouchableHighlight style={{ flex: 1 }}
+									onPress={this.counterChangedHandler.bind(this, 'inc')}>
+									<Icon
+										size={40}
+										style={[{ textAlign: 'center' }, styles.leftMargin]}
+										name="md-add-circle-outline"
+										color="black"
+									/>
+								</TouchableHighlight>
+							</View>
+						</View>
+					</View>
+				);
+			}
+		}
+
+	}
 
 	getCancelButton() {
 		return (
@@ -322,45 +320,45 @@ class OrderItems extends React.PureComponent {
 		)
 	}
 
-	bottlesReturned(){
+	bottlesReturned() {
 		if (this.state.selectedItem.hasOwnProperty('product')) {
-		if (this.state.selectedItem.product.description.includes('refill')) {
-		      return (
-				<View>
+			if (this.state.selectedItem.product.description.includes('refill')) {
+				return (
+					<View>
 						<View
-								style={{
-									height: 1,
-									backgroundColor: '#ddd',
-									marginBottom: 10,
-									width: '100%'
-								}}
-							/>
+							style={{
+								height: 1,
+								backgroundColor: '#ddd',
+								marginBottom: 10,
+								width: '100%'
+							}}
+						/>
 						<View style={[{ flex: 1, flexDirection: 'row' }]}>
-								<View style={[{ flex: 1 }]}>
-									<Text style={[styles.headerItem, { textTransform: 'uppercase' }]}>Empties Returned</Text>
-								</View>
-								<View style={[{ flex: 1 }]}>
-									<Text style={[styles.headerItem, { textTransform: 'uppercase' }]}>Damaged Bottles</Text>
-								</View>
-								<View style={[{ flex: 1 }]}>
-									<Text style={[styles.headerItem, { textTransform: 'uppercase' }]}>Pending Bottles</Text>
-								</View>
+							<View style={[{ flex: 1 }]}>
+								<Text style={[styles.headerItem, { textTransform: 'uppercase' }]}>Empties Returned</Text>
 							</View>
+							<View style={[{ flex: 1 }]}>
+								<Text style={[styles.headerItem, { textTransform: 'uppercase' }]}>Damaged Bottles</Text>
+							</View>
+							<View style={[{ flex: 1 }]}>
+								<Text style={[styles.headerItem, { textTransform: 'uppercase' }]}>Pending Bottles</Text>
+							</View>
+						</View>
 
-							<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white', padding: 5 }}>
-								<View style={[{ flex: 1 }]}>
-									{this.emptiesReturnedValue()}
-								</View>
-								<View style={[{ flex: 1 }]}>
-									{this.emptiesDamagedValue()}
-								</View>
-								<View style={[{ flex: 1 }]}>
-									{this.refillPendingValue()}
-								</View>
+						<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white', padding: 5 }}>
+							<View style={[{ flex: 1 }]}>
+								{this.emptiesReturnedValue()}
 							</View>
+							<View style={[{ flex: 1 }]}>
+								{this.emptiesDamagedValue()}
+							</View>
+							<View style={[{ flex: 1 }]}>
+								{this.refillPendingValue()}
+							</View>
+						</View>
 					</View>
-					);
-				}
+				);
+			}
 		}
 
 	}
@@ -398,7 +396,7 @@ class OrderItems extends React.PureComponent {
 
 		if (this.state.selectedItem.hasOwnProperty('emptiesReturned')) {
 			emptiesReturned = this.state.selectedItem.emptiesReturned;
-			if(emptiesReturned === ''){
+			if (emptiesReturned === '') {
 				emptiesReturned = qty;
 			}
 		}
@@ -534,10 +532,10 @@ class OrderItems extends React.PureComponent {
 					<Text style={[styles.baseItem, styles.leftMargin]}>{item.product.description}</Text>
 				</View>
 				<View style={[{ flex: 1.2 }]}>
-					<Text style={[styles.baseItem, {textAlign: 'center'}]}>{item.quantity}</Text>
+					<Text style={[styles.baseItem, { textAlign: 'center' }]}>{item.quantity}</Text>
 				</View>
 				<View style={[{ flex: 2 }]}>
-					<Text numberOfLines={1} style={[styles.baseItem, {textAlign: 'right', paddingRight: 5}]}>
+					<Text numberOfLines={1} style={[styles.baseItem, { textAlign: 'right', paddingRight: 5 }]}>
 						{this.getCurrency(item)} {this.getDiscountPrice((item.quantity * item.unitPrice), item)}</Text>
 				</View>
 			</View>
@@ -546,16 +544,17 @@ class OrderItems extends React.PureComponent {
 
 	customDiscount = searchText => {
 		const productIndex = this.props.selectedDiscounts.map(function (e) { return e.product.productId }).indexOf(this.state.selectedItem.product.productId);
-		if(Number(searchText) > (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product))) {
+
+		if (Number(searchText) > (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product))) {
 			Alert.alert("Custom Discount",
-			 "Discount cannot exceed amount."
-			 [{
-				text: 'OK',
-				onPress: () => {
-				}
-			}],
-			{ cancelable: false }
-		   );
+				"Discount cannot exceed amount.",
+				[{
+					text: 'OK',
+					onPress: () => {
+					}
+				}],
+				{ cancelable: false }
+			);
 			return;
 		}
 
@@ -566,7 +565,6 @@ class OrderItems extends React.PureComponent {
 				this.props.orderActions.SetOrderDiscounts('Custom', searchText, this.state.selectedItem.product, this.props.selectedDiscounts[productIndex].discount, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)));
 			} else {
 				this.props.orderActions.SetOrderDiscounts('Custom', searchText, this.state.selectedItem.product, this.state.selectedDiscounts, (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product)));
-
 			}
 
 		} else {
@@ -706,10 +704,28 @@ class OrderItems extends React.PureComponent {
 	changeQuantity = value => {
 		let unitPrice = this.getItemPrice(this.state.selectedItem.product);
 		if (Number(value) != 0) {
+
+			if (this.state.selectedItem.product.description.includes('discount')) {
+				console.log('Number(value)', Number(value));
+				if (Number(value) > this.calculateOrderDue()) {
+					Alert.alert("Discount",
+						"Discount cannot exceed amount.",
+						[{
+							text: 'OK',
+							onPress: () => {
+							}
+						}],
+						{ cancelable: false }
+					);
+					return;
+				}
+
+			}
+
 			this.props.orderActions.SetProductQuantity(this.state.selectedItem.product, Number(value), unitPrice);
 			this.setState({
 				accumulator: Number(value)
-			})
+			});
 		}
 
 		if (!value) {
@@ -719,6 +735,21 @@ class OrderItems extends React.PureComponent {
 			})
 		}
 	};
+
+	calculateOrderDue() {
+		let totalAmount = 0;
+		for (let i of this.props.products) {
+			if (i.product.description === 'discount') {
+				totalAmount = totalAmount + i.finalAmount;
+			}
+			else if (i.product.description === 'delivery') {
+				totalAmount = totalAmount + i.finalAmount;
+			} else {
+				totalAmount = totalAmount + i.finalAmount;
+			}
+		}
+		return totalAmount;
+	}
 
 	discountRows = (item, index, separators) => {
 		const productIndex = this.props.selectedDiscounts.map(function (e) { return e.product.productId }).indexOf(this.state.selectedItem.product.productId);
@@ -778,7 +809,7 @@ class OrderItems extends React.PureComponent {
 					<Text style={[styles.headerItem]}>{i18n.t('quantity')}</Text>
 				</View>
 				<View style={[{ flex: 2 }]}>
-					<Text style={[styles.headerItem, {textAlign: 'center'}]}>{i18n.t('charge')}</Text>
+					<Text style={[styles.headerItem, { textAlign: 'center' }]}>{i18n.t('charge')}</Text>
 				</View>
 			</View>
 		);
@@ -830,7 +861,7 @@ class OrderItems extends React.PureComponent {
 				return productMrp.priceAmount;
 			}
 		}
-		return item.unitPrice ;	// Just use product price
+		return item.unitPrice;	// Just use product price
 	};
 
 	getCurrency = (item) => {

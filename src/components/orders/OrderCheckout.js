@@ -126,12 +126,11 @@ class OrderCheckout extends React.PureComponent {
 		return (
 			<View style={styles.container}>
 				<View style={[{ flexDirection: 'row' }, this.getOpacity()]}>
-					<View style={{ flex: 1, justifyContent: 'center' }}>
+					<View style={styles.onPayView}>
 						<TouchableHighlight underlayColor='#c0c0c0'
 							onPress={() => this.onPay()}>
 							<Text
-								style={[{ paddingTop: 10, paddingBottom: 10, textAlign: 'center' },
-								styles.buttonText]}>{i18n.t('pay')}</Text>
+								style={styles.onPayText, styles.buttonText}>{i18n.t('pay')}</Text>
 						</TouchableHighlight>
 					</View>
 				</View>
@@ -1192,12 +1191,21 @@ export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(Order
 
 
 const styles = StyleSheet.create({
-
+	onPayView: {
+		flex: 1,
+		justifyContent: 'center'
+	},
+	onPayText: {
+		paddingTop: 10,
+		paddingBottom: 10,
+		textAlign: 'center'
+	},
 	container: {
 		flex: 1,
 		backgroundColor: "#2858a7",
 
 	},
+
 	checkBoxRow: {
 		flex: 1,
 		flexDirection: 'row',
