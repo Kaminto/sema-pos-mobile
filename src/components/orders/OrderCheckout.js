@@ -977,7 +977,7 @@ class OrderCheckout extends React.PureComponent {
 			receiptLineItem.totalAmount = product.finalAmount;
 			receiptLineItem.quantity = product.quantity;
 			receiptLineItem.notes = product.notes;
-
+			receiptLineItem.is_delete = 1;
 			receiptLineItem.emptiesReturned = Number(product.emptiesReturned);
 			receiptLineItem.refillPending = Number(product.refillPending);
 			receiptLineItem.emptiesDamaged = Number(product.emptiesDamaged);
