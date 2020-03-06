@@ -116,7 +116,6 @@ class PaymentTypeItem extends React.PureComponent {
 class TransactionDetail extends React.PureComponent {
 	constructor(props) {
 		super(props);
-
 		this.state = {
 			refresh: false
 		};

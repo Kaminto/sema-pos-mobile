@@ -94,8 +94,8 @@ class SalesReport extends React.PureComponent {
 						/>
 					}>
 						<FlatList
-							onRefresh={this._onRefresh}
-							data={this.getTotalTypes()}
+							data={this.props.salesData.totalTypes}
+
 							ListHeaderComponent={this.showPaymentHeader}
 							extraData={this.state.refreshing}
 							renderItem={({ item, index, separators }) => (
@@ -131,61 +131,6 @@ class SalesReport extends React.PureComponent {
 		return sales;
 	}
 
-
-	getTotalTypes() {
-		let groupedTypes = { ...this.groupPaymentTypes() };
-		let groupedTotals = [];
-		let objKeys = [...Object.keys(groupedTypes)];
-		let totalEarnings = 0;
-		for (let key of objKeys) {
-			let amount = groupedTypes[key].reduce((total, item) => {
-				return total + item.amount;
-			}, 0);
-			groupedTotals.push({
-				name: key,
-				totalAmount: amount
-			});
-			totalEarnings = totalEarnings + amount;
-
-		}
-
-		groupedTotals.push({
-			name: 'TOTAL EARNINGS',
-			totalAmount: totalEarnings
-		});
-
-		return groupedTotals;
-	}
-
-	groupPaymentTypes() {
-		let types = [...this.comparePaymentTypes()],
-			result = types.reduce(function (r, a) {
-				r[a.name] = r[a.name] || [];
-				r[a.name].push(a);
-				return r;
-			}, Object.create(null));
-		return result;
-	}
-
-	comparePaymentTypes() {
-		let filteredReceiptPaymentTypes = [];
-		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
-			filteredReceiptPaymentTypes = this.props.receiptsPaymentTypes.filter(receiptpayment =>
-				isSameDay(parseISO(receiptpayment.created_at), this.props.dateFilter.startDate)
-			);
-		}
-
-		let paymentTypes = [...this.props.paymentTypes];
-		let finalreceiptsPaymentTypes = [];
-		for (let receiptsPaymentType of filteredReceiptPaymentTypes) {
-			const rpIndex = paymentTypes.map(function (e) { return e.id }).indexOf(receiptsPaymentType.payment_type_id);
-			if (rpIndex >= 0) {
-				receiptsPaymentType.name = paymentTypes[rpIndex].name;
-				finalreceiptsPaymentTypes.push(receiptsPaymentType);
-			}
-		}
-		return finalreceiptsPaymentTypes;
-	}
 
 	getRow = (item) => {
 		return (
