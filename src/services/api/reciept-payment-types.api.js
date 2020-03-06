@@ -54,7 +54,7 @@ class RecieptPaymentTypesApi {
 
 	createReceiptPaymentType(receipt_payment_type) {
 		// TODO - Resolve receipt_payment_type.... Is it needed, currently hardcoded...
-
+console.log('receipt_payment_type', receipt_payment_type)
 		let options = {
 			method: 'POST',
 			headers: {
