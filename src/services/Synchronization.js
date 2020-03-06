@@ -157,7 +157,6 @@ class Synchronization {
 
 							const promiseCustomers = CustomerSync.synchronizeCustomers().then(
 								customerSync => {
-
 									syncResult.customers = customerSync;
 									return customerSync;
 								}
