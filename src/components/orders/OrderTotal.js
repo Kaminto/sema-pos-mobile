@@ -31,7 +31,6 @@ class OrderTotal extends React.PureComponent {
 		if (this.props.products.length > 0) {
 			let totalAmount = 0;
 			for (let i of this.props.products) {
-				console.log('this.props.products', this.props.products)
 				if (i.product.description === 'discount') {
 					totalAmount = totalAmount + i.finalAmount;
 				}
