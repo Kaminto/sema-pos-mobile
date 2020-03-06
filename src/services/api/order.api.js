@@ -1,15 +1,15 @@
 import { format, sub } from 'date-fns';
 class OrderApi {
-    constructor() {
-        this._url = 'http://142.93.115.206:3002/';
-        this._site = '';
-        this._user = '';
-        this._password = '';
-        this._token = '';
-        this._siteId = '';
-    }
+	constructor() {
+		this._url = 'http://142.93.115.206:3002/';
+		this._site = '';
+		this._user = '';
+		this._password = '';
+		this._token = '';
+		this._siteId = '';
+	}
 
-    initialize(url, site, user, password, token, siteId) {
+	initialize(url, site, user, password, token, siteId) {
 		if (!url.endsWith('/')) {
 			url = url + '/';
 		}
@@ -22,15 +22,15 @@ class OrderApi {
 	}
 
 
-    setToken(token) {
-        this._token = token;
-    }
-    setSiteId(siteId) {
-        this._siteId = siteId;
-    }
+	setToken(token) {
+		this._token = token;
+	}
+	setSiteId(siteId) {
+		this._siteId = siteId;
+	}
 
 
-    createReceipt(receipt) {
+	createReceipt(receipt) {
 
 		let options = {
 			method: 'POST',
@@ -76,7 +76,47 @@ class OrderApi {
 	}
 
 	deleteOrder(receipt, siteId) {
-		return receipt;
+		//return receipt;
+		let options = {
+			method: 'PUT',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ ...receipt, kiosk_id: siteId })
+		};
+		return new Promise((resolve, reject) => {
+			fetch(this._url + `sema/site/receipts/${siteId}`, options)
+				.then(response => {
+					if (response.status === 200) {
+						response
+							.json()
+							.then(responseJson => {
+								resolve(responseJson);
+							})
+							.catch(error => {
+								console.log(
+									'createReceipt - Parse JSON: ' +
+									error
+								);
+								reject();
+							});
+					} else if (response.status === 409) {
+						// Indicates this receipt has already been added
+						console.log('createReceipt - Receipt already exists');
+						resolve({});
+					} else {
+						console.log(
+							'createReceipt - Fetch status: ' + response.status
+						);
+						reject(response.status);
+					}
+				})
+				.catch(error => {
+					console.log('createReceipt - Fetch: ' + error);
+					reject();
+				});
+		});
 	}
 
 	getReceipts(siteId) {
@@ -88,7 +128,7 @@ class OrderApi {
 			}
 		};
 
-		let url = `sema/site/receipts/${siteId}?date=${format(sub(new Date(), {days: 30}), 'yyyy-MM-dd')}`;
+		let url = `sema/site/receipts/${siteId}?date=${format(sub(new Date(), { days: 30 }), 'yyyy-MM-dd')}`;
 		console.log('Communications:getReceipts: ');
 		return fetch(this._url + url, options)
 			.then(async response => await response.json())

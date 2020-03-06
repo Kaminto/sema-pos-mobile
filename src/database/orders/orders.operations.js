@@ -1,5 +1,5 @@
 import realm from '../init';
-import { format, parseISO} from 'date-fns';
+import { format, parseISO } from 'date-fns';
 class OrderRealm {
     constructor() {
         this.order = [];
@@ -114,6 +114,7 @@ class OrderRealm {
                 litersPerSku: receipt.products[i].litersPerSku,
                 quantity: receipt.products[i].quantity,
                 receipt_id: newOrder.receiptId,
+                is_delete: receipt.products[i].is_delete,
                 product_id: receipt.products[i].product_id,
                 product: receipt.products[i].product,
                 description: receipt.products[i].description,
@@ -214,9 +215,9 @@ class OrderRealm {
     softDeleteOrder(order) {
         try {
             realm.write(() => {
-                    let orderObj = realm.objects('Order').filtered(`id = "${order.receiptId}"`);
-                    orderObj[0].syncAction = 'delete';
-                    orderObj[0].is_delete = 0;
+                let orderObj = realm.objects('Order').filtered(`id = "${order.receiptId}"`);
+                orderObj[0].syncAction = 'delete';
+                orderObj[0].is_delete = 0;
             })
 
         } catch (e) {

@@ -59,7 +59,10 @@ class MeterReadingSync {
                         if (onlyLocally.length > 0) {
                             onlyLocally.forEach(localMeterReading => {
                                 MeterReadingApi.createMeterReading(
-                                    localMeterReading
+                                    {
+                                        ...localMeterReading,
+                                        kiosk_id
+                                    }
                                 )
                                     .then((response) => {
                                         InventroyRealm.synched(localMeterReading);
