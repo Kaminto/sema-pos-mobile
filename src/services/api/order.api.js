@@ -75,7 +75,7 @@ class OrderApi {
 		});
 	}
 
-	deleteOrder(receipt) {
+	deleteOrder(receipt, siteId) {
 		return receipt;
 	}
 

@@ -1,8 +1,8 @@
 import React from "react";
-if (process.env.NODE_ENV === 'development') {
-    const whyDidYouRender = require('@welldone-software/why-did-you-render');
-    whyDidYouRender(React);
-}
+// if (process.env.NODE_ENV === 'development') {
+//     const whyDidYouRender = require('@welldone-software/why-did-you-render');
+//     whyDidYouRender(React);
+// }
 import { View, TouchableOpacity, Alert, Text, TextInput, Button, FlatList, ScrollView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -63,7 +63,7 @@ class OrderCheckout extends React.PureComponent {
 		this.handleOnPress = this.handleOnPress.bind(this);
 	}
 
-	static whyDidYouRender = true;
+	//static whyDidYouRender = true;
 
 	showDateTimePicker = () => {
 		this.setState({ isDateTimePickerVisible: true });
@@ -804,7 +804,7 @@ class OrderCheckout extends React.PureComponent {
 		let totalAmount = 0;
 		for (let i of this.props.products) {
 			if (i.product.description === 'discount') {
-				totalAmount = totalAmount - i.finalAmount;
+				totalAmount = totalAmount + i.finalAmount;
 			}
 			else if (i.product.description === 'delivery') {
 				totalAmount = totalAmount + i.finalAmount;
