@@ -29,9 +29,10 @@ class ProductList extends React.Component {
 	static whyDidYouRender = true;
 
 	handleOnPress(item){
-		console.log("Run how many");
-		const unitPrice = this.getItemPrice(item);
-		this.props.orderActions.AddProductToOrder(item, 1, unitPrice);
+		requestAnimationFrame(() => {
+			const unitPrice = this.getItemPrice(item);
+			this.props.orderActions.AddProductToOrder(item, 1, unitPrice);
+		});
 	}
 
 	render() {

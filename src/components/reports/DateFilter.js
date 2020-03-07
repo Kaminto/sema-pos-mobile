@@ -25,7 +25,7 @@ class DateFilter extends React.PureComponent {
 					{this.getPreviousButton()}
 				</View>
 				<View style={styles.filterItemContainer}>
-					<Text style={{fontSize:20}}>{this.state.currentDate.toDateString()}</Text>
+					<Text style={styles.fontdate}>{this.state.currentDate.toDateString()}</Text>
 				</View>
 				<View style={styles.filterItemContainer}>
 					{this.getNextButton()}
@@ -113,6 +113,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(DateFilter);
 
 
 const styles = StyleSheet.create({
+	fontdate: {
+		fontSize: 20
+	},
 
 	filterContainer:{
 		flex: .3,

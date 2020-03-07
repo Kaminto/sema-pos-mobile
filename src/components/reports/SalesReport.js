@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Text, View, StyleSheet, FlatList } from 'react-native';
+import { Text, View, StyleSheet, FlatList, ScrollView, RefreshControl, SafeAreaView } from 'react-native';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as reportActions from "../../actions/ReportActions";
@@ -16,13 +16,25 @@ class SalesReport extends React.PureComponent {
 		this.endDate = this.addDays(new Date(), 1);
 		this.state = {
 			refresh: false,
-			refresh1: false
+			refreshing: false,
 		};
 	}
 
+	_onRefresh = async () => {
+		this.setState({
+			refreshing: true
+		});
+
+		await this.getTotalTypes();
+
+		this.setState({
+			refreshing: false
+		});
+	  }
+
 	componentDidMount(){
-		this.setState({ refresh: !this.state.refresh,
-			refresh1: !this.state.refresh1
+		this.setState({
+			refresh: !this.state.refresh
 		 });
 	}
 
@@ -74,18 +86,26 @@ class SalesReport extends React.PureComponent {
 						/>
 					</View>
 					<View style={{ flex: .4, padding: 10 }}>
+					<ScrollView
+						refreshControl={
+						<RefreshControl
+							refreshing={this.state.refreshing}
+							onRefresh={this._onRefresh}
+						/>
+					}>
 						<FlatList
 							data={this.props.salesData.totalTypes}
+
 							ListHeaderComponent={this.showPaymentHeader}
-							extraData={this.state.refresh1}
+							extraData={this.state.refreshing}
 							renderItem={({ item, index, separators }) => (
 								<View>
 									{this.getPaymentRow(item, index, separators)}
 								</View>
 							)}
 							keyExtractor={item => item.name}
-							initialNumToRender={50}
 						/>
+						</ScrollView>
 					</View>
 
 				</View>

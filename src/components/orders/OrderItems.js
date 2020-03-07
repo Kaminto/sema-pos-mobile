@@ -547,7 +547,7 @@ class OrderItems extends React.PureComponent {
 
 		if (Number(searchText) > (this.state.selectedItem.quantity * this.getItemPrice(this.state.selectedItem.product))) {
 			Alert.alert("Custom Discount",
-				"Discount cannot exceed amount.",
+				"Discount cannot exceed order amount.",
 				[{
 					text: 'OK',
 					onPress: () => {
@@ -709,7 +709,7 @@ class OrderItems extends React.PureComponent {
 				console.log('Number(value)', Number(value));
 				if (Number(value) > this.calculateOrderDue()) {
 					Alert.alert("Discount",
-						"Discount cannot exceed amount.",
+						"Discount cannot exceed order amount.",
 						[{
 							text: 'OK',
 							onPress: () => {
