@@ -352,7 +352,7 @@ class Transactions extends React.PureComponent {
 									keyExtractor={(item, index) => item + index}
 									renderItem={this.renderReceipt.bind(this)}
 									renderSectionHeader={({ section: {title} }) => (
-									<Text style={{ fontSize: 16, backgroundColor: '#ABC1DE', color: '#000', fontWeight: 'bold', padding: 10, textTransform:'uppercase' }}>{title}</Text>
+									<Text style={styles.sectionTitle}>{title}</Text>
 									)}
 								/>
 						</SafeAreaView>
@@ -551,6 +551,27 @@ class Transactions extends React.PureComponent {
 					<Text style={styles.customername}>
 						{item.currency.toUpperCase()} {item.totalAmount}
 					</Text>
+					<View style={styles.receiptStats}>
+					{item.is_delete === 0 && (
+						<Text style={styles.receiptStatusText}>
+							{'Deleted - '.toUpperCase()}
+						</Text>
+					)}
+					{!item.active ? (
+						<View style={{ flexDirection: 'row' }}>
+							<Text style={styles.receiptPendingText}>
+								{' Pending'.toUpperCase()}
+							</Text>
+						</View>
+					) : (
+							<View style={{ flexDirection: 'row' }}>
+								{!item.active && <Text> - </Text>}
+								<Text style={styles.receiptSyncedText}>
+									{' Synced'.toUpperCase()}
+								</Text>
+							</View>
+						)}
+				</View>
 				</View>
 			</TouchableNativeFeedback>
 		);
@@ -645,6 +666,14 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#fff'
+	},
+	sectionTitle: {
+		fontSize: 16,
+		backgroundColor: '#ABC1DE',
+		color: '#000',
+		fontWeight: 'bold',
+		padding: 10,
+		textTransform:'uppercase'
 	},
 	headerText: {
 		fontSize: 24,

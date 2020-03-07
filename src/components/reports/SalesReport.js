@@ -19,17 +19,8 @@ class SalesReport extends React.PureComponent {
 		};
 	}
 
-	_onRefresh = async () => {
-		this.setState({
-			refreshing: true
-		});
-
-		await this.getTotalTypes();
-		await this.getSalesData();
-
-		this.setState({
-			refreshing: false
-		});
+	_onRefresh = ()  => {
+		this.updateReport();
 	  }
 
 
@@ -40,6 +31,13 @@ class SalesReport extends React.PureComponent {
 	render() {
 		return (
 			<View style={{ flex: 1, backgroundColor: 'white' }}>
+				<ScrollView
+						refreshControl={
+						<RefreshControl
+							refreshing={this.state.refreshing}
+							onRefresh={this._onRefresh}
+						/>
+					}>
 				<View style={{
 					flex: .2,
 					backgroundColor: 'white',
@@ -67,13 +65,6 @@ class SalesReport extends React.PureComponent {
 				</View>
 				<View style={{ flex: .8, flexDirection: 'row', backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10, }}>
 					<View style={{ flex: .6, padding: 10 }}>
-					<ScrollView
-						refreshControl={
-						<RefreshControl
-							refreshing={this.state.refreshing}
-							onRefresh={this._onRefresh}
-						/>
-					}>
 						<FlatList
 							data={this.getSalesData()}
 							ListHeaderComponent={this.showHeader}
@@ -86,25 +77,10 @@ class SalesReport extends React.PureComponent {
 							keyExtractor={item => item.sku}
 							initialNumToRender={50}
 						/>
-						</ScrollView>
 					</View>
 					<View style={{ flex: .4, padding: 10 }}>
-					<ScrollView
-						refreshControl={
-						<RefreshControl
-							refreshing={this.state.refreshing}
-							onRefresh={this._onRefresh}
-						/>
-					}>
-
 						<FlatList
-<<<<<<< HEAD
-							// onRefresh={this._onRefresh}
-							data={this.getTotalTypes()}
-=======
 							data={this.props.salesData.totalTypes}
-
->>>>>>> b15aad917bd131cb726be6999e5229276f28f8d9
 							ListHeaderComponent={this.showPaymentHeader}
 							extraData={this.state.refreshing}
 							renderItem={({ item, index, separators }) => (
@@ -114,11 +90,11 @@ class SalesReport extends React.PureComponent {
 							)}
 							keyExtractor={item => item.name}
 						/>
-						</ScrollView>
+
 					</View>
 
 				</View>
-
+				</ScrollView>
 			</View>
 		);
 	}

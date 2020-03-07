@@ -93,7 +93,7 @@ function comparePaymentTypes(beginDate) {
 		filteredReceiptPaymentTypes = ReceiptPaymentTypeRealm.getReceiptPaymentTypes().filter(receiptpayment =>
 			isSameDay(parseISO(receiptpayment.created_at), beginDate)
 		);
-	
+
 
 	let paymentTypes = [...PaymentTypeRealm.getPaymentTypes()];
 	let finalreceiptsPaymentTypes = [];
@@ -110,18 +110,18 @@ function comparePaymentTypes(beginDate) {
 function comparePaymentTypeReceipts(beginDate, receipts) {
 	let receiptsPaymentTypes = comparePaymentTypes(beginDate);
 	let customerReceipts = receipts;
-	let finalCustomerReceiptsPaymentTypes = [];
-	for (let customerReceipt of customerReceipts) {
-		let paymentTypes = [];
-		for (let receiptsPaymentType of receiptsPaymentTypes) {
+	let paymentTypes = [];
+	for (let receiptsPaymentType of receiptsPaymentTypes) {
+		for (let customerReceipt of customerReceipts) {
 			if (receiptsPaymentType.receipt_id === customerReceipt.id) {
 				paymentTypes.push(receiptsPaymentType);
 			}
 		}
-		customerReceipt.paymentTypes = paymentTypes;
-		finalCustomerReceiptsPaymentTypes.push(customerReceipt);
+
 	}
-	return finalCustomerReceiptsPaymentTypes;
+	console.log("Sherlock " + JSON.stringify(paymentTypes));
+
+	return paymentTypes;
 }
 
 
