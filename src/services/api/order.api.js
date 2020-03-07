@@ -119,7 +119,7 @@ class OrderApi {
 		});
 	}
 
-	getReceipts(siteId) {
+	getReceipts(siteId, lastSyncDate) {
 		let options = {
 			method: 'GET',
 			headers: {
@@ -127,8 +127,10 @@ class OrderApi {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-
-		let url = `sema/site/receipts/${siteId}?date=${format(sub(new Date(), { days: 30 }), 'yyyy-MM-dd')}`;
+console.log('lastSyncDate',lastSyncDate)
+		//let url = `sema/site/receipts/${siteId}?date=${format(sub(new Date(), { days: 30 }), 'yyyy-MM-dd')}`;
+		let url = `sema/site/receipts/${siteId}?date=${lastSyncDate}`;
+		
 		console.log('Communications:getReceipts: ');
 		return fetch(this._url + url, options)
 			.then(async response => await response.json())

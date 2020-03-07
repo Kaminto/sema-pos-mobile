@@ -7,7 +7,7 @@ import { ProductSchema, ProductSyncDateSchema } from './products/product.model';
 import { SalesChannelSchema } from './sales-channels/sales-channels.model';
 import { CustomerTypesSchema } from './customer-types/customer-types.model';
 import { SettingsSchema, TokenExpirySchema } from './settings/settings.model';
-import { CustomerObjSchema, ProductObjSchema, OrderItemsSchema, OrderSchema } from './orders/orders.model';
+import { OrderSyncDateSchema, OrderSchema } from './orders/orders.model';
 import { DiscountSchema } from './discount/discount.model';
 import { CustomerDebtSchema } from './customer_debt/customer_debt.model';
 import { MeterReadingSchema } from './inventory/meter-reading.modal';
@@ -43,10 +43,8 @@ export default realm = new Realm({
         SalesChannelSchema,
         SettingsSchema,
         TokenExpirySchema,
-        CustomerObjSchema,
-        ProductObjSchema,
-        OrderItemsSchema,
         OrderSchema,
+        OrderSyncDateSchema,
         DiscountSchema,
         PaymentTypeSchema,
         ReceiptPaymentTypeSchema,
@@ -54,7 +52,7 @@ export default realm = new Realm({
         CustomerReminderSchema,
         MeterReadingSchema
     ],
-    schemaVersion: 80,
+    schemaVersion: 81,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
         if (oldRealm.schemaVersion < 1) {
