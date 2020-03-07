@@ -92,8 +92,7 @@ function comparePaymentTypes(beginDate) {
 	let filteredReceiptPaymentTypes = [];
 		filteredReceiptPaymentTypes = ReceiptPaymentTypeRealm.getReceiptPaymentTypes().filter(receiptpayment =>
 			isSameDay(parseISO(receiptpayment.created_at), beginDate)
-		);
-	
+		);	
 
 	let paymentTypes = [...PaymentTypeRealm.getPaymentTypes()];
 	let finalreceiptsPaymentTypes = [];
@@ -111,9 +110,11 @@ function comparePaymentTypeReceipts(beginDate, receipts) {
 	let receiptsPaymentTypes = comparePaymentTypes(beginDate);
 	let customerReceipts = receipts;
 	let finalCustomerReceiptsPaymentTypes = [];
+	let paymentTypes = [];
+	for (let receiptsPaymentType of receiptsPaymentTypes) {
 	for (let customerReceipt of customerReceipts) {
-		let paymentTypes = [];
-		for (let receiptsPaymentType of receiptsPaymentTypes) {
+		
+		
 			if (receiptsPaymentType.receipt_id === customerReceipt.id) {
 				paymentTypes.push(receiptsPaymentType);
 			}
@@ -132,6 +133,8 @@ const getSalesData = (beginDate) => {
 	);
 
 	let totalTypes = getTotalTypes(beginDate, filteredOrders);
+
+	console.log('totalTypes',totalTypes);
 
 	let filteredOrderItems = filteredOrders.reduce(function (accumulator, currentValue) {
 		return [...accumulator, ...currentValue.receipt_line_items]

@@ -4,7 +4,23 @@ class OrderRealm {
     constructor() {
         this.order = [];
         let firstSyncDate = new Date('November 7, 1973');
+        realm.write(() => {
+            if (Object.values(JSON.parse(JSON.stringify(realm.objects('OrderSyncDate')))).length == 0) {
+                realm.create('OrderSyncDate', { lastOrderSync: firstSyncDate });
+            }
+        });
         this.lastOrderSync = firstSyncDate;
+    }
+
+    getLastOrderSync() {
+        return this.lastOrderSync = JSON.parse(JSON.stringify(realm.objects('OrderSyncDate')))['0'].lastOrderSync;
+    }
+
+    setLastOrderSync() {
+        realm.write(() => {
+            let syncDate = realm.objects('OrderSyncDate');
+            syncDate[0].lastOrderSync = new Date();
+        })
     }
 
     truncate() {
@@ -189,6 +205,20 @@ class OrderRealm {
 
         } catch (e) {
             console.log("Error on update orders", e);
+        }
+
+    }
+
+    synched(order) {
+        try {
+            realm.write(() => {
+                let orderObj = realm.objects('Order').filtered(`receiptId = "${order.receiptId}"`);
+                orderObj[0].active = true;
+                orderObj[0].syncAction = null;
+            })
+
+        } catch (e) {
+            console.log("Error on synch orders", e);
         }
 
     }
