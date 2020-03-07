@@ -6,7 +6,7 @@ class OrderSync {
 
     synchronizeSales(siteId) {
         return new Promise(resolve => {
-            OrderApi.getReceipts(siteId)
+            OrderApi.getReceipts(siteId, OrderRealm.getLastOrderSync())
                 .then(remoteOrder => {
 
                     // console.log('remoteOrder', remoteOrder);
@@ -111,6 +111,7 @@ class OrderSync {
                                 )
                                     .then((response) => {
                                         OrderRealm.synched(localOrder);
+                                        OrderRealm.setLastOrderSync();
                                         console.log(
                                             'Synchronization:synced to remote - ' ,
                                             response

@@ -1,73 +1,4 @@
-export const CustomerObjSchema = {
-    name: 'CustomerObj',
-    properties: {
-        active: { type: 'bool', optional: true },
-        address_line1: { type: 'string', optional: true },
-        address_line2: { type: 'string', optional: true },
-        address_line3: { type: 'string', optional: true },
-        consumer_base: { type: 'string', optional: true },
-        created_at: { type: 'string', optional: true },
-        customer_type_id: { type: 'int', optional: true },
-        distance: { type: 'string', optional: true },
-        due_amount: { type: 'string', optional: true },
-        frequency: { type: 'string', optional: true },
-        gender: { type: 'string', optional: true },
-        gps_coordinates: { type: 'string', optional: true },
-        id: { type: 'string', optional: true },
-        income_level: { type: 'string', optional: true },
-        kiosk_id: { type: 'int', optional: true },
-        multimedia1: { type: 'string', optional: true },
-        multimedia2: { type: 'string', optional: true },
-        multimedia3: { type: 'string', optional: true },
-        multimedia4: { type: 'string', optional: true },
-        name: { type: 'string', optional: true },
-        phone_number: { type: 'string', optional: true },
-        reminder_date: { type: 'string', optional: true },
-        sales_channel_id: { type: 'int', optional: true },
-        second_phone_number: { type: 'string', optional: true },
-        updated_at: { type: 'string', optional: true },
-        what3words: { type: 'string', optional: true },
-    }
-};
 
-export const ProductObjSchema = {
-    name: 'ProductObj',
-    properties: {
-        active: { type: 'bool', optional: true },
-        category_id: { type: 'int', optional: true },
-        cogs_amount: { type: 'string', optional: true },
-        created_at: { type: 'string', optional: true },
-        description: { type: 'string', optional: true },
-        id: { type: 'int', optional: true },
-        maximum_quantity: { type: 'int', optional: true },
-        minimum_quantity: { type: 'int', optional: true },
-        name: { type: 'string', optional: true },
-        price_amount: { type: 'string', optional: true },
-        price_currency: { type: 'string', optional: true },
-        sku: { type: 'string', optional: true },
-        unit_measure: { type: 'string', optional: true },
-        unit_per_product: { type: 'int', optional: true },
-        updated_at: { type: 'string', optional: true },
-        wastage_name: { type: 'string', optional: true },
-    }
-};
-
-export const OrderItemsSchema = {
-    name: 'OrderItems',
-    properties: {
-        active: { type: 'bool', optional: true },
-        cogs_total: { type: 'int', optional: true },
-        created_at: { type: 'date', optional: true },
-        currency_code: { type: 'string', optional: true },
-        id: { type: 'int', optional: true },
-        price_total: { type: 'int', optional: true },
-        product: { type: 'ProductObj', optional: true },
-        product_id: { type: 'int', optional: true },
-        quantity: { type: 'int', optional: true },
-        receipt_id: { type: 'string', optional: true },
-        updated_at: { type: 'date', optional: true },
-    }
-};
 
 export const OrderSchema = {
     name: 'Order',
@@ -114,5 +45,13 @@ export const OrderSchema = {
         syncAction: { type: 'string', optional: true },
         created_at: { type: 'date', optional: true },
         updated_at: { type: 'date', optional: true },
+    }
+};
+
+
+export const OrderSyncDateSchema = {
+    name: 'OrderSyncDate',
+    properties: {
+        lastOrderSync: 'date',
     }
 };
