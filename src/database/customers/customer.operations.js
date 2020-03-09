@@ -1,14 +1,17 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-import { format, parseISO} from 'date-fns';
+import { format, parseISO, sub } from 'date-fns';
 class CustomerRealm {
     constructor() {
         this.customer = [];
-        let firstSyncDate = new Date('November 7, 1973');
+        let firstSyncDate = format(sub(new Date(), { days: 180 }), 'yyyy-MM-dd');
+        // console.log('firstSyncDate',firstSyncDate)
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerSyncDate')))).length == 0) {
                 realm.create('CustomerSyncDate', { lastCustomerSync: firstSyncDate });
             }
+            //   let syncDate = realm.objects('CustomerSyncDate');
+            //  syncDate[0].lastCustomerSync = firstSyncDate;
         });
         this.lastCustomerSync = firstSyncDate;
     }
@@ -28,15 +31,42 @@ class CustomerRealm {
         }
     }
 
-    setLastCustomerSync(lastSyncTime) {
+    setLastCustomerSync() {
         realm.write(() => {
+            console.log('update sync date');
             let syncDate = realm.objects('CustomerSyncDate');
-            syncDate[0].lastCustomerSync = lastSyncTime.toISOString()
+            syncDate[0].lastCustomerSync = new Date()
         })
     }
 
     getAllCustomer() {
         return this.customer = Object.values(JSON.parse(JSON.stringify(realm.objects('Customer'))));
+    }
+
+    getCustomerByCreatedDate(date) {
+
+
+        try {
+            let orderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('Customer'))));
+            let orderObj2 = orderObj.map(
+                item => {
+                    return {
+                        ...item,
+                        createdDate: format(parseISO(item.createdDate), 'yyyy-MM-dd'),
+                        updatedDate: format(parseISO(item.updatedDate), 'yyyy-MM-dd'),
+
+                    }
+                });
+
+            return orderObj2.filter(r => {
+                return r.createdDate === format(parseISO(date), 'yyyy-MM-dd') || r.updatedDate === format(parseISO(date), 'yyyy-MM-dd')
+            }
+            );
+        } catch (e) {
+            console.log("Error on get orders", e);
+            return e;
+        }
+
     }
 
     initialise() {

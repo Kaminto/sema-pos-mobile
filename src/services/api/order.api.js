@@ -127,13 +127,17 @@ class OrderApi {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-console.log('lastSyncDate',lastSyncDate)
+		console.log('lastSyncDate', lastSyncDate)
 		//let url = `sema/site/receipts/${siteId}?date=${format(sub(new Date(), { days: 30 }), 'yyyy-MM-dd')}`;
 		let url = `sema/site/receipts/${siteId}?date=${lastSyncDate}`;
-		
-		console.log('Communications:getReceipts: ');
+
+		console.log('Communications:getReceipts: ', url);
 		return fetch(this._url + url, options)
-			.then(async response => await response.json())
+		.then(response => response.json())
+		.then(responseJson => {
+			console.log('responseJson', typeof responseJson);
+			return responseJson;
+		})
 			.catch(error => {
 				console.log('Communications:getReceipts: ' + error);
 				throw error;

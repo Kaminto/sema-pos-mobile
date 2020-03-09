@@ -1,13 +1,16 @@
 import realm from '../init';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, sub } from 'date-fns';
 class OrderRealm {
     constructor() {
         this.order = [];
-        let firstSyncDate = new Date('November 7, 1973');
+        let firstSyncDate = format(sub(new Date(), { days: 30 }), 'yyyy-MM-dd');
+       // console.log('firstSyncDate',firstSyncDate)
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('OrderSyncDate')))).length == 0) {
                 realm.create('OrderSyncDate', { lastOrderSync: firstSyncDate });
             }
+            // let syncDate = realm.objects('OrderSyncDate');
+            // syncDate[0].lastOrderSync = firstSyncDate;
         });
         this.lastOrderSync = firstSyncDate;
     }
@@ -18,6 +21,7 @@ class OrderRealm {
 
     setLastOrderSync() {
         realm.write(() => {
+             console.log('update sync date');
             let syncDate = realm.objects('OrderSyncDate');
             syncDate[0].lastOrderSync = new Date();
         })
@@ -75,6 +79,30 @@ class OrderRealm {
             }
 
         });
+    }
+
+    getOrdersByDate2(date) {
+       
+
+
+            try {
+                let orderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('Order'))));
+                let orderObj2 = orderObj.map(
+                    item => {
+                        return {
+                            ...item, created_at: format(parseISO(item.created_at), 'yyyy-MM-dd'),
+                            updated_at: format(parseISO(item.updated_at), 'yyyy-MM-dd')
+                        }
+                    });
+
+            return orderObj2.filter(r => {
+                return r.created_at === format(parseISO(date), 'yyyy-MM-dd') || r.updated_at === format(parseISO(date), 'yyyy-MM-dd')
+            });
+            } catch (e) {
+                console.log("Error on get orders", e);
+                return e;
+            }
+ 
     }
 
     getOrderItems() {

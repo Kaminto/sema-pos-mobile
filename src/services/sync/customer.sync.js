@@ -6,14 +6,16 @@ class CustomerSync {
 
     synchronizeCustomers(lastCustomerSync) {
         return new Promise(resolve => {
-            CustomerApi.getCustomers(lastCustomerSync)
+            CustomerApi.getCustomers(CustomerRealm.getLastCustomerSync())
                 .then(remoteCustomer => {
-                    let initlocalCustomers = CustomerRealm.getAllCustomer();
+                    let initlocalCustomers = CustomerRealm.getCustomerByCreatedDate(CustomerRealm.getLastCustomerSync());
                     let localCustomers = [...initlocalCustomers];
                     let remoteCustomers = [...remoteCustomer.customers];
-                    // console.log('remoteCustomer', remoteCustomer);
-                    if (initlocalCustomers.length === 0) {
+                   console.log('remoteCustomer', remoteCustomers);
+                   console.log('localCustomers', localCustomers);
+                    if (initlocalCustomers.length === 0 && remoteCustomers.length > 0) {
                         CustomerRealm.createManyCustomers(remoteCustomer.customers);
+                        CustomerRealm.setLastCustomerSync();
                     }
 
                     let onlyLocally = [];
@@ -53,7 +55,8 @@ class CustomerSync {
 
 
                         if (onlyRemote.length > 0) {
-                            CustomerRealm.createManyCustomers(onlyRemote)
+                            CustomerRealm.createManyCustomers(onlyRemote);
+                            CustomerRealm.setLastCustomerSync();
                         }
 
                         if (onlyLocally.length > 0) {
@@ -67,6 +70,7 @@ class CustomerSync {
                                 )
                                     .then((response) => {
                                         CustomerRealm.synched(localCustomer);
+                                        CustomerRealm.setLastCustomerSync();
                                         console.log(
                                             'Synchronization:synced to remote - ' ,
                                             response
@@ -131,6 +135,7 @@ class CustomerSync {
                                         .then((response) => {
                                             updateCount = updateCount + 1;
                                             CustomerRealm.synched(localCustomer);
+                                            CustomerRealm.setLastCustomerSync();
                                             console.log(
                                                 'Synchronization:synced to remote - ' +
                                                 response
