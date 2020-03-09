@@ -153,7 +153,7 @@ class CustomerDebtRealm {
                 }
                 if (!customer_account_id) {
                     customerDebts.forEach(obj => {
-                        realm.create('CustomerDebt', obj);
+                        realm.create('CustomerDebt', {...obj, due_amount: Number(obj.amount), });
                     });
                 }
             });

@@ -7,6 +7,7 @@ export const CustomerSchema = {
         customerTypeId: { type: 'int', optional: true },
         salesChannelId: { type: 'int', optional: true },
         siteId: { type: 'int', optional: true },
+        is_delete: { type: 'int', optional: true, default: 1 },
         reminder_date: { type: 'date', optional: true },
         frequency: { type: 'string', optional: true },
         dueAmount: { type: 'int', optional: true },

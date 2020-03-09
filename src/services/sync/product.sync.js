@@ -7,9 +7,9 @@ class ProductSync {
     synchronizeProducts() {
 		return new Promise(resolve => {
 
-            ProductApi.getProducts()
+            ProductApi.getProducts(ProductRealm.getLastProductsync())
             .then(remoteProduct => {
-                let initlocalProducts = ProductRealm.getProducts();
+                let initlocalProducts = ProductRealm.getProductsByDate(ProductRealm.getLastProductsync());
                 let localProducts = [...initlocalProducts];
                 let remoteProducts = [...remoteProduct.products]; 
 
@@ -19,6 +19,8 @@ class ProductSync {
 
                 if (initlocalProducts.length === 0) {
                     ProductRealm.createManyProducts(remoteProduct.products);
+                    ProductRealm.setLastProductsync();
+
                 }
 
                 let onlyLocally = [];
@@ -58,6 +60,7 @@ class ProductSync {
 
                     if (onlyRemote.length > 0) {
                         ProductRealm.createManyProducts(onlyRemote)
+                        ProductRealm.setLastProductsync();
                     }
 
                     console.log('onlyRemote', onlyRemote);

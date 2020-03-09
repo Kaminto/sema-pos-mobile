@@ -4,7 +4,7 @@ const uuidv1 = require('uuid/v1');
 class ProductsRealm {
     constructor() {
         this.product = [];
-        let firstSyncDate = new Date('November 7, 1973');
+        let firstSyncDate = format(sub(new Date(), { days: 30 }), 'yyyy-MM-dd');
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('ProductSyncDate')))).length == 0) {
                 realm.create('ProductSyncDate', { lastProductSync: firstSyncDate });
@@ -28,10 +28,10 @@ class ProductsRealm {
         }
     }
 
-    setLastProductsync(lastSyncTime) {
+    setLastProductsync() {
         realm.write(() => {
         let syncDate = realm.objects('ProductSyncDate');
-        syncDate[0].lastProductSync = lastSyncTime.toISOString()
+        syncDate[0].lastProductSync = new Date()
         })
     }
 
@@ -39,6 +39,25 @@ class ProductsRealm {
 
     getProducts() {
         return Object.values(JSON.parse(JSON.stringify(realm.objects('Product'))));
+    }
+
+    getProductsByDate(date) {
+         try {
+                let orderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('Product'))));
+                let orderObj2 = orderObj.map(
+                    item => {
+                        return {
+                            ...item, created_at: format(parseISO(item.created_at), 'yyyy-MM-dd')
+                        }
+                    });
+
+                return orderObj2.filter(r => r.created_at === format(parseISO(date), 'yyyy-MM-dd'));
+            } catch (e) {
+                console.log("Error on get orders", e);
+                return e;
+            }
+
+        
     }
 
     initialise() {

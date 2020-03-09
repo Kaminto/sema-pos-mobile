@@ -28,21 +28,21 @@ class RecieptPaymentTypesApi {
 		this._siteId = siteId;
 	}
 
-	getReceiptPaymentTypes(kiosk_id) {
+	getReceiptPaymentTypes(kiosk_id, updatedSince) {
 		let options = {
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-		let url = `sema/receipt_payment_type/${kiosk_id}`;
+		let url = `sema/receipt_payment_type/${kiosk_id}/${updatedSince}`;
 		console.log('this._url', this._url);
 		// if (updatedSince) {
 		// 	url = url + '?updated-date=' + updatedSince;
 		// }
 
 		return fetch(this._url + url, options)
-		.then(response => response.json())
+			.then(response => response.json())
 			.then(responseJson => {
 				return responseJson;
 			})
@@ -54,7 +54,7 @@ class RecieptPaymentTypesApi {
 
 	createReceiptPaymentType(receipt_payment_type) {
 		// TODO - Resolve receipt_payment_type.... Is it needed, currently hardcoded...
-console.log('receipt_payment_type', receipt_payment_type)
+		console.log('receipt_payment_type', receipt_payment_type)
 		let options = {
 			method: 'POST',
 			headers: {
