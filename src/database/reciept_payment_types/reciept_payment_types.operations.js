@@ -59,7 +59,7 @@ class ReceiptPaymentTypeRealm {
             }
             );
         } catch (e) {
-            console.log("Error on get orders", e);
+            console.log("Error on get receipt payment types", e);
             return e;
         }
     }

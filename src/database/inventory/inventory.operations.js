@@ -94,7 +94,7 @@ class InventroyRealm {
     }
 
     createMeterReading(meter_value, date, kiosk_id) {
-        console.log('date', date);
+        console.log('date', date + " " + meter_value + " - " + kiosk_id);
         date = this.addDays(date, 1);
         console.log('date-', date);
         try {

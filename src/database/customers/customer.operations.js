@@ -63,7 +63,7 @@ class CustomerRealm {
             }
             );
         } catch (e) {
-            console.log("Error on get orders", e);
+            console.log("Error on get customers", e);
             return e;
         }
 

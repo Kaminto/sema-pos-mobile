@@ -634,7 +634,7 @@ class InventoryReport extends React.PureComponent {
 		}
 		if (!isNaN(update)) {
 			this.props.wastageData.inventory.currentMeter = update;
-			InventroyRealm.createMeterReading(this.props.wastageData.inventory, update, this.props.dateFilter.startDate, this.props.settings.siteId);
+			InventroyRealm.createMeterReading(update, this.props.dateFilter.startDate, this.props.settings.siteId);
 			this.setState({ refresh: !this.state.refresh });
 		} else {
 			// TODO - Show alert

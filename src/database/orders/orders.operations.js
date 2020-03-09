@@ -48,7 +48,7 @@ class OrderRealm {
         return this.order = formattedArray;
     }
 
-    
+
     getActiveOrders() {
         let formattedArray = [...Object.values(JSON.parse(JSON.stringify(realm.objects('Order').filtered(`is_delete = "${1}"`))))];
         for (let i in formattedArray) {
@@ -74,7 +74,7 @@ class OrderRealm {
 
                 resolve(orderObj2.filter(r => r.created_at === format(parseISO(date), 'yyyy-MM-dd')));
             } catch (e) {
-                console.log("Error on get orders", e);
+                console.log("Error on get orders" + date , e);
                 resolve(e);
             }
 
@@ -82,7 +82,7 @@ class OrderRealm {
     }
 
     getOrdersByDate2(date) {
-       
+
 
 
             try {
@@ -102,7 +102,7 @@ class OrderRealm {
                 console.log("Error on get orders", e);
                 return e;
             }
- 
+
     }
 
     getOrderItems() {
@@ -305,7 +305,7 @@ class OrderRealm {
                     obj.total = Number(obj.total);
                     obj.customer_account = JSON.stringify(obj.customer_account);
                     obj.receipt_line_items = JSON.stringify(obj.receipt_line_items);
-                   
+
                     realm.create('Order', obj);
                 });
             });

@@ -1,5 +1,6 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
+import {format, parseISO, sub} from 'date-fns';
 
 class ProductsRealm {
     constructor() {
@@ -53,11 +54,11 @@ class ProductsRealm {
 
                 return orderObj2.filter(r => r.created_at === format(parseISO(date), 'yyyy-MM-dd'));
             } catch (e) {
-                console.log("Error on get orders", e);
+                console.log("Error on get products", e);
                 return e;
             }
 
-        
+
     }
 
     initialise() {
