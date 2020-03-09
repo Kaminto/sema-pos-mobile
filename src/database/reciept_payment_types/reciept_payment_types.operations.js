@@ -1,6 +1,6 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-import { format, parseISO, sub } from 'date-fns';
+import { format, parseISO, sub, compareAsc } from 'date-fns';
 
 class ReceiptPaymentTypeRealm {
     constructor() {
@@ -48,14 +48,14 @@ class ReceiptPaymentTypeRealm {
                 item => {
                     return {
                         ...item,
-                        created_at: format(parseISO(item.created_at), 'yyyy-MM-dd'),
-                        updated_at: format(parseISO(item.updated_at), 'yyyy-MM-dd'),
-
+                        created_at: item.created_at,
+                        updated_at: item.updated_at,
                     }
                 });
 
             return orderObj2.filter(r => {
-                return r.created_at === format(parseISO(date), 'yyyy-MM-dd') || r.updated_at === format(parseISO(date), 'yyyy-MM-dd')
+                return compareAsc(r.created_at, date) === 1 || compareAsc(r.updated_at, date)
+                ///return r.created_at === format(parseISO(date), 'yyyy-MM-dd') || r.updated_at === format(parseISO(date), 'yyyy-MM-dd')
             }
             );
         } catch (e) {
