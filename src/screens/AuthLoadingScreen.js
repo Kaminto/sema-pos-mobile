@@ -66,10 +66,14 @@ class AuthLoadingScreen extends React.PureComponent {
             this.props.settingsActions.setSettings({ ...settings, loginSync: true });
             this.props.navigation.navigate('Login');
         }
+        //CustomerRealm.truncate()
+        console.log('last order sync',OrderRealm.getLastOrderSync());
+        console.log('last customer sync',CustomerRealm.getLastCustomerSync());
 
         if (settings.site != "" && settings.siteId > 0) {
             this.loadSyncedData();
             if (settings.token.length > 1) {
+               
                 this.props.settingsActions.setSettings({ ...settings, loginSync: false });
                 this.props.navigation.navigate('App');
             }
