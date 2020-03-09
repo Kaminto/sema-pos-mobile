@@ -74,7 +74,7 @@ class ReminderSync {
                                     })
                                     .catch(error => {
                                         console.log(
-                                            'Synchronization:synchronizeInventory Create Inventory failed'
+                                            'Synchronization:synchronizeReminders Create Reminders failed'
                                         );
                                     });
                             })
@@ -89,7 +89,7 @@ class ReminderSync {
                                     )
                                         .then((response) => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                                                'Synchronization:synchronizeReminders - Removing Reminders from pending list - ' +
                                                 response
                                             );
                                             ReminderRealm.hardDeleteCustomerDebt(
@@ -98,7 +98,7 @@ class ReminderSync {
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Delete Inventory failed ' +
+                                                'Synchronization:synchronizeReminders Delete Reminders failed ' +
                                                 error
                                             );
                                         });
@@ -110,13 +110,13 @@ class ReminderSync {
                                     )
                                         .then((response) => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                                                'Synchronization:synchronizeReminders - Removing Reminders from pending list - ' +
                                                 response
                                             );
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Update Inventory failed ' +
+                                                'Synchronization:synchronizeReminders Update Reminders failed ' +
                                                 error
                                             );
                                         });
@@ -134,16 +134,13 @@ class ReminderSync {
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Create Inventory failed'
+                                                'Synchronization:synchronizeReminders Create Reminders failed'
                                             );
                                         });
                                 }
                             })
                         }
 
-                        console.log('onlyRemote', onlyRemote);
-                        console.log('onlyLocally', onlyLocally);
-                        console.log('bothLocalRemote', bothLocalRemote);
 
                         console.log('localReminder2', localReminder);
                         console.log('remoteReminder2', remoteReminder);
@@ -158,7 +155,7 @@ class ReminderSync {
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization.getInventory - error ' + error
+                        'Synchronization.getReminders - error ' + error
                     );
                     resolve({
                         error: error,

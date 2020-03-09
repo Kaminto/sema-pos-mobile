@@ -78,7 +78,7 @@ class CustomerSync {
                                     })
                                     .catch(error => {
                                         console.log(
-                                            'Synchronization:synchronizeInventory Create Inventory failed',error
+                                            'Synchronization:synchronizeCustomers Create Customers failed',error
                                         );
                                     });
                             })
@@ -94,7 +94,7 @@ class CustomerSync {
                                     )
                                         .then((response) => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                                                'Synchronization:synchronizeCustomers - Removing Customers from pending list - ' +
                                                 response
                                             );
                                             updateCount = updateCount + 1;
@@ -104,7 +104,7 @@ class CustomerSync {
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Delete Inventory failed ' +
+                                                'Synchronization:synchronizeCustomers Delete Customers failed ' +
                                                 error
                                             );
                                         });
@@ -117,13 +117,13 @@ class CustomerSync {
                                         .then((response) => {
                                             updateCount = updateCount + 1;
                                             console.log(
-                                                'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                                                'Synchronization:synchronizeCustomers - Removing Customers from pending list - ' +
                                                 response
                                             );
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Update Inventory failed ' +
+                                                'Synchronization:synchronizeCustomers Update Customers failed ' +
                                                 error
                                             );
                                         });
@@ -143,7 +143,7 @@ class CustomerSync {
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Create Inventory failed',error
+                                                'Synchronization:synchronizeCustomers Create Customers failed',error
                                             );
                                         });
                                 }
@@ -166,7 +166,7 @@ class CustomerSync {
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization.getInventory - error ' + error
+                        'Synchronization.getCustomers - error ' + error
                     );
                     resolve({
 						error: error,

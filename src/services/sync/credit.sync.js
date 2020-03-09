@@ -11,8 +11,6 @@ class CreditSync {
                     let initlocalCredits = CreditRealm.getAllCredit();
                     let localCredits = [...initlocalCredits];
                     let remoteInventories = [...remoteCredit.topup];
-                    // console.log('localCredits', localCredits);
-                    // console.log('remoteInventories', remoteInventories);
                     if (initlocalCredits.length === 0) {
                         CreditRealm.createManycredits(remoteCredit.topup);
                     }
@@ -24,18 +22,13 @@ class CreditSync {
                     let bothLocalRemote = {};
 
                     if (initlocalCredits.length > 0) {
-
-                        // console.log('initlocalCredits', initlocalCredits);
-                        // console.log('localCredits', localCredits);
-                        // console.log('remoteInventories', remoteInventories);
                         initlocalCredits.forEach(localCredit => {
                             let filteredObj = remoteInventories.filter(obj => obj.topUpId === localCredit.topUpId)
-                            console.log('filteredObj', filteredObj);
+
                             if (filteredObj.length > 0) {
                                 const remoteIndex = remoteInventories.map(function (e) { return e.topUpId }).indexOf(filteredObj[0].topUpId);
                                 const localIndex = localCredits.map(function (e) { return e.topUpId }).indexOf(filteredObj[0].topUpId);
-                                console.log('remoteIndex', remoteIndex);
-                                console.log('localIndex', localIndex);
+
                                 remoteInventories.splice(remoteIndex, 1);
                                 localCredits.splice(localIndex, 1);
 
@@ -46,7 +39,7 @@ class CreditSync {
                             if (filteredObj.length === 0) {
                                 onlyLocally.push(localCredit);
                                 const localIndex = localCredits.map(function (e) { return e.topUpId }).indexOf(localCredit.topUpId);
-                                console.log('localIndex', localIndex);
+
                                 localCredits.splice(localIndex, 1);
                             }
                         });
@@ -74,7 +67,7 @@ class CreditSync {
                                     })
                                     .catch(error => {
                                         console.log(
-                                            'Synchronization:synchronizeInventory Create Inventory failed'
+                                            'Synchronization:synchronizeCredit Create Credit failed'
                                         );
                                     });
                             })
@@ -89,7 +82,7 @@ class CreditSync {
                                     )
                                         .then((response) => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                                                'Synchronization:synchronizeCredit - Removing Credit from pending list - ' +
                                                 response
                                             );
                                             CreditRealm.hardDeleteCredit(
@@ -98,7 +91,7 @@ class CreditSync {
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Delete Inventory failed ' +
+                                                'Synchronization:synchronizeCredit Delete Credit failed ' +
                                                 error
                                             );
                                         });
@@ -110,13 +103,13 @@ class CreditSync {
                                     )
                                         .then((response) => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                                                'Synchronization:synchronizeCredit - Removing Credit from pending list - ' +
                                                 response
                                             );
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Update Inventory failed ' +
+                                                'Synchronization:synchronizeCredit Update Credit failed ' +
                                                 error
                                             );
                                         });
@@ -134,7 +127,7 @@ class CreditSync {
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Create Inventory failed'
+                                                'Synchronization:synchronizeCredit Create Credit failed'
                                             );
                                         });
                                 }
@@ -158,7 +151,7 @@ class CreditSync {
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization.getInventory - error ' + error
+                        'Synchronization.getCredit - error ' + error
                     );
                     resolve({
                         error: error,

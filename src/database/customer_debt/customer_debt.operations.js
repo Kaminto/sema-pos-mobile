@@ -144,7 +144,7 @@ class CustomerDebtRealm {
                         realm.create('CustomerDebt', {
                             customer_account_id: customer_account_id ? customer_account_id : null,
                             customer_debt_id: uuidv1(),
-                            due_amount: Number(obj.amount),
+                            due_amount: obj.amount !== 'NaN' ? Number(obj.amount) : 0,
                             syncAction: obj.syncAction ? obj.syncAction : 'CREATE',
                             created_at: new Date(),
                             updated_at: obj.updated_at ? obj.updated_at : null,

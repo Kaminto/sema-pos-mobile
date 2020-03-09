@@ -79,7 +79,7 @@ class RecieptPaymentTypesSync {
                                     })
                                     .catch(error => {
                                         console.log(
-                                            'Synchronization:synchronizeInventory Create Inventory failed'
+                                            'Synchronization:synchronizeReceiptpaymenttypes Create Receiptpaymenttypes failed'
                                         );
                                     });
                             })
@@ -94,7 +94,7 @@ class RecieptPaymentTypesSync {
                                     )
                                         .then((response) => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                                                'Synchronization:synchronizeReceiptpaymenttypes - Removing Receiptpaymenttypes from pending list - ' +
                                                 response
                                             );
                                             ReceiptPaymentTypeRealm.hardDeleteCredit(
@@ -103,7 +103,7 @@ class RecieptPaymentTypesSync {
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Delete Inventory failed ' +
+                                                'Synchronization:synchronizeReceiptpaymenttypes Delete Receiptpaymenttypes failed ' +
                                                 error
                                             );
                                         });
@@ -115,13 +115,13 @@ class RecieptPaymentTypesSync {
                                     )
                                         .then((response) => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                                                'Synchronization:synchronizeReceiptpaymenttypes - Removing Receiptpaymenttypes from pending list - ' +
                                                 response
                                             );
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Update Inventory failed ' +
+                                                'Synchronization:synchronizeReceiptpaymenttypes Update Receiptpaymenttypes failed ' +
                                                 error
                                             );
                                         });
@@ -140,16 +140,13 @@ class RecieptPaymentTypesSync {
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeInventory Create Inventory failed'
+                                                'Synchronization:synchronizeReceiptpaymenttypes Create Receiptpaymenttypes failed'
                                             );
                                         });
                                 }
                             })
                         }
 
-                        console.log('onlyRemote', onlyRemote);
-                        console.log('onlyLocally', onlyLocally);
-                        console.log('bothLocalRemote', bothLocalRemote);
 
                         console.log('localRecieptPaymentTypes2', localRecieptPaymentTypes);
                         console.log('remoteRecieptPaymentTypes2', remoteRecieptPaymentTypes);
@@ -164,7 +161,7 @@ class RecieptPaymentTypesSync {
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization.getInventory - error ' + error
+                        'Synchronization.getReceiptpaymenttypes - error ' + error
                     );
                     resolve({
                         error: error,

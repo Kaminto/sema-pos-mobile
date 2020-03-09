@@ -25,7 +25,7 @@ class ProductsRealm {
                 realm.delete(products);
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on truncate products", e);
         }
     }
 
@@ -44,7 +44,8 @@ class ProductsRealm {
 
     getProductsByDate(date) {
          try {
-                let orderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('Product'))));
+				let orderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('Product'))));
+
                 let orderObj2 = orderObj.map(
                     item => {
                         return {
@@ -52,9 +53,12 @@ class ProductsRealm {
                         }
                     });
 
-                return orderObj2.filter(r => r.created_at === format(parseISO(date), 'yyyy-MM-dd'));
+                return orderObj2.filter(r => {
+					return r.created_at === format(parseISO(date), 'yyyy-MM-dd');
+
+				});
             } catch (e) {
-                console.log("Error on get products", e);
+                console.log("Error on get products ", e);
                 return e;
             }
 
@@ -100,7 +104,7 @@ class ProductsRealm {
                     realm.create('Product', newProducts);
                 });
             } catch (e) {
-                console.log("Error on creation", e);
+                console.log("Error on create products", e);
             }
         }
 
@@ -121,7 +125,7 @@ class ProductsRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on update products", e);
         }
 
     }
@@ -135,7 +139,7 @@ class ProductsRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on synch products", e);
         }
 
     }
@@ -153,7 +157,7 @@ class ProductsRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on delete hard products", e);
         }
     }
 
@@ -167,7 +171,7 @@ class ProductsRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on softdelete products", e);
         }
     }
 
@@ -180,7 +184,7 @@ class ProductsRealm {
             });
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on creation many products", e);
         }
 
     }

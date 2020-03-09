@@ -8,14 +8,9 @@ class DiscountSync {
         return new Promise(resolve => {
             DiscountApi.getDiscounts(siteId)
                 .then(remoteDiscount => {
-                    console.log('remoteDiscounts', remoteDiscounts);
                     let initlocalDiscounts = DiscountRealm.getDiscounts();
                     let localDiscounts = [...initlocalDiscounts];
                     let remoteDiscounts = [...remoteDiscount.promotion];
-                    
-                    console.log('initlocalDiscounts', initlocalDiscounts);
-                    console.log('localDiscounts', localDiscounts);
-                    
                     if (initlocalDiscounts.length === 0) {
                         DiscountRealm.createManyDiscount(remoteDiscount.promotion);
                     }
@@ -28,17 +23,13 @@ class DiscountSync {
 
                     if (initlocalDiscounts.length > 0) {
 
-                        console.log('initlocalDiscounts', initlocalDiscounts);
-                        console.log('localDiscounts', localDiscounts);
-                        console.log('remoteDiscounts', remoteDiscounts);
                         initlocalDiscounts.forEach(localDiscount => {
                             let filteredObj = remoteDiscounts.filter(obj => obj.id === localDiscount.id)
-                            console.log('filteredObj', filteredObj);
+
                             if (filteredObj.length > 0) {
                                 const remoteIndex = remoteDiscounts.map(function (e) { return e.id }).indexOf(filteredObj[0].id);
                                 const localIndex = localDiscounts.map(function (e) { return e.id }).indexOf(filteredObj[0].id);
-                                console.log('remoteIndex', remoteIndex);
-                                console.log('localIndex', localIndex);
+
                                 remoteDiscounts.splice(remoteIndex, 1);
                                 localDiscounts.splice(localIndex, 1);
 
@@ -49,7 +40,7 @@ class DiscountSync {
                             if (filteredObj.length === 0) {
                                 onlyLocally.push(localDiscount);
                                 const localIndex = localDiscounts.map(function (e) { return e.id }).indexOf(localDiscount.id);
-                                console.log('localIndex', localIndex);
+
                                 localDiscounts.splice(localIndex, 1);
                             }
                         });
@@ -63,11 +54,8 @@ class DiscountSync {
                             DiscountRealm.createManyDiscount(onlyRemote)
                         }
 
-                        console.log('onlyRemote', onlyRemote);
-                        console.log('onlyLocally', onlyLocally);
-                        console.log('bothLocalRemote', bothLocalRemote);
- 
-                       
+
+
                     }
                     resolve({
                         error: null,
@@ -87,7 +75,7 @@ class DiscountSync {
         });
     }
 
- 
+
 
 }
 export default new DiscountSync();

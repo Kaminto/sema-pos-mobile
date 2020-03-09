@@ -61,11 +61,8 @@ class ProductMRPSync {
                             ProductMRPRealm.createManyProductMRP(onlyRemote)
                         }
 
-                        console.log('onlyRemote', onlyRemote);
-                        console.log('onlyLocally', onlyLocally);
-                        console.log('bothLocalRemote', bothLocalRemote);
- 
-                       
+
+
                     }
                     resolve({
                         error: null,
