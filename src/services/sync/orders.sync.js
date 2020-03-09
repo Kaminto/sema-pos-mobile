@@ -9,14 +9,16 @@ class OrderSync {
             OrderApi.getReceipts(siteId, OrderRealm.getLastOrderSync())
                 .then(remoteOrder => {
 
-                    // console.log('remoteOrder', remoteOrder);
-
-                    let initlocalOrders = OrderRealm.getAllOrder();
-                    let localOrders = [...initlocalOrders];
-                    let remoteOrders = [...remoteOrder];
-                    // console.log('remoteOrder', remoteOrder);
-                    if (initlocalOrders.length === 0) {
+                    console.log('remoteOrder', remoteOrder);
+                    let initlocalOrders = OrderRealm.getOrdersByDate2(OrderRealm.getLastOrderSync());
+                    let localOrders = initlocalOrders.length > 0 ? [...initlocalOrders] : [];
+                    let remoteOrders = remoteOrder.length > 0 ? [...remoteOrder] : [];
+                    console.log('localOrders', localOrders);
+                    console.log('initlocalOrders', initlocalOrders);
+                    if (initlocalOrders.length === 0 && remoteOrders.length > 0) {
+                        console.log('createManyOrders', initlocalOrders);
                         OrderRealm.createManyOrders(remoteOrder);
+                        OrderRealm.setLastOrderSync();
                     }
 
                     let onlyLocally = [];
@@ -55,6 +57,7 @@ class OrderSync {
 
                         if (onlyRemote.length > 0) {
                             OrderRealm.createManyOrders(onlyRemote)
+                            OrderRealm.setLastOrderSync();
                         }
 
                         if (onlyLocally.length > 0) {
@@ -62,21 +65,21 @@ class OrderSync {
 
                                 let products = [];
                                 for (let i in localOrder.receipt_line_items) {
-                                    console.log(localOrder.receipt_line_items[i]);
+                                    //console.log(localOrder.receipt_line_items[i]);
                                     products.push({
                                         active: 1,
                                         cogsTotal: localOrder.receipt_line_items[i].cogs_total,
-                                        description:  localOrder.receipt_line_items[i].description,
-                                        litersPerSku:  localOrder.receipt_line_items[i].litersPerSku,
-                                        priceTotal:  localOrder.receipt_line_items[i].totalAmount,
+                                        description: localOrder.receipt_line_items[i].description,
+                                        litersPerSku: localOrder.receipt_line_items[i].litersPerSku,
+                                        priceTotal: localOrder.receipt_line_items[i].totalAmount,
                                         totalAmount: localOrder.receipt_line_items[i].totalAmount,
-                                        productId:  localOrder.receipt_line_items[i].product_id,
+                                        productId: localOrder.receipt_line_items[i].product_id,
                                         quantity: localOrder.receipt_line_items[i].quantity,
-                                        sku:  localOrder.receipt_line_items[i].sku,
-										notes:  localOrder.receipt_line_items[i].notes,
-										emptiesReturned: localOrder.receipt_line_items[i].emptiesReturned,
-										damagedBottles: localOrder.receipt_line_items[i].damagedBottles,
-										pendingBottles: localOrder.receipt_line_items[i].refillPending
+                                        sku: localOrder.receipt_line_items[i].sku,
+                                        notes: localOrder.receipt_line_items[i].notes,
+                                        emptiesReturned: localOrder.receipt_line_items[i].emptiesReturned,
+                                        damagedBottles: localOrder.receipt_line_items[i].damagedBottles,
+                                        pendingBottles: localOrder.receipt_line_items[i].refillPending
                                     })
 
 
@@ -106,20 +109,20 @@ class OrderSync {
                                         receiptId: localOrder.receiptId,
                                         salesChannelId: localOrder.sales_channel_id,
                                         siteId: localOrder.kiosk_id,
-										total: localOrder.total != null ? localOrder.total : 0
+                                        total: localOrder.total != null ? localOrder.total : 0
                                     }
                                 )
                                     .then((response) => {
                                         OrderRealm.synched(localOrder);
                                         OrderRealm.setLastOrderSync();
                                         console.log(
-                                            'Synchronization:synced to remote - ' ,
+                                            'Synchronization:synced to remote - ',
                                             response
                                         );
                                     })
                                     .catch(error => {
                                         console.log(
-                                            'Synchronization: Create Order failed',error
+                                            'Synchronization: Create Order failed', error
                                         );
                                     });
                             })
@@ -131,7 +134,7 @@ class OrderSync {
                             inLocal.forEach(localOrder => {
                                 if (localOrder.active === true && localOrder.syncAction === 'delete') {
                                     OrderApi.deleteOrder(
-                                        localOrder,siteId
+                                        localOrder, siteId
                                     )
                                         .then((response) => {
                                             console.log(
@@ -176,6 +179,7 @@ class OrderSync {
                                         .then((response) => {
                                             updateCount = updateCount + 1;
                                             OrderRealm.synched(localOrder);
+                                            OrderRealm.setLastOrderSync();
                                             console.log(
                                                 'Synchronization:synced to remote - ' +
                                                 response
@@ -183,7 +187,7 @@ class OrderSync {
                                         })
                                         .catch(error => {
                                             console.log(
-                                                'Synchronization:synchronizeOrder Create Order failed',error
+                                                'Synchronization:synchronizeOrder Create Order failed', error
                                             );
                                         });
                                 }
