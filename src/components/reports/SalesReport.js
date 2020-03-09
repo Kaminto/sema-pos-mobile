@@ -102,7 +102,7 @@ class SalesReport extends React.PureComponent {
 	getSalesData() {
 		let sales = [];
 		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
-			if (this.props.dateFilter.startDate == this.startDate && this.props.dateFilter.endDate == this.endDate) {
+			if (this.props.dateFilter.startDate === this.startDate && this.props.dateFilter.endDate === this.endDate) {
 				sales = this.props.salesData.salesItems;
 			} else {
 				// Get new data

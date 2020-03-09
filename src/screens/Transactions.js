@@ -1,8 +1,5 @@
 import React from 'react';
-if (process.env.NODE_ENV === 'development') {
-    const whyDidYouRender = require('@welldone-software/why-did-you-render');
-    whyDidYouRender(React);
-}
+
 import {
 	View,
 	Text,
@@ -14,7 +11,8 @@ import {
 	ToastAndroid,
 	ScrollView,
 	SectionList,
- 	SafeAreaView
+	 SafeAreaView,
+	 RefreshControl
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -37,7 +35,7 @@ class ReceiptLineItem extends React.PureComponent {
 		super(props);
 	}
 
-	static whyDidYouRender = true;
+	;
 
 	render() {
 		return (
@@ -219,7 +217,8 @@ class TransactionDetail extends React.PureComponent {
 
        if(this.props.item.hasOwnProperty("customerAccount")) {
 		return (
-			<View style={{ padding: 15 }}>
+			<View style={{flex: 1, padding: 15 }}>
+				<ScrollView style={{flex: 1}}>
 				<View style={styles.deleteButtonContainer}>
 					<TouchableOpacity
 						onPress={this.onDeleteReceipt(this.props.item)}
@@ -242,7 +241,7 @@ class TransactionDetail extends React.PureComponent {
 				<View style={styles.receiptStats}>
 					{this.props.item.is_delete === 0 && (
 						<Text style={styles.receiptStatusText}>
-							{'Deleted'.toUpperCase()}
+							{'Deleted -'.toUpperCase()}
 						</Text>
 					)}
 					{!this.props.item.active ? (
@@ -278,7 +277,7 @@ class TransactionDetail extends React.PureComponent {
 						{this.props.item.currency.toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}
 					</Text>
 				</View>
-
+				</ScrollView>
 			</View>
 		)
 	} else {
@@ -298,6 +297,7 @@ class Transactions extends React.PureComponent {
 
 		this.state = {
 			refresh: false,
+			refreshing: false,
 			searchString: '',
 			hasScrolled: false,
 			paymentTypeValue: '',
@@ -346,7 +346,16 @@ class Transactions extends React.PureComponent {
 				<View style={{ flex: 1, flexDirection: 'row' }}>
 					<View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 1, borderRightColor: '#CCC' }}>
 						 <SafeAreaView style={styles.container}>
+						 <ScrollView
+								style={{ flex: 1 }}
+								refreshControl={
+								<RefreshControl
+									refreshing={this.state.refreshing}
+									onRefresh={this._onRefresh}
+								/>
+							}>
 								<SectionList
+									extraData={this.state.refreshing}
 								    ItemSeparatorComponent={this.renderSeparator}
 									sections={this.prepareSectionedData()}
 									keyExtractor={(item, index) => item + index}
@@ -355,11 +364,11 @@ class Transactions extends React.PureComponent {
 									<Text style={styles.sectionTitle}>{title}</Text>
 									)}
 								/>
+							</ScrollView>
 						</SafeAreaView>
 					</View>
 
 					<View style={{ flex: 2, backgroundColor: '#fff', paddingLeft: 20 }}>
-						<ScrollView>
 							<TransactionDetail
 								// key={}
 								item={this.state.selected}
@@ -368,9 +377,9 @@ class Transactions extends React.PureComponent {
 								receipts={this.props.receipts}
 								paymentTypes={this.props.receiptsPaymentTypes}
 							/>
-						</ScrollView>
 					</View>
-				</View>
+					</View>
+
 			);
 		} else {
 			return (

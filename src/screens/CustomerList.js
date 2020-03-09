@@ -1,16 +1,11 @@
 import React from 'react';
-if (process.env.NODE_ENV === 'development') {
-    const whyDidYouRender = require('@welldone-software/why-did-you-render');
-    whyDidYouRender(React);
-}
+
 import {
     View,
     Text,
-    TouchableHighlight,
     StyleSheet,
     Alert,
-	TouchableWithoutFeedback,
-	FlatList
+	TouchableWithoutFeedback
 } from 'react-native';
 import { FloatingAction } from "react-native-floating-action";
 import * as CustomerActions from '../actions/CustomerActions';
@@ -32,12 +27,14 @@ import PaymentModal from './paymentModal';
 
 import slowlog from 'react-native-slowlog';
 
-// import { FlatList } from 'react-navigation';
+import { TouchableHighlight } from 'react-native-gesture-handler';
+
+import { FlatList } from 'react-navigation';
 
 class CustomerList extends React.Component {
     constructor(props) {
         super(props);
-		slowlog(this, /.*/)
+		slowlog(this, /.*/);
 
         this.state = {
             refresh: false,
@@ -61,8 +58,6 @@ class CustomerList extends React.Component {
         this.props.customerActions.CustomerSelected({});
 		this.props.customerActions.setCustomerEditStatus(false);
     }
-
-    static whyDidYouRender = true;
 
     searchCustomer = (searchText) => {
         this.props.customerActions.SearchCustomers(searchText);
@@ -208,9 +203,8 @@ class CustomerList extends React.Component {
                         <TouchableHighlight
                             onLongPress={() => this.onLongPressItem(item)}
                             onPress={() => this.handleOnPress(item)}
-                            // onShowUnderlay={separators.highlight}
-                            // onHideUnderlay={separators.unhighlight}
-							>
+                            onShowUnderlay={separators.highlight}
+                            onHideUnderlay={separators.unhighlight}>
                             {this.getRow(item, index, separators)}
                         </TouchableHighlight>
 
@@ -218,7 +212,6 @@ class CustomerList extends React.Component {
                     keyExtractor={(item, idx) => item.customerId + idx}
                     windowSize={20}
                     removeClippedSubviews={true}
-                    maxToRenderPerBatch={1}
                 />
                 <FloatingAction
                     onOpen={name => {

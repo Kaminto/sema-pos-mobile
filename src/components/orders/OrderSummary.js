@@ -1,8 +1,4 @@
 import React from "react";
-// if (process.env.NODE_ENV === 'development') {
-//     const whyDidYouRender = require('@welldone-software/why-did-you-render');
-//     whyDidYouRender(React);
-// }
 import { View, Text, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import i18n from "../../app/i18n";
@@ -20,8 +16,6 @@ class OrderSummary extends React.PureComponent {
 
 		);
 	}
-
-	//static whyDidYouRender = true;
 
 	getTotalOrders = () => {
 		return this.props.products.reduce((total, item) => {

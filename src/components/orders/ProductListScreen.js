@@ -1,8 +1,5 @@
 import React from "react";
-if (process.env.NODE_ENV === 'development') {
-    const whyDidYouRender = require('@welldone-software/why-did-you-render');
-    whyDidYouRender(React);
-}
+
 import { Dimensions } from "react-native";
 import ProductList from "./ProductList";
 import { connect } from "react-redux";
@@ -25,7 +22,7 @@ class ProductListScreen extends React.Component {
 		}
 	}
 
-	static whyDidYouRender = true;
+	;
 
 	render() {
 		if (this.state.salesChannel) {

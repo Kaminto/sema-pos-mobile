@@ -10,7 +10,7 @@ import { SettingsSchema, TokenExpirySchema } from './settings/settings.model';
 import { OrderSyncDateSchema, OrderSchema } from './orders/orders.model';
 import { DiscountSchema } from './discount/discount.model';
 import { CustomerDebtSchema } from './customer_debt/customer_debt.model';
-import { MeterReadingSchema } from './inventory/meter-reading.modal';
+import { MeterReadingSchema } from './inventory/meter-reading.model';
 import { CustomerReminderSchema } from './customer-reminder/customer-reminder.model';
 
 import { PaymentTypeSchema } from './payment_types/payment_type.model';

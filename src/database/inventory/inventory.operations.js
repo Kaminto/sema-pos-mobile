@@ -93,7 +93,7 @@ class InventroyRealm {
         })
     }
 
-    createMeterReading(meter, meter_value, date, kiosk_id) {
+    createMeterReading(meter_value, date, kiosk_id) {
         console.log('date', date);
         date = this.addDays(date, 1);
         console.log('date-', date);
@@ -159,7 +159,6 @@ class InventroyRealm {
                             active: false
                         }
                     } else if (inventory.type === 'notdispatched') {
-                        console.log()
                         saveObj = {
                             ...inventory,
                             closingStockId: uuidv1(),

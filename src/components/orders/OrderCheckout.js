@@ -1,8 +1,4 @@
 import React from "react";
-if (process.env.NODE_ENV === 'development') {
-    const whyDidYouRender = require('@welldone-software/why-did-you-render');
-    whyDidYouRender(React);
-}
 import { View, TouchableOpacity, Alert, Text, TextInput, Button, FlatList, ScrollView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -63,7 +59,7 @@ class OrderCheckout extends React.PureComponent {
 		this.handleOnPress = this.handleOnPress.bind(this);
 	}
 
-	static whyDidYouRender = true;
+	;
 
 	showDateTimePicker = () => {
 		this.setState({ isDateTimePickerVisible: true });

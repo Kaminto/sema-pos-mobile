@@ -1,8 +1,4 @@
 import React from "react";
-if (process.env.NODE_ENV === 'development') {
-	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-	whyDidYouRender(React);
-}
 import { View, Text, TouchableOpacity, ScrollView, FlatList, TextInput, Dimensions, TouchableHighlight, StyleSheet, Alert } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -36,8 +32,6 @@ class OrderItems extends React.PureComponent {
 			sliderValue: 0.3,
 		};
 	}
-
-	static whyDidYouRender = true;
 
 	handleOnPress(item) {
 		this.setState({ selectedItem: item });
@@ -709,7 +703,7 @@ class OrderItems extends React.PureComponent {
 				console.log('Number(value)', Number(value));
 				if (Number(value) > this.calculateOrderDue()) {
 					Alert.alert("Discount",
-						"Discount cannot exceed order amount.",
+						"Discount cannot exceed Order amount.",
 						[{
 							text: 'OK',
 							onPress: () => {
