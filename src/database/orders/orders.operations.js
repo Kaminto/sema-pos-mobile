@@ -272,7 +272,7 @@ class OrderRealm {
         try {
             realm.write(() => {
                 let orders = realm.objects('Order');
-                let deleteOrder = orders.filtered(`orderId = "${order.orderId}"`);
+                let deleteOrder = orders.filtered(`receiptId = "${order.receiptId}"`);
                 realm.delete(deleteOrder);
             })
 
@@ -284,7 +284,7 @@ class OrderRealm {
     softDeleteOrder(order) {
         try {
             realm.write(() => {
-                let orderObj = realm.objects('Order').filtered(`id = "${order.receiptId}"`);
+                let orderObj = realm.objects('Order').filtered(`receiptId = "${order.receiptId}"`);
                 orderObj[0].syncAction = 'delete';
                 orderObj[0].is_delete = 0;
             })
@@ -305,7 +305,7 @@ class OrderRealm {
                     obj.total = Number(obj.total);
                     obj.customer_account = JSON.stringify(obj.customer_account);
                     obj.receipt_line_items = JSON.stringify(obj.receipt_line_items);
-                    console.log('obj-obj', obj)
+                   
                     realm.create('Order', obj);
                 });
             });

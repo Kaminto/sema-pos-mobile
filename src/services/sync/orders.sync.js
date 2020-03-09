@@ -142,7 +142,7 @@ class OrderSync {
                                                 response
                                             );
                                             updateCount = updateCount + 1;
-                                            OrderRealm.hardDeleteOrder(
+                                            OrderRealm.softDeleteOrder(
                                                 localOrder
                                             );
                                         })
