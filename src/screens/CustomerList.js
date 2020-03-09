@@ -215,7 +215,7 @@ class CustomerList extends React.Component {
                         </TouchableHighlight>
 
                     )}
-                    keyExtractor={item => item.customerId}
+                    keyExtractor={(item, idx) => item.customerId + idx}
                     windowSize={20}
                     removeClippedSubviews={true}
                     maxToRenderPerBatch={1}
