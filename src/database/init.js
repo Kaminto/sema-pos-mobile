@@ -14,7 +14,7 @@ import { MeterReadingSchema } from './inventory/meter-reading.model';
 import { CustomerReminderSchema } from './customer-reminder/customer-reminder.model';
 
 import { PaymentTypeSchema } from './payment_types/payment_type.model';
-import { ReceiptPaymentTypeSchema } from './reciept_payment_types/reciept_payment_types.model';
+import { ReceiptPaymentTypeSchema, ReceiptPaymentTypeSyncDateSchema } from './reciept_payment_types/reciept_payment_types.model';
 
 // Realm schema creation
 const SEMA_SCHEMA = {
@@ -45,6 +45,7 @@ export default realm = new Realm({
         TokenExpirySchema,
         OrderSchema,
         OrderSyncDateSchema,
+        ReceiptPaymentTypeSyncDateSchema,
         DiscountSchema,
         PaymentTypeSchema,
         ReceiptPaymentTypeSchema,
@@ -52,7 +53,7 @@ export default realm = new Realm({
         CustomerReminderSchema,
         MeterReadingSchema
     ],
-    schemaVersion: 81,
+    schemaVersion: 82,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
         if (oldRealm.schemaVersion < 1) {

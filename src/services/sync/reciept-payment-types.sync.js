@@ -6,14 +6,15 @@ class RecieptPaymentTypesSync {
 
     synchronizeRecieptPaymentTypes(kiosk_id) {
         return new Promise(resolve => {
-            RecieptPaymentTypesApi.getReceiptPaymentTypes(kiosk_id)
+            RecieptPaymentTypesApi.getReceiptPaymentTypes(kiosk_id, ReceiptPaymentTypeRealm.getLastReceiptPaymentTypeSync())
                 .then(result => {
-                    let initlocalRecieptPaymentTypes = ReceiptPaymentTypeRealm.getReceiptPaymentTypes();
+                    let initlocalRecieptPaymentTypes = ReceiptPaymentTypeRealm.getReceiptPaymentTypesByDate(ReceiptPaymentTypeRealm.getLastReceiptPaymentTypeSync());
                     let localRecieptPaymentTypes = [...initlocalRecieptPaymentTypes];
                     let remoteRecieptPaymentTypes = [...result];
 
                     if (initlocalRecieptPaymentTypes.length === 0) {
                         ReceiptPaymentTypeRealm.createManyReceiptPaymentType(result, null);
+                        ReceiptPaymentTypeRealm.setReceiptPaymentTypeSync();
                     }
 
                     let onlyLocally = [];
@@ -57,6 +58,7 @@ class RecieptPaymentTypesSync {
 
                         if (onlyRemote.length > 0) {
                             ReceiptPaymentTypeRealm.createManyReceiptPaymentType(onlyRemote,null)
+                            ReceiptPaymentTypeRealm.setReceiptPaymentTypeSync();
                         }
 
                         if (onlyLocally.length > 0) {
@@ -69,6 +71,7 @@ class RecieptPaymentTypesSync {
                                 )
                                     .then((response) => {
                                         ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
+                                        ReceiptPaymentTypeRealm.setReceiptPaymentTypeSync();
                                         console.log(
                                             'Synchronization:synced to remote - ' +
                                             response
@@ -129,6 +132,7 @@ class RecieptPaymentTypesSync {
                                     )
                                         .then((response) => {
                                             ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
+                                            ReceiptPaymentTypeRealm.setReceiptPaymentTypeSync();
                                             console.log(
                                                 'Synchronization:synced to remote - ' +
                                                 response
