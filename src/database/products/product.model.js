@@ -16,7 +16,8 @@ export const ProductSchema = {
         active: { type: 'bool', optional: true },
         wastageName: { type: 'string', optional: true },
         syncAction: { type: 'string', optional: true },
-        updatedDate: { type: 'date', optional: true },
+        updated_at: { type: 'date', optional: true },
+        created_at: { type: 'date', optional: true },
     }
 };
  

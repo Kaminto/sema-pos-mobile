@@ -98,7 +98,7 @@ class CustomerSync {
                                                 response
                                             );
                                             updateCount = updateCount + 1;
-                                            CustomerRealm.hardDeleteCustomer(
+                                            CustomerRealm.softDeleteCustomer(
                                                 localCustomer
                                             );
                                         })

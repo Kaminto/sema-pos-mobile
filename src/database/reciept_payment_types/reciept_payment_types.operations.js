@@ -1,9 +1,17 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
+import { format, parseISO, sub } from 'date-fns';
 
 class ReceiptPaymentTypeRealm {
     constructor() {
         this.receiptPaymentType = [];
+        let firstSyncDate = format(sub(new Date(), { days: 30 }), 'yyyy-MM-dd');
+        realm.write(() => {
+            if (Object.values(JSON.parse(JSON.stringify(realm.objects('ReceiptPaymentTypeSyncDate')))).length == 0) {
+                realm.create('ReceiptPaymentTypeSyncDate', { lastReceiptPaymentTypeSync: firstSyncDate });
+            }
+        });
+        this.lastReceiptPaymentTypeSync = firstSyncDate;
     }
 
     truncate() {
@@ -17,8 +25,43 @@ class ReceiptPaymentTypeRealm {
         }
     }
 
+    getLastReceiptPaymentTypeSync() {
+        return this.lastReceiptPaymentTypeSync = JSON.parse(JSON.stringify(realm.objects('ReceiptPaymentTypeSyncDate')))['0'].lastReceiptPaymentTypeSync;
+    }
+
+    setReceiptPaymentTypeSync() {
+        realm.write(() => {
+            let syncDate = realm.objects('ReceiptPaymentTypeSyncDate');
+            syncDate[0].lastReceiptPaymentTypeSync = new Date();
+        })
+    }
+
     getReceiptPaymentTypes() {
         return Object.values(JSON.parse(JSON.stringify(realm.objects('ReceiptPaymentType'))));
+    }
+
+
+    getReceiptPaymentTypesByDate(date) {
+        try {
+            let orderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('ReceiptPaymentType'))));
+            let orderObj2 = orderObj.map(
+                item => {
+                    return {
+                        ...item,
+                        created_at: format(parseISO(item.created_at), 'yyyy-MM-dd'),
+                        updated_at: format(parseISO(item.updated_at), 'yyyy-MM-dd'),
+
+                    }
+                });
+
+            return orderObj2.filter(r => {
+                return r.created_at === format(parseISO(date), 'yyyy-MM-dd') || r.updated_at === format(parseISO(date), 'yyyy-MM-dd')
+            }
+            );
+        } catch (e) {
+            console.log("Error on get orders", e);
+            return e;
+        }
     }
 
     initialise() {

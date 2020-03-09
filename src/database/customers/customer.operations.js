@@ -239,6 +239,7 @@ class CustomerRealm {
                 realm.write(() => {
                     let customerObj = realm.objects('Customer').filtered(`customerId = "${customer.customerId}"`);
                     customerObj[0].syncAction = 'delete';
+                    customerObj[0].is_delete = 0;
                 })
             })
 

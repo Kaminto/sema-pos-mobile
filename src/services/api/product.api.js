@@ -37,7 +37,7 @@ class ProductApi {
 		let url = 'sema/products';
 
 		if (updatedSince) {
-			url = url + '?updated-date=' + updatedSince.toISOString();
+			url = url + '?updated-date=' + updatedSince;
 		}
 		console.log(this._url + url);
 		return fetch(this._url + url, options)
