@@ -54,7 +54,7 @@ class ReceiptPaymentTypeRealm {
                 });
 
             return orderObj2.filter(r => {
-                return compareAsc(r.created_at, date) === 1 || compareAsc(r.updated_at, date)
+                return compareAsc(r.created_at, date) === 1 || compareAsc(r.updated_at, date) === 1;
                 ///return r.created_at === format(parseISO(date), 'yyyy-MM-dd') || r.updated_at === format(parseISO(date), 'yyyy-MM-dd')
             }
             );
