@@ -10,10 +10,11 @@ import Modal from 'react-native-modalbox';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
+import SettingRealm from '../../database/settings/settings.operations';
 import DiscountRealm from '../../database/discount/discount.operations';
 import ToggleSwitch from 'toggle-switch-react-native';
 import slowlog from 'react-native-slowlog';
-
+import * as Utilities from "../../services/Utilities";
 const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
 class OrderListItem extends React.PureComponent {
@@ -577,7 +578,8 @@ class OrderItems extends React.PureComponent {
 				</View>
 				<View style={[{ flex: 2 }]}>
 					<Text numberOfLines={1} style={[styles.baseItem, { textAlign: 'right', paddingRight: 5 }]}>
-						{this.getCurrency(item)} {this.getDiscountPrice((item.quantity * item.unitPrice), item)}</Text>
+						{this.getCurrency().toUpperCase()} {this.getDiscountPrice((item.quantity * item.unitPrice), item)}
+						</Text>
 				</View>
 			</View>
 		);
@@ -905,10 +907,9 @@ class OrderItems extends React.PureComponent {
 		return item.unitPrice;	// Just use product price
 	};
 
-	getCurrency = (item) => {
-		if (item.hasOwnProperty('product')) {
-			return item.product.priceCurrency.toUpperCase();
-		}
+	getCurrency = () => {
+		let settings = SettingRealm.getAllSetting();
+		return settings.currency;
 	};
 
 	getDiscountPrice = (amountPerQuantity, item) => {

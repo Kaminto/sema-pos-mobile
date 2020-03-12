@@ -21,6 +21,7 @@ import Events from 'react-native-simple-events';
 
 import CustomerRealm from '../database/customers/customer.operations';
 import OrderRealm from '../database/orders/orders.operations';
+import SettingRealm from '../database/settings/settings.operations';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as receiptActions from '../actions/ReceiptActions';
 
@@ -56,11 +57,16 @@ class ReceiptLineItem extends React.PureComponent {
 					</View>
 				</View>
 				<View style={[styles.itemData, { flex: .25, alignSelf: 'flex-end' }]}>
-					<Text style={[styles.label, { fontSize: 15, padding: 10, textAlign: 'right' }]}>{this.props.item.currency_code.toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}</Text>
+					<Text style={[styles.label, { fontSize: 15, padding: 10, textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}</Text>
 				</View>
 			</View>
 		);
 	}
+
+	getCurrency = () => {
+		let settings = SettingRealm.getAllSetting();
+		return settings.currency;
+	};
 
 
 	getImage = item => {
@@ -100,12 +106,17 @@ class PaymentTypeItem extends React.PureComponent {
 						{this.props.item.name == 'credit' ? 'Wallet' : this.props.item.name}</Text>
 				</View>
 				<View style={[styles.itemData, { flex: 1 }]}>
-					<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.props.item.amount} </Text>
+					<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {this.props.item.amount} </Text>
 				</View>
 
 			</View>
 		);
 	}
+
+	getCurrency = () => {
+		let settings = SettingRealm.getAllSetting();
+		return settings.currency;
+	};
 }
 
 class TransactionDetail extends React.PureComponent {
@@ -173,6 +184,11 @@ class TransactionDetail extends React.PureComponent {
         );
 
 	}
+
+	getCurrency = () => {
+		let settings = SettingRealm.getAllSetting();
+		return settings.currency;
+	};
 
 	render() {
 
@@ -270,8 +286,8 @@ class TransactionDetail extends React.PureComponent {
 
 				<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
 					<Text style={[styles.customername, { flex: .7, fontWeight: 'bold' }]}>TOTAL AMOUNT</Text>
-					<Text style={[styles.customername, { flex: .3, fontWeight: 'bold', textAlign: 'right',paddingRight: 20 }]}>
-						{this.props.item.currency.toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}
+					<Text style={[styles.customername, { flex: .3, fontWeight: 'bold', paddingRight: 20 }]}>
+						{this.getCurrency().toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}
 					</Text>
 				</View>
 				</ScrollView>
@@ -546,6 +562,10 @@ class Transactions extends React.PureComponent {
 		});
 	}
 
+	getCurrency = () => {
+		let settings = SettingRealm.getAllSetting();
+		return settings.currency;
+	};
 
 	renderReceipt({ item, index }) {
 		return (
@@ -555,7 +575,7 @@ class Transactions extends React.PureComponent {
 						<Text style={styles.customername}>{item.customerAccount.name}</Text>
 					</View>
 					<Text style={styles.customername}>
-						{item.currency.toUpperCase()} {item.totalAmount}
+						{this.getCurrency().toUpperCase()} {item.totalAmount}
 					</Text>
 					<View style={styles.receiptStats}>
 					{item.is_delete === 0 && (

@@ -11,8 +11,7 @@ import {
     StyleSheet,
 	Alert,
 	FlatList,
-	Dimensions,
-	RefreshControl,
+    InteractionManager,
 	TouchableWithoutFeedback
 } from 'react-native';
 import { FloatingAction } from "react-native-floating-action";
@@ -37,7 +36,7 @@ import slowlog from 'react-native-slowlog';
 
 import { TouchableHighlight } from 'react-native-gesture-handler';
 
-
+import { NavigationActions } from 'react-navigation';
 
 class CustomerListItem extends React.PureComponent {
 	// static whyDidYouRender = true;
@@ -250,6 +249,7 @@ class CustomerList extends React.Component {
 
     handleOnPress(item) {
 		// requestAnimationFrame(() => {
+			// InteractionManager.runAfterInteractions(() => {
 			this.props.customerActions.CustomerSelected(item);
 			this.props.customerActions.SetCustomerProp(
 			    {
@@ -259,8 +259,14 @@ class CustomerList extends React.Component {
 					'title': item.name + "'s Order"
 			    }
 			);
+			// });
 			this.props.navigation.navigate('OrderView');
-		// });
+			// this.props.navigation.dispatch(NavigationActions.reset({
+			// 	index: 0,
+			// 	key: null,
+			// 	actions: [NavigationActions.navigate({ routeName: 'OrderView' })]
+			// }))
+		   // });
 
     };
 

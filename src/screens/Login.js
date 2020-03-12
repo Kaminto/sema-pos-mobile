@@ -184,6 +184,12 @@ class Login extends React.PureComponent {
 			.then(result => {
 				if (result.status === 200) {
 					let oldSettings = { ...SettingRealm.getAllSetting() };
+					let currency = '';
+					if(result.response.data.kiosk.region_id == 201){
+						currency = 'UGX'
+					} else if(result.response.data.kiosk.region_id == 301){
+						currency = 'RWF'
+					}
 					SettingRealm.saveSettings(
 						"http://142.93.115.206:3002/",
 						result.response.data.kiosk.name,
@@ -192,7 +198,8 @@ class Login extends React.PureComponent {
 						this.state.selectedLanguage,
 						result.response.token,
 						result.response.data.kiosk.id,
-						false
+						false,
+						currency
 					);
 
 					Communications.initialize(
@@ -257,7 +264,7 @@ class Login extends React.PureComponent {
 		this.props.customerActions.setCustomers(
 			CustomerRealm.getAllCustomer()
 		);
-		
+
 		this.props.productActions.setProducts(
 			ProductsRealm.getProducts()
 		);
@@ -281,7 +288,7 @@ class Login extends React.PureComponent {
 		this.props.inventoryActions.setInventory(
 			InventroyRealm.getAllInventory()
 		);
-	
+
 
 		this.props.receiptActions.setReceipts(
 			OrderRealm.getAllOrder()

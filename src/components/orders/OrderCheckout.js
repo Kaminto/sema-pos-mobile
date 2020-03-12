@@ -207,14 +207,12 @@ class OrderCheckout extends React.PureComponent {
 										<PaymentDescription
 											styles={{ fontWeight: 'bold' }}
 											title={`${i18n.t('sale-amount-due')}: `}
-											total={Utilities.formatCurrency(this.calculateOrderDue())}
+											total={this.calculateOrderDue()}
 										/>
 										<PaymentDescription
 											style={{ color: 'white' }}
 											title={`${i18n.t('customer-wallet')}:`}
-											total={Utilities.formatCurrency(
-												this.currentCredit()
-											)}
+											total={this.currentCredit()}
 										/>
 								 	</View>
 
@@ -222,15 +220,11 @@ class OrderCheckout extends React.PureComponent {
 									<View style={{ flex: 1, flexDirection: 'row' }}>
 										<PaymentDescription
 											title={`${i18n.t('previous-amount-due')}:`}
-											total={Utilities.formatCurrency(
-												this.calculateAmountDue()
-											)}
+											total={this.calculateAmountDue()}
 										/>
 										<PaymentDescription
 											title={`${i18n.t('total-amount-due')}:`}
-											total={Utilities.formatCurrency(
-												this.calculateTotalDue()
-											)}
+											total={this.calculateTotalDue()}
 										/>
 									</View>
 								</Card>
@@ -358,6 +352,11 @@ class OrderCheckout extends React.PureComponent {
 
 		);
 	}
+
+	getCurrency = () => {
+		let settings = SettingRealm.getAllSetting();
+		return settings.currency;
+	};
 
 	showBottlesHeader = () => {
 		return (
@@ -689,7 +688,7 @@ class OrderCheckout extends React.PureComponent {
 			<PaymentDescription
 				styles={{ fontWeight: 'bold' }}
 				title={`${i18n.t('sale-amount-due')}: `}
-				total={Utilities.formatCurrency(this.calculateOrderDue())}
+				total={this.calculateOrderDue()}
 			/>
 		);
 	}
@@ -1011,21 +1010,21 @@ class OrderCheckout extends React.PureComponent {
 		if (receipt != null) {
 			const creditIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
 
-			if (creditIndex >= 0) {
-				if (this.currentCredit() === 0) {
-					Alert.alert(
-						'Empty Customer Wallet',
-						"There is no money in the customer's wallet",
-						[{
-							text: 'OK',
-							onPress: () => {
-							}
-						}],
-						{ cancelable: false }
-					);
-					return;
-				}
-			}
+			// if (creditIndex >= 0) {
+			// 	if (this.currentCredit() === 0) {
+			// 		Alert.alert(
+			// 			'Empty Customer Wallet',
+			// 			"There is no money in the customer's wallet",
+			// 			[{
+			// 				text: 'OK',
+			// 				onPress: () => {
+			// 				}
+			// 			}],
+			// 			{ cancelable: false }
+			// 		);
+			// 		return;
+			// 	}
+			// }
 
 			receipt.customer_account = this.props.selectedCustomer;
 			if (this.props.selectedPaymentTypes.length > 0) {

@@ -22,6 +22,7 @@ import CustomSidebarMenu from './CustomSidebarMenu';
 import CustomerListHeader from './CustomerListHeader';
 import CustomerTitle from './CustomerTitle';
 import NavigationDrawerStructure from './NavigationDrawerStructure';
+// import { FluidNavigator, Transition } from ‘react-navigation-fluid-transitions’;
 
 import { enableScreens } from 'react-native-screens';
 enableScreens();

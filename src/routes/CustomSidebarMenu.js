@@ -152,7 +152,8 @@ class CustomSidebarMenu extends React.PureComponent {
       settings.uiLanguage,
       '',
       settings.siteId,
-      false
+	  false,
+	  settings.currency
     );
     this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
     //As we are not going to the Login, the reason no reason to disable the token

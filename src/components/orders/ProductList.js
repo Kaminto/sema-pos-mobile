@@ -6,7 +6,8 @@ import {
 	FlatList,
 	StyleSheet,
 	Image,
-	TouchableOpacity
+	TouchableOpacity,
+	InteractionManager
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -95,9 +96,11 @@ class ProductList extends React.PureComponent {
 
 	handleOnPress(item){
 		requestAnimationFrame(() => {
+			// InteractionManager.runAfterInteractions(() => {
 			const unitPrice = this.getItemPrice(item);
 			this.props.orderActions.AddProductToOrder(item, 1, unitPrice);
-		});
+			});
+		// });
 	}
 
 	_renderItem = ({item, index, separators}) => (

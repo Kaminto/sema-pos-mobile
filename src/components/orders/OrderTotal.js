@@ -4,7 +4,7 @@ import { View, Text,  StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import * as Utilities from "../../services/Utilities";
 import i18n from "../../app/i18n";
-
+import SettingRealm from '../../database/settings/settings.operations';
 
 class OrderTotal extends React.PureComponent {
 
@@ -16,10 +16,11 @@ class OrderTotal extends React.PureComponent {
 	;
 
 	render() {
+		console.log("Mental " + this.getCurrency().toUpperCase());
 		return (
 			<View style={styles.container}>
 				<Text style={[{ flex: 2 }, styles.totalText]}>{i18n.t('order-total')}</Text>
-				<Text style={[{ flex: 3 }, styles.totalText]}>{this.getCurrency().toUpperCase()} {Utilities.formatCurrency(this.getAmount())}</Text>
+				<Text style={[{ flex: 3 }, styles.totalText]}>{this.getCurrency().toUpperCase()} {this.getAmount()}</Text>
 			</View>
 		);
 	}
@@ -44,10 +45,8 @@ class OrderTotal extends React.PureComponent {
 	};
 
 	getCurrency = () => {
-		if (this.props.products.length > 0) {
-			return this.props.products[0].product.priceCurrency;
-		}
-		return '';
+		let settings = SettingRealm.getAllSetting();
+		return settings.currency;
 	};
 }
 

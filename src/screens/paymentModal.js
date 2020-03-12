@@ -76,15 +76,11 @@ class PaymentModal extends React.PureComponent {
 					<Card style={{ flex: 1 }}>
 						<PaymentDescription
 							title={`${i18n.t('previous-amount-due')}:`}
-							total={Utilities.formatCurrency(
-								this.calculateAmountDue()
-							)}
+							total={this.calculateAmountDue()}
 						/>
 						<PaymentDescription
 											title={`${i18n.t('customer-wallet')}:`}
-											total={Utilities.formatCurrency(
-												this.props.selectedCustomer.walletBalance
-											)}
+											total={this.props.selectedCustomer.walletBalance}
 										/>
 					</Card>
 
