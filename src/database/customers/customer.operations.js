@@ -40,7 +40,10 @@ class CustomerRealm {
     }
 
     getAllCustomer() {
-        return this.customer = Object.values(JSON.parse(JSON.stringify(realm.objects('Customer'))));
+        let customers = Object.values(JSON.parse(JSON.stringify(realm.objects('Customer'))));
+        return customers.filter(r => {
+            return r.is_delete === null || r.is_delete === 1;
+        })
     }
 
     getCustomerByCreatedDate(date) {
@@ -235,13 +238,11 @@ class CustomerRealm {
 
     softDeleteCustomer(customer) {
         try {
-            // realm.write(() => {
                 realm.write(() => {
                     let customerObj = realm.objects('Customer').filtered(`customerId = "${customer.customerId}"`);
                     customerObj[0].syncAction = 'delete';
                     customerObj[0].is_delete = 0;
                 })
-            // })
 
         } catch (e) {
             console.log("Error on soft delete customer ", e);

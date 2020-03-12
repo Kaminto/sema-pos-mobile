@@ -95,6 +95,11 @@ class OrderRealm {
                         }
                     });
 
+                    for (let i in orderObj2) {
+                        orderObj2[i].customer_account = JSON.parse(orderObj2[i].customer_account);
+                        orderObj2[i].receipt_line_items = JSON.parse(orderObj2[i].receipt_line_items);
+                    }
+
             return orderObj2.filter(r => {
                 return r.created_at === format(parseISO(date), 'yyyy-MM-dd') || r.updated_at === format(parseISO(date), 'yyyy-MM-dd')
             });

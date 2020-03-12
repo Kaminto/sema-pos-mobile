@@ -17,8 +17,8 @@ class OrderSync {
                     console.log('initlocalOrders', initlocalOrders);
                     if (initlocalOrders.length === 0 && remoteOrders.length > 0) {
                         console.log('createManyOrders', initlocalOrders);
-                        OrderRealm.createManyOrders(remoteOrder);
-                        OrderRealm.setLastOrderSync();
+                        //OrderRealm.createManyOrders(remoteOrder);
+                        //OrderRealm.setLastOrderSync();
                     }
 
                     let onlyLocally = [];
@@ -56,8 +56,8 @@ class OrderSync {
 
 
                         if (onlyRemote.length > 0) {
-                            OrderRealm.createManyOrders(onlyRemote);
-                            OrderRealm.setLastOrderSync();
+                            //OrderRealm.createManyOrders(onlyRemote)
+                            //OrderRealm.setLastOrderSync();
                         }
 
                         if (onlyLocally.length > 0) {
@@ -88,47 +88,49 @@ class OrderSync {
 
 								localOrder.products = products;
 
-
-                                OrderApi.createReceipt(
-                                    {
-                                        active: 1,
-                                        amountCash: localOrder.amount_cash,
-                                        is_delete: localOrder.is_delete,
-                                        amountLoan: localOrder.amount_loan,
-                                        amountMobile: localOrder.amount_mobile,
-                                        isWalkIn: localOrder.isWalkIn,
-                                        delivery: localOrder.delivery,
-                                        amount_bank: localOrder.amount_bank,
-                                        amount_cheque: localOrder.amount_cheque,
-                                        amountjibuCredit: localOrder.amountjibuCredit,
-                                        cogs: localOrder.cogs,
-                                        createdDate: localOrder.created_at,
-                                        currencyCode: localOrder.currency_code,
-                                        customerId: localOrder.customer_account_id,
-                                        customerTypeId: localOrder.customer_type_id,
-                                        id: localOrder.id,
-                                        paymentType: localOrder.payment_type,
-                                        products: localOrder.products,
-                                        receiptId: localOrder.receiptId,
-                                        salesChannelId: localOrder.sales_channel_id,
-                                        siteId: localOrder.kiosk_id,
-                                        total: localOrder.total != null ? localOrder.total : 0
-                                    }
-                                )
-                                    .then((response) => {
-                                        OrderRealm.synched(localOrder);
-                                        OrderRealm.setLastOrderSync();
-                                        console.log(
-                                            'Synchronization:synced to remote - ',
-                                            response
-                                        );
-                                    })
-                                    .catch(error => {
-                                        console.log(
-                                            'Synchronization: Create Order failed', error
-                                        );
-                                    });
-                            })
+                                // }
+                                // localOrder.products = products;
+                                // console.log('localOrder', localOrder);
+                                // OrderApi.createReceipt(
+                                //     {
+                                //         active: 1,
+                                //         amountCash: localOrder.amount_cash,
+                                //         is_delete: localOrder.is_delete,
+                                //         amountLoan: localOrder.amount_loan,
+                                //         amountMobile: localOrder.amount_mobile,
+                                //         isWalkIn: localOrder.isWalkIn,
+                                //         delivery: localOrder.delivery,
+                                //         amount_bank: localOrder.amount_bank,
+                                //         amount_cheque: localOrder.amount_cheque,
+                                //         amountjibuCredit: localOrder.amountjibuCredit,
+                                //         cogs: localOrder.cogs,
+                                //         createdDate: localOrder.created_at,
+                                //         currencyCode: localOrder.currency_code,
+                                //         customerId: localOrder.customer_account_id,
+                                //         customerTypeId: localOrder.customer_type_id,
+                                //         id: localOrder.id,
+                                //         paymentType: localOrder.payment_type,
+                                //         products: localOrder.products,
+                                //         receiptId: localOrder.receiptId,
+                                //         salesChannelId: localOrder.sales_channel_id,
+                                //         siteId: localOrder.kiosk_id,
+                                //         total: localOrder.total != null ? localOrder.total : 0
+                                //     }
+                                // )
+                                //     .then((response) => {
+                                //         OrderRealm.synched(localOrder);
+                                //         OrderRealm.setLastOrderSync();
+                                //         console.log(
+                                //             'Synchronization:synced to remote - ',
+                                //             response
+                                //         );
+                                //     })
+                                //     .catch(error => {
+                                //         console.log(
+                                //             'Synchronization: Create Order failed', error
+                                //         );
+                                //     });
+                            });
                         }
 
 
@@ -176,23 +178,24 @@ class OrderSync {
                                         });
 
                                 } else if (localOrder.active === false && localOrder.syncAction === 'update') {
-                                    OrderApi.createOrder(
-                                        localOrder
-                                    )
-                                        .then((response) => {
-                                            updateCount = updateCount + 1;
-                                            OrderRealm.synched(localOrder);
-                                            OrderRealm.setLastOrderSync();
-                                            console.log(
-                                                'Synchronization:synced to remote - ' +
-                                                response
-                                            );
-                                        })
-                                        .catch(error => {
-                                            console.log(
-                                                'Synchronization:synchronizeOrder Create Order failed', error
-                                            );
-                                        });
+                                    console.log('localOrder', localOrder);
+                                    // OrderApi.createOrder(
+                                    //     localOrder
+                                    // )
+                                    //     .then((response) => {
+                                    //         updateCount = updateCount + 1;
+                                    //         OrderRealm.synched(localOrder);
+                                    //         OrderRealm.setLastOrderSync();
+                                    //         console.log(
+                                    //             'Synchronization:synced to remote - ' +
+                                    //             response
+                                    //         );
+                                    //     })
+                                    //     .catch(error => {
+                                    //         console.log(
+                                    //             'Synchronization:synchronizeOrder Create Order failed', error
+                                    //         );
+                                    //     });
                                 }
                             })
                         }
