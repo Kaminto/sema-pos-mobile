@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image, Text, Alert, ActivityIndicator, TouchableOpacity} from 'react-native';
+import { View, StyleSheet, Image, Text, Alert, ActivityIndicator, ScrollView, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -28,7 +28,6 @@ import * as discountActions from '../actions/DiscountActions';
 import * as paymentTypesActions from '../actions/PaymentTypesActions';
 import * as CustomerReminderActions from '../actions/CustomerReminderActions';
 import i18n from '../app/i18n';
-import { ScrollView } from 'react-navigation';
 
 class CustomSidebarMenu extends React.PureComponent {
   constructor() {
@@ -103,33 +102,17 @@ class CustomSidebarMenu extends React.PureComponent {
     return (
       <View style={styles.sideMenuContainer}>
 		<ScrollView style={{ flex: 1 }}>
-        <Image source={require('../images/jibulogo.png')} resizeMode='stretch' style={{
-          width: 100,
-		  height: 100,
-		  alignSelf: 'center'
-        }} />
+        <Image source={require('../images/jibulogo.png')} resizeMode='stretch' style={styles.imageStyle} />
         {/*Divider between Top Image and Sidebar Option*/}
         <View
-          style={{
-            flex: 1,
-            height: 1,
-            backgroundColor: '#e2e2e2',
-            marginTop: 15,
-          }}
+          style={styles.viewCont}
         />
         {/*Setting up Navigation Options from option array using loop*/}
-        <View style={{ width: '100%' }}>
+        <View style={{ flex: 1 }}>
           {this.items.map((item, key) => (
             <View style={{ flex: 1 }}  key={key}>
 				  <TouchableOpacity
-				 	style={{
-						flex: 1,
-						flexDirection: 'row',
-						alignItems: 'center',
-						paddingTop: 10,
-						paddingBottom: 10,
-						backgroundColor: global.currentScreenIndex === key ? '#e0dbdb' : '#ffffff',
-					  }}
+				 	style={[styles.drawerItemStyle, {backgroundColor: global.currentScreenIndex === key ? '#e0dbdb' : '#ffffff'}]}
 
 					onPress={() => this.handleOnPress(item, key)}>
 					<View style={{ marginRight: 10, marginLeft: 20 }}>
@@ -337,10 +320,29 @@ export default connect(
 
 
 const styles = StyleSheet.create({
+	imageStyle: {
+		width: 100,
+		height: 100,
+		alignSelf: 'center'
+	},
   sideMenuContainer: {
     flex: 1,
     backgroundColor: '#fff',
     paddingTop: 20,
+  },
+
+  viewCont: {
+	flex: 1,
+	height: 1,
+	backgroundColor: '#e2e2e2',
+	marginTop: 15,
+  },
+  drawerItemStyle: {
+	flex: 1,
+	flexDirection: 'row',
+	alignItems: 'center',
+	paddingTop: 10,
+	paddingBottom: 10,
   },
   sideMenuProfileIcon: {
     resizeMode: 'center',

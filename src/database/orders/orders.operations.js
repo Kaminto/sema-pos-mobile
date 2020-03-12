@@ -158,7 +158,8 @@ class OrderRealm {
             kiosk_id: receipt.siteId,
             total: receipt.total,
             syncAction: 'create',
-        };
+		};
+
         newOrder.uuid = newOrder.receiptId;
         let receipt_line_items = [];
         for (let i in receipt.products) {
@@ -186,7 +187,8 @@ class OrderRealm {
 
 
         }
-        newOrder.receipt_line_items = JSON.stringify(receipt_line_items);
+		newOrder.receipt_line_items = JSON.stringify(receipt_line_items);
+
         try {
             realm.write(() => {
                 realm.create('Order', newOrder);

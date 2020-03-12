@@ -855,24 +855,33 @@ class OrderCheckout extends React.PureComponent {
 		let totalAmountPaid = this.props.selectedPaymentTypes.reduce((total, item) => { return (total + item.amount) }, 0);
 
 		if (this.currentCredit() > this.calculateOrderDue()) {
-
-			if (totalAmountPaid > this.calculateOrderDue()) {
-				this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
-
+			if (totalAmountPaid > 0) {
+				this.props.selectedCustomer.walletBalance =
+				Number(this.props.selectedCustomer.walletBalance) + Number(totalAmountPaid) - (this.calculateOrderDue() * 2);
 				this.updateWallet(this.props.selectedCustomer.walletBalance);
-				let diff = Math.abs(totalAmountPaid - this.currentCredit());
-
-				if(diff > 0){
-					this.topUpWallet(Number(diff));
-				}
-			} else if (totalAmountPaid < this.calculateOrderDue()) {
-
-				console.log("Total Amount Paid is less than the Order Total");
-			} else if (totalAmountPaid == this.calculateOrderDue()) {
+			} else if (totalAmountPaid <= 0) {
 				this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
 				this.updateWallet(this.props.selectedCustomer.walletBalance);
 			}
 			this.saveOrder(true);
+
+			// if (totalAmountPaid > this.calculateOrderDue()) {
+			// 	this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
+
+			// 	this.updateWallet(this.props.selectedCustomer.walletBalance);
+			// 	let diff = Math.abs(totalAmountPaid - this.currentCredit());
+
+			// 	if(diff > 0){
+			// 		this.topUpWallet(Number(diff));
+			// 	}
+			// } else if (totalAmountPaid < this.calculateOrderDue()) {
+
+			// 	console.log("Total Amount Paid is less than the Order Total");
+			// } else if (totalAmountPaid == this.calculateOrderDue()) {
+			// 	this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
+			// 	this.updateWallet(this.props.selectedCustomer.walletBalance);
+			// }
+			// this.saveOrder(true);
 
 		} else if (this.currentCredit() < this.calculateOrderDue()) {
 			// if credit is less than order due:-

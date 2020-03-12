@@ -61,10 +61,7 @@ class CustomerSync {
 
                         if (onlyLocally.length > 0) {
                             onlyLocally.forEach(localCustomer => {
-                                // console.log(
-                                //     'localCustomer - ',
-                                //     localCustomer
-                                // );
+
                                 CustomerApi.createCustomer(
                                     localCustomer
                                 )
@@ -149,13 +146,6 @@ class CustomerSync {
                                 }
                             })
                         }
-
-                        // console.log('onlyRemote', onlyRemote);
-                        // console.log('onlyLocally', onlyLocally);
-                        // console.log('bothLocalRemote', bothLocalRemote);
-
-                        // console.log('localCustomers2', localCustomers);
-                        // console.log('remoteCustomers2', remoteCustomers);
 
                     }
                     resolve({

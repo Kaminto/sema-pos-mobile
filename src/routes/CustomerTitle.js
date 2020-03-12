@@ -47,7 +47,7 @@ export default connect(
 
 const styles = StyleSheet.create({
 	tooltitle: {
-		color: 'white',
+						color: 'white',
 						fontSize: 18
 	},
 

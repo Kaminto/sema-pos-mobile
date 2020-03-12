@@ -27,9 +27,6 @@ import * as receiptActions from '../actions/ReceiptActions';
 import i18n from '../app/i18n';
 import { format, parseISO, isBefore } from 'date-fns';
 
-import { withNavigation } from 'react-navigation';
-
-
 class ReceiptLineItem extends React.PureComponent {
 	constructor(props) {
 		super(props);
@@ -50,7 +47,7 @@ class ReceiptLineItem extends React.PureComponent {
 					source={{ uri: this.getImage(this.props.item.product) }}
 					style={[styles.productImage, { flex: .1 }]}
 				/>
-				<View style={{ justifyContent: 'space-around', flex: .6 }}>
+				<View style={{ justifyContent: 'space-around', flex: .65 }}>
 					<View style={styles.itemData}>
 						<Text style={[styles.label, { fontSize: 15 }]}>{this.props.item.product.description}</Text>
 					</View>
@@ -58,8 +55,8 @@ class ReceiptLineItem extends React.PureComponent {
 						<Text style={[styles.label, { fontSize: 16 }]}>{this.props.item.quantity} </Text>
 					</View>
 				</View>
-				<View style={[styles.itemData, { flex: .3 }]}>
-					<Text style={[styles.label, { fontSize: 15, padding: 10, alignItems: 'flex-end' }]}>{this.props.item.currency_code.toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}</Text>
+				<View style={[styles.itemData, { flex: .25, alignSelf: 'flex-end' }]}>
+					<Text style={[styles.label, { fontSize: 15, padding: 10, textAlign: 'right' }]}>{this.props.item.currency_code.toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}</Text>
 				</View>
 			</View>
 		);
@@ -103,7 +100,7 @@ class PaymentTypeItem extends React.PureComponent {
 						{this.props.item.name == 'credit' ? 'Wallet' : this.props.item.name}</Text>
 				</View>
 				<View style={[styles.itemData, { flex: 1 }]}>
-					<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold' }]}>{this.props.item.amount} </Text>
+					<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.props.item.amount} </Text>
 				</View>
 
 			</View>
@@ -273,7 +270,7 @@ class TransactionDetail extends React.PureComponent {
 
 				<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
 					<Text style={[styles.customername, { flex: .7, fontWeight: 'bold' }]}>TOTAL AMOUNT</Text>
-					<Text style={[styles.customername, { flex: .3, fontWeight: 'bold' }]}>
+					<Text style={[styles.customername, { flex: .3, fontWeight: 'bold', textAlign: 'right',paddingRight: 20 }]}>
 						{this.props.item.currency.toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}
 					</Text>
 				</View>
@@ -669,7 +666,7 @@ function mapDispatchToProps(dispatch) {
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(withNavigation(Transactions));
+)(Transactions);
 
 const styles = StyleSheet.create({
 	container: {

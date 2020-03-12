@@ -56,35 +56,38 @@ class OrderSync {
 
 
                         if (onlyRemote.length > 0) {
-                            OrderRealm.createManyOrders(onlyRemote)
+                            OrderRealm.createManyOrders(onlyRemote);
                             OrderRealm.setLastOrderSync();
                         }
 
                         if (onlyLocally.length > 0) {
                             onlyLocally.forEach(localOrder => {
 
-                                let products = [];
-                                for (let i in localOrder.receipt_line_items) {
-                                    //console.log(localOrder.receipt_line_items[i]);
+								let products = [];
+
+								let someorders = JSON.parse(localOrder.receipt_line_items);
+
+                                for (let i in someorders) {
                                     products.push({
                                         active: 1,
-                                        cogsTotal: localOrder.receipt_line_items[i].cogs_total,
-                                        description: localOrder.receipt_line_items[i].description,
-                                        litersPerSku: localOrder.receipt_line_items[i].litersPerSku,
-                                        priceTotal: localOrder.receipt_line_items[i].totalAmount,
-                                        totalAmount: localOrder.receipt_line_items[i].totalAmount,
-                                        productId: localOrder.receipt_line_items[i].product_id,
-                                        quantity: localOrder.receipt_line_items[i].quantity,
-                                        sku: localOrder.receipt_line_items[i].sku,
-                                        notes: localOrder.receipt_line_items[i].notes,
-                                        emptiesReturned: localOrder.receipt_line_items[i].emptiesReturned,
-                                        damagedBottles: localOrder.receipt_line_items[i].damagedBottles,
-                                        pendingBottles: localOrder.receipt_line_items[i].refillPending
-                                    })
+                                        cogsTotal: someorders[i].cogs_total,
+                                        description: someorders[i].description,
+                                        litersPerSku: someorders[i].litersPerSku,
+                                        priceTotal: someorders[i].totalAmount,
+                                        totalAmount: someorders[i].totalAmount,
+                                        productId: someorders[i].product_id,
+                                        quantity: someorders[i].quantity,
+                                        sku: someorders[i].sku,
+                                        notes: someorders[i].notes,
+                                        emptiesReturned: someorders[i].emptiesReturned,
+                                        damagedBottles: someorders[i].damagedBottles,
+                                        pendingBottles: someorders[i].refillPending
+                                    });
 
+								}
 
-                                }
-                                localOrder.products = products;
+								localOrder.products = products;
+
 
                                 OrderApi.createReceipt(
                                     {

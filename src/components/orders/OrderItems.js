@@ -12,14 +12,58 @@ import SalesChannelRealm from '../../database/sales-channels/sales-channels.oper
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import DiscountRealm from '../../database/discount/discount.operations';
 import ToggleSwitch from 'toggle-switch-react-native';
+import slowlog from 'react-native-slowlog';
 
 const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
+class OrderListItem extends React.PureComponent {
+	render() {
+		return(
+			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white', padding: 5 }}>
+				<View style={[{ flex: 2 }]}>
+					<Text style={[styles.baseItem, styles.leftMargin]}>{this.props.item.product.description}</Text>
+				</View>
+				<View style={[{ flex: 1.2 }]}>
+					<Text style={[styles.baseItem, { textAlign: 'center' }]}>{this.props.item.quantity}</Text>
+				</View>
+				<View style={[{ flex: 2 }]}>
+					<Text numberOfLines={1} style={[styles.baseItem, { textAlign: 'right', paddingRight: 5 }]}>
+						{this.getCurrency(this.props.item)} {this.getDiscountPrice((this.props.item.quantity * this.props.item.unitPrice), this.props.item)}</Text>
+				</View>
+			</View>
+		)
+	}
+
+		getCurrency = (item) => {
+			if (item.hasOwnProperty('product')) {
+				return item.product.priceCurrency.toUpperCase();
+			}
+		};
+
+		getDiscountPrice = (amountPerQuantity, item) => {
+			if (!item.hasOwnProperty('discount')) {
+				return amountPerQuantity;
+			}
+
+			if (Number(item.discount) === 0) {
+				return amountPerQuantity;
+			}
+
+			if (item.type === 'Flat') {
+				return amountPerQuantity - Number(item.discount);
+			}
+
+			if (item.type === 'Percentage') {
+				return amountPerQuantity * (Number(item.discount) / 100);
+			}
+		};
+
+  }
 
 class OrderItems extends React.PureComponent {
 	constructor(props) {
 		super(props);
-
+		slowlog(this, /.*/);
 		this.state = {
 			selectedItem: {},
 			accumulator: 0,
@@ -40,6 +84,17 @@ class OrderItems extends React.PureComponent {
 		this.refs.productModel.open();
 	}
 
+	_renderItem = ({item, index, separators}) => (
+			<TouchableHighlight
+				onPress={() => this.handleOnPress(item)}
+				onShowUnderlay={separators.highlight}
+				onHideUnderlay={separators.unhighlight}>
+				{this.getRow(item, index, separators)}
+				{/* <OrderListItem
+				 item={item}
+				  /> */}
+			</TouchableHighlight>
+     )
 
 	render() {
 		return (
@@ -48,17 +103,9 @@ class OrderItems extends React.PureComponent {
 					data={this.props.products}
 					ListHeaderComponent={this.showHeader}
 					extraData={this.props.channel.salesChannel}
-					renderItem={({ item, index, separators }) => (
-						<TouchableHighlight
-							onPress={() => this.handleOnPress(item)}
-							onShowUnderlay={separators.highlight}
-							onHideUnderlay={separators.unhighlight}>
-							{this.getRow(item, index, separators)}
-						</TouchableHighlight>
-					)}
+					renderItem={this._renderItem}
 					keyExtractor={item => item.product.productId.toString()}
 				/>
-
 
 				<Modal style={[styles.modal, styles.modal3]}
 					coverScreen={true}
