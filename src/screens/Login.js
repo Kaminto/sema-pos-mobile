@@ -189,6 +189,18 @@ class Login extends React.PureComponent {
 						currency = 'UGX'
 					} else if(result.response.data.kiosk.region_id == 301){
 						currency = 'RWF'
+					} else if(result.response.data.kiosk.region_id == 401){
+						currency = 'KES'
+					} else if(result.response.data.kiosk.region_id == 501){
+						currency = 'TZS'
+					} else if(result.response.data.kiosk.region_id == 601){
+						currency = 'USD'
+					} else if(result.response.data.kiosk.region_id == 602){
+						currency = 'USD'
+					} else if(result.response.data.kiosk.region_id == 701){
+						currency = 'ZMW'
+					} else if(result.response.data.kiosk.region_id == 801){
+						currency = 'FBU'
 					}
 					SettingRealm.saveSettings(
 						"http://142.93.115.206:3002/",
