@@ -9,13 +9,10 @@ class ProductSync {
 
             ProductApi.getProducts(ProductRealm.getLastProductsync())
             .then(remoteProduct => {
+				console.log("Remote Products " + JSON.stringify(remoteProduct));
                 let initlocalProducts = ProductRealm.getProductsByDate(ProductRealm.getLastProductsync());
                 let localProducts = [...initlocalProducts];
-                let remoteProducts = [...remoteProduct.products]; 
-
-                console.log('initlocalProducts', initlocalProducts);
-                console.log('localProducts', localProducts);
-                console.log('remoteProducts', remoteProducts);
+                let remoteProducts = [...remoteProduct.products];
 
                 if (initlocalProducts.length === 0) {
                     ProductRealm.createManyProducts(remoteProduct.products);
@@ -30,14 +27,14 @@ class ProductSync {
                 let bothLocalRemote = {};
 
                 if (initlocalProducts.length > 0) {
-                  
+
                     initlocalProducts.forEach(localProduct => {
                         let filteredObj = remoteProducts.filter(obj => obj.productId === localProduct.productId)
-                         
+
                         if (filteredObj.length > 0) {
                             const remoteIndex = remoteProducts.map(function (e) { return e.productId }).indexOf(filteredObj[0].productId);
                             const localIndex = localProducts.map(function (e) { return e.productId }).indexOf(filteredObj[0].productId);
-                           
+
                             remoteProducts.splice(remoteIndex, 1);
                             localProducts.splice(localIndex, 1);
 
@@ -48,7 +45,7 @@ class ProductSync {
                         if (filteredObj.length === 0) {
                             onlyLocally.push(localProduct);
                             const localIndex = localProducts.map(function (e) { return e.productId }).indexOf(localProduct.productId);
-                            
+
                             localProducts.splice(localIndex, 1);
                         }
                     });
@@ -59,15 +56,10 @@ class ProductSync {
 
 
                     if (onlyRemote.length > 0) {
-                        ProductRealm.createManyProducts(onlyRemote)
+                        ProductRealm.createManyProducts(onlyRemote);
                         ProductRealm.setLastProductsync();
                     }
 
-                    console.log('onlyRemote', onlyRemote);
-                    console.log('onlyLocally', onlyLocally);
-                    console.log('bothLocalRemote', bothLocalRemote);
-
-                   
                 }
                 resolve({
                     error: null,
@@ -77,7 +69,7 @@ class ProductSync {
             })
             .catch(error => {
                 console.log(
-                    'Synchronization.getInventory - error ' + error
+                    'Synchronization.getProducts - error ' + error
                 );
                 resolve({
                     error: error,
@@ -86,10 +78,10 @@ class ProductSync {
             });
 
 
-		 
+
 		});
     }
-    
-  
+
+
 }
 export default new ProductSync();

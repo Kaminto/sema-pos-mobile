@@ -10,16 +10,61 @@ import Modal from 'react-native-modalbox';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
+import SettingRealm from '../../database/settings/settings.operations';
 import DiscountRealm from '../../database/discount/discount.operations';
 import ToggleSwitch from 'toggle-switch-react-native';
-
+import slowlog from 'react-native-slowlog';
+import * as Utilities from "../../services/Utilities";
 const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
+class OrderListItem extends React.PureComponent {
+	render() {
+		return(
+			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white', padding: 5 }}>
+				<View style={[{ flex: 2 }]}>
+					<Text style={[styles.baseItem, styles.leftMargin]}>{this.props.item.product.description}</Text>
+				</View>
+				<View style={[{ flex: 1.2 }]}>
+					<Text style={[styles.baseItem, { textAlign: 'center' }]}>{this.props.item.quantity}</Text>
+				</View>
+				<View style={[{ flex: 2 }]}>
+					<Text numberOfLines={1} style={[styles.baseItem, { textAlign: 'right', paddingRight: 5 }]}>
+						{this.getCurrency(this.props.item)} {this.getDiscountPrice((this.props.item.quantity * this.props.item.unitPrice), this.props.item)}</Text>
+				</View>
+			</View>
+		)
+	}
+
+		getCurrency = (item) => {
+			if (item.hasOwnProperty('product')) {
+				return item.product.priceCurrency.toUpperCase();
+			}
+		};
+
+		getDiscountPrice = (amountPerQuantity, item) => {
+			if (!item.hasOwnProperty('discount')) {
+				return amountPerQuantity;
+			}
+
+			if (Number(item.discount) === 0) {
+				return amountPerQuantity;
+			}
+
+			if (item.type === 'Flat') {
+				return amountPerQuantity - Number(item.discount);
+			}
+
+			if (item.type === 'Percentage') {
+				return amountPerQuantity * (Number(item.discount) / 100);
+			}
+		};
+
+  }
 
 class OrderItems extends React.PureComponent {
 	constructor(props) {
 		super(props);
-
+		slowlog(this, /.*/);
 		this.state = {
 			selectedItem: {},
 			accumulator: 0,
@@ -40,6 +85,17 @@ class OrderItems extends React.PureComponent {
 		this.refs.productModel.open();
 	}
 
+	_renderItem = ({item, index, separators}) => (
+			<TouchableHighlight
+				onPress={() => this.handleOnPress(item)}
+				onShowUnderlay={separators.highlight}
+				onHideUnderlay={separators.unhighlight}>
+				{this.getRow(item, index, separators)}
+				{/* <OrderListItem
+				 item={item}
+				  /> */}
+			</TouchableHighlight>
+     )
 
 	render() {
 		return (
@@ -48,17 +104,9 @@ class OrderItems extends React.PureComponent {
 					data={this.props.products}
 					ListHeaderComponent={this.showHeader}
 					extraData={this.props.channel.salesChannel}
-					renderItem={({ item, index, separators }) => (
-						<TouchableHighlight
-							onPress={() => this.handleOnPress(item)}
-							onShowUnderlay={separators.highlight}
-							onHideUnderlay={separators.unhighlight}>
-							{this.getRow(item, index, separators)}
-						</TouchableHighlight>
-					)}
+					renderItem={this._renderItem}
 					keyExtractor={item => item.product.productId.toString()}
 				/>
-
 
 				<Modal style={[styles.modal, styles.modal3]}
 					coverScreen={true}
@@ -530,7 +578,8 @@ class OrderItems extends React.PureComponent {
 				</View>
 				<View style={[{ flex: 2 }]}>
 					<Text numberOfLines={1} style={[styles.baseItem, { textAlign: 'right', paddingRight: 5 }]}>
-						{this.getCurrency(item)} {this.getDiscountPrice((item.quantity * item.unitPrice), item)}</Text>
+						{this.getCurrency().toUpperCase()} {this.getDiscountPrice((item.quantity * item.unitPrice), item)}
+						</Text>
 				</View>
 			</View>
 		);
@@ -858,10 +907,9 @@ class OrderItems extends React.PureComponent {
 		return item.unitPrice;	// Just use product price
 	};
 
-	getCurrency = (item) => {
-		if (item.hasOwnProperty('product')) {
-			return item.product.priceCurrency.toUpperCase();
-		}
+	getCurrency = () => {
+		let settings = SettingRealm.getAllSetting();
+		return settings.currency;
 	};
 
 	getDiscountPrice = (amountPerQuantity, item) => {

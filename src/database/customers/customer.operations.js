@@ -154,7 +154,7 @@ class CustomerRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on update customer ", e);
         }
 
     }
@@ -172,7 +172,7 @@ class CustomerRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on update customer due amount", e);
         }
     }
 
@@ -189,7 +189,7 @@ class CustomerRealm {
                 customerObj[0].walletBalance = walletBalance;
             })
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on update customer bal", e);
         }
     }
 
@@ -203,7 +203,7 @@ class CustomerRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on synch", e);
         }
 
     }
@@ -221,7 +221,7 @@ class CustomerRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on delete hard customer ", e);
         }
     }
 
@@ -235,7 +235,7 @@ class CustomerRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on soft delete customer ", e);
         }
     }
 

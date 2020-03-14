@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, Dimensions, Picker } from 'react-native';
+import { View, Dimensions, Picker } from 'react-native';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -8,7 +8,6 @@ import CustomerList from '../screens/CustomerList';
 import CustomerEdit from '../screens/CustomerEdit';
 import CustomerDetails from '../screens/CustomerDetails';
 import CreditHistory from '../screens/CreditHistory';
-import * as CustomerActions from '../actions/CustomerActions';
 import Login from '../screens/Login';
 import AuthLoadingScreen from '../screens/AuthLoadingScreen';
 import Transactions from '../screens/Transactions';
@@ -17,43 +16,16 @@ import OrderView from '../components/orders/OrderView';
 
 import InventoryReport from '../components/reports/InventoryReport';
 import RemindersReport from '../components/reports/ReminderReport';
-
 import SalesReport from '../components/reports/SalesReport';
 
-import Icon from 'react-native-vector-icons/Ionicons';
 import CustomSidebarMenu from './CustomSidebarMenu';
 import CustomerListHeader from './CustomerListHeader';
 import CustomerTitle from './CustomerTitle';
+import NavigationDrawerStructure from './NavigationDrawerStructure';
+// import { FluidNavigator, Transition } from ‘react-navigation-fluid-transitions’;
 
 import { enableScreens } from 'react-native-screens';
 enableScreens();
-
-class NavigationDrawerStructure extends React.PureComponent {
-    toggleDrawer = () => {
-        this.props.navigationProps.toggleDrawer();
-    };
-
-    render() {
-        return (
-            <View style={{ flexDirection: 'row' }}>
-                <TouchableOpacity onPress={this.toggleDrawer.bind(this)}>
-                    <Icon
-                        name='md-menu'
-                        size={30}
-                        color="white"
-                        style={{
-                            width: 50, height: 30, marginLeft: 10, paddingRight:20
-                        }}
-                    />
-                </TouchableOpacity>
-            </View>
-        );
-    }
-}
-
-
-
-
 
 const CreditHistoryStack = createStackNavigator({
     CreditHistory: {
@@ -109,12 +81,14 @@ const ListCustomerStack = createStackNavigator({
         screen: CustomerList,
         navigationOptions: ({ navigation }) => ({
             headerTitle: () => <CustomerTitle title={`Customers`}/>,
-            headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
+			// headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
+			headerLeft: () => <NavigationDrawerStructure />,
             headerStyle: {
                 backgroundColor: '#00549C',
             },
             headerTintColor: '#fff',
-            headerRight: () => <CustomerListHeader navigation={navigation}/>
+            // headerRight: () => <CustomerListHeader navigation={navigation}/>
+            headerRight: () => <CustomerListHeader />
         }),
     },
     EditCustomer: {
@@ -152,7 +126,7 @@ const ListCustomerStack = createStackNavigator({
 
     {
         initialRouteName: 'CustomerList',
-		headerMode: 'screen'
+		headerMode: 'float'
     }
 );
 
@@ -201,7 +175,8 @@ const SalesReportStack = createStackNavigator({
         screen: SalesReport,
         navigationOptions: ({ navigation }) => ({
             title: 'Sales Report',
-            headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
+			// headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
+			headerLeft: () => <NavigationDrawerStructure  />,
             headerStyle: {
                 backgroundColor: '#00549C',
             },
@@ -215,7 +190,8 @@ const InventoryStack = createStackNavigator({
         screen: InventoryReport,
         navigationOptions: ({ navigation }) => ({
             title: 'Wastage Report',
-            headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
+			// headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
+			headerLeft: () => <NavigationDrawerStructure  />,
             headerStyle: {
                 backgroundColor: '#00549C',
             },
@@ -229,7 +205,8 @@ const ReminderStack = createStackNavigator({
         screen: RemindersReport,
         navigationOptions: ({ navigation }) => ({
             title: 'Reminders',
-            headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
+			// headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
+			headerLeft: () => <NavigationDrawerStructure  />,
             headerStyle: {
                 backgroundColor: '#00549C',
             },

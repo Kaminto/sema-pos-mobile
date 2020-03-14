@@ -27,18 +27,12 @@ class RecieptPaymentTypesSync {
                     let bothLocalRemote = {};
 
                     if (initlocalRecieptPaymentTypes.length > 0) {
-
-                        console.log('initlocalRecieptPaymentTypes', initlocalRecieptPaymentTypes);
-                        console.log('localRecieptPaymentTypes', localRecieptPaymentTypes);
-                        console.log('remoteRecieptPaymentTypes', remoteRecieptPaymentTypes);
                         initlocalRecieptPaymentTypes.forEach(localRecieptPaymentType => {
                             let filteredObj = remoteRecieptPaymentTypes.filter(obj => obj.receipt_payment_type_id === localRecieptPaymentType.receipt_payment_type_id)
-                            console.log('filteredObj', filteredObj);
                             if (filteredObj.length > 0) {
                                 const remoteIndex = remoteRecieptPaymentTypes.map(function (e) { return e.receipt_payment_type_id }).indexOf(filteredObj[0].receipt_payment_type_id);
                                 const localIndex = localRecieptPaymentTypes.map(function (e) { return e.receipt_payment_type_id }).indexOf(filteredObj[0].receipt_payment_type_id);
-                                console.log('remoteIndex', remoteIndex);
-                                console.log('localIndex', localIndex);
+
                                 remoteRecieptPaymentTypes.splice(remoteIndex, 1);
                                 localRecieptPaymentTypes.splice(localIndex, 1);
 
@@ -49,7 +43,7 @@ class RecieptPaymentTypesSync {
                             if (filteredObj.length === 0) {
                                 onlyLocally.push(localRecieptPaymentType);
                                 const localIndex = localRecieptPaymentTypes.map(function (e) { return e.receipt_payment_type_id }).indexOf(localRecieptPaymentType.receipt_payment_type_id);
-                                console.log('localIndex', localIndex);
+
                                 localRecieptPaymentTypes.splice(localIndex, 1);
                             }
                         });
@@ -84,9 +78,6 @@ class RecieptPaymentTypesSync {
                             })
                         }
 
-                        console.log('onlyRemote', onlyRemote);
-                        console.log('onlyLocally', onlyLocally);
-                        console.log('bothLocalRemote', bothLocalRemote);
 
                         console.log('localRecieptPaymentTypes2', localRecieptPaymentTypes);
                         console.log('remoteRecieptPaymentTypes2', remoteRecieptPaymentTypes);
@@ -101,7 +92,7 @@ class RecieptPaymentTypesSync {
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization.getInventory - error ' + error
+                        'Synchronization.getReceiptpaymenttypes - error ' + error
                     );
                     resolve({
                         error: error,

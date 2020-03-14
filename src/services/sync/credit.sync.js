@@ -25,18 +25,13 @@ class CreditSync {
                     let bothLocalRemote = {};
 
                     if (initlocalCredits.length > 0) {
-
-                        // console.log('initlocalCredits', initlocalCredits);
-                        // console.log('localCredits', localCredits);
-                        // console.log('remoteInventories', remoteInventories);
                         initlocalCredits.forEach(localCredit => {
                             let filteredObj = remoteInventories.filter(obj => obj.topUpId === localCredit.topUpId)
-                            console.log('filteredObj', filteredObj);
+
                             if (filteredObj.length > 0) {
                                 const remoteIndex = remoteInventories.map(function (e) { return e.topUpId }).indexOf(filteredObj[0].topUpId);
                                 const localIndex = localCredits.map(function (e) { return e.topUpId }).indexOf(filteredObj[0].topUpId);
-                                console.log('remoteIndex', remoteIndex);
-                                console.log('localIndex', localIndex);
+
                                 remoteInventories.splice(remoteIndex, 1);
                                 localCredits.splice(localIndex, 1);
 
@@ -47,7 +42,7 @@ class CreditSync {
                             if (filteredObj.length === 0) {
                                 onlyLocally.push(localCredit);
                                 const localIndex = localCredits.map(function (e) { return e.topUpId }).indexOf(localCredit.topUpId);
-                                console.log('localIndex', localIndex);
+
                                 localCredits.splice(localIndex, 1);
                             }
                         });
@@ -91,7 +86,7 @@ class CreditSync {
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization.getInventory - error ' + error
+                        'Synchronization.getCredit - error ' + error
                     );
                     resolve({
                         error: error,

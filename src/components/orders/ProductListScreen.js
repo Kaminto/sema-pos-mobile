@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 
 
-class ProductListScreen extends React.Component {
+class ProductListScreen extends React.PureComponent {
 	constructor(props) {
 		super(props);
 
@@ -16,7 +16,7 @@ class ProductListScreen extends React.Component {
 		// Since there is no way to dynamilcally determine view width until the layout is complete, use
 		// this to set width. (Note this will break if view layout changes
 		this.viewWidth = 1 / 1.6 * width;
-		this.salesChannel;
+		// this.salesChannel;
 		this.state = {
 			salesChannel: SalesChannelRealm.getSalesChannelFromId(this.props.selectedCustomer.salesChannelId)
 		}
@@ -27,6 +27,7 @@ class ProductListScreen extends React.Component {
 	render() {
 		if (this.state.salesChannel) {
 			return (
+
 					<ProductList filter={this.state.salesChannel.name} viewWidth={this.viewWidth} />
 			);
 		}

@@ -10,7 +10,8 @@ import {
 	Alert,
 	ToastAndroid,
 	ScrollView,
-	TouchableNativeFeedback
+	TouchableNativeFeedback,
+	TouchableHighlight
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -352,8 +353,12 @@ class CustomerDetails extends React.PureComponent {
 			);
 		} else {
 			return (
-				<View style={{ flex: .75, flexDirection: 'row', width: '90%', alignSelf: 'center' }}>
+				<View style={{ flex: .75, flexDirection: 'row', width: '90%', alignSelf: 'center', height: 60 }}>
 					<Text style={{ fontSize: 20, fontWeight: 'bold', alignSelf: "center", justifyContent: "center" }}>Record this customer's sales.</Text>
+					{/* <TouchableHighlight
+								onPress={() => this.props.navigation.navigate('OrderView')}>
+								<Text style={styles.buttonText}>Make Sale</Text>
+					</TouchableHighlight> */}
 				</View>
 			);
 		}
@@ -774,11 +779,12 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white'
 	},
 	buttonText: {
+		backgroundColor: '#2858a7',
 		fontWeight: 'bold',
-		fontSize: 28,
+		fontSize: 18,
 		color: 'white',
-		textAlign: 'center',
-		width: 300
+		alignSelf: "center",
+		justifyContent: "center"
 	},
 	completeOrder: {
 		backgroundColor: '#2858a7',

@@ -6,7 +6,8 @@ import {
 	FlatList,
 	StyleSheet,
 	Image,
-	TouchableOpacity
+	TouchableOpacity,
+	InteractionManager
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -17,34 +18,113 @@ import SalesChannelRealm from '../../database/sales-channels/sales-channels.oper
 import randomMC from 'random-material-color';
 import slowlog from 'react-native-slowlog';
 
-class ProductList extends React.Component {
+class ProductListItem extends React.PureComponent {
+	render() {
+		return(
+		<View
+				style={[
+					this.getItemBackground(this.props.index),
+					{
+						flex: 1,
+						height: this.props.viewWidth / 4,
+						width: this.props.viewWidth / 4
+					}
+				]}>
+				<Image
+					source={{ uri: this.getImage(this.props.item) }}
+					resizeMethod="scale"
+					style={{ flex: 1 }}
+				/>
+				<Text
+					style={[
+						styles.imageLabel,
+						this.getLabelBackground(this.props.item.categoryId)
+					]}>
+					{this.props.item.description}
+					{'\n'}
+					{this.getItemPrice(this.props.item)}
+				</Text>
+			</View>
+		)
+	}
+
+	getImage = item => {
+		if (item.base64encodedImage.startsWith('data:image')) {
+			return item.base64encodedImage;
+		} else {
+			return 'data:image/png;base64,' + item.base64encoded_image;
+		}
+	};
+
+	getItemBackground = index => {
+		return index % 2 === 0 ? styles.lightBackground : styles.darkBackground;
+	};
+
+	getLabelBackground = categoryId => {
+		return {
+			backgroundColor: `${randomMC.getColor({
+				text: `${categoryId}-${this.props.filter}`
+			})}`
+		};
+	};
+
+	getItemPrice = item => {
+		let salesChannel = SalesChannelRealm.getSalesChannelFromName(
+			this.props.filter
+		);
+
+		if (salesChannel) {
+			let productMrp = ProductMRPRealm.getFilteredProductMRP()[
+				ProductMRPRealm.getProductMrpKeyFromIds(
+					item.productId,
+					salesChannel.id
+				)
+			];
+			if (productMrp) {
+				return productMrp.priceAmount;
+			}
+		}
+		return item.priceAmount; // Just use product price
+	};
+  }
+
+class ProductList extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		slowlog(this, /.*/);
 	}
 
-	;
-
 	handleOnPress(item){
 		requestAnimationFrame(() => {
+			// InteractionManager.runAfterInteractions(() => {
 			const unitPrice = this.getItemPrice(item);
 			this.props.orderActions.AddProductToOrder(item, 1, unitPrice);
-		});
+			});
+		// });
 	}
+
+	_renderItem = ({item, index, separators}) => (
+		<TouchableOpacity
+							onPress={() => this.handleOnPress(item)}
+							onShowUnderlay={separators.highlight}
+							onHideUnderlay={separators.unhighlight}>
+							{/* {this.getItem(item, index, separators)} */}
+							<ProductListItem
+								item={item}
+								index={index}
+								viewWidth={this.props.viewWidth}
+								filter={this.props.filter}
+								separators={separators}
+								/>
+						</TouchableOpacity>
+);
 
 	render() {
 		return (
 			<View style={styles.container}>
 				<FlatList
 					data={this.prepareData()}
-					renderItem={({ item, index, separators }) => (
-						<TouchableOpacity
-							onPress={() => this.handleOnPress(item)}
-							onShowUnderlay={separators.highlight}
-							onHideUnderlay={separators.unhighlight}>
-							{this.getItem(item, index, separators)}
-						</TouchableOpacity>
-					)}
+					renderItem={this._renderItem}
 					keyExtractor={item => item.productId}
 					numColumns={4}
 					horizontal={false}

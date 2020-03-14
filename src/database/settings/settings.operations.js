@@ -11,7 +11,8 @@ class SettingRealm {
             uiLanguage: JSON.stringify({ name: 'English', iso_code: 'en' }),
             token: '',
             loginSync: false,
-            siteId: 0
+			siteId: 0,
+			currency: ''
         };
 
         realm.write(() => {
@@ -79,7 +80,7 @@ class SettingRealm {
     }
 
 
-    saveSettings(url, site, user, password, uiLanguage, token, siteId, loginSync) {
+    saveSettings(url, site, user, password, uiLanguage, token, siteId, loginSync, currency) {
         let settings = {
             semaUrl: url,
             site,
@@ -88,7 +89,8 @@ class SettingRealm {
             uiLanguage: JSON.stringify(uiLanguage),
             token,
             siteId,
-            loginSync
+			loginSync,
+			currency
         };
         this.settings = settings;
         try {
@@ -101,11 +103,12 @@ class SettingRealm {
                 settingObj[0].uiLanguage = settings.uiLanguage;
                 settingObj[0].token = settings.token;
                 settingObj[0].siteId = siteId;
-                settingObj[0].loginSync = loginSync;
+				settingObj[0].loginSync = loginSync;
+				settingObj[0].currency = currency;
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
+            console.log("Error on creation of settings.", e);
         }
 
     }

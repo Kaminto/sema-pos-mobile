@@ -4,11 +4,9 @@ import { View, Text, StyleSheet } from "react-native";
 import * as OrderActions from "../../../actions/OrderActions";
 import * as CustomerActions from '../../../actions/CustomerActions';
 import * as PaymentTypesActions from "../../../actions/PaymentTypesActions";
+import SettingRealm from '../../../database/settings/settings.operations';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-
-const widthQuanityModal = 1000;
-const heightQuanityModal = 500;
 
 class PaymentDescription extends React.PureComponent {
 	render() {
@@ -18,11 +16,16 @@ class PaymentDescription extends React.PureComponent {
 					<Text style={[styles.totalTitle]}>{this.props.title}</Text>
 				</View>
 				<View style={[{ flex: 2 }]}>
-					<Text style={[styles.totalValue]}>{this.props.total}</Text>
+		<Text style={[styles.totalValue]}>{this.getCurrency().toUpperCase()} {this.props.total}</Text>
 				</View>
 			</View>
 		);
 	}
+
+	getCurrency = () => {
+		let settings = SettingRealm.getAllSetting();
+		return settings.currency;
+	};
 }
 
 function mapStateToProps(state, props) {

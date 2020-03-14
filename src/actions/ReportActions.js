@@ -68,7 +68,9 @@ function getTotalTypes(beginDate, filteredOrders) {
 			name: key,
 			totalAmount: amount
 		});
-		totalEarnings = totalEarnings + amount;
+		if(key !== 'credit'){
+			totalEarnings = totalEarnings + amount;
+		}
 	}
 	groupedTotals.push({
 		name: 'TOTAL EARNINGS',

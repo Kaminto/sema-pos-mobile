@@ -8,10 +8,10 @@ import Icons from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import i18n from '../app/i18n';
+import {withNavigation} from 'react-navigation';
 class CustomerListHeader extends React.PureComponent {
 
     render() {
-        // console.log('header props', this.props.customerProps);
         return (
             <View
                 style={{
@@ -67,7 +67,7 @@ class CustomerListHeader extends React.PureComponent {
                             style={{
                                 marginRight: 20,
                             }}
-                            onPress={() => {                               
+                            onPress={() => {
                                 this.props.navigation.navigate('CustomerDetails');
                             }}
 
@@ -174,4 +174,4 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(
     mapStateToProps, mapDispatchToProps
-)(CustomerListHeader);
+)(withNavigation(CustomerListHeader));

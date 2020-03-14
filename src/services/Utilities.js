@@ -1,8 +1,3 @@
-import { NativeModules } from 'react-native';
-import ProductsRealm from "../database/products/product.operations";
-
-const IntlPolyFill = require('intl');
-// Add additional locales here
 require('intl/locale-data/jsonp/en-US');	// U.S.
 require('intl/locale-data/jsonp/ee-GH');	// Ghana
 require('intl/locale-data/jsonp/rw-RW');	// Rawanda
@@ -23,37 +18,3 @@ export const isEmptyObj = (obj) => {
 	return true;
 }
 
-export function formatCurrency(value) {
-	// console.log('value===', value);
-	let locale = 'en-US';
-	let currency = "USD";
-	try {
-		locale = NativeModules.I18nManager.localeIdentifier;
-		locale = locale.replace('_', '-');
-	} catch (error) {
-		console.log("formatCurrency - NativeModules.I18nManager - error " + error);
-	}
-	if (ProductsRealm.getProducts().length > 0) {
-		if (ProductsRealm.getProducts()[0].priceCurrency.length === 3) {
-			currency = ProductsRealm.getProducts()[0].priceCurrency;
-		}
-	}
-	value = parseFloat(value);
-
-	// Note: Because of the very large number of locales that exist in order to support all locales AND
-	// Adding currency info adds addtional text, it has been decided to format curency as a,ddd.00 format
-	// and not include a currency symbol such as "$" or 'U sh'
-	currency = "USD";
-	locale = "en-US";
-	try {
-		var formatter = new IntlPolyFill.NumberFormat(locale, {
-			style: 'currency',
-			currency: currency,
-			minimumFractionDigits: 2,
-		});
-		return formatter.format(value).replace('$', '');
-	} catch (error) {
-		console.log("formatCurrency - IntlPolyFill - error " + error);
-		return value;
-	}
-}

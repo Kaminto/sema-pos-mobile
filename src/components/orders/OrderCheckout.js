@@ -207,14 +207,12 @@ class OrderCheckout extends React.PureComponent {
 										<PaymentDescription
 											styles={{ fontWeight: 'bold' }}
 											title={`${i18n.t('sale-amount-due')}: `}
-											total={Utilities.formatCurrency(this.calculateOrderDue())}
+											total={this.calculateOrderDue()}
 										/>
 										<PaymentDescription
 											style={{ color: 'white' }}
 											title={`${i18n.t('customer-wallet')}:`}
-											total={Utilities.formatCurrency(
-												this.currentCredit()
-											)}
+											total={this.currentCredit()}
 										/>
 								 	</View>
 
@@ -222,15 +220,11 @@ class OrderCheckout extends React.PureComponent {
 									<View style={{ flex: 1, flexDirection: 'row' }}>
 										<PaymentDescription
 											title={`${i18n.t('previous-amount-due')}:`}
-											total={Utilities.formatCurrency(
-												this.calculateAmountDue()
-											)}
+											total={this.calculateAmountDue()}
 										/>
 										<PaymentDescription
 											title={`${i18n.t('total-amount-due')}:`}
-											total={Utilities.formatCurrency(
-												this.calculateTotalDue()
-											)}
+											total={this.calculateTotalDue()}
 										/>
 									</View>
 								</Card>
@@ -358,6 +352,11 @@ class OrderCheckout extends React.PureComponent {
 
 		);
 	}
+
+	getCurrency = () => {
+		let settings = SettingRealm.getAllSetting();
+		return settings.currency;
+	};
 
 	showBottlesHeader = () => {
 		return (
@@ -689,7 +688,7 @@ class OrderCheckout extends React.PureComponent {
 			<PaymentDescription
 				styles={{ fontWeight: 'bold' }}
 				title={`${i18n.t('sale-amount-due')}: `}
-				total={Utilities.formatCurrency(this.calculateOrderDue())}
+				total={this.calculateOrderDue()}
 			/>
 		);
 	}
@@ -855,24 +854,33 @@ class OrderCheckout extends React.PureComponent {
 		let totalAmountPaid = this.props.selectedPaymentTypes.reduce((total, item) => { return (total + item.amount) }, 0);
 
 		if (this.currentCredit() > this.calculateOrderDue()) {
-
-			if (totalAmountPaid > this.calculateOrderDue()) {
-				this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
-
+			if (totalAmountPaid > 0) {
+				this.props.selectedCustomer.walletBalance =
+				Number(this.props.selectedCustomer.walletBalance) + Number(totalAmountPaid) - (this.calculateOrderDue() * 2);
 				this.updateWallet(this.props.selectedCustomer.walletBalance);
-				let diff = Math.abs(totalAmountPaid - this.currentCredit());
-
-				if(diff > 0){
-					this.topUpWallet(Number(diff));
-				}
-			} else if (totalAmountPaid < this.calculateOrderDue()) {
-
-				console.log("Total Amount Paid is less than the Order Total");
-			} else if (totalAmountPaid == this.calculateOrderDue()) {
+			} else if (totalAmountPaid <= 0) {
 				this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
 				this.updateWallet(this.props.selectedCustomer.walletBalance);
 			}
 			this.saveOrder(true);
+
+			// if (totalAmountPaid > this.calculateOrderDue()) {
+			// 	this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
+
+			// 	this.updateWallet(this.props.selectedCustomer.walletBalance);
+			// 	let diff = Math.abs(totalAmountPaid - this.currentCredit());
+
+			// 	if(diff > 0){
+			// 		this.topUpWallet(Number(diff));
+			// 	}
+			// } else if (totalAmountPaid < this.calculateOrderDue()) {
+
+			// 	console.log("Total Amount Paid is less than the Order Total");
+			// } else if (totalAmountPaid == this.calculateOrderDue()) {
+			// 	this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
+			// 	this.updateWallet(this.props.selectedCustomer.walletBalance);
+			// }
+			// this.saveOrder(true);
 
 		} else if (this.currentCredit() < this.calculateOrderDue()) {
 			// if credit is less than order due:-
@@ -1002,21 +1010,21 @@ class OrderCheckout extends React.PureComponent {
 		if (receipt != null) {
 			const creditIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
 
-			if (creditIndex >= 0) {
-				// if (this.currentCredit() === 0) {
-				// 	Alert.alert(
-				// 		'Empty Customer Wallet',
-				// 		"There is no money in the customer's wallet",
-				// 		[{
-				// 			text: 'OK',
-				// 			onPress: () => {
-				// 			}
-				// 		}],
-				// 		{ cancelable: false }
-				// 	);
-				// 	return;
-				// }
-			}
+			// if (creditIndex >= 0) {
+			// 	if (this.currentCredit() === 0) {
+			// 		Alert.alert(
+			// 			'Empty Customer Wallet',
+			// 			"There is no money in the customer's wallet",
+			// 			[{
+			// 				text: 'OK',
+			// 				onPress: () => {
+			// 				}
+			// 			}],
+			// 			{ cancelable: false }
+			// 		);
+			// 		return;
+			// 	}
+			// }
 
 			receipt.customer_account = this.props.selectedCustomer;
 			if (this.props.selectedPaymentTypes.length > 0) {

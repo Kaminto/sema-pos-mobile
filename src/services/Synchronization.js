@@ -120,7 +120,7 @@ class Synchronization {
 						const promiseSalesChannels = SalesChannelSync.synchronizeSalesChannels();
 						const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes();
 						const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes();
-						
+
 						const promiseCustomers = CustomerSync.synchronizeCustomers().then(
 							customerSync => {
 								syncResult.customers = customerSync;
@@ -267,7 +267,8 @@ class Synchronization {
 								settings.uiLanguage,
 								result.response.token,
 								settings.siteId,
-								false
+								false,
+								settings.currency
 							);
 							Communications.setToken(result.response.token);
 							SettingRealm.setTokenExpiration();

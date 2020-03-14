@@ -86,7 +86,7 @@ class CustomerSync {
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization.getInventory - error ' + error
+                        'Synchronization.getCustomers - error ' + error
                     );
                     resolve({
 						error: error,

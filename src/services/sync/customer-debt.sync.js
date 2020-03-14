@@ -30,12 +30,11 @@ class CustomerDebtsSync {
                         console.log('remoteCustomerDebts', remoteCustomerDebts);
                         initlocalCustomerDebts.forEach(localCustomerDebt => {
                             let filteredObj = remoteCustomerDebts.filter(obj => obj.receipt_payment_type_id === localCustomerDebt.receipt_payment_type_id)
-                            console.log('filteredObj', filteredObj);
+
                             if (filteredObj.length > 0) {
                                 const remoteIndex = remoteCustomerDebts.map(function (e) { return e.receipt_payment_type_id }).indexOf(filteredObj[0].receipt_payment_type_id);
                                 const localIndex = localCustomerDebts.map(function (e) { return e.receipt_payment_type_id }).indexOf(filteredObj[0].receipt_payment_type_id);
-                                console.log('remoteIndex', remoteIndex);
-                                console.log('localIndex', localIndex);
+
                                 remoteCustomerDebts.splice(remoteIndex, 1);
                                 localCustomerDebts.splice(localIndex, 1);
 
@@ -75,13 +74,6 @@ class CustomerDebtsSync {
                             })
                         }
 
-                        console.log('onlyRemote', onlyRemote);
-                        console.log('onlyLocally', onlyLocally);
-                        console.log('bothLocalRemote', bothLocalRemote);
-
-                        console.log('localCustomerDebts2', localCustomerDebts);
-                        console.log('remoteCustomerDebts2', remoteCustomerDebts);
-
                     }
                     resolve({
                         error: null,
@@ -92,7 +84,7 @@ class CustomerDebtsSync {
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization.getInventory - error ' + error
+                        'Synchronization.getDebt - error ' + error
                     );
                     resolve({
                         error: error,
