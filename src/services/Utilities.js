@@ -1,3 +1,4 @@
+const IntlPolyFill = require('intl');
 require('intl/locale-data/jsonp/en-US');	// U.S.
 require('intl/locale-data/jsonp/ee-GH');	// Ghana
 require('intl/locale-data/jsonp/rw-RW');	// Rawanda
