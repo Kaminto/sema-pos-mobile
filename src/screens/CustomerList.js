@@ -1,10 +1,4 @@
 import React from 'react';
-// if (process.env.NODE_ENV === 'development') {
-// 	const whyDidYouRender = require('@welldone-software/why-did-you-render');
-// 	whyDidYouRender(React, {
-// 	  trackAllPureComponents: true,
-// 	});
-//   }
 import {
     View,
     Text,
@@ -35,8 +29,6 @@ import PaymentModal from './paymentModal';
 import slowlog from 'react-native-slowlog';
 
 import { TouchableHighlight } from 'react-native-gesture-handler';
-
-import { NavigationActions } from 'react-navigation';
 
 class CustomerListItem extends React.PureComponent {
 	// static whyDidYouRender = true;
