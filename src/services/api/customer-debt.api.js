@@ -1,6 +1,6 @@
 class CustomerDebtApi {
 	constructor() {
-		this._url = 'http://142.93.115.206:3002/';
+		this._url = 'http://192.168.43.153:3002/';
 		this._site = '';
 		this._user = '';
 		this._password = '';
@@ -28,21 +28,17 @@ class CustomerDebtApi {
 		this._siteId = siteId;
 	}
 
-	getCustomerDebts(kiosk_id,updatedSince) {
+	getCustomerDebts(kiosk_id, updatedSince) {
 		let options = {
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-		let url = `sema/customer_debt/${kiosk_id}`;
+		let url = `sema/customer_debt/${kiosk_id}/${updatedSince}`;
 		console.log('this._url', this._url);
-		// if (updatedSince) {
-		// 	url = url + '?updated-date=' + updatedSince;
-		// }
-
 		return fetch(this._url + url, options)
-		.then(response => response.json())
+			.then(response => response.json())
 			.then(responseJson => {
 				return responseJson;
 			})
@@ -92,7 +88,7 @@ class CustomerDebtApi {
 					reject();
 				});
 		});
-    }
+	}
 
 	deleteCustomerDebt(customerDebt) {
 		let options = {

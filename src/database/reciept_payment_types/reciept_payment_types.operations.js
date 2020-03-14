@@ -14,6 +14,16 @@ class ReceiptPaymentTypeRealm {
         this.lastReceiptPaymentTypeSync = firstSyncDate;
     }
 
+    setLastReceiptPaymentTypeSync() {
+        realm.write(() => {
+            console.log('update sync date');
+            let syncDate = realm.objects('ReceiptPaymentTypeSyncDate');
+            syncDate[0].lastReceiptPaymentTypeSync = new Date()
+        })
+    }
+
+
+
     truncate() {
         try {
             realm.write(() => {
@@ -29,12 +39,7 @@ class ReceiptPaymentTypeRealm {
         return this.lastReceiptPaymentTypeSync = JSON.parse(JSON.stringify(realm.objects('ReceiptPaymentTypeSyncDate')))['0'].lastReceiptPaymentTypeSync;
     }
 
-    setReceiptPaymentTypeSync() {
-        realm.write(() => {
-            let syncDate = realm.objects('ReceiptPaymentTypeSyncDate');
-            syncDate[0].lastReceiptPaymentTypeSync = new Date();
-        })
-    }
+
 
     getReceiptPaymentTypes() {
         return Object.values(JSON.parse(JSON.stringify(realm.objects('ReceiptPaymentType'))));
@@ -54,8 +59,7 @@ class ReceiptPaymentTypeRealm {
                 });
 
             return orderObj2.filter(r => {
-                return compareAsc(r.created_at, date) === 1 || compareAsc(r.updated_at, date) === 1;
-                ///return r.created_at === format(parseISO(date), 'yyyy-MM-dd') || r.updated_at === format(parseISO(date), 'yyyy-MM-dd')
+                return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1;
             }
             );
         } catch (e) {
@@ -72,7 +76,7 @@ class ReceiptPaymentTypeRealm {
     createReceiptPaymentType(receiptPaymentType) {
         try {
             realm.write(() => {
-                realm.create('ReceiptPaymentType', receiptPaymentType);
+                realm.create('ReceiptPaymentType', { ...receiptPaymentType, active: false });
             });
         } catch (e) {
             console.log("Error on creation", e);
@@ -189,7 +193,8 @@ class ReceiptPaymentTypeRealm {
                             payment_type_id: obj.id,
                             receipt_payment_type_id: uuidv1(),
                             amount: Number(obj.amount),
-                            syncAction: obj.syncAction ? obj.syncAction : 'CREATE',
+                            active: false,
+                            syncAction: obj.syncAction ? obj.syncAction : 'create',
                             created_at: obj.created_at ? obj.created_at : null,
                             updated_at: obj.updated_at ? obj.updated_at : null,
                         });

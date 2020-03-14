@@ -1,5 +1,6 @@
 class CreditApi {
 	constructor() {
+		//this._url = 'http://192.168.43.153:3002/';
 		this._url = 'http://142.93.115.206:3002/';
 		this._site = '';
 		this._user = '';
@@ -28,18 +29,14 @@ class CreditApi {
 		this._siteId = siteId;
 	}
 
-	getTopUps(updatedSince) {
+	getTopUps(kiosk_id, updatedSince) {
 		let options = {
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-		let url = 'sema/customer_credit/allTopUps';
-		console.log('this._url', this._url);
-		if (updatedSince) {
-			url = url + '?updated-date=' + updatedSince;
-		}
+		let url = `sema/customer_credit/${kiosk_id}/${updatedSince}`;
 
 		return fetch(this._url + url, options)
 		.then(response => response.json())

@@ -1,6 +1,7 @@
 class CustomerApi {
     constructor() {
         this._url = 'http://142.93.115.206:3002/';
+        //this._url = 'http://192.168.43.153:3002/';
         this._site = '';
         this._user = '';
         this._password = '';
@@ -12,7 +13,8 @@ class CustomerApi {
 		if (!url.endsWith('/')) {
 			url = url + '/';
 		}
-		this._url = url;
+        this._url = url;
+        //this._url = url;
 		this._site = site;
 		this._user = user;
 		this._password = password;
@@ -35,13 +37,14 @@ class CustomerApi {
                 Authorization: 'Bearer ' + this._token
             }
         };
-        let url = 'sema/site/customers?site-id=' + this._siteId;
 
-        if (updatedSince) {
-            console.log('updatedSince', typeof updatedSince);
-            console.log('updatedSince', updatedSince);
-            url = url + '&updated-date=' + updatedSince;
-        }
+        let url = `sema/site/customers/${this._siteId}/${updatedSince}`;
+        // if (updatedSince) {
+        //     console.log('updatedSince', typeof updatedSince);
+        //     console.log('updatedSince', updatedSince);
+        //     url = url + '&updated-date=' + updatedSince;
+        // }
+        console.log(this._url + url);
         return fetch(this._url + url, options)
             .then(response => response.json())
             .then(responseJson => {
@@ -105,9 +108,7 @@ class CustomerApi {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + this._token
             },
-            body: JSON.stringify({
-                active: false
-            })
+            body: JSON.stringify(customer)
         };
         return new Promise((resolve, reject) => {
             fetch(

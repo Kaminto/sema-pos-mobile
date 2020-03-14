@@ -11,12 +11,12 @@ class CustomerSync {
                     let initlocalCustomers = CustomerRealm.getCustomerByCreatedDate(CustomerRealm.getLastCustomerSync());
                     let localCustomers = [...initlocalCustomers];
                     let remoteCustomers = [...remoteCustomer.customers];
-                   console.log('remoteCustomer', remoteCustomers);
-                   console.log('localCustomers', localCustomers);
-                    if (initlocalCustomers.length === 0 && remoteCustomers.length > 0) {
-                        CustomerRealm.createManyCustomers(remoteCustomer.customers);
-                        CustomerRealm.setLastCustomerSync();
-                    }
+                   console.log('remoteCustomer', JSON.stringify(remoteCustomers));
+                   console.log('localCustomers', JSON.stringify(localCustomers));
+                    // if (initlocalCustomers.length === 0) {
+                    //     CustomerRealm.createManyCustomers(remoteCustomer.customers);
+                    //     CustomerRealm.setLastCustomerSync();
+                    // }
 
                     let onlyLocally = [];
                     let onlyRemote = [];
@@ -25,8 +25,6 @@ class CustomerSync {
                     let bothLocalRemote = {};
                     let updateCount = 0;
                     if (initlocalCustomers.length > 0) {
-
-
                         initlocalCustomers.forEach(localCustomer => {
                             let filteredObj = remoteCustomers.filter(obj => obj.customerId === localCustomer.customerId)
 
@@ -53,99 +51,31 @@ class CustomerSync {
                         bothLocalRemote.inLocal = inLocal;
                         bothLocalRemote.inRemote = inRemote;
 
-
+                        
                         if (onlyRemote.length > 0) {
                             CustomerRealm.createManyCustomers(onlyRemote);
                             CustomerRealm.setLastCustomerSync();
                         }
 
                         if (onlyLocally.length > 0) {
-                            onlyLocally.forEach(localCustomer => {
-
-                                CustomerApi.createCustomer(
-                                    localCustomer
-                                )
-                                    .then((response) => {
-                                        CustomerRealm.synched(localCustomer);
-                                        CustomerRealm.setLastCustomerSync();
-                                        console.log(
-                                            'Synchronization:synced to remote - ' ,
-                                            response
-                                        );
-                                    })
-                                    .catch(error => {
-                                        console.log(
-                                            'Synchronization:synchronizeCustomers Create Customers failed',error
-                                        );
-                                    });
+                            onlyLocally.forEach(localCustomer => {                               
+                                this.apiSyncOperations(localCustomer);;
                             })
                         }
 
 
                         if (inLocal.length > 0 && inRemote.length > 0) {
-
                             inLocal.forEach(localCustomer => {
-                                if (localCustomer.active === true && localCustomer.syncAction === 'delete') {
-                                    CustomerApi.deleteCustomer(
-                                        localCustomer
-                                    )
-                                        .then((response) => {
-                                            console.log(
-                                                'Synchronization:synchronizeCustomers - Removing Customers from pending list - ' +
-                                                response
-                                            );
-                                            updateCount = updateCount + 1;
-                                            CustomerRealm.softDeleteCustomer(
-                                                localCustomer
-                                            );
-                                        })
-                                        .catch(error => {
-                                            console.log(
-                                                'Synchronization:synchronizeCustomers Delete Customers failed ' +
-                                                error
-                                            );
-                                        });
-                                }
-
-                                if (localCustomer.active === true && localCustomer.syncAction === 'update') {
-                                    CustomerApi.updateCustomer(
-                                        localCustomer
-                                    )
-                                        .then((response) => {
-                                            updateCount = updateCount + 1;
-                                            console.log(
-                                                'Synchronization:synchronizeCustomers - Removing Customers from pending list - ' +
-                                                response
-                                            );
-                                        })
-                                        .catch(error => {
-                                            console.log(
-                                                'Synchronization:synchronizeCustomers Update Customers failed ' +
-                                                error
-                                            );
-                                        });
-
-                                } else if (localCustomer.active === false && localCustomer.syncAction === 'update') {
-                                    CustomerApi.createCustomer(
-                                        localCustomer
-                                    )
-                                        .then((response) => {
-                                            updateCount = updateCount + 1;
-                                            CustomerRealm.synched(localCustomer);
-                                            CustomerRealm.setLastCustomerSync();
-                                            console.log(
-                                                'Synchronization:synced to remote - ' +
-                                                response
-                                            );
-                                        })
-                                        .catch(error => {
-                                            console.log(
-                                                'Synchronization:synchronizeCustomers Create Customers failed',error
-                                            );
-                                        });
-                                }
+                                this.apiSyncOperations(localCustomer);
                             })
                         }
+
+                        console.log('onlyRemote', onlyRemote);
+                        console.log('onlyLocally', onlyLocally);
+                        console.log('bothLocalRemote', bothLocalRemote);
+
+                        // console.log('localCustomers2', localCustomers);
+                        // console.log('remoteCustomers2', remoteCustomers);
 
                     }
                     resolve({
@@ -165,6 +95,113 @@ class CustomerSync {
                 });
         });
     }
+
+    apiSyncOperations(localCustomer){
+        if (localCustomer.active === true && localCustomer.syncAction === 'delete') {
+            CustomerApi.deleteCustomer(
+                localCustomer
+            )
+                .then((response) => {
+                    console.log(
+                        'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                        response
+                    );
+                    CustomerRealm.synched(localCustomer);
+                    CustomerRealm.setLastCustomerSync();
+                   // updateCount = updateCount + 1;
+                   
+                })
+                .catch(error => {
+                    console.log(
+                        'Synchronization:synchronizeInventory Delete Inventory failed ' +
+                        error
+                    );
+                });
+        }
+
+        if (localCustomer.active === true && localCustomer.syncAction === 'update') {
+            CustomerApi.updateCustomer(
+                localCustomer
+            )
+                .then((response) => {
+                   // updateCount = updateCount + 1;
+                    console.log(
+                        'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                        response
+                    );
+                    CustomerRealm.synched(localCustomer);
+                    CustomerRealm.setLastCustomerSync();
+                })
+                .catch(error => {
+                    console.log(
+                        'Synchronization:synchronizeInventory Update Inventory failed ' +
+                        error
+                    );
+                });
+
+        } 
+        
+         if (localCustomer.active === false && localCustomer.syncAction === 'update') {
+            CustomerApi.createCustomer(
+                localCustomer
+            )
+                .then((response) => {
+                   // updateCount = updateCount + 1;
+                    CustomerRealm.synched(localCustomer);
+                    CustomerRealm.setLastCustomerSync();
+                    console.log(
+                        'Synchronization:synced to remote - ' +
+                        response
+                    );
+                })
+                .catch(error => {
+                    console.log(
+                        'Synchronization:synchronizeInventory Create Inventory failed',error
+                    );
+                });
+        }
+
+        if (localCustomer.active === false && localCustomer.syncAction === 'delete') {
+            CustomerApi.createCustomer(
+                localCustomer
+            )
+                .then((response) => {
+                   // updateCount = updateCount + 1;
+                    CustomerRealm.synched(localCustomer);
+                    CustomerRealm.setLastCustomerSync();
+                    console.log(
+                        'Synchronization:synced to remote - ' +
+                        response
+                    );
+                })
+                .catch(error => {
+                    console.log(
+                        'Synchronization:synchronizeInventory Create Inventory failed',error
+                    );
+                });
+        }
+
+        if (localCustomer.active === false && localCustomer.syncAction === 'create') {
+            CustomerApi.createCustomer(
+                localCustomer
+            )
+                .then((response) => {
+                   // updateCount = updateCount + 1;
+                    CustomerRealm.synched(localCustomer);
+                    CustomerRealm.setLastCustomerSync();
+                    console.log(
+                        'Synchronization:synced to remote - ' +
+                        response
+                    );
+                })
+                .catch(error => {
+                    console.log(
+                        'Synchronization:synchronizeInventory Create Inventory failed',error
+                    );
+                });
+        }
+    }
+
 
 }
 export default new CustomerSync();

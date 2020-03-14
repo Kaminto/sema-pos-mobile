@@ -1,13 +1,19 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-import { parseISO, isSameDay } from 'date-fns';
+import { parseISO, isSameDay, format, sub, compareAsc } from 'date-fns';
 class InventroyRealm {
     constructor() {
         this.inventory = [];
-        let firstSyncDate = new Date('November 7, 1973');
+        let firstSyncDate = format(sub(new Date(), { days: 30 }), 'yyyy-MM-dd');
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('InventorySyncDate')))).length == 0) {
                 realm.create('InventorySyncDate', { lastInventorySync: firstSyncDate });
+            }
+        });
+
+        realm.write(() => {
+            if (Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReadingSyncDate')))).length == 0) {
+                realm.create('MeterReadingSyncDate', { lastMeterReadingSync: firstSyncDate });
             }
         });
         this.lastInventorySync = firstSyncDate;
@@ -15,6 +21,10 @@ class InventroyRealm {
 
     getLastInventorySync() {
         return this.lastInventorySync = JSON.parse(JSON.stringify(realm.objects('InventorySyncDate')))['0'].lastInventorySync;
+    }
+
+    getLastMeterReadingSync() {
+        return JSON.parse(JSON.stringify(realm.objects('MeterReadingSyncDate')))['0'].lastMeterReadingSync;
     }
 
     truncate() {
@@ -30,10 +40,17 @@ class InventroyRealm {
         }
     }
 
-    setLastInventorySync(lastSyncTime) {
+    setLastInventorySync() {
         realm.write(() => {
             let syncDate = realm.objects('InventorySyncDate');
-            syncDate[0].lastInventorySync = lastSyncTime.toISOString()
+            syncDate[0].lastInventorySync = new Date();
+        })
+    }
+
+    setLastMeterReadingSync() {
+        realm.write(() => {
+            let syncDate = realm.objects('MeterReadingSyncDate');
+            syncDate[0].lastMeterReadingSync = new Date();
         })
     }
 
@@ -41,8 +58,24 @@ class InventroyRealm {
         return this.inventory = Object.values(JSON.parse(JSON.stringify(realm.objects('Inventory'))));
     }
 
+
+    getAllInventoryByDate(date) {
+        let inventory = this.inventory = Object.values(JSON.parse(JSON.stringify(realm.objects('Inventory'))));
+        return inventory.filter(r => {
+            return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1;
+        })
+    }
+
     getAllMeterReading() {
         return Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
+    }
+
+    getAllMeterReadingByDate(date) {
+        let meterReding = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
+        console.log('meterReding',meterReding);
+        return meterReding.filter(r => {
+            return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1;
+        })
     }
 
     initialise() {
@@ -106,7 +139,7 @@ class InventroyRealm {
                 if (filteredReading.length > 0) {
                     let meterUpdateObj = realm.objects('MeterReading').filtered(`meter_reading_id = "${filteredReading[0].meter_reading_id}"`);
                     meterUpdateObj[0].meter_value = meter_value;
-                    meterUpdateObj[0].syncAction = 'UPDATE';
+                    meterUpdateObj[0].syncAction = 'update';
                     meterUpdateObj[0].updated_at = new Date();
                 } else {
                     realm.create('MeterReading', {
@@ -114,7 +147,7 @@ class InventroyRealm {
                         kiosk_id,
                         created_at: new Date(date),
                         meter_value: meter_value ? meter_value : 0,
-                        syncAction: 'CREATE',
+                        syncAction: 'create',
                         active: false
                     });
                 }
@@ -145,9 +178,10 @@ class InventroyRealm {
 
                     } inventorUpdateObj[0].kiosk_id = inventory.kiosk_id;
                     inventorUpdateObj[0].wastageName = inventory.wastageName;
-                    inventorUpdateObj[0].syncAction = 'UPDATE';
+                    inventorUpdateObj[0].syncAction = 'update';
                     inventorUpdateObj[0].updated_at = new Date();
-                } else { let saveObj = {};
+                } else {
+                    let saveObj = {};
                     if (inventory.type === 'closing') {
                         saveObj = {
                             ...inventory,
@@ -155,7 +189,7 @@ class InventroyRealm {
                             created_at: date,
                             inventory: inventory.inventory ? inventory.inventory : 0,
                             quantity: inventory.quantity ? inventory.quantity : 0,
-                            syncAction: 'CREATE',
+                            syncAction: 'create',
                             active: false
                         }
                     } else if (inventory.type === 'notdispatched') {
@@ -164,7 +198,7 @@ class InventroyRealm {
                             closingStockId: uuidv1(),
                             created_at: date,
                             notDispatched: inventory.notDispatched ? inventory.notDispatched : 0,
-                            syncAction: 'CREATE',
+                            syncAction: 'create',
                             active: false
                         }
                     }
@@ -190,7 +224,7 @@ class InventroyRealm {
                     inventoryObj[0].created_at = new Date(inventory.created_at);
                 inventoryObj[0].inventory = inventory.inventory ? inventory.inventory : 0;
                 inventoryObj[0].wastageName = inventory.wastageName;
-                inventoryObj[0].syncAction = 'UPDATE';
+                inventoryObj[0].syncAction = 'update';
                 inventoryObj[0].updated_at = new Date();
             })
 
@@ -210,6 +244,21 @@ class InventroyRealm {
 
         } catch (e) {
             console.log("Error on synch inventory", e);
+        }
+
+    }
+
+
+    synchedMeterReading(meterReading) {
+        try {
+            realm.write(() => {
+                let meterReadingObj = realm.objects('MeterReading').filtered(`meter_reading_id = "${meterReading.meter_reading_id}"`);
+                meterReadingObj[0].active = true;
+                meterReadingObj[0].syncAction = null;
+            })
+
+        } catch (e) {
+            console.log("Error on synch MeterReading", e);
         }
 
     }

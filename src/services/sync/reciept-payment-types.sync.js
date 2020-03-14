@@ -12,10 +12,13 @@ class RecieptPaymentTypesSync {
                     let localRecieptPaymentTypes = [...initlocalRecieptPaymentTypes];
                     let remoteRecieptPaymentTypes = [...result];
 
-                    if (initlocalRecieptPaymentTypes.length === 0) {
-                        ReceiptPaymentTypeRealm.createManyReceiptPaymentType(result, null);
-                        ReceiptPaymentTypeRealm.setReceiptPaymentTypeSync();
-                    }
+                    console.log('localRecieptPaymentTypes', localRecieptPaymentTypes);
+                    console.log('remoteRecieptPaymentTypes', remoteRecieptPaymentTypes);
+
+                    // if (initlocalRecieptPaymentTypes.length === 0) {
+                    //     ReceiptPaymentTypeRealm.createManyReceiptPaymentType(result, null);
+                    //     ReceiptPaymentTypeRealm.setReceiptPaymentTypeSync();
+                    // }
 
                     let onlyLocally = [];
                     let onlyRemote = [];
@@ -57,87 +60,21 @@ class RecieptPaymentTypesSync {
 
                         if (onlyLocally.length > 0) {
                             onlyLocally.forEach(localRecieptPaymentType => {
-                                RecieptPaymentTypesApi.createReceiptPaymentType(
-                                    {
+                              
+                                    this.apiSyncOperations({
                                         ...localRecieptPaymentType,
                                         kiosk_id
-                                    }
-                                )
-                                    .then((response) => {
-                                        ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
-                                        ReceiptPaymentTypeRealm.setReceiptPaymentTypeSync();
-                                        console.log(
-                                            'Synchronization:synced to remote - ' +
-                                            response
-                                        );
-                                    })
-                                    .catch(error => {
-                                        console.log(
-                                            'Synchronization:synchronizeReceiptpaymenttypes Create Receiptpaymenttypes failed'
-                                        );
                                     });
                             })
                         }
 
                         if (inLocal.length > 0 && inRemote.length > 0) {
                             inLocal.forEach(localRecieptPaymentType => {
-
-                                if (localRecieptPaymentType.active === true && localRecieptPaymentType.syncAction === 'delete') {
-                                    RecieptPaymentTypesApi.deleteReceiptPaymentType(
-                                        localRecieptPaymentType
-                                    )
-                                        .then((response) => {
-                                            console.log(
-                                                'Synchronization:synchronizeReceiptpaymenttypes - Removing Receiptpaymenttypes from pending list - ' +
-                                                response
-                                            );
-                                            ReceiptPaymentTypeRealm.hardDeleteCredit(
-                                                localRecieptPaymentType
-                                            );
-                                        })
-                                        .catch(error => {
-                                            console.log(
-                                                'Synchronization:synchronizeReceiptpaymenttypes Delete Receiptpaymenttypes failed ' +
-                                                error
-                                            );
-                                        });
-                                }
-
-                                if (localRecieptPaymentType.active === true && localRecieptPaymentType.syncAction === 'update') {
-                                    RecieptPaymentTypesApi.updateReceiptPaymentType(
-                                        localRecieptPaymentType
-                                    )
-                                        .then((response) => {
-                                            console.log(
-                                                'Synchronization:synchronizeReceiptpaymenttypes - Removing Receiptpaymenttypes from pending list - ' +
-                                                response
-                                            );
-                                        })
-                                        .catch(error => {
-                                            console.log(
-                                                'Synchronization:synchronizeReceiptpaymenttypes Update Receiptpaymenttypes failed ' +
-                                                error
-                                            );
-                                        });
-
-                                } else if (localRecieptPaymentType.active === false && localRecieptPaymentType.syncAction === 'update') {
-                                    RecieptPaymentTypesApi.createReceiptPaymentType(
-                                        localRecieptPaymentType
-                                    )
-                                        .then((response) => {
-                                            ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
-                                            ReceiptPaymentTypeRealm.setReceiptPaymentTypeSync();
-                                            console.log(
-                                                'Synchronization:synced to remote - ' +
-                                                response
-                                            );
-                                        })
-                                        .catch(error => {
-                                            console.log(
-                                                'Synchronization:synchronizeReceiptpaymenttypes Create Receiptpaymenttypes failed'
-                                            );
-                                        });
-                                }
+                                this.apiSyncOperations({
+                                    ...localRecieptPaymentType,
+                                    kiosk_id
+                                });
+                              
                             })
                         }
 
@@ -164,6 +101,108 @@ class RecieptPaymentTypesSync {
                     });
                 });
         });
+    }
+
+    apiSyncOperations(localRecieptPaymentType) {
+        if (localRecieptPaymentType.active === true && localRecieptPaymentType.syncAction === 'delete') {
+            RecieptPaymentTypesApi.deleteReceiptPaymentType(
+                localRecieptPaymentType
+            )
+                .then((response) => {
+                    console.log(
+                        'Synchronization:synchronizeOrder - Removing order from pending list - ' +
+                        response
+                    ); 
+                    ReceiptPaymentTypeRealm.setReceiptPaymentTypeSync();                 
+                })
+                .catch(error => {
+                    console.log(
+                        'Synchronization:synchronizeOrder Delete Order failed ' +
+                        error
+                    );
+                });
+        }
+
+        if (localRecieptPaymentType.active === true && localRecieptPaymentType.syncAction === 'update') {
+            RecieptPaymentTypesApi.updateReceiptPaymentType(
+                localRecieptPaymentType
+            )
+                .then((response) => {
+                  // updateCount = updateCount + 1;
+                  ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
+                    console.log(
+                        'Synchronization:synchronizeOrder - Removing Order from pending list - ' +
+                        response
+                    );
+                })
+                .catch(error => {
+                    console.log(
+                        'Synchronization:synchronizeOrder Update Order failed ' +
+                        error
+                    );
+                });
+
+        }
+
+        if (localRecieptPaymentType.active === false && localRecieptPaymentType.syncAction === 'update') {
+            RecieptPaymentTypesApi.createReceiptPaymentType(
+                localRecieptPaymentType
+            )
+                .then((response) => {
+                   // updateCount = updateCount + 1;
+                   ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
+                   ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
+                    console.log(
+                        'Synchronization:synced to remote - ' +
+                        response
+                    );
+                })
+                .catch(error => {
+                    console.log(
+                        'Synchronization:synchronizeOrder Create Order failed', error
+                    );
+                });
+        }
+
+        if (localRecieptPaymentType.active === false && localRecieptPaymentType.syncAction === 'delete') {
+            RecieptPaymentTypesApi.createReceiptPaymentType(
+                localRecieptPaymentType
+            )
+                .then((response) => {
+                  //  updateCount = updateCount + 1;
+                  ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
+                  ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
+                    console.log(
+                        'Synchronization:synced to remote - ' +
+                        response
+                    );
+                })
+                .catch(error => {
+                    console.log(
+                        'Synchronization:synchronizeOrder Create Order failed', error
+                    );
+                });
+        }
+
+        if (localRecieptPaymentType.active === false && localRecieptPaymentType.syncAction === 'create') {
+            RecieptPaymentTypesApi.createReceiptPaymentType(
+                localRecieptPaymentType
+            )
+                .then((response) => {
+                  //  updateCount = updateCount + 1;
+                  ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
+                    ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
+                    console.log(
+                        'Synchronization:synced to remote - ',
+                        response
+                    );
+                })
+                .catch(error => {
+                    console.log(
+                        'Synchronization:synchronizeOrder Create Order failed', error
+                    );
+                });
+        }
     }
 
 }

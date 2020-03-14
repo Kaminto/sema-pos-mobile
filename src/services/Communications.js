@@ -14,7 +14,7 @@ import PaymentTypesApi from './api/payment-types.api';
 
 class Communications {
 	constructor() {
-		this._url = '';
+		this._url = 'http://142.93.115.206:3002/';
 		this._site = '';
 		this._user = '';
 		this._password = '';
@@ -25,7 +25,7 @@ class Communications {
 		if (!url.endsWith('/')) {
 			url = url + '/';
 		}
-		this._url = url;
+		this._url = 'http://142.93.115.206:3002/';
 		this._site = site;
 		this._user = user;
 		this._password = password;
@@ -34,7 +34,7 @@ class Communications {
 
 
 		CreditApi.initialize(
-			url,
+			'http://142.93.115.206:3002/',
 			site,
 			user,
 			password,
@@ -44,7 +44,7 @@ class Communications {
 
 
 		InventoryApi.initialize(
-			url,
+			'http://142.93.115.206:3002/',
 			site,
 			user,
 			password,
@@ -53,7 +53,7 @@ class Communications {
 		);
 
 		CustomerApi.initialize(
-			url,
+			'http://142.93.115.206:3002/',
 			site,
 			user,
 			password,
@@ -62,7 +62,7 @@ class Communications {
 		);
 
 		ProductApi.initialize(
-			url,
+			'http://142.93.115.206:3002/',
 			site,
 			user,
 			password,
@@ -71,7 +71,7 @@ class Communications {
 		);
 
 		CustomerTypeApi.initialize(
-			url,
+			'http://142.93.115.206:3002/',
 			site,
 			user,
 			password,
@@ -80,7 +80,7 @@ class Communications {
 		);
 
 		SalesChannelApi.initialize(
-			url,
+			'http://142.93.115.206:3002/',
 			site,
 			user,
 			password,
@@ -89,7 +89,7 @@ class Communications {
 		);
 
 		OrderApi.initialize(
-			url,
+			'http://142.93.115.206:3002/',
 			site,
 			user,
 			password,
@@ -97,7 +97,7 @@ class Communications {
 			siteId
 		);
 		DiscountApi.initialize(
-			url,
+			'http://142.93.115.206:3002/',
 			site,
 			user,
 			password,
@@ -105,7 +105,7 @@ class Communications {
 			siteId
 		);
 		CustomerDebtApi.initialize(
-			url,
+			'http://142.93.115.206:3002/',
 			site,
 			user,
 			password,
@@ -113,7 +113,7 @@ class Communications {
 			siteId
 		);
 		PaymentTypesApi.initialize(
-			url,
+			'http://142.93.115.206:3002/',
 			site,
 			user,
 			password,
@@ -121,7 +121,7 @@ class Communications {
 			siteId
 		);
 		RecieptPaymentTypesApi.initialize(
-			url,
+			'http://142.93.115.206:3002/',
 			site,
 			user,
 			password,
@@ -175,7 +175,7 @@ class Communications {
 				password: password
 			})
 		};
-
+console.log('this._url', this._url);
 		return new Promise((resolve, reject) => {
 			try {
 				fetch(this._url + 'sema/login', options)

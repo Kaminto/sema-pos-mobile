@@ -27,14 +27,14 @@ class MeterReadingApi {
 		this._siteId = siteId;
 	}
 
-	getMeterReading(kiosk_id) {
+	getMeterReading(kiosk_id, date) {
 		let options = {
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-        let url = `sema/meter_reading/${kiosk_id}`;
+        let url = `sema/meter_reading/${kiosk_id}/${date}`;
 
 		// if (updatedSince) {
 		// 	url = url + '&updated-date=' + updatedSince;

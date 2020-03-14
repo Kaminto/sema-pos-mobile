@@ -1,11 +1,11 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-import {format} from 'date-fns';
+import { format, parseISO, sub, compareAsc } from 'date-fns';
 
 class CreditRealm {
     constructor() {
         this.credit = [];
-        let firstSyncDate = new Date('November 7, 1973');
+        let firstSyncDate = format(sub(new Date(), { days: 30 }), 'yyyy-MM-dd');
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('Credit')))).length == 0) {
                 realm.create('CreditSyncDate', { lastCreditSync: firstSyncDate });
@@ -29,15 +29,23 @@ class CreditRealm {
         }
     }
 
-    setLastCreditSync(lastSyncTime) {
+    setLastCreditSync() {
         realm.write(() => {
             let syncDate = realm.objects('CreditSyncDate');
-            syncDate[0].lastCreditSync = lastSyncTime.toISOString();
+            syncDate[0].lastCreditSync = new Date();
         })
     }
 
     getAllCredit() {
         return this.credit = Object.values(JSON.parse(JSON.stringify(realm.objects('Credit'))));
+    }
+
+    getAllCreditByDate(date) {
+        let credit = Object.values(JSON.parse(JSON.stringify(realm.objects('Credit'))));
+        return credit.filter(r => {
+            return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1;
+        }
+        );
     }
 
     initialise() {
@@ -93,7 +101,7 @@ class CreditRealm {
                 creditObj[0].topup = credit.topup;
                 creditObj[0].balance = credit.balance;
                 creditObj[0].updated_at = credit.updated_at;
-                creditObj[0].syncAction = credit.syncAction;
+                creditObj[0].syncAction = 'update';
             })
 
         } catch (e) {
@@ -107,6 +115,7 @@ class CreditRealm {
             realm.write(() => {
                 let creditObj = realm.objects('Credit').filtered(`topUpId = "${credit.topUpId}"`);
                 creditObj[0].active = true;
+                creditObj[0].syncAction = null;
             })
         } catch (e) {
             console.log("Error on creation", e);

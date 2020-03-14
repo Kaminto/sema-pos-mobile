@@ -31,7 +31,7 @@ import i18n from '../app/i18n';
 
 class CustomSidebarMenu extends React.PureComponent {
   constructor() {
-	super();
+    super();
     this.state = {
       animating: false,
       language: '',
@@ -39,7 +39,7 @@ class CustomSidebarMenu extends React.PureComponent {
       password: "",
       selectedLanguage: {},
       isLoading: false
-	};
+    };
 
     this.items = [
       {
@@ -51,7 +51,7 @@ class CustomSidebarMenu extends React.PureComponent {
         navOptionThumb: 'md-pricetag',
         navOptionName: 'Transactions',
         screenToNavigate: 'Transactions',
-	  },
+      },
       {
         navOptionThumb: 'ios-stats',
         navOptionName: 'Sales Report',
@@ -80,21 +80,21 @@ class CustomSidebarMenu extends React.PureComponent {
     ];
   }
 
-  handleOnPress(item, key){
-	requestAnimationFrame(() => {
-	global.currentScreenIndex = key;
+  handleOnPress(item, key) {
+    requestAnimationFrame(() => {
+      global.currentScreenIndex = key;
 
-	if (item.screenToNavigate === 'LogOut') {
-		this.onLogout();
-	}
+      if (item.screenToNavigate === 'LogOut') {
+        this.onLogout();
+      }
 
-	if (item.screenToNavigate != 'LogOut' || item.screenToNavigate != 'Sync') {
-		this.props.navigation.navigate(item.screenToNavigate);
-	}
-	if (item.screenToNavigate === 'Sync') {
-		this.onSynchronize();
-	}
-  });
+      if (item.screenToNavigate != 'LogOut' || item.screenToNavigate != 'Sync') {
+        this.props.navigation.navigate(item.screenToNavigate);
+      }
+      if (item.screenToNavigate === 'Sync') {
+        this.onSynchronize();
+      }
+    });
   }
 
 
