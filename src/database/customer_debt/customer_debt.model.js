@@ -11,3 +11,10 @@ export const CustomerDebtSchema = {
         updated_at: { type: 'date', optional: true },
     }
 };
+
+export const CustomerDebtSyncDateSchema = {
+    name: 'CustomerDebtSyncDate',
+    properties: {
+        lastCustomerDebtSync: 'date',
+    }
+};

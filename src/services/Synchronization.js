@@ -141,6 +141,13 @@ class Synchronization {
 							}
 						);
 
+						const promiseInventory = InventorySync.synchronizeInventory(settings.siteId).then(
+							inventorySync => {
+								syncResult.inventory = inventorySync;
+								return inventorySync;
+							}
+						);
+
 						const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts().then(
 							customerDebtSync => {
 								syncResult.customerDebt = customerDebtSync;
@@ -165,12 +172,7 @@ class Synchronization {
 							}
 						);
 
-						const promiseInventory = InventorySync.synchronizeInventory(this.lastInventorySync).then(
-							inventorySync => {
-								syncResult.inventory = inventorySync;
-								return inventorySync;
-							}
-						);
+						
 
 
 						const promiseProducts = ProductSync.synchronizeProducts().then(
@@ -202,12 +204,13 @@ class Synchronization {
 						[
 							promiseOrders,
 							promiseCustomers,
+							promiseMeterReading,
+							promiseInventory,
 							promiseSalesChannels,
 							promiseCustomerTypes,
-
+							promiseRecieptPaymentTypes,
 							promisePaymentTypes,							
 							promiseTopUps,
-							promiseInventory,
 							promiseProducts,
 							promiseProductMrps,
 						]

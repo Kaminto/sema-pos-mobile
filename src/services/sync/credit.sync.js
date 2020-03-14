@@ -1,21 +1,22 @@
 import CreditRealm from '../../database/credit/credit.operations';
 import CreditApi from '../api/credit.api';
+import SettingRealm from '../../database/settings/settings.operations';
 import * as _ from 'lodash';
-
+let settings = SettingRealm.getAllSetting();
 class CreditSync {
 
-    synchronizeCredits(lastCreditSync) {
+    synchronizeCredits() {
         return new Promise(resolve => {
-            CreditApi.getTopUps()
+            CreditApi.getTopUps(settings.siteId, CreditRealm.getLastCreditSync())
                 .then(remoteCredit => {
-                    let initlocalCredits = CreditRealm.getAllCredit();
+                    let initlocalCredits = CreditRealm.getAllCreditByDate(CreditRealm.getLastCreditSync());
                     let localCredits = [...initlocalCredits];
                     let remoteInventories = [...remoteCredit.topup];
-                    // console.log('localCredits', localCredits);
-                    // console.log('remoteInventories', remoteInventories);
-                    if (initlocalCredits.length === 0) {
-                        CreditRealm.createManycredits(remoteCredit.topup);
-                    }
+                    console.log('localCredits', localCredits);
+                    console.log('remoteInventories', remoteInventories);
+                    // if (initlocalCredits.length === 0) {
+                    //     CreditRealm.createManycredits(remoteCredit.topup);
+                    // }
 
                     let onlyLocally = [];
                     let onlyRemote = [];
@@ -57,87 +58,19 @@ class CreditSync {
 
 
                         if (onlyRemote.length > 0) {
-                            CreditRealm.createManyInventories(onlyRemote)
+                            CreditRealm.createManycredits(onlyRemote);
+                            CreditRealm.setLastCreditSync();
                         }
 
                         if (onlyLocally.length > 0) {
                             onlyLocally.forEach(localCredit => {
-                                CreditApi.createTopUp(
-                                    localCredit
-                                )
-                                    .then((response) => {
-                                        CreditRealm.synched(localCredit);
-                                        console.log(
-                                            'Synchronization:synced to remote - ' +
-                                            response
-                                        );
-                                    })
-                                    .catch(error => {
-                                        console.log(
-                                            'Synchronization:synchronizeInventory Create Inventory failed'
-                                        );
-                                    });
+                                this.apiSyncOperations({...localCredit, kiosk_id: settings.siteId});
                             })
                         }
 
                         if (inLocal.length > 0 && inRemote.length > 0) {
                             inLocal.forEach(localCredit => {
-
-                                if (localCredit.active === true && localCredit.syncAction === 'delete') {
-                                    CreditApi.deleteTopUp(
-                                        localCredit
-                                    )
-                                        .then((response) => {
-                                            console.log(
-                                                'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
-                                                response
-                                            );
-                                            CreditRealm.hardDeleteCredit(
-                                                localCredit
-                                            );
-                                        })
-                                        .catch(error => {
-                                            console.log(
-                                                'Synchronization:synchronizeInventory Delete Inventory failed ' +
-                                                error
-                                            );
-                                        });
-                                }
-
-                                if (localCredit.active === true && localCredit.syncAction === 'update') {
-                                    CreditApi.updateCustomerCredit(
-                                        localCredit
-                                    )
-                                        .then((response) => {
-                                            console.log(
-                                                'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
-                                                response
-                                            );
-                                        })
-                                        .catch(error => {
-                                            console.log(
-                                                'Synchronization:synchronizeInventory Update Inventory failed ' +
-                                                error
-                                            );
-                                        });
-
-                                } else if (localCredit.active === false && localCredit.syncAction === 'update') {
-                                    CreditApi.createTopUp(
-                                        localCredit
-                                    )
-                                        .then((response) => {
-                                            CreditRealm.synched(localCredit);
-                                            console.log(
-                                                'Synchronization:synced to remote - ' +
-                                                response
-                                            );
-                                        })
-                                        .catch(error => {
-                                            console.log(
-                                                'Synchronization:synchronizeInventory Create Inventory failed'
-                                            );
-                                        });
-                                }
+                                this.apiSyncOperations({...localCredit, kiosk_id: settings.siteId});
                             })
                         }
 
@@ -168,6 +101,109 @@ class CreditSync {
                 });
         });
     }
+
+    apiSyncOperations(localCredit) {
+        if (localCredit.active === true && localCredit.syncAction === 'delete') {
+            CreditApi.deleteTopUp(
+                localCredit
+            )
+                .then((response) => {
+                    console.log(
+                        'Synchronization:synchronizeOrder - Removing order from pending list - ' +
+                        response
+                    );
+                    CreditRealm.setLastCreditSync();
+                })
+                .catch(error => {
+                    console.log(
+                        'Synchronization:synchronizeOrder Delete Order failed ' +
+                        error
+                    );
+                });
+        }
+
+        if (localCredit.active === true && localCredit.syncAction === 'update') {
+            CreditApi.updateCustomerCredit(
+                localCredit
+            )
+                .then((response) => {
+                    // updateCount = updateCount + 1;
+                    CreditRealm.setLastCreditSync();
+                    console.log(
+                        'Synchronization:synchronizeOrder - Removing Order from pending list - ' +
+                        response
+                    );
+                })
+                .catch(error => {
+                    console.log(
+                        'Synchronization:synchronizeOrder Update Order failed ' +
+                        error
+                    );
+                });
+
+        }
+
+        if (localCredit.active === false && localCredit.syncAction === 'update') {
+            CreditApi.createTopUp(
+                localCredit
+            )
+                .then((response) => {
+                    // updateCount = updateCount + 1;
+                    CreditRealm.synched(localCredit);
+                    CreditRealm.setLastCreditSync();
+                    console.log(
+                        'Synchronization:synced to remote - ' +
+                        response
+                    );
+                })
+                .catch(error => {
+                    console.log(
+                        'Synchronization:synchronizeOrder Create Order failed', error
+                    );
+                });
+        }
+
+        if (localCredit.active === false && localCredit.syncAction === 'delete') {
+            CreditApi.createTopUp(
+                localCredit
+            )
+                .then((response) => {
+                    //  updateCount = updateCount + 1;
+                    CreditRealm.synched(localCredit);
+                    CreditRealm.setLastCreditSync();
+                    console.log(
+                        'Synchronization:synced to remote - ' +
+                        response
+                    );
+                })
+                .catch(error => {
+                    console.log(
+                        'Synchronization:synchronizeOrder Create Order failed', error
+                    );
+                });
+        }
+
+        if (localCredit.active === false && localCredit.syncAction === 'create') {
+            CreditApi.createTopUp(
+                localCredit
+            )
+                .then((response) => {
+                    //  updateCount = updateCount + 1;
+                    CreditRealm.synched(localCredit);
+                    CreditRealm.setLastCreditSync();
+                    console.log(
+                        'Synchronization:synced to remote - ',
+                        response
+                    );
+                })
+                .catch(error => {
+                    console.log(
+                        'Synchronization:synchronizeOrder Create Order failed', error
+                    );
+                });
+        }
+    }
+
 
 }
 export default new CreditSync();

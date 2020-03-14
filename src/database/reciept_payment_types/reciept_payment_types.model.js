@@ -9,6 +9,7 @@ export const ReceiptPaymentTypeSchema = {
         syncAction: { type: 'string', optional: true },
         created_at: { type: 'date', optional: true },
         updated_at: { type: 'date', optional: true },
+        active: { type: 'bool', optional: true },
     }
 };
 

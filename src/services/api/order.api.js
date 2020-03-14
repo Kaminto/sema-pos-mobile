@@ -1,6 +1,7 @@
 import { format, sub } from 'date-fns';
 class OrderApi {
 	constructor() {
+		//this._url = 'http://142.93.115.206:3002/';
 		this._url = 'http://142.93.115.206:3002/';
 		this._site = '';
 		this._user = '';
@@ -13,6 +14,7 @@ class OrderApi {
 		if (!url.endsWith('/')) {
 			url = url + '/';
 		}
+		//this._url = url;
 		this._url = url;
 		this._site = site;
 		this._user = user;
@@ -30,8 +32,8 @@ class OrderApi {
 	}
 
 
-	createReceipt(receipt) {
-
+	createOrder(receipt) {
+		console.log('receipt', receipt)
 		let options = {
 			method: 'POST',
 			headers: {
@@ -44,32 +46,34 @@ class OrderApi {
 		return new Promise((resolve, reject) => {
 			fetch(this._url + 'sema/site/receipts', options)
 				.then(response => {
+					console.log('response', response)
 					if (response.status === 200) {
 						response
 							.json()
 							.then(responseJson => {
+								console.log('responseJson', responseJson)
 								resolve(responseJson);
 							})
 							.catch(error => {
 								console.log(
-									'createReceipt - Parse JSON: ' +
+									'createOrder - Parse JSON: ' +
 									error
 								);
 								reject();
 							});
 					} else if (response.status === 409) {
 						// Indicates this receipt has already been added
-						console.log('createReceipt - Receipt already exists');
+						console.log('createOrder - Receipt already exists');
 						resolve({});
 					} else {
 						console.log(
-							'createReceipt - Fetch status: ' + response.status
+							'createOrder - Fetch status: ' + response.status
 						);
 						reject(response.status);
 					}
 				})
 				.catch(error => {
-					console.log('createReceipt - Fetch: ' + error);
+					console.log('createOrder - Fetch: ' + error);
 					reject();
 				});
 		});
@@ -96,24 +100,24 @@ class OrderApi {
 							})
 							.catch(error => {
 								console.log(
-									'createReceipt - Parse JSON: ' +
+									'createOrder - Parse JSON: ' +
 									error
 								);
 								reject();
 							});
 					} else if (response.status === 409) {
 						// Indicates this receipt has already been added
-						console.log('createReceipt - Receipt already exists');
+						console.log('createOrder - Receipt already exists');
 						resolve({});
 					} else {
 						console.log(
-							'createReceipt - Fetch status: ' + response.status
+							'createOrder - Fetch status: ' + response.status
 						);
 						reject(response.status);
 					}
 				})
 				.catch(error => {
-					console.log('createReceipt - Fetch: ' + error);
+					console.log('createOrder - Fetch: ' + error);
 					reject();
 				});
 		});
@@ -134,8 +138,7 @@ class OrderApi {
 		console.log('Communications:getReceipts: ', url);
 		return fetch(this._url + url, options)
 		.then(response => response.json())
-		.then(responseJson => {
-			console.log('responseJson', typeof responseJson);
+		.then(responseJson => { 
 			return responseJson;
 		})
 			.catch(error => {

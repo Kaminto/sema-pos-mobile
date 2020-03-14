@@ -1,16 +1,13 @@
 import realm from '../init';
-import { format, parseISO, sub } from 'date-fns';
+import { format, parseISO, sub, compareAsc } from 'date-fns';
 class OrderRealm {
     constructor() {
         this.order = [];
         let firstSyncDate = format(sub(new Date(), { days: 30 }), 'yyyy-MM-dd');
-       // console.log('firstSyncDate',firstSyncDate)
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('OrderSyncDate')))).length == 0) {
                 realm.create('OrderSyncDate', { lastOrderSync: firstSyncDate });
             }
-            // let syncDate = realm.objects('OrderSyncDate');
-            // syncDate[0].lastOrderSync = firstSyncDate;
         });
         this.lastOrderSync = firstSyncDate;
     }
@@ -21,7 +18,7 @@ class OrderRealm {
 
     setLastOrderSync() {
         realm.write(() => {
-             console.log('update sync date');
+            console.log('update sync date');
             let syncDate = realm.objects('OrderSyncDate');
             syncDate[0].lastOrderSync = new Date();
         })
@@ -74,7 +71,7 @@ class OrderRealm {
 
                 resolve(orderObj2.filter(r => r.created_at === format(parseISO(date), 'yyyy-MM-dd')));
             } catch (e) {
-                console.log("Error on get orders" + date , e);
+                console.log("Error on get orders" + date, e);
                 resolve(e);
             }
 
@@ -82,32 +79,24 @@ class OrderRealm {
     }
 
     getOrdersByDate2(date) {
+        try {
+            let orderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('Order'))));
 
-
-
-            try {
-                let orderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('Order'))));
-                let orderObj2 = orderObj.map(
-                    item => {
-                        return {
-                            ...item, created_at: format(parseISO(item.created_at), 'yyyy-MM-dd'),
-                            updated_at: format(parseISO(item.updated_at), 'yyyy-MM-dd')
-                        }
-                    });
-
-                    for (let i in orderObj2) {
-                        orderObj2[i].customer_account = JSON.parse(orderObj2[i].customer_account);
-                        orderObj2[i].receipt_line_items = JSON.parse(orderObj2[i].receipt_line_items);
-                    }
-
-            return orderObj2.filter(r => {
-                return r.created_at === format(parseISO(date), 'yyyy-MM-dd') || r.updated_at === format(parseISO(date), 'yyyy-MM-dd')
-            });
-            } catch (e) {
-                console.log("Error on get orders", e);
-                return e;
+            for (let i in orderObj) {
+                orderObj[i].customer_account = JSON.parse(orderObj[i].customer_account);
+                orderObj[i].receipt_line_items = JSON.parse(orderObj[i].receipt_line_items);
             }
+            console.log('orderObj', orderObj);
+            return orderObj.filter(r => {
+                // return r.created_at === format(parseISO(date), 'yyyy-MM-dd') || r.updated_at === format(parseISO(date), 'yyyy-MM-dd')
+                return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1;
+            });
 
+
+        } catch (e) {
+            console.log("Error on get orders", e);
+            return e;
+        }
     }
 
     getOrderItems() {
@@ -243,6 +232,7 @@ class OrderRealm {
     }
 
     synched(order) {
+        console.log('synched');
         try {
             realm.write(() => {
                 let orderObj = realm.objects('Order').filtered(`receiptId = "${order.receiptId}"`);
@@ -256,19 +246,6 @@ class OrderRealm {
 
     }
 
-    synched(order) {
-        try {
-            realm.write(() => {
-                let orderObj = realm.objects('Order').filtered(`receiptId = "${order.receiptId}"`);
-                orderObj[0].active = true;
-                orderObj[0].syncAction = null;
-            })
-
-        } catch (e) {
-            console.log("Error on synch orders", e);
-        }
-
-    }
 
 
     // Hard delete when active property is false or when active property and syncAction is delete
@@ -292,6 +269,7 @@ class OrderRealm {
                 let orderObj = realm.objects('Order').filtered(`receiptId = "${order.receiptId}"`);
                 orderObj[0].syncAction = 'delete';
                 orderObj[0].is_delete = 0;
+                orderObj[0].updated_at = new Date();
             })
 
         } catch (e) {

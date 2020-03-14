@@ -1003,19 +1003,19 @@ class OrderCheckout extends React.PureComponent {
 			const creditIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
 
 			if (creditIndex >= 0) {
-				if (this.currentCredit() === 0) {
-					Alert.alert(
-						'Empty Customer Wallet',
-						"There is no money in the customer's wallet",
-						[{
-							text: 'OK',
-							onPress: () => {
-							}
-						}],
-						{ cancelable: false }
-					);
-					return;
-				}
+				// if (this.currentCredit() === 0) {
+				// 	Alert.alert(
+				// 		'Empty Customer Wallet',
+				// 		"There is no money in the customer's wallet",
+				// 		[{
+				// 			text: 'OK',
+				// 			onPress: () => {
+				// 			}
+				// 		}],
+				// 		{ cancelable: false }
+				// 	);
+				// 	return;
+				// }
 			}
 
 			receipt.customer_account = this.props.selectedCustomer;

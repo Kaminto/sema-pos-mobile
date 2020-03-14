@@ -11,3 +11,10 @@ export const MeterReadingSchema = {
         updated_at: { type: 'date', optional: true },
     }
 };
+
+export const MeterReadingSyncDateSchema = {
+    name: 'MeterReadingSyncDate',
+    properties: {
+        lastMeterReadingSync: 'date',
+    }
+};

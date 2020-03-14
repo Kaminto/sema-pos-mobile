@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image, Text, Alert, ActivityIndicator, TouchableOpacity} from 'react-native';
+import { View, StyleSheet, Image, Text, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -32,7 +32,7 @@ import { ScrollView } from 'react-navigation';
 
 class CustomSidebarMenu extends React.PureComponent {
   constructor() {
-	super();
+    super();
     this.state = {
       animating: false,
       language: '',
@@ -40,7 +40,7 @@ class CustomSidebarMenu extends React.PureComponent {
       password: "",
       selectedLanguage: {},
       isLoading: false
-	};
+    };
 
     this.items = [
       {
@@ -52,7 +52,7 @@ class CustomSidebarMenu extends React.PureComponent {
         navOptionThumb: 'md-pricetag',
         navOptionName: 'Transactions',
         screenToNavigate: 'Transactions',
-	  },
+      },
       {
         navOptionThumb: 'ios-stats',
         navOptionName: 'Sales Report',
@@ -81,78 +81,78 @@ class CustomSidebarMenu extends React.PureComponent {
     ];
   }
 
-  handleOnPress(item, key){
-	requestAnimationFrame(() => {
-	global.currentScreenIndex = key;
+  handleOnPress(item, key) {
+    requestAnimationFrame(() => {
+      global.currentScreenIndex = key;
 
-	if (item.screenToNavigate === 'LogOut') {
-		this.onLogout();
-	}
+      if (item.screenToNavigate === 'LogOut') {
+        this.onLogout();
+      }
 
-	if (item.screenToNavigate != 'LogOut' || item.screenToNavigate != 'Sync') {
-		this.props.navigation.navigate(item.screenToNavigate);
-	}
-	if (item.screenToNavigate === 'Sync') {
-		this.onSynchronize();
-	}
-  });
+      if (item.screenToNavigate != 'LogOut' || item.screenToNavigate != 'Sync') {
+        this.props.navigation.navigate(item.screenToNavigate);
+      }
+      if (item.screenToNavigate === 'Sync') {
+        this.onSynchronize();
+      }
+    });
   }
 
 
   render() {
     return (
       <View style={styles.sideMenuContainer}>
-		<ScrollView style={{ flex: 1 }}>
-        <Image source={require('../images/jibulogo.png')} resizeMode='stretch' style={{
-          width: 100,
-		  height: 100,
-		  alignSelf: 'center'
-        }} />
-        {/*Divider between Top Image and Sidebar Option*/}
-        <View
-          style={{
-            flex: 1,
-            height: 1,
-            backgroundColor: '#e2e2e2',
-            marginTop: 15,
-          }}
-        />
-        {/*Setting up Navigation Options from option array using loop*/}
-        <View style={{ width: '100%' }}>
-          {this.items.map((item, key) => (
-            <View style={{ flex: 1 }}  key={key}>
-				  <TouchableOpacity
-				 	style={{
-						flex: 1,
-						flexDirection: 'row',
-						alignItems: 'center',
-						paddingTop: 10,
-						paddingBottom: 10,
-						backgroundColor: global.currentScreenIndex === key ? '#e0dbdb' : '#ffffff',
-					  }}
+        <ScrollView style={{ flex: 1 }}>
+          <Image source={require('../images/jibulogo.png')} resizeMode='stretch' style={{
+            width: 100,
+            height: 100,
+            alignSelf: 'center'
+          }} />
+          {/*Divider between Top Image and Sidebar Option*/}
+          <View
+            style={{
+              flex: 1,
+              height: 1,
+              backgroundColor: '#e2e2e2',
+              marginTop: 15,
+            }}
+          />
+          {/*Setting up Navigation Options from option array using loop*/}
+          <View style={{ width: '100%' }}>
+            {this.items.map((item, key) => (
+              <View style={{ flex: 1 }} key={key}>
+                <TouchableOpacity
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    backgroundColor: global.currentScreenIndex === key ? '#e0dbdb' : '#ffffff',
+                  }}
 
-					onPress={() => this.handleOnPress(item, key)}>
-					<View style={{ marginRight: 10, marginLeft: 20 }}>
-						<Icon name={item.navOptionThumb} size={25} color="#808080" />
-					</View>
-					<Text
-						style={{
-						fontSize: 15,
-						color: global.currentScreenIndex === key ? 'red' : 'black',
-						}}
-						>
-						{item.navOptionName}
-					</Text>
-					</TouchableOpacity>
-            </View>
-          ))}
-        </View>
-        {
-          this.state.isLoading && (
-            <ActivityIndicator size={60} color="#ABC1DE" />
-          )
-        }
-    	</ScrollView>
+                  onPress={() => this.handleOnPress(item, key)}>
+                  <View style={{ marginRight: 10, marginLeft: 20 }}>
+                    <Icon name={item.navOptionThumb} size={25} color="#808080" />
+                  </View>
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      color: global.currentScreenIndex === key ? 'red' : 'black',
+                    }}
+                  >
+                    {item.navOptionName}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+          {
+            this.state.isLoading && (
+              <ActivityIndicator size={60} color="#ABC1DE" />
+            )
+          }
+        </ScrollView>
       </View>
     );
   }

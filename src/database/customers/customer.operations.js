@@ -1,6 +1,6 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-import { format, parseISO, sub } from 'date-fns';
+import { format, parseISO, sub, compareAsc } from 'date-fns';
 class CustomerRealm {
     constructor() {
         this.customer = [];
@@ -47,29 +47,16 @@ class CustomerRealm {
     }
 
     getCustomerByCreatedDate(date) {
-
-
         try {
             let orderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('Customer'))));
-            let orderObj2 = orderObj.map(
-                item => {
-                    return {
-                        ...item,
-                        createdDate: format(parseISO(item.createdDate), 'yyyy-MM-dd'),
-                        updatedDate: format(parseISO(item.updatedDate), 'yyyy-MM-dd'),
-
-                    }
-                });
-
-            return orderObj2.filter(r => {
-                return r.createdDate === format(parseISO(date), 'yyyy-MM-dd') || r.updatedDate === format(parseISO(date), 'yyyy-MM-dd')
+            return orderObj.filter(r => {
+            return compareAsc(parseISO(r.createdDate), parseISO(date)) === 1 || compareAsc(parseISO(r.updatedDate), parseISO(date)) === 1;
             }
             );
         } catch (e) {
             console.log("Error on get customers", e);
             return e;
         }
-
     }
 
     initialise() {
@@ -155,6 +142,8 @@ class CustomerRealm {
                 customerObj[0].frequency = frequency.toString();
                 customerObj[0].secondPhoneNumber = secondPhoneNumber;
                 customerObj[0].dueAmount = customer.dueAmount;
+                customerObj[0].walletBalance = customer.walletBalance;
+
 
                 if (customer.reminder_date) {
                     customerObj[0].reminder_date = format(parseISO(customer.reminder_date), 'yyyy-MM-dd')
@@ -237,13 +226,14 @@ class CustomerRealm {
     }
 
     softDeleteCustomer(customer) {
-        try { 
-                realm.write(() => {
-                    let customerObj = realm.objects('Customer').filtered(`customerId = "${customer.customerId}"`);
-                    customerObj[0].syncAction = 'delete';
-                    customerObj[0].is_delete = 0;
-                })
-           
+        try {
+            realm.write(() => {
+                let customerObj = realm.objects('Customer').filtered(`customerId = "${customer.customerId}"`);
+                customerObj[0].syncAction = 'delete';
+                customerObj[0].is_delete = 0;
+                customerObj[0].updatedDate = new Date();
+            })
+
         } catch (e) {
             console.log("Error on creation", e);
         }
@@ -253,7 +243,27 @@ class CustomerRealm {
         try {
             realm.write(() => {
                 customers.forEach(obj => {
-                    realm.create('Customer', obj);
+                    realm.create('Customer', 
+                    {
+                        customerId: obj.id,
+                        name: obj.name,
+                        customerTypeId: obj.customer_type_id,
+                        salesChannelId: obj.sales_channel_id,
+                        siteId: obj.kiosk_id,
+                        is_delete: obj.is_delete,
+                        reminder_date: obj.reminder_date,
+                        frequency: obj.frequency,
+                        dueAmount: obj.due_amount,
+                        walletBalance: obj.wallet_balance,
+                        address: obj.address_line1,
+                        gpsCoordinates: obj.gps_coordinates,
+                        phoneNumber: obj.phone_number,
+                        secondPhoneNumber: obj.second_phone_number,
+                        active: obj.active === 1 ? true : false ,
+                        createdDate: obj.created_at,
+                        updatedDate: obj.updated_at   
+                    }
+                    );
                 });
             });
         } catch (e) {

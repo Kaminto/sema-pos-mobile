@@ -1,10 +1,30 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-import {format} from 'date-fns';
+import { format, parseISO, sub, compareAsc } from 'date-fns';
 
 class CustomerDebtRealm {
+
     constructor() {
         this.customerDebt = [];
+        let firstSyncDate = format(sub(new Date(), { days: 30 }), 'yyyy-MM-dd');
+        realm.write(() => {
+            if (Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerDebtSyncDate')))).length == 0) {
+                realm.create('CustomerDebtSyncDate', { lastCustomerDebtSync: firstSyncDate });
+            }
+        });
+        this.lastCustomerDebtSync = firstSyncDate;
+    }
+
+    getLastCustomerDebtSync() {
+        return JSON.parse(JSON.stringify(realm.objects('CustomerDebtSyncDate')))['0'].lastCustomerDebtSync;
+    }
+
+    setLastCustomerDebtSync() {
+        realm.write(() => {
+            console.log('update sync date');
+            let syncDate = realm.objects('CustomerDebtSyncDate');
+            syncDate[0].lastCustomerDebtSync = new Date();
+        })
     }
 
     truncate() {
@@ -20,6 +40,15 @@ class CustomerDebtRealm {
 
     getCustomerDebts() {
         return Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerDebt'))));
+    }
+
+
+    getCustomerDebtsByDate(date) {
+        let customerDebt = Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerDebt')))); 
+        return customerDebt.filter(r => {
+            return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1;
+        }
+        );
     }
 
     initialise() {
@@ -45,7 +74,7 @@ class CustomerDebtRealm {
     createCustomerDebt(customerDebt) {
         try {
             realm.write(() => {
-                realm.create('CustomerDebt', customerDebt);
+                realm.create('CustomerDebt', {...customerDebt, active: false, syncAction : 'create'});
             });
         } catch (e) {
             console.log("Error on creation customer debt", e);
@@ -145,9 +174,9 @@ class CustomerDebtRealm {
                             customer_account_id: customer_account_id ? customer_account_id : null,
                             customer_debt_id: uuidv1(),
                             due_amount: Number(obj.amount),
-                            syncAction: obj.syncAction ? obj.syncAction : 'CREATE',
+                            active: false,
+                            syncAction: obj.syncAction ? obj.syncAction : 'create',
                             created_at: new Date(),
-                            updated_at: obj.updated_at ? obj.updated_at : null,
                         });
                     });
                 }

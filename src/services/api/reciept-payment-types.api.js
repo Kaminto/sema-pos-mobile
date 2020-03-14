@@ -13,7 +13,7 @@ class RecieptPaymentTypesApi {
 		if (!url.endsWith('/')) {
 			url = url + '/';
 		}
-		this._url = url;
+		this._url = url
 		this._site = site;
 		this._user = user;
 		this._password = password;
