@@ -288,6 +288,7 @@ class OrderRealm {
                     obj.amount_mobile = Number(obj.amount_mobile);
                     obj.cogs = Number(obj.cogs);
                     obj.total = Number(obj.total);
+                    obj.active = true;
                     obj.customer_account = JSON.stringify(obj.customer_account);
                     obj.receipt_line_items = JSON.stringify(obj.receipt_line_items);
 

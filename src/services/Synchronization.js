@@ -117,9 +117,9 @@ class Synchronization {
 						let settings = SettingRealm.getAllSetting();
 
 
-						const promiseSalesChannels = SalesChannelSync.synchronizeSalesChannels();
-						const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes();
-						const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes();
+						// const promiseSalesChannels = SalesChannelSync.synchronizeSalesChannels();
+						// const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes();
+						// const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes();
 
 						const promiseCustomers = CustomerSync.synchronizeCustomers().then(
 							customerSync => {

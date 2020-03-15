@@ -24,6 +24,8 @@ class CustomerRealm {
         try {
             realm.write(() => {
                 let customers = realm.objects('Customer');
+               // let customerSyncDate = realm.objects('CustomerSyncDate');
+                //realm.delete(customerSyncDate);
                 realm.delete(customers);
             })
         } catch (e) {
@@ -240,6 +242,7 @@ class CustomerRealm {
     }
 
     createManyCustomers(customers) {
+        console.log('customerscustomers', customers);
         try {
             realm.write(() => {
                 customers.forEach(obj => {
@@ -253,8 +256,8 @@ class CustomerRealm {
                         is_delete: obj.is_delete === null ? 1 : obj.is_delete ,
                         reminder_date: obj.reminder_date,
                         frequency: obj.frequency,
-                        dueAmount: obj.due_amount,
-                        walletBalance: obj.wallet_balance === null ? 0 : obj.wallet_balance,
+                        dueAmount: obj.due_amount === null ? 0 : Number(obj.due_amount),
+                        walletBalance: obj.wallet_balance === null ? 0 : Number(obj.wallet_balance),
                         address: obj.address_line1,
                         gpsCoordinates: obj.gps_coordinates,
                         phoneNumber: obj.phone_number,
