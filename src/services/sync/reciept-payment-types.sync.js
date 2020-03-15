@@ -15,10 +15,10 @@ class RecieptPaymentTypesSync {
                     console.log('localRecieptPaymentTypes', localRecieptPaymentTypes);
                     console.log('remoteRecieptPaymentTypes', remoteRecieptPaymentTypes);
 
-                    // if (initlocalRecieptPaymentTypes.length === 0) {
-                    //     ReceiptPaymentTypeRealm.createManyReceiptPaymentType(result, null);
-                    //     ReceiptPaymentTypeRealm.setReceiptPaymentTypeSync();
-                    // }
+                    if (initlocalRecieptPaymentTypes.length === 0) {
+                        ReceiptPaymentTypeRealm.createManyReceiptPaymentType(result, null);
+                        ReceiptPaymentTypeRealm.setReceiptPaymentTypeSync();
+                    }
 
                     let onlyLocally = [];
                     let onlyRemote = [];
