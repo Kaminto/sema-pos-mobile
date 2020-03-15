@@ -13,10 +13,10 @@ class CustomerSync {
                     let remoteCustomers = [...remoteCustomer.customers];
                    console.log('remoteCustomer', JSON.stringify(remoteCustomers));
                    console.log('localCustomers', JSON.stringify(localCustomers));
-                    // if (initlocalCustomers.length === 0) {
-                    //     CustomerRealm.createManyCustomers(remoteCustomer.customers);
-                    //     CustomerRealm.setLastCustomerSync();
-                    // }
+                    if (initlocalCustomers.length === 0 && remoteCustomers.length > 0) {
+                        CustomerRealm.createManyCustomers(remoteCustomer.customers);
+                        CustomerRealm.setLastCustomerSync();
+                    }
 
                     let onlyLocally = [];
                     let onlyRemote = [];
@@ -50,9 +50,14 @@ class CustomerSync {
                         onlyRemote.push(...remoteCustomers);
                         bothLocalRemote.inLocal = inLocal;
                         bothLocalRemote.inRemote = inRemote;
-
+                        console.log('onlyRemote', onlyRemote);
+                        console.log('onlyLocally', onlyLocally);
+                        console.log('inLocal', inLocal);
+                        console.log('onlyLocally', onlyLocally);
+                        console.log('inRemote', inRemote);
                         
                         if (onlyRemote.length > 0) {
+                            console.log('CustomerRealm', onlyRemote);
                             CustomerRealm.createManyCustomers(onlyRemote);
                             CustomerRealm.setLastCustomerSync();
                         }
@@ -70,9 +75,7 @@ class CustomerSync {
                             })
                         }
 
-                        console.log('onlyRemote', onlyRemote);
-                        console.log('onlyLocally', onlyLocally);
-                        console.log('bothLocalRemote', bothLocalRemote);
+                      
 
                         // console.log('localCustomers2', localCustomers);
                         // console.log('remoteCustomers2', remoteCustomers);

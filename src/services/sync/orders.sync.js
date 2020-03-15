@@ -16,11 +16,11 @@ class OrderSync {
                     console.log('localOrders', localOrders);
                     console.log('initlocalOrders', initlocalOrders);
 
-                    // if (initlocalOrders.length === 0 && remoteOrders.length > 0) {
-                    //     console.log('createManyOrders', initlocalOrders);
-                    //     //OrderRealm.createManyOrders(remoteOrder);
-                    //     //OrderRealm.setLastOrderSync();
-                    // }
+                    if (initlocalOrders.length === 0 && remoteOrders.length > 0) {
+                        console.log('createManyOrders', initlocalOrders);
+                        OrderRealm.createManyOrders(remoteOrder);
+                        OrderRealm.setLastOrderSync();
+                    }
 
                     let onlyLocally = [];
                     let onlyRemote = [];
