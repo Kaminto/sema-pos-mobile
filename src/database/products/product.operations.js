@@ -1,15 +1,17 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-import {format, parseISO, sub} from 'date-fns';
+import { format, parseISO, sub } from 'date-fns';
 
 class ProductsRealm {
     constructor() {
         this.product = [];
-        let firstSyncDate = format(sub(new Date(), { days: 30 }), 'yyyy-MM-dd');
+        let firstSyncDate = format(sub(new Date(), { days: 1000 }), 'yyyy-MM-dd');
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('ProductSyncDate')))).length == 0) {
                 realm.create('ProductSyncDate', { lastProductSync: firstSyncDate });
             }
+            //      let syncDate = realm.objects('ProductSyncDate');
+            //  syncDate[0].lastProductSync = firstSyncDate;
         });
         this.lastProductSync = firstSyncDate;
     }
@@ -31,8 +33,8 @@ class ProductsRealm {
 
     setLastProductsync() {
         realm.write(() => {
-        let syncDate = realm.objects('ProductSyncDate');
-        syncDate[0].lastProductSync = new Date()
+            let syncDate = realm.objects('ProductSyncDate');
+            syncDate[0].lastProductSync = new Date()
         })
     }
 
@@ -43,24 +45,24 @@ class ProductsRealm {
     }
 
     getProductsByDate(date) {
-         try {
-				let orderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('Product'))));
+        try {
+            let orderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('Product'))));
 
-                let orderObj2 = orderObj.map(
-                    item => {
-                        return {
-                            ...item, created_at: format(parseISO(item.created_at), 'yyyy-MM-dd')
-                        }
-                    });
+            let orderObj2 = orderObj.map(
+                item => {
+                    return {
+                        ...item, created_at: format(parseISO(item.created_at), 'yyyy-MM-dd')
+                    }
+                });
 
-                return orderObj2.filter(r => {
-					return r.created_at === format(parseISO(date), 'yyyy-MM-dd');
+            return orderObj2.filter(r => {
+                return r.created_at === format(parseISO(date), 'yyyy-MM-dd');
 
-				});
-            } catch (e) {
-                console.log("Error on get products ", e);
-                return e;
-            }
+            });
+        } catch (e) {
+            console.log("Error on get products ", e);
+            return e;
+        }
 
 
     }
@@ -145,7 +147,7 @@ class ProductsRealm {
     }
 
 
-  // Hard delete when active property is false or when active property and syncAction is delete
+    // Hard delete when active property is false or when active property and syncAction is delete
 
     hardDeleteProducts(product) {
         try {
