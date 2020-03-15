@@ -82,7 +82,9 @@ class OrderSync {
                                     })
                                 }
                                 localOrder.products = products;
-                                console.log('localOrder', localOrder);
+                                delete localOrder.receipt_line_items;
+                                delete localOrder.customer_account;
+                                delete localOrder.customerAccountId
                                 this.apiSyncOperations(localOrder,siteId);                               
                             })
                         }
@@ -109,6 +111,9 @@ class OrderSync {
                                     })
                                 }
                                 localOrder.products = products;
+                                delete localOrder.receipt_line_items;
+                                delete localOrder.customer_account;
+                                delete localOrder.customerAccountId
                               this.apiSyncOperations(localOrder,siteId);
                             })
                         }
