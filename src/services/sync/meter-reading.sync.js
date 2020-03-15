@@ -14,6 +14,11 @@ class MeterReadingSync {
                     console.log('remoteMeterReading', remoteMeterReading);
                     console.log('initlocalMeterReadings', initlocalMeterReadings);
 
+                    if (localMeterReadings.length === 0) {
+                        InventroyRealm.createMeterReading(result, null);
+                        InventroyRealm.setLastMeterReadingSync();
+                    }
+
 
                     let onlyLocally = [];
                     let onlyRemote = [];
@@ -51,7 +56,7 @@ class MeterReadingSync {
 
 
                         if (onlyRemote.length > 0) {
-                            InventroyRealm.createManyMeterReadings(onlyRemote)
+                            InventroyRealm.createMeterReading(onlyRemote)
                         }
 
                         if (onlyLocally.length > 0) {
