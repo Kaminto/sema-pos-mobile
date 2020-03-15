@@ -863,25 +863,6 @@ class OrderCheckout extends React.PureComponent {
 				this.updateWallet(this.props.selectedCustomer.walletBalance);
 			}
 			this.saveOrder(true);
-
-			// if (totalAmountPaid > this.calculateOrderDue()) {
-			// 	this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
-
-			// 	this.updateWallet(this.props.selectedCustomer.walletBalance);
-			// 	let diff = Math.abs(totalAmountPaid - this.currentCredit());
-
-			// 	if(diff > 0){
-			// 		this.topUpWallet(Number(diff));
-			// 	}
-			// } else if (totalAmountPaid < this.calculateOrderDue()) {
-
-			// 	console.log("Total Amount Paid is less than the Order Total");
-			// } else if (totalAmountPaid == this.calculateOrderDue()) {
-			// 	this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
-			// 	this.updateWallet(this.props.selectedCustomer.walletBalance);
-			// }
-			// this.saveOrder(true);
-
 		} else if (this.currentCredit() < this.calculateOrderDue()) {
 			// if credit is less than order due:-
 			// compare totalPaid with order due
@@ -1009,22 +990,6 @@ class OrderCheckout extends React.PureComponent {
 
 		if (receipt != null) {
 			const creditIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
-
-			// if (creditIndex >= 0) {
-			// 	if (this.currentCredit() === 0) {
-			// 		Alert.alert(
-			// 			'Empty Customer Wallet',
-			// 			"There is no money in the customer's wallet",
-			// 			[{
-			// 				text: 'OK',
-			// 				onPress: () => {
-			// 				}
-			// 			}],
-			// 			{ cancelable: false }
-			// 		);
-			// 		return;
-			// 	}
-			// }
 
 			receipt.customer_account = this.props.selectedCustomer;
 			if (this.props.selectedPaymentTypes.length > 0) {
