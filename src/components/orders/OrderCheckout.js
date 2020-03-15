@@ -1109,6 +1109,9 @@ class OrderCheckout extends React.PureComponent {
 	};
 
 	addDays = (theDate, days) => {
+		if(days > 20){
+			days = 10;
+		}
 		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
 	}
 
