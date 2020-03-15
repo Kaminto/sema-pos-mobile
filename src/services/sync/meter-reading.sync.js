@@ -15,7 +15,7 @@ class MeterReadingSync {
                     console.log('initlocalMeterReadings', initlocalMeterReadings);
 
                     if (localMeterReadings.length === 0) {
-                        InventroyRealm.createMeterReading(result, null);
+                        InventroyRealm.createManyMeterReading(remoteMeterReading);
                         InventroyRealm.setLastMeterReadingSync();
                     }
 
@@ -56,7 +56,7 @@ class MeterReadingSync {
 
 
                         if (onlyRemote.length > 0) {
-                            InventroyRealm.createMeterReading(onlyRemote)
+                            InventroyRealm.createManyMeterReading(onlyRemote)
                         }
 
                         if (onlyLocally.length > 0) {
@@ -107,7 +107,7 @@ class MeterReadingSync {
                         'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
                         response
                     );
-                    InventroyRealm.setLastInventorySync();
+                    InventroyRealm.setLastMeterReadingSync();
                 })
                 .catch(error => {
                     console.log(
@@ -123,7 +123,7 @@ class MeterReadingSync {
                 localMeterReading
             )
                 .then((response) => {
-                    InventroyRealm.setLastInventorySync();
+                    InventroyRealm.setLastMeterReadingSync();
                     console.log(
                         'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
                         response
@@ -144,8 +144,8 @@ class MeterReadingSync {
                 localMeterReading
             )
                 .then((response) => {
-                    InventroyRealm.synched(localMeterReading);
-                    InventroyRealm.setLastInventorySync();
+                    InventroyRealm.synchedMeterReading(localMeterReading);
+                    InventroyRealm.setLastMeterReadingSync();
                     console.log(
                         'Synchronization:synced to remote - ' +
                         response
@@ -164,8 +164,8 @@ class MeterReadingSync {
                 localMeterReading
             )
                 .then((response) => {
-                    InventroyRealm.synched(localMeterReading);
-                    InventroyRealm.setLastInventorySync();
+                    InventroyRealm.synchedMeterReading(localMeterReading);
+                    InventroyRealm.setLastMeterReadingSync();
                     console.log(
                         'Synchronization:synced to remote - ' +
                         response
