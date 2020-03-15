@@ -100,7 +100,7 @@ class CustomerListItem extends React.PureComponent {
         }
 	};
 
-	getCustomerTypes(item) {
+	getCustomerTypes = (item) => {
 		const customerTypeIts = CustomerTypeRealm.getCustomerTypes();
         try {
             for (let i = 0; i < customerTypeIts.length; i++) {
