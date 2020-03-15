@@ -73,16 +73,6 @@ class CustomerDebtRealm {
     }
 
 
-    createCustomerDebt(customerDebt) {
-        try {
-            realm.write(() => {
-                realm.create('CustomerDebt', {...customerDebt, active: false, syncAction : 'create'});
-            });
-        } catch (e) {
-            console.log("Error on creation customer debt", e);
-        }
-    }
-
     updateCustomerDebt(customerDebt) {
         try {
             realm.write(() => {
