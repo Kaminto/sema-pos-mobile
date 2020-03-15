@@ -1153,7 +1153,6 @@ class OrderCheckout extends React.PureComponent {
 	};
 
 	currentCredit() {
-		// return this.totalTopUp() - this.getCreditPurchases();
 		return this.props.selectedCustomer.walletBalance;
 	}
 
