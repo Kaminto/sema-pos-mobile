@@ -9,12 +9,15 @@ class InventroyRealm {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('InventorySyncDate')))).length == 0) {
                 realm.create('InventorySyncDate', { lastInventorySync: firstSyncDate });
             }
+
         });
 
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReadingSyncDate')))).length == 0) {
                 realm.create('MeterReadingSyncDate', { lastMeterReadingSync: firstSyncDate });
             }
+            // let syncDate = realm.objects('MeterReadingSyncDate');
+            // syncDate[0].lastMeterReadingSync = firstSyncDate;
         });
         this.lastInventorySync = firstSyncDate;
     }
@@ -72,7 +75,6 @@ class InventroyRealm {
 
     getAllMeterReadingByDate(date) {
         let meterReding = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
-        console.log('meterReding',meterReding);
         return meterReding.filter(r => {
             return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1;
         })
@@ -298,12 +300,25 @@ class InventroyRealm {
         try {
             realm.write(() => {
                 inventories.forEach(obj => {
-                    realm.create('Inventory', obj);
+                    realm.create('Inventory', { ...obj, active: true });
                 });
             });
 
         } catch (e) {
             console.log("Error on creation many inventory", e);
+        }
+    }
+
+    createManyMeterReading(meterReadings) {
+        try {
+            realm.write(() => {
+                meterReadings.forEach(obj => {
+                    realm.create('MeterReading', { ...obj, active: true });
+                });
+            });
+
+        } catch (e) {
+            console.log("Error on creation many MeterReading", e);
         }
 
     }
