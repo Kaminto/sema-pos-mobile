@@ -66,7 +66,7 @@ class AuthLoadingScreen extends React.PureComponent {
             this.props.settingsActions.setSettings({ ...settings, loginSync: true });
             this.props.navigation.navigate('Login');
         }
-        //InventroyRealm.truncate()
+       // CustomerDebtRealm.truncate()
         console.log('last order sync',OrderRealm.getLastOrderSync());
         console.log('last customer sync',CustomerRealm.getLastCustomerSync());
         console.log('last meter reading sync',InventroyRealm.getLastMeterReadingSync());

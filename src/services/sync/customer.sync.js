@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 
 class CustomerSync {
 
-    synchronizeCustomers(lastCustomerSync) {
+    synchronizeCustomers() {
         return new Promise(resolve => {
             CustomerApi.getCustomers(CustomerRealm.getLastCustomerSync())
                 .then(remoteCustomer => {
@@ -50,14 +50,14 @@ class CustomerSync {
                         onlyRemote.push(...remoteCustomers);
                         bothLocalRemote.inLocal = inLocal;
                         bothLocalRemote.inRemote = inRemote;
+
                         console.log('onlyRemote', onlyRemote);
                         console.log('onlyLocally', onlyLocally);
+                        
                         console.log('inLocal', inLocal);
-                        console.log('onlyLocally', onlyLocally);
                         console.log('inRemote', inRemote);
                         
                         if (onlyRemote.length > 0) {
-                            console.log('CustomerRealm', onlyRemote);
                             CustomerRealm.createManyCustomers(onlyRemote);
                             CustomerRealm.setLastCustomerSync();
                         }
@@ -73,17 +73,14 @@ class CustomerSync {
                             inLocal.forEach(localCustomer => {
                                 this.apiSyncOperations(localCustomer);
                             })
-                        }
-
-                      
+                        }                      
 
                         // console.log('localCustomers2', localCustomers);
                         // console.log('remoteCustomers2', remoteCustomers);
-
                     }
                     resolve({
-                        error: null,
-                        updatedCustomers: onlyLocally.length + onlyRemote.length + updateCount
+                        success: true,
+                        customers: onlyLocally.length + onlyRemote.length + inLocal.length
                     });
 
                 })
@@ -92,15 +89,14 @@ class CustomerSync {
                         'Synchronization.getCustomers - error ' + error
                     );
                     resolve({
-						error: error,
-                        updatedCustomers: 0,
+						error: false,
+                        customers: 0,
 					});
                 });
         });
     }
 
     apiSyncOperations(localCustomer){
-        console.log('localCustomer',localCustomer);
         if (localCustomer.active === true && localCustomer.syncAction === 'delete') {
             CustomerApi.deleteCustomer(
                 localCustomer

@@ -14,9 +14,10 @@ class CustomerDebtsSync {
                     let remoteCustomerDebts = [...result];
                     console.log('localCustomerDebts', localCustomerDebts);
                     console.log('remoteCustomerDebts', remoteCustomerDebts);
-                    // if (initlocalCustomerDebts.length === 0) {
-                    //     CustomerDebtRealm.createManyCustomerDebt(result, null);
-                    // }
+                    if (initlocalCustomerDebts.length === 0) {
+                        CustomerDebtRealm.createManyCustomerDebt(result, null);
+                        CustomerDebtRealm.setLastCustomerDebtSync();
+                    }
 
                     let onlyLocally = [];
                     let onlyRemote = [];
@@ -54,6 +55,11 @@ class CustomerDebtsSync {
                         bothLocalRemote.inLocal = inLocal;
                         bothLocalRemote.inRemote = inRemote;
 
+                        console.log('onlyRemote', onlyRemote);
+                        console.log('onlyLocally', onlyLocally);
+                        
+                        console.log('inLocal', inLocal);
+                        console.log('inRemote', inRemote);
 
                         if (onlyRemote.length > 0) {
                             CustomerDebtRealm.createManyCustomerDebt(onlyRemote, null);
@@ -76,9 +82,8 @@ class CustomerDebtsSync {
 
                     }
                     resolve({
-                        error: null,
-                        localCustomerDebt: onlyLocally.length,
-                        result: onlyRemote.length
+                        success: true,
+                        debt: onlyLocally.length + onlyRemote.length + inLocal.length,
                     });
 
                 })
@@ -87,9 +92,8 @@ class CustomerDebtsSync {
                         'Synchronization.getDebt - error ' + error
                     );
                     resolve({
-                        error: error,
-                        localCustomerDebt: 0,
-                        result: 0
+                        error: true,
+                        debt: 0
                     });
                 });
         });
