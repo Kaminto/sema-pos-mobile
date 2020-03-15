@@ -100,6 +100,7 @@ class CustomerSync {
     }
 
     apiSyncOperations(localCustomer){
+        console.log('localCustomer',localCustomer);
         if (localCustomer.active === true && localCustomer.syncAction === 'delete') {
             CustomerApi.deleteCustomer(
                 localCustomer
