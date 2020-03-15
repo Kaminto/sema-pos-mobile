@@ -91,7 +91,7 @@ class CustomerDebtRealm {
                 customerDebtObj[0].description = customerDebt.description;
                 customerDebtObj[0].syncAction = customerDebt.syncAction;
                 customerDebtObj[0].created_at = customerDebt.created_at;
-                customerDebtObj[0].updated_at = customerDebt.updated_at;
+                customerDebtObj[0].updated_at = new Date();
 
             })
         } catch (e) {
@@ -188,6 +188,23 @@ class CustomerDebtRealm {
             });
         } catch (e) {
             console.log("Error on create many customer debts", e);
+        }
+    }
+
+    createCustomerDebt(due_amount, customer_account_id) {
+        try {
+            realm.write(() => {
+                realm.create('CustomerDebt', {
+                    customer_account_id,
+                    customer_debt_id: uuidv1(),
+                    due_amount: Number(due_amount),
+                    active: false,
+                    syncAction: 'create',
+                    created_at: new Date(),
+                });
+            });
+        } catch (e) {
+            console.log("Error on create customer debts", e);
         }
     }
 
