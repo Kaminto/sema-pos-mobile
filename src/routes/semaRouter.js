@@ -84,7 +84,7 @@ const ListCustomerStack = createStackNavigator({
 			// headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
 			headerLeft: () => <NavigationDrawerStructure />,
             headerStyle: {
-                backgroundColor: '#00549C',
+                backgroundColor: '#00549C'
             },
             headerTintColor: '#fff',
             // headerRight: () => <CustomerListHeader navigation={navigation}/>
@@ -106,8 +106,7 @@ const ListCustomerStack = createStackNavigator({
         navigationOptions: ({ navigation }) => ({
             title: 'Customer Details',
             headerStyle: {
-                backgroundColor: '#00549C',
-                fontSize: 24
+                backgroundColor: '#00549C'
             },
             headerTintColor: '#fff',
         })
