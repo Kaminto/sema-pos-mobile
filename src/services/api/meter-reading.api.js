@@ -34,14 +34,14 @@ class MeterReadingApi {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-        let url = `sema/meter_reading/${kiosk_id}/${date}`;
+		let url = `sema/meter_reading/${kiosk_id}/${date}`;
 
 		// if (updatedSince) {
 		// 	url = url + '&updated-date=' + updatedSince;
 		// }
-
+		console.log('meter reading link', this._url + url);
 		return fetch(this._url + url, options)
-		.then(response => response.json())
+			.then(response => response.json())
 			.then(responseJson => {
 				return responseJson;
 			})
