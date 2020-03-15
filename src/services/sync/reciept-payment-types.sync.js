@@ -17,7 +17,7 @@ class RecieptPaymentTypesSync {
 
                     if (initlocalRecieptPaymentTypes.length === 0) {
                         ReceiptPaymentTypeRealm.createManyReceiptPaymentType(result, null);
-                        ReceiptPaymentTypeRealm.setReceiptPaymentTypeSync();
+                        ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
                     }
 
                     let onlyLocally = [];
@@ -54,17 +54,17 @@ class RecieptPaymentTypesSync {
 
 
                         if (onlyRemote.length > 0) {
-                            ReceiptPaymentTypeRealm.createManyReceiptPaymentType(onlyRemote,null)
-                            ReceiptPaymentTypeRealm.setReceiptPaymentTypeSync();
+                            ReceiptPaymentTypeRealm.createManyReceiptPaymentType(onlyRemote, null)
+                            ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
                         }
 
                         if (onlyLocally.length > 0) {
                             onlyLocally.forEach(localRecieptPaymentType => {
-                              
-                                    this.apiSyncOperations({
-                                        ...localRecieptPaymentType,
-                                        kiosk_id
-                                    });
+
+                                this.apiSyncOperations({
+                                    ...localRecieptPaymentType,
+                                    kiosk_id
+                                });
                             })
                         }
 
@@ -74,7 +74,7 @@ class RecieptPaymentTypesSync {
                                     ...localRecieptPaymentType,
                                     kiosk_id
                                 });
-                              
+
                             })
                         }
 
@@ -112,8 +112,8 @@ class RecieptPaymentTypesSync {
                     console.log(
                         'Synchronization:synchronizeOrder - Removing order from pending list - ' +
                         response
-                    ); 
-                    ReceiptPaymentTypeRealm.setReceiptPaymentTypeSync();                 
+                    );
+                    ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
                 })
                 .catch(error => {
                     console.log(
@@ -128,8 +128,8 @@ class RecieptPaymentTypesSync {
                 localRecieptPaymentType
             )
                 .then((response) => {
-                  // updateCount = updateCount + 1;
-                  ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
+                    // updateCount = updateCount + 1;
+                    ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
                     console.log(
                         'Synchronization:synchronizeOrder - Removing Order from pending list - ' +
                         response
@@ -149,9 +149,9 @@ class RecieptPaymentTypesSync {
                 localRecieptPaymentType
             )
                 .then((response) => {
-                   // updateCount = updateCount + 1;
-                   ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
-                   ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
+                    // updateCount = updateCount + 1;
+                    ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
+                    ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
                     console.log(
                         'Synchronization:synced to remote - ' +
                         response
@@ -169,9 +169,9 @@ class RecieptPaymentTypesSync {
                 localRecieptPaymentType
             )
                 .then((response) => {
-                  //  updateCount = updateCount + 1;
-                  ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
-                  ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
+                    //  updateCount = updateCount + 1;
+                    ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
+                    ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
                     console.log(
                         'Synchronization:synced to remote - ' +
                         response
@@ -189,8 +189,8 @@ class RecieptPaymentTypesSync {
                 localRecieptPaymentType
             )
                 .then((response) => {
-                  //  updateCount = updateCount + 1;
-                  ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
+                    //  updateCount = updateCount + 1;
+                    ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
                     ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
                     console.log(
                         'Synchronization:synced to remote - ',
