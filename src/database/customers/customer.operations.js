@@ -262,7 +262,7 @@ class CustomerRealm {
                         gpsCoordinates: obj.gps_coordinates,
                         phoneNumber: obj.phone_number,
                         secondPhoneNumber: obj.second_phone_number,
-                        active: obj.active === 1 ? true : false ,
+                        active: true ,
                         createdDate: obj.created_at,
                         updatedDate: obj.updated_at   
                     }
