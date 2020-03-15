@@ -148,20 +148,22 @@ class Synchronization {
 							}
 						);
 
-						const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts().then(
+						const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts()						
+						.then(
 							customerDebtSync => {
 								syncResult.customerDebt = customerDebtSync;
 								return customerDebtSync;
 							}
 						);
 
-						const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId).then(
-							recieptPaymentTypesSync => {
+						const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId)
+							.then(
+								recieptPaymentTypesSync => {
 
-								syncResult.recieptPaymentTypes = recieptPaymentTypesSync;
-								return recieptPaymentTypesSync;
-							}
-						);
+									syncResult.recieptPaymentTypes = recieptPaymentTypesSync;
+									return recieptPaymentTypesSync;
+								}
+							);
 
 
 
@@ -172,7 +174,7 @@ class Synchronization {
 							}
 						);
 
-						
+
 
 
 						const promiseProducts = ProductSync.synchronizeProducts().then(
@@ -202,6 +204,7 @@ class Synchronization {
 
 						// This will make sure they run synchronously
 						[
+							promiseCustomerDebts,
 							promiseOrders,
 							promiseCustomers,
 							promiseMeterReading,
@@ -209,7 +212,7 @@ class Synchronization {
 							promiseSalesChannels,
 							promiseCustomerTypes,
 							promiseRecieptPaymentTypes,
-							promisePaymentTypes,							
+							promisePaymentTypes,
 							promiseTopUps,
 							promiseProducts,
 							promiseProductMrps,
@@ -226,11 +229,11 @@ class Synchronization {
 								resolve(syncResult);
 							});
 
-						// Promise.all([promiseCustomers, promiseProducts, promiseSales, promiseProductMrps, promiseReceipts])
+						// Promise.all([promiseCustomerDebts, promiseRecieptPaymentTypes])
 						// 	.then(values => {
+						// 		console.log('values', values)
 						// 		resolve(syncResult);
 						// 	});
-
 					})
 					.catch(error => {
 						syncResult.error = error;
