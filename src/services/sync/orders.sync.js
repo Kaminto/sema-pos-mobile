@@ -119,8 +119,8 @@ class OrderSync {
                         }
                     }
                     resolve({
-                        error: null,
-                        updatedOrders: onlyLocally.length + onlyRemote.length + updateCount
+                        success: true,
+                        orders: onlyLocally.length + onlyRemote.length + inLocal.length,
                     });
 
                 })
@@ -129,8 +129,8 @@ class OrderSync {
                         'Synchronization.getOrder - error ' + error
                     );
                     resolve({
-                        error: error,
-                        updatedOrders: 0,
+                        error: true,
+                        orders: 0,
                     });
                 });
         });

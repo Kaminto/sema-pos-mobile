@@ -11,6 +11,8 @@ class CustomerDebtRealm {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerDebtSyncDate')))).length == 0) {
                 realm.create('CustomerDebtSyncDate', { lastCustomerDebtSync: firstSyncDate });
             }
+            // let syncDate = realm.objects('CustomerDebtSyncDate');
+            // syncDate[0].lastCustomerDebtSync = firstSyncDate;
         });
         this.lastCustomerDebtSync = firstSyncDate;
     }
@@ -126,6 +128,7 @@ class CustomerDebtRealm {
     }
 
     synched(customerDebt) {
+        console.log('localCustomerDebt', localCustomerDebt)
         try {
             realm.write(() => {
                 let customerDebtObj = realm.objects('CustomerDebt').filtered(`id = "${customerDebt.customer_debt_id}"`);
@@ -173,7 +176,7 @@ class CustomerDebtRealm {
                         realm.create('CustomerDebt', {
                             customer_account_id: customer_account_id ? customer_account_id : null,
                             customer_debt_id: uuidv1(),
-                            due_amount: Number(obj.amount),
+                            due_amount: obj.due_amount ? Number(obj.due_amount) : Number(obj.amount),
                             active: false,
                             syncAction: obj.syncAction ? obj.syncAction : 'create',
                             created_at: new Date(),
@@ -182,7 +185,7 @@ class CustomerDebtRealm {
                 }
                 if (!customer_account_id) {
                     customerDebts.forEach(obj => {
-                        realm.create('CustomerDebt', {...obj, due_amount: Number(obj.amount), });
+                        realm.create('CustomerDebt', {...obj, due_amount: obj.due_amount ? Number(obj.due_amount) : Number(obj.amount), });
                     });
                 }
             });

@@ -211,6 +211,7 @@ class CustomSidebarMenu extends React.PureComponent {
       this.setState({ isLoading: true });
       console.log("Started synching ...");
       Synchronization.synchronize().then(syncResult => {
+        console.log('syncResult', syncResult);
         this.setState({ isLoading: false });
         console.log("Stopped synching. ")
 
@@ -233,51 +234,26 @@ class CustomSidebarMenu extends React.PureComponent {
   };
 
   _getSyncResults(syncResult) {
+    console.log('syncResult2', syncResult);
     try {
-
-      if (syncResult.status != 'success')
-        return i18n.t('sync-error', { error: syncResult.error });
-      if (
-        syncResult.hasOwnProperty('customers') &&
-        syncResult.customers.error != null
-      )
-        return i18n.t('sync-error', {
-          error: syncResult.customers.error
-        });
-      if (
-        syncResult.hasOwnProperty('products') &&
-        syncResult.products.error != null
-      )
-        return i18n.t('sync-error', {
-          error: syncResult.products.error
-        });
-      if (
-        syncResult.hasOwnProperty('sales') &&
-        syncResult.sales.error != null
-      )
-        return i18n.t('sync-error', { error: syncResult.sales.error });
-      if (
-        syncResult.hasOwnProperty('productMrps') &&
-        syncResult.productMrps.error != null
-      )
-        return i18n.t('sync-error', {
-          error: syncResult.productMrps.error
-        });
-      else {
+     
         if (
-          syncResult.customers.updatedCustomers == 0 &&
-          syncResult.products.remoteProducts == 0 &&
-          syncResult.sales.updatedOrders == 0 &&
-          syncResult.productMrps.remoteProductMrps == 0
+          syncResult.customers == 0 &&
+          syncResult.products == 0 &&
+          syncResult.orders == 0 &&
+          syncResult.productMrps == 0
         ) {
           return i18n.t('data-is-up-to-date');
         } else {
-          return `${syncResult.customers.updatedCustomers} ${i18n.t('customers-updated')}
-      			\n${syncResult.products.remoteProducts} ${i18n.t('products-updated')}
-				\n${syncResult.sales.updatedOrders} ${i18n.t('sales-receipts-updated')}
-				\n${syncResult.productMrps.remoteProductMrps} ${i18n.t('product-sales-channel-prices-updated')}`;
+          return `${syncResult.customers} ${i18n.t('customers-updated')}
+      			\n${syncResult.products} ${i18n.t('products-updated')}
+        \n${syncResult.orders} ${i18n.t('sales-receipts-updated')}
+        \n${syncResult.debt} ${i18n.t('debt-updated')}
+        \n${syncResult.productMrps} ${i18n.t('product-sales-channel-prices-updated')}`
+        
+        ;
         }
-      }
+      
     } catch (error) { }
   }
 
