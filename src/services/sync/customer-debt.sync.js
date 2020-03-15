@@ -16,6 +16,7 @@ class CustomerDebtsSync {
                     console.log('remoteCustomerDebts', remoteCustomerDebts);
                     if (initlocalCustomerDebts.length === 0) {
                         CustomerDebtRealm.createManyCustomerDebt(result, null);
+                        CustomerDebtRealm.setLastCustomerDebtSync();
                     }
 
                     let onlyLocally = [];

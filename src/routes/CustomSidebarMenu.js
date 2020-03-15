@@ -248,9 +248,8 @@ class CustomSidebarMenu extends React.PureComponent {
           return `${syncResult.customers} ${i18n.t('customers-updated')}
       			\n${syncResult.products} ${i18n.t('products-updated')}
         \n${syncResult.orders} ${i18n.t('sales-receipts-updated')}
-        \n${syncResult.debt} ${i18n.t('debt-updated')}
-        \n${syncResult.productMrps} ${i18n.t('product-sales-channel-prices-updated')}`
-        
+        \n${syncResult.debt} ${i18n.t('debt-updated')}`
+        // \n${syncResult.productMrps} ${i18n.t('product-sales-channel-prices-updated')}
         ;
         }
       
