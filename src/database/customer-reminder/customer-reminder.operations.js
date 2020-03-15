@@ -1,6 +1,6 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, add, isValid } from 'date-fns';
 class CustomerReminderRealm {
     constructor() {
         this.customerReminder = [];
@@ -52,9 +52,9 @@ class CustomerReminderRealm {
                     customerReminderUpdateObj[0].phoneNumber = customerReminder.phoneNumber,
                         customerReminderUpdateObj[0].address = customerReminder.address,
                         customerReminderUpdateObj[0].name = customerReminder.name,
-                        customerReminderUpdateObj[0].reminder_date = new Date(customerReminder.reminder);
+                        customerReminderUpdateObj[0].reminder_date = isValid(new Date(customerReminder.reminder))  ? new Date(customerReminder.reminder) : add(new Date(), { days: 10 });
                     customerReminderUpdateObj[0].lastPurchaseDate = new Date(customerReminder.lastPurchaseDate);
-                    customerReminderUpdateObj[0].syncAction = 'UPDATE';
+                    customerReminderUpdateObj[0].syncAction = 'update';
                     customerReminderUpdateObj[0].updated_at = new Date();
                 } else {
                     const ObjSave = {
@@ -64,10 +64,10 @@ class CustomerReminderRealm {
                         phoneNumber: customerReminder.phoneNumber,
                         address: customerReminder.address,
                         name: customerReminder.name,
-                        reminder_date: new Date(customerReminder.reminder),
+                        reminder_date: isValid(new Date(customerReminder.reminder))  ? new Date(customerReminder.reminder) : add(new Date(), { days: 10 }), 
                         active: false,
                         lastPurchaseDate: new Date(customerReminder.lastPurchaseDate),
-                        syncAction: 'CREATE',
+                        syncAction: 'create',
                         created_at: new Date(),
                     };
                     realm.create('CustomerReminder', ObjSave);
@@ -75,7 +75,7 @@ class CustomerReminderRealm {
                 // realm.create('CustomerReminder', customerReminder);
             });
         } catch (e) {
-            console.log("Error on creation customer reminder", e);
+            console.log("Error on creation customer reminderr", e);
         }
     }
 
@@ -99,17 +99,17 @@ class CustomerReminderRealm {
         let reminder = Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerReminder').filtered(`customer_account_id = "${customer_account_id}"`))));
 
         if (reminder.length > 0) {
-            reminder = reminder.map(element=>{
+            reminder = reminder.map(element => {
                 return {
                     ...element,
-                    lastPurchaseDate:format(parseISO(element.lastPurchaseDate), 'iiii d MMM yyyy'),
-                    reminder_date:format(parseISO(element.reminder_date), 'iiii d MMM yyyy')
+                    lastPurchaseDate: format(parseISO(element.lastPurchaseDate), 'iiii d MMM yyyy'),
+                    reminder_date: format(parseISO(element.reminder_date), 'iiii d MMM yyyy')
                 }
             });
-			return reminder[0];
-		} else {
-			return 'N/A';
-		}
+            return reminder[0];
+        } else {
+            return 'N/A';
+        }
 
     }
 
