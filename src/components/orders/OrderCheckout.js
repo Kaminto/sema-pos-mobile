@@ -17,6 +17,7 @@ import CreditRealm from '../../database/credit/credit.operations';
 import CustomerTypeRealm from '../../database/customer-types/customer-types.operations';
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
+import CustomerDebtRealm from '../../database/customer_debt/customer_debt.operations';
 import PaymentDescription from './order-checkout/payment-description';
 import PaymentTypeRealm from '../../database/payment_types/payment_types.operations';
 import SettingRealm from '../../database/settings/settings.operations';
@@ -94,7 +95,7 @@ class OrderCheckout extends React.PureComponent {
 
 	handleOnPress() {
 		// requestAnimationFrame(() => {
-			this.onCompleteOrder();
+		this.onCompleteOrder();
 		// });
 	};
 
@@ -135,41 +136,41 @@ class OrderCheckout extends React.PureComponent {
 					position={"center"} ref={"modal7"}
 					isDisabled={this.state.isDisabled}>
 					<ScrollView>
-					<TouchableOpacity>
-						<View style={{ flex: 1, paddingLeft: 10 }}>
-							<View style={{ flex: 1, flexDirection: 'row', height: 50 }}>
-								<View style={{ flex: 1, flexDirection: 'row' }}>
-									<Text style={[{ textAlign: 'left' }, styles.headerItem]}>Bottle Tracker.</Text>
+						<TouchableOpacity>
+							<View style={{ flex: 1, paddingLeft: 10 }}>
+								<View style={{ flex: 1, flexDirection: 'row', height: 50 }}>
+									<View style={{ flex: 1, flexDirection: 'row' }}>
+										<Text style={[{ textAlign: 'left' }, styles.headerItem]}>Bottle Tracker.</Text>
+									</View>
+									<View
+										style={{
+											justifyContent: 'flex-end',
+											flexDirection: 'row',
+											right: 10,
+											top: 0
+										}}>
+										{this.getBottlesCancelButton()}
+									</View>
 								</View>
+
 								<View
 									style={{
-										justifyContent: 'flex-end',
-										flexDirection: 'row',
-										right: 10,
-										top: 0
+										flex: 1
 									}}>
-									{this.getBottlesCancelButton()}
+									<FlatList
+										data={this.props.products}
+										ListHeaderComponent={this.showBottlesHeader}
+										// extraData={this.state.refresh}
+										renderItem={({ item, index, separators }) => (
+											<View>
+												{this.getBottleRow(item, index, separators)}
+											</View>
+										)}
+										keyExtractor={item => item.product.description}
+										initialNumToRender={50}
+									/>
 								</View>
 							</View>
-
-							<View
-								style={{
-									flex: 1
-								}}>
-								<FlatList
-									data={this.props.products}
-									ListHeaderComponent={this.showBottlesHeader}
-									// extraData={this.state.refresh}
-									renderItem={({ item, index, separators }) => (
-										<View>
-											{this.getBottleRow(item, index, separators)}
-										</View>
-									)}
-									keyExtractor={item => item.product.description}
-									initialNumToRender={50}
-								/>
-							</View>
-						</View>
 						</TouchableOpacity>
 					</ScrollView>
 				</Modal>
@@ -182,7 +183,7 @@ class OrderCheckout extends React.PureComponent {
 					isDisabled={this.state.isDisabled}>
 
 					<ScrollView>
-					{/* <TouchableOpacity> */}
+						{/* <TouchableOpacity> */}
 						<View style={{ flex: 1, padding: 0, margin: 0 }}>
 							<View
 								style={{
@@ -214,13 +215,13 @@ class OrderCheckout extends React.PureComponent {
 											title={`${i18n.t('customer-wallet')}:`}
 											total={this.currentCredit()}
 										/>
-								 	</View>
+									</View>
 
 
 									<View style={{ flex: 1, flexDirection: 'row' }}>
 										<PaymentDescription
 											title={`${i18n.t('previous-amount-due')}:`}
-											total={this.calculateAmountDue()}
+											total={this.calculateLoanBalance()}
 										/>
 										<PaymentDescription
 											title={`${i18n.t('total-amount-due')}:`}
@@ -730,7 +731,7 @@ class OrderCheckout extends React.PureComponent {
 
 	calculateTotalDue() {
 		return this._roundToDecimal(
-			this.calculateOrderDue() + this.calculateAmountDue()
+			this.calculateOrderDue() + this.calculateLoanBalance()
 		);
 	}
 
@@ -811,7 +812,7 @@ class OrderCheckout extends React.PureComponent {
 		return totalAmount;
 	}
 
-	calculateAmountDue() {
+	calculateLoanBalance() {
 		return this.props.selectedCustomer.dueAmount;
 	}
 
@@ -836,6 +837,15 @@ class OrderCheckout extends React.PureComponent {
 		this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
 	}
 
+
+	logCredit = (amount) => {
+		CustomerDebtRealm.createCustomerDebt(amount, this.props.selectedCustomer.customerId);
+		this.props.paymentTypesActions.setCustomerPaidDebt(
+			CustomerDebtRealm.getCustomerDebts()
+		);
+	}
+
+
 	updateLoanBalance = (amount) => {
 		CustomerRealm.updateCustomerDueAmount(
 			this.props.selectedCustomer,
@@ -856,7 +866,7 @@ class OrderCheckout extends React.PureComponent {
 		if (this.currentCredit() > this.calculateOrderDue()) {
 			if (totalAmountPaid > 0) {
 				this.props.selectedCustomer.walletBalance =
-				Number(this.props.selectedCustomer.walletBalance) + Number(totalAmountPaid) - (this.calculateOrderDue() * 2);
+					Number(this.props.selectedCustomer.walletBalance) + Number(totalAmountPaid) - (this.calculateOrderDue() * 2);
 				this.updateWallet(this.props.selectedCustomer.walletBalance);
 			} else if (totalAmountPaid <= 0) {
 				this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
@@ -887,30 +897,34 @@ class OrderCheckout extends React.PureComponent {
 			// compare totalPaid with order due
 			if (totalAmountPaid > this.calculateOrderDue()) {
 				//compare amount due
-				if (this.calculateAmountDue() === 0) {
+				if (this.calculateLoanBalance() === 0) {
 					//top up wallet
 					this.topUpWallet(Number(totalAmountPaid - this.calculateOrderDue()));
 					this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + Number(totalAmountPaid - this.calculateOrderDue());
 					this.updateWallet(this.props.selectedCustomer.walletBalance);
 					this.saveOrder(true);
-				} else if (this.calculateAmountDue() > 0) {
+				} else if (this.calculateLoanBalance() > 0) {
 					let postToLoan = Number(totalAmountPaid - this.calculateOrderDue());
-					if (totalAmountPaid > this.calculateAmountDue()) {
-						const topUpExpected = Number(postToLoan - this.calculateAmountDue());
-						this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - Number(this.calculateAmountDue());
+					if (totalAmountPaid > this.calculateLoanBalance()) {
+						const topUpExpected = Number(postToLoan - this.calculateLoanBalance());
+						this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - Number(this.calculateLoanBalance());
+						this.logCredit(Number(this.calculateLoanBalance()));
 						this.updateLoanBalance(this.props.selectedCustomer.dueAmount);
+
+
 						this.topUpWallet(topUpExpected);
 						this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + topUpExpected;
 
 						this.updateWallet(this.props.selectedCustomer.walletBalance);
 						this.saveOrder(true);
-					} else if (totalAmountPaid < this.calculateAmountDue()) {
+					} else if (totalAmountPaid < this.calculateLoanBalance()) {
 						this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - postToLoan;
 						this.updateLoanBalance(this.props.selectedCustomer.dueAmount);
+						this.logCredit(Number(postToLoan));
 						this.saveOrder(true);
 					}
 				}
-			} else  if (totalAmountPaid < this.calculateOrderDue()) {
+			} else if (totalAmountPaid < this.calculateOrderDue()) {
 
 				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) + (this.calculateOrderDue() - totalAmountPaid);
 
@@ -1064,7 +1078,7 @@ class OrderCheckout extends React.PureComponent {
 			Alert.alert(
 				'Payment Made.',
 				'Loan Cleared: ' + this.state.loanPaid +
-				'\nCustomer Wallet Topup: ' +this.state.topUpExpected +
+				'\nCustomer Wallet Topup: ' + this.state.topUpExpected +
 				'\nCustomer\'s Loan Balance: ' + this.props.selectedCustomer.dueAmount +
 				'\nCustomer Wallet Balance: ' + this.currentCredit(),
 				[{
@@ -1109,7 +1123,7 @@ class OrderCheckout extends React.PureComponent {
 	};
 
 	addDays = (theDate, days) => {
-		if(days > 20){
+		if (days > 20) {
 			days = 10;
 		}
 		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
