@@ -62,8 +62,8 @@ class ProductSync {
 
                 }
                 resolve({
-                    error: null,
-                    remoteProducts: onlyLocally.length + onlyRemote.length,
+                    success: true,
+                    products: onlyLocally.length + onlyRemote.length + inLocal.length
                 });
 
             })
@@ -72,8 +72,8 @@ class ProductSync {
                     'Synchronization.getProducts - error ' + error
                 );
                 resolve({
-                    error: error,
-                    remoteProducts: 0
+                    error: true,
+                    products: 0
                 });
             });
 

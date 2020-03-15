@@ -65,8 +65,8 @@ class ProductMRPSync {
 
                     }
                     resolve({
-                        error: null,
-                        remoteProductMrps: onlyLocally.length + onlyRemote.length,
+                        success: true,
+                        productMrps: onlyLocally.length + onlyRemote.length + inLocal.length,
                     });
 
                 })
@@ -75,8 +75,8 @@ class ProductMRPSync {
                         'Synchronization.getInventory - error ' + error
                     );
                     resolve({
-                        error: error,
-                        remoteProductMrps: 0
+                        error: true,
+                        productMrps: 0
                     });
                 });
         });
