@@ -155,6 +155,8 @@ class OrderRealm {
         newOrder.uuid = newOrder.receiptId;
         let receipt_line_items = [];
         for (let i in receipt.products) {
+            
+	
             receipt_line_items.push({
                 currency_code: newOrder.currency_code,
                 price_total: receipt.products[i].price_total,

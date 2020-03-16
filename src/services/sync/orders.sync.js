@@ -65,7 +65,7 @@ class OrderSync {
                             onlyLocally.forEach(localOrder => {
                                 let products = [];
                                 for (let i in localOrder.receipt_line_items) {
-                                    products.push({
+                                     products.push({
                                         active: 1,
                                         cogsTotal: localOrder.receipt_line_items[i].cogs_total,
                                         description: localOrder.receipt_line_items[i].description,
@@ -77,14 +77,14 @@ class OrderSync {
                                         sku: localOrder.receipt_line_items[i].sku,
                                         notes: localOrder.receipt_line_items[i].notes,
                                         emptiesReturned: localOrder.receipt_line_items[i].emptiesReturned,
-                                        damagedBottles: localOrder.receipt_line_items[i].damagedBottles,
+                                        damagedBottles: localOrder.receipt_line_items[i].emptiesDamaged,
                                         pendingBottles: localOrder.receipt_line_items[i].refillPending
                                     })
                                 }
                                 localOrder.products = products;
                                 delete localOrder.receipt_line_items;
                                 delete localOrder.customer_account;
-                                delete localOrder.customerAccountId
+                                delete localOrder.customerAccountId;
                                 this.apiSyncOperations(localOrder,siteId);                               
                             })
                         }
@@ -94,7 +94,7 @@ class OrderSync {
                             inLocal.forEach(localOrder => {
                                 let products = [];
                                 for (let i in localOrder.receipt_line_items) {
-                                    products.push({
+                                  products.push({
                                         active: 1,
                                         cogsTotal: localOrder.receipt_line_items[i].cogs_total,
                                         description: localOrder.receipt_line_items[i].description,
@@ -106,14 +106,14 @@ class OrderSync {
                                         sku: localOrder.receipt_line_items[i].sku,
                                         notes: localOrder.receipt_line_items[i].notes,
                                         emptiesReturned: localOrder.receipt_line_items[i].emptiesReturned,
-                                        damagedBottles: localOrder.receipt_line_items[i].damagedBottles,
+                                        damagedBottles: localOrder.receipt_line_items[i].emptiesDamaged,
                                         pendingBottles: localOrder.receipt_line_items[i].refillPending
                                     })
                                 }
                                 localOrder.products = products;
                                 delete localOrder.receipt_line_items;
                                 delete localOrder.customer_account;
-                                delete localOrder.customerAccountId
+                                delete localOrder.customerAccountId;
                               this.apiSyncOperations(localOrder,siteId);
                             })
                         }
