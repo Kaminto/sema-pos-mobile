@@ -12,8 +12,6 @@ class CustomerDebtsSync {
                     let initlocalCustomerDebts = CustomerDebtRealm.getCustomerDebtsByDate(CustomerDebtRealm.getLastCustomerDebtSync());
                     let localCustomerDebts = [...initlocalCustomerDebts];
                     let remoteCustomerDebts = [...result];
-                    console.log('localCustomerDebts', localCustomerDebts);
-                    console.log('remoteCustomerDebts', remoteCustomerDebts);
                     if (initlocalCustomerDebts.length === 0) {
                         CustomerDebtRealm.createManyCustomerDebt(result, null);
                         CustomerDebtRealm.setLastCustomerDebtSync();
@@ -26,9 +24,6 @@ class CustomerDebtsSync {
                     let bothLocalRemote = {};
 
                     if (initlocalCustomerDebts.length > 0) {
-
-                     
-                        console.log('remoteCustomerDebts', remoteCustomerDebts);
                         initlocalCustomerDebts.forEach(localCustomerDebt => {
                             let filteredObj = remoteCustomerDebts.filter(obj => obj.receipt_payment_type_id === localCustomerDebt.receipt_payment_type_id)
 
@@ -54,12 +49,6 @@ class CustomerDebtsSync {
                         onlyRemote.push(...remoteCustomerDebts);
                         bothLocalRemote.inLocal = inLocal;
                         bothLocalRemote.inRemote = inRemote;
-
-                        console.log('onlyRemote', onlyRemote);
-                        console.log('onlyLocally', onlyLocally);
-                        
-                        console.log('inLocal', inLocal);
-                        console.log('inRemote', inRemote);
 
                         if (onlyRemote.length > 0) {
                             CustomerDebtRealm.createManyCustomerDebt(onlyRemote, null);

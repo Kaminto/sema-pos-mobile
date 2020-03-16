@@ -142,7 +142,7 @@ class CustomerList extends React.Component {
         this.props.customerActions.CustomerSelected({});
 		this.props.customerActions.setCustomerEditStatus(false);
 
-        this.handleOnPress = this.handleOnPress.bind(this);
+        // this.handleOnPress = this.handleOnPress.bind(this);
 	}
 	// static whyDidYouRender = true;
 
@@ -355,7 +355,7 @@ class CustomerList extends React.Component {
 	});
 
     prepareData = () => {
-        this.customerTypes = CustomerTypeRealm.getCustomerTypes();
+        const customerTypes = CustomerTypeRealm.getCustomerTypes();
         let data = [];
         if (this.props.customers.length > 0) {
             data = this.filterItems(this.props.customers);
@@ -373,7 +373,7 @@ class CustomerList extends React.Component {
                 ...item,
                 walletBalance: item.walletBalance ? item.walletBalance : 0,
                 searchString: item.name + ' ' + item.phoneNumber + ' ' + item.address,
-                customerType: item != undefined ? this.getCustomerTypes(item).toLowerCase() : "",
+                customerType: this.getCustomerTypes(item) !== undefined ? this.getCustomerTypes(item).toLowerCase() : "",
             }
 		});
 
@@ -457,11 +457,12 @@ class CustomerList extends React.Component {
 	// }
     };
 
-    getCustomerTypes(item) {
+    getCustomerTypes = (item) => {
+		const customerTypes = CustomerTypeRealm.getCustomerTypes();
         try {
-            for (let i = 0; i < this.customerTypes.length; i++) {
-                if (this.customerTypes[i].id === item.customerTypeId) {
-                    return this.customerTypes[i].name;
+            for (let i = 0; i < customerTypes.length; i++) {
+                if (customerTypes[i].id === item.customerTypeId) {
+                    return customerTypes[i].name;
                 }
             }
         } catch (error) {
