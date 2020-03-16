@@ -131,11 +131,14 @@ class Login extends React.PureComponent {
 		try {
 			this.setState({ isLoading: true });
 			Synchronization.synchronize().then(syncResult => {
-				this.setState({ isLoading: false });
+				console.log('data synched', syncResult)
+				this.loadSyncedData().then(results => {
+					this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
+					this.setState({ isLoading: false });
+					console.log('data loaded', results)
+					this.props.navigation.navigate('App')
+				});
 
-				// Synchronization.getLatestSales();
-				this.loadSyncedData();
-				this.props.navigation.navigate('App')
 			});
 
 		} catch (error) { }
@@ -180,28 +183,28 @@ class Login extends React.PureComponent {
 			return;
 		}
 		this.setState({ isLoading: true });
-		console.log('this.props.network.isNWConnected',this.props.network.isNWConnected)
+		console.log('this.props.network.isNWConnected', this.props.network.isNWConnected)
 		Communications.login(this.state.user, this.state.password)
 			.then(result => {
 				console.log('result', result);
 				if (result.status === 200) {
 					let oldSettings = { ...SettingRealm.getAllSetting() };
 					let currency = '';
-					if(result.response.data.kiosk.region_id == 201){
+					if (result.response.data.kiosk.region_id == 201) {
 						currency = 'UGX'
-					} else if(result.response.data.kiosk.region_id == 301){
+					} else if (result.response.data.kiosk.region_id == 301) {
 						currency = 'RWF'
-					} else if(result.response.data.kiosk.region_id == 401){
+					} else if (result.response.data.kiosk.region_id == 401) {
 						currency = 'KES'
-					} else if(result.response.data.kiosk.region_id == 501){
+					} else if (result.response.data.kiosk.region_id == 501) {
 						currency = 'TZS'
-					} else if(result.response.data.kiosk.region_id == 601){
+					} else if (result.response.data.kiosk.region_id == 601) {
 						currency = 'USD'
-					} else if(result.response.data.kiosk.region_id == 602){
+					} else if (result.response.data.kiosk.region_id == 602) {
 						currency = 'USD'
-					} else if(result.response.data.kiosk.region_id == 701){
+					} else if (result.response.data.kiosk.region_id == 701) {
 						currency = 'ZMW'
-					} else if(result.response.data.kiosk.region_id == 801){
+					} else if (result.response.data.kiosk.region_id == 801) {
 						currency = 'FBU'
 					}
 					SettingRealm.saveSettings(
@@ -233,9 +236,6 @@ class Login extends React.PureComponent {
 
 					if (this.isSiteIdDifferent(result.response.data.kiosk.id, oldSettings.siteId)) {
 						this.onSynchronize();
-						this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
-						this.setState({ isLoading: false });
-						this.props.navigation.navigate('App');
 					}
 
 					if (!this.isSiteIdDifferent(result.response.data.kiosk.id, oldSettings.siteId)) {
@@ -275,62 +275,75 @@ class Login extends React.PureComponent {
 	};
 
 	loadSyncedData() {
-		this.props.customerActions.setCustomers(
-			CustomerRealm.getAllCustomer()
-		);
 
-		this.props.productActions.setProducts(
-			ProductsRealm.getProducts()
-		);
+		return new Promise(resolve => {
 
-		//PaymentTypeRealm.truncate();
-		this.props.paymentTypesActions.setPaymentTypes(
-			PaymentTypeRealm.getPaymentTypes()
-		);
+			try {
 
-		this.props.paymentTypesActions.setRecieptPaymentTypes(
-			ReceiptPaymentTypeRealm.getReceiptPaymentTypes()
-		);
+				this.props.customerActions.setCustomers(
+					CustomerRealm.getAllCustomer()
+				);
 
-		this.props.topUpActions.setTopups(
-			CreditRealm.getAllCredit()
-		);
+				this.props.productActions.setProducts(
+					ProductsRealm.getProducts()
+				);
 
-		this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
+				//PaymentTypeRealm.truncate();
+				this.props.paymentTypesActions.setPaymentTypes(
+					PaymentTypeRealm.getPaymentTypes()
+				);
 
+				this.props.paymentTypesActions.setRecieptPaymentTypes(
+					ReceiptPaymentTypeRealm.getReceiptPaymentTypes()
+				);
 
-		this.props.inventoryActions.setInventory(
-			InventroyRealm.getAllInventory()
-		);
+				this.props.topUpActions.setTopups(
+					CreditRealm.getAllCredit()
+				);
 
-
-		this.props.receiptActions.setReceipts(
-			OrderRealm.getAllOrder()
-		);
+				this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
 
 
-		this.props.customerReminderActions.setCustomerReminders(
-			CustomerReminderRealm.getCustomerReminders()
-		);
-
-		this.props.paymentTypesActions.setCustomerPaidDebt(
-			CustomerDebtRealm.getCustomerDebts()
-		);
-
-		this.props.discountActions.setDiscounts(
-			DiscountRealm.getDiscounts()
-		);
+				this.props.inventoryActions.setInventory(
+					InventroyRealm.getAllInventory()
+				);
 
 
+				this.props.receiptActions.setReceipts(
+					OrderRealm.getAllOrder()
+				);
 
-		Synchronization.initialize(
-			CustomerRealm.getLastCustomerSync(),
-			ProductsRealm.getLastProductsync(),
-			'',
-			CreditRealm.getLastCreditSync(),
-			InventroyRealm.getLastInventorySync(),
-		);
-		Synchronization.setConnected(this.props.network.isNWConnected);
+
+				this.props.customerReminderActions.setCustomerReminders(
+					CustomerReminderRealm.getCustomerReminders()
+				);
+
+				this.props.paymentTypesActions.setCustomerPaidDebt(
+					CustomerDebtRealm.getCustomerDebts()
+				);
+
+				this.props.discountActions.setDiscounts(
+					DiscountRealm.getDiscounts()
+				);
+
+
+
+				Synchronization.initialize(
+					CustomerRealm.getLastCustomerSync(),
+					ProductsRealm.getLastProductsync(),
+					'',
+					CreditRealm.getLastCreditSync(),
+					InventroyRealm.getLastInventorySync(),
+				);
+				Synchronization.setConnected(this.props.network.isNWConnected);
+				resolve(true)
+			} catch (error) {
+				resolve(false);
+			}
+
+		});
+
+
 	};
 
 

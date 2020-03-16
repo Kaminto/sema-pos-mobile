@@ -988,6 +988,11 @@ class OrderCheckout extends React.PureComponent {
 		}
 		let cogs_total = 0;
 
+		console.log('emptiesReturned-', Number(product.emptiesReturned));
+		console.log('refillPending-', Number(product.refillPending));
+		console.log('emptiesDamaged-', Number(product.emptiesDamaged));
+
+
 		receipt.products = this.props.products.map(product => {
 			let receiptLineItem = {};
 			let tempValue = this.getItemCogs(product.product) * product.quantity;
