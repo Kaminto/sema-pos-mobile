@@ -38,6 +38,12 @@
   "topups-updated": "Top Ups Updated",
   "products-updated": "produits mis à jour",
   "sales-receipts-updated": "reçus de vente mis à jour",
+
+  "debt-updated": "Debt Updated",
+  "meterReading-updated": "Meter Readings Updated",
+  "wastageReport-updated": "Wastage Reports Updated",
+  "recieptPayments-updated": "Reciept Payments Updated",
+
   "product-sales-channel-prices-updated": "prix de produits/canaux de vente mis à jour",
   "clear-all-data": "Effacer Toutes les Données",
   "delete-all-data": "effacer toutes les données (Ceci ne peut pas être défait)",
