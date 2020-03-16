@@ -10,7 +10,7 @@ class CustomerTypeSync {
                 .then(remoteCustomerType => {
                     let initlocalCustomerTypes = CustomerTypeRealm.getCustomerTypes();
                     let localCustomerTypes = [...initlocalCustomerTypes];
-                    let remoteCustomerTypes = [...remoteCustomerType.customerTypes]; 
+                    let remoteCustomerTypes = [...remoteCustomerType.customerTypes];
                     if (initlocalCustomerTypes.length === 0) {
                         CustomerTypeRealm.createManyCustomerTypes(remoteCustomerType.customerTypes);
                     }
@@ -21,7 +21,7 @@ class CustomerTypeSync {
                     let inRemote = [];
                     let bothLocalRemote = {};
 
-                    if (initlocalCustomerTypes.length > 0) { 
+                    if (initlocalCustomerTypes.length > 0) {
                         initlocalCustomerTypes.forEach(localCustomerType => {
                             let filteredObj = remoteCustomerTypes.filter(obj => obj.id === localCustomerType.id)
                              if (filteredObj.length > 0) {
@@ -47,8 +47,8 @@ class CustomerTypeSync {
 
 
                         if (onlyRemote.length > 0) {
-                            CustomerTypeRealm.createManyCustomerTypes(onlyRemote)
-                        } 
+                            CustomerTypeRealm.createManyCustomerTypes(onlyRemote);
+                        }
 
 
                     }
@@ -59,7 +59,7 @@ class CustomerTypeSync {
 
                 })
                 .catch(error => {
-                   
+
                     resolve({
                         error: error,
                         customerTypes: 0

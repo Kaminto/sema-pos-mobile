@@ -186,7 +186,6 @@ class Login extends React.PureComponent {
 		console.log('this.props.network.isNWConnected', this.props.network.isNWConnected)
 		Communications.login(this.state.user, this.state.password)
 			.then(result => {
-				console.log('result', result);
 				if (result.status === 200) {
 					let oldSettings = { ...SettingRealm.getAllSetting() };
 					let currency = '';

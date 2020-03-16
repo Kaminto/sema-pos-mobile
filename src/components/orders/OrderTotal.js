@@ -2,7 +2,6 @@ import React from "react";
 
 import { View, Text,  StyleSheet } from "react-native";
 import { connect } from "react-redux";
-import * as Utilities from "../../services/Utilities";
 import i18n from "../../app/i18n";
 import SettingRealm from '../../database/settings/settings.operations';
 
@@ -13,10 +12,7 @@ class OrderTotal extends React.PureComponent {
 
 	}
 
-	;
-
 	render() {
-		console.log("Mental " + this.getCurrency().toUpperCase());
 		return (
 			<View style={styles.container}>
 				<Text style={[{ flex: 2 }, styles.totalText]}>{i18n.t('order-total')}</Text>
