@@ -117,134 +117,64 @@ class Synchronization {
 						let settings = SettingRealm.getAllSetting();
 
 
-						// const promiseSalesChannels = SalesChannelSync.synchronizeSalesChannels();
-						// const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes();
-						// const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes();
+						const promiseSalesChannels = SalesChannelSync.synchronizeSalesChannels().then(
+							salesChannels => {
+								return salesChannels;
+							}
+						)
+						const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes().then(
+							customerTypes => {
+								return customerTypes;
+							}
+						)
+						const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes().then(
+							paymentTypes => {
+								return paymentTypes;
+							}
+						)
+						const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId).then(
+							discountSync => {
+								return discountSync;
+							}
+						);
 
 						const promiseCustomers = CustomerSync.synchronizeCustomers();
-						// .then(
-						// 	customerSync => {
-						// 		syncResult.customers = customerSync;
-						// 		return customerSync;
-						// 	}
-						// );
 						const promiseOrders = OrderSync.synchronizeSales(settings.siteId);
-						// .then(
-						// 	saleSync => {
-						// 		syncResult.sales = saleSync;
-						// 		return saleSync;
-						// 	}
-						// );
-
-						// const promiseMeterReading = MeterReadingSync.synchronizeMeterReading(settings.siteId).then(
-						// 	meterReadingSync => {
-						// 		syncResult.meterReading = meterReadingSync;
-						// 		return meterReadingSync;
-						// 	}
-						// );
-
-						// const promiseInventory = InventorySync.synchronizeInventory(settings.siteId).then(
-						// 	inventorySync => {
-						// 		syncResult.inventory = inventorySync;
-						// 		return inventorySync;
-						// 	}
-						// );
-
-						const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts();						
-						// .then(
-						// 	customerDebtSync => {
-						// 		syncResult.customerDebt = customerDebtSync;
-						// 		return customerDebtSync;
-						// 	}
-						// );
-
-						// const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId)
-						// 	.then(
-						// 		recieptPaymentTypesSync => {
-
-						// 			syncResult.recieptPaymentTypes = recieptPaymentTypesSync;
-						// 			return recieptPaymentTypesSync;
-						// 		}
-						// 	);
-
-
-						// const promiseTopUps = CreditSync.synchronizeCredits().then(
-						// 	topUpSync => {
-						// 		syncResult.topups = topUpSync;
-						// 		return topUpSync;
-						// 	}
-						// );
-
-
-
-
+						const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts();
 						const promiseProducts = ProductSync.synchronizeProducts();
-						//.then(
-						// 	productSync => {
-						// 		syncResult.products = productSync;
-						// 		return productSync;
-						// 	}
-						// );
-
 						const promiseProductMrps = ProductMRPSync.synchronizeProductMrps();
-						// 	lastProductSync
-						// ).then(productMrpSync => {
-						// 	syncResult.productMrps = productMrpSync;
-						// 	return productMrpSync;
-						// });
+
+						const promiseMeterReading = MeterReadingSync.synchronizeMeterReading(settings.siteId);
+						const promiseInventory = InventorySync.synchronizeInventory(settings.siteId);
+						const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId);
+						const promiseTopUps = CreditSync.synchronizeCredits();
 
 
+					
 
-						// const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId).then(
-						// 	discountSync => {
-						// 		syncResult.discounts = discountSync;
-						// 		return discountSync;
-						// 	}
-						// );
-
-
-
-						// This will make sure they run synchronously
-						// [
-						// 	// promiseCustomerDebts,
-						// 	// promiseOrders,
-						// 	promiseCustomers,
-						// 	// promiseMeterReading,
-						// 	// promiseInventory,
-						// 	// promiseSalesChannels,
-						// 	// promiseCustomerTypes,
-						// 	// promiseRecieptPaymentTypes,
-						// 	// promisePaymentTypes,
-						// 	// promiseTopUps,
-						// 	// promiseProducts,
-						// 	// promiseProductMrps,
-						// ]
-						// 	.reduce((promiseChain, currentTask) => {
-						// 		return promiseChain.then(chainResults =>
-						// 			currentTask.then(currentResult => [
-						// 				...chainResults,
-						// 				currentResult
-						// 			])
-						// 		);
-						// 	}, Promise.resolve([]))
-						// 	.then(arrayOfResults => {
-						// 		resolve(syncResult);
-						// 	});
 
 						Promise.all([
 							promiseCustomers,
 							promiseProducts,
 							promiseProductMrps,
 							promiseOrders,
-							promiseCustomerDebts
+							promiseCustomerDebts,
+							promiseMeterReading,
+							promiseInventory,
+							promiseRecieptPaymentTypes,
+							promiseTopUps
 						])
 							.then(values => {
-								console.log('values', values)
+								console.log('values', values);
 								syncResult.customers = values[0].customers;
 								syncResult.products = values[1].products;
 								syncResult.productMrps = values[2].productMrps;								
 								syncResult.orders = values[3].orders;
 								syncResult.debt = values[4].debt;
+								syncResult.meterReading = values[5].meterReading;
+								syncResult.wastageReport = values[6].wastageReport;								
+								syncResult.recieptPayments = values[7].recieptPayments;
+								syncResult.topups = values[8].topups;
 								resolve(syncResult);
 							});
 					})
