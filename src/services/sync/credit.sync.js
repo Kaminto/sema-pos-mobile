@@ -78,9 +78,8 @@ class CreditSync {
 
                     }
                     resolve({
-                        error: null,
-                        localCredit: onlyLocally.length,
-                        remoteCredit: onlyRemote.length
+                        success: true,
+                        topups: onlyLocally.length + onlyRemote.length + inLocal.length
                     });
 
                 })
@@ -89,10 +88,9 @@ class CreditSync {
                         'Synchronization.getCredit - error ' + error
                     );
                     resolve({
-                        error: error,
-                        localCredit: 0,
-                        remoteCredit: 0
-                    });
+						error: false,
+                        topups: 0,
+					});
                 });
         });
     }

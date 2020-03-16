@@ -84,10 +84,10 @@ class RecieptPaymentTypesSync {
 
                     }
                     resolve({
-                        error: null,
-                        localRecieptPaymentType: onlyLocally.length,
-                        result: onlyRemote.length
+                        success: true,
+                        recieptPayments: onlyLocally.length + onlyRemote.length + inLocal.length
                     });
+
 
                 })
                 .catch(error => {
@@ -95,10 +95,9 @@ class RecieptPaymentTypesSync {
                         'Synchronization.getReceiptpaymenttypes - error ' + error
                     );
                     resolve({
-                        error: error,
-                        localRecieptPaymentType: 0,
-                        result: 0
-                    });
+						error: false,
+                        recieptPayments: 0,
+					});
                 });
         });
     }
