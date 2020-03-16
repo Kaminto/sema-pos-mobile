@@ -376,7 +376,9 @@ class CustomerList extends React.Component {
                 customerType: this.getCustomerTypes(item) !== undefined ? this.getCustomerTypes(item).toLowerCase() : "",
             }
 		});
-
+		data.sort((a, b) => {
+			return a.name.toLowerCase() > b.name.toLowerCase();
+		});
 
         if (this.state.debtcustomers) {
             data.sort((a, b) => {

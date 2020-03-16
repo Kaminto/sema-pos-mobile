@@ -111,7 +111,7 @@ android {
         applicationId "com.semapos"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 74
+        versionCode 75
         versionName "0.7.0"
     }
 
@@ -151,7 +151,7 @@ android {
             def abi = output.getFilter(OutputFile.ABI)
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
-                        versionCodes.get(abi) * 1099799 + defaultConfig.versionCode
+                        versionCodes.get(abi) * 1199999 + defaultConfig.versionCode
             }
         }
     }
