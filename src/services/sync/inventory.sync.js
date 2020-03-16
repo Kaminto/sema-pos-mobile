@@ -69,9 +69,8 @@ class InventorySync {
 
                     }
                     resolve({
-                        error: null,
-                        localInventory: onlyLocally.length,
-                        remoteInventory: onlyRemote.length
+                        success: true,
+                        wastageReport: onlyLocally.length + onlyRemote.length + inLocal.length
                     });
 
                 })
@@ -80,10 +79,9 @@ class InventorySync {
                         'Synchronization.getInventory - error ' + error
                     );
                     resolve({
-                        error: error,
-                        localInventory: 0,
-                        remoteInventory: 0
-                    });
+						error: false,
+                        wastageReport: 0,
+					});
                 });
         });
     }

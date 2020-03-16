@@ -78,9 +78,8 @@ class MeterReadingSync {
 
                     }
                     resolve({
-                        error: null,
-                        localMeterReading: onlyLocally.length,
-                        remoteMeterReading: onlyRemote.length
+                        success: true,
+                        meterReading: onlyLocally.length + onlyRemote.length + inLocal.length
                     });
 
                 })
@@ -89,10 +88,9 @@ class MeterReadingSync {
                         'Synchronization.getMeterReading - error ' + error
                     );
                     resolve({
-                        error: error,
-                        localMeterReading: 0,
-                        remoteMeterReading: 0
-                    });
+						error: false,
+                        meterReading: 0,
+					});
                 });
         });
     }

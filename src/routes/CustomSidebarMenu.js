@@ -241,14 +241,25 @@ class CustomSidebarMenu extends React.PureComponent {
           syncResult.customers == 0 &&
           syncResult.products == 0 &&
           syncResult.orders == 0 &&
-          syncResult.productMrps == 0
+          syncResult.productMrps == 0 &&
+          syncResult.meterReading == 0 &&
+          syncResult.wastageReport == 0 &&
+          syncResult.recieptPayments == 0 &&
+          syncResult.topups == 0
         ) {
           return i18n.t('data-is-up-to-date');
         } else {
           return `${syncResult.customers} ${i18n.t('customers-updated')}
       			\n${syncResult.products} ${i18n.t('products-updated')}
         \n${syncResult.orders} ${i18n.t('sales-receipts-updated')}
-        \n${syncResult.debt} ${i18n.t('debt-updated')}`
+        \n${syncResult.debt} ${i18n.t('debt-updated')}
+        
+        ${syncResult.meterReading} ${i18n.t('meterReading-updated')}
+      			\n${syncResult.wastageReport} ${i18n.t('wastageReport-updated')}
+        \n${syncResult.recieptPayments} ${i18n.t('recieptPayments-updated')}
+        \n${syncResult.topups} ${i18n.t('topups-updated')}
+        
+        `
         // \n${syncResult.productMrps} ${i18n.t('product-sales-channel-prices-updated')}
         ;
         }
