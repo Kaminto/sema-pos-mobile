@@ -241,7 +241,6 @@ class CustomSidebarMenu extends React.PureComponent {
           syncResult.customers == 0 &&
           syncResult.products == 0 &&
           syncResult.orders == 0 &&
-          syncResult.productMrps == 0 &&
           syncResult.meterReading == 0 &&
           syncResult.wastageReport == 0 &&
           syncResult.recieptPayments == 0 &&
