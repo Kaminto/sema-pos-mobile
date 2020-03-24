@@ -210,9 +210,8 @@ class CustomerEdit extends React.PureComponent {
 							/>
 
 
-
 							<RNPickerSelect
-								placeholder={cplaceholder}
+								placeholder={{}}
 								items={this.customerTypesOptions}
 								onValueChange={(value, itemKey) => {
 									this.setState({ customerType: value });
@@ -225,7 +224,8 @@ class CustomerEdit extends React.PureComponent {
 									iconContainer: {
 									  top: 20,
 									  left: 30,
-									  color: "black"
+									  color: "black",
+									  marginRight: 10
 									},
 								  }}
 								Icon={() => {

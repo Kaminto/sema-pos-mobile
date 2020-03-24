@@ -1,6 +1,6 @@
 import React from "react";
 
-import { View, Alert, TouchableOpacity, Text, TextInput, FlatList, ScrollView, TouchableHighlight, StyleSheet } from "react-native";
+import { View, Alert, Text, TextInput, FlatList, ScrollView, TouchableHighlight, StyleSheet } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as PaymentTypesActions from "../actions/PaymentTypesActions";
@@ -17,8 +17,6 @@ import PaymentDescription from '../components/orders/order-checkout/payment-desc
 import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
 import CreditRealm from '../database/credit/credit.operations';
 import CustomerRealm from '../database/customers/customer.operations';
-
-import * as Utilities from "../services/Utilities";
 const widthQuanityModal = '75%';
 const heightQuanityModal = 100;
 
@@ -69,7 +67,7 @@ class PaymentModal extends React.PureComponent {
 							renderItem={({ item, index, separators }) => (
 								this.paymentTypesRow(item, index, separators)
 							)}
-							extraData={this.props.selectedDebtPaymentTypes}
+							// extraData={this.props.selectedDebtPaymentTypes}
 							numColumns={3}
 							contentContainerStyle={styles.container}
 						/>

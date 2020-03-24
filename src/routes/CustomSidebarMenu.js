@@ -236,7 +236,7 @@ class CustomSidebarMenu extends React.PureComponent {
   _getSyncResults(syncResult) {
     console.log('syncResult2', syncResult);
     try {
-     
+
         if (
           syncResult.customers == 0 &&
           syncResult.products == 0 &&
@@ -249,25 +249,24 @@ class CustomSidebarMenu extends React.PureComponent {
           return i18n.t('data-is-up-to-date');
         } else {
           return `${syncResult.customers} ${i18n.t('customers-updated')}
-      			\n${syncResult.products} ${i18n.t('products-updated')}
-        \n${syncResult.orders} ${i18n.t('sales-receipts-updated')}
-        \n${syncResult.debt} ${i18n.t('debt-updated')}
-        
-        ${syncResult.meterReading} ${i18n.t('meterReading-updated')}
-      			\n${syncResult.wastageReport} ${i18n.t('wastageReport-updated')}
-        \n${syncResult.recieptPayments} ${i18n.t('recieptPayments-updated')}
-        \n${syncResult.topups} ${i18n.t('topups-updated')}
-        
+      			 \n${syncResult.products} ${i18n.t('products-updated')}
+       			 \n${syncResult.orders} ${i18n.t('sales-receipts-updated')}
+       			 \n${syncResult.debt} ${i18n.t('debt-updated')}
+       			 \n${syncResult.meterReading} ${i18n.t('meterReading-updated')}
+      			 \n${syncResult.wastageReport} ${i18n.t('wastageReport-updated')}
+      			 \n${syncResult.topups} ${i18n.t('topups-updated')}
         `
-        // \n${syncResult.productMrps} ${i18n.t('product-sales-channel-prices-updated')}
+		// \n${syncResult.productMrps} ${i18n.t('product-sales-channel-prices-updated')}
+		// \n${syncResult.recieptPayments} ${i18n.t('recieptPayments-updated')}
+		// ${syncResult.topups.localTopup} ${i18n.t('topups-updated')}
         ;
         }
-      
+
     } catch (error) { }
   }
 
 }
-// ${syncResult.topups.localTopup} ${i18n.t('topups-updated')}
+
 
 function mapStateToProps(state, props) {
   return {

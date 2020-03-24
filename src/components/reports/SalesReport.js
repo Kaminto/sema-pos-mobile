@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { Text, View, StyleSheet, FlatList, ScrollView, RefreshControl, SafeAreaView } from 'react-native';
+import { Text, View, StyleSheet, FlatList, ScrollView, RefreshControl } from 'react-native';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as reportActions from "../../actions/ReportActions";
+import SettingRealm from "../../database/settings/settings.operations";
 import DateFilter from "./DateFilter";
-import { parseISO, isSameDay } from 'date-fns';
 
 import i18n from '../../app/i18n';
 
@@ -26,6 +26,11 @@ class SalesReport extends React.PureComponent {
 
 	addDays = (theDate, days) => {
 		return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
+	};
+
+	getCurrency = () => {
+		let settings = SettingRealm.getAllSetting();
+		return settings.currency;
 	};
 
 	render() {
@@ -54,11 +59,16 @@ class SalesReport extends React.PureComponent {
 							</View>
 							<View style={{ height: 90, flex: 1, color: '#fff' }} >
 								<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-sales').toUpperCase()}</Text>
-								<Text style={[styles.totalItem, { flex: .6 }]}>{this.props.salesData.totalSales}</Text>
+			<Text style={[styles.totalItem, { flex: .6 }]}>{this.getCurrency()} {this.props.salesData.totalSales}</Text>
 							</View>
-							<View style={{ height: 90, flex: 1, color: '#fff' }} >
+							{/* <View style={{ height: 90, flex: 1, color: '#fff' }} >
 								<Text style={[styles.totalLabel, { flex: .4 }]}>DEBT COLLECTED</Text>
 								<Text style={[styles.totalItem, { flex: .6 }]}>{this.props.salesData.totalDebt}</Text>
+							</View> */}
+							<View style={{ height: 90, flex: 1, color: '#fff' }} >
+								<Text style={[styles.totalLabel, { flex: .4 }]}>TOTAL EARNINGS</Text>
+								<Text style={[styles.totalItem, { flex: .6 }]}>
+								{this.getCurrency()} {this.props.salesData.totalTypes.length > 0 ? this.props.salesData.totalTypes.slice(-1)[0].totalAmount : 0}</Text>
 							</View>
 						</View>
 					</View>

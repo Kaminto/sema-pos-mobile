@@ -214,6 +214,7 @@ class TransactionDetail extends React.PureComponent {
 		}
 
 		if (this.props.item.paymentTypes !== undefined) {
+			console.log("Enoch " + JSON.stringify(this.props.item.paymentTypes));
 			paymentTypes = this.props.item.paymentTypes.map((paymentItem, idx) => {
 				return (
 
@@ -286,7 +287,7 @@ class TransactionDetail extends React.PureComponent {
 
 				<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
 					<Text style={[styles.customername, { flex: .7, fontWeight: 'bold' }]}>TOTAL AMOUNT</Text>
-					<Text style={[styles.customername, { flex: .3, fontWeight: 'bold', paddingRight: 20 }]}>
+					<Text style={[styles.customername, { flex: .3, fontWeight: 'bold', paddingRight: 20, alignSelf: 'flex-end' }]}>
 						{this.getCurrency().toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}
 					</Text>
 				</View>

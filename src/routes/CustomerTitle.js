@@ -47,14 +47,14 @@ export default connect(
 
 const styles = StyleSheet.create({
 	tooltitle: {
-						color: 'white',
-						fontSize: 18
+		color: 'white',
+		fontSize: 18
 	},
 
 	container: {
-		            flexDirection: 'row',
-					color: 'white',
-					fontSize: 18
+		flexDirection: 'row',
+		color: 'white',
+		fontSize: 18
 	}
 
   });

@@ -38,6 +38,10 @@ class ReceiptLineItem extends React.PureComponent {
 
 	}
 
+	getCurrency = () => {
+		let settings = SettingRealm.getAllSetting();
+		return settings.currency;
+	}
 
 	render() {
 		return (
@@ -61,7 +65,7 @@ class ReceiptLineItem extends React.PureComponent {
 					</View>
 				</View>
 				<View style={[styles.itemData, { flex: .3 }]}>
-					<Text style={[styles.label, { fontSize: 15, padding: 10 }]}>{this.props.item.currency_code.toUpperCase()} {this.props.item.price_total}</Text>
+					<Text style={[styles.label, { fontSize: 15, padding: 10 }]}>{this.getCurrency()} {this.props.item.price_total}</Text>
 				</View>
 			</View>
 		);
@@ -119,6 +123,11 @@ class PaymentTypeItem extends React.PureComponent {
 		super(props);
 	}
 
+	getCurrency = () => {
+		let settings = SettingRealm.getAllSetting();
+		return settings.currency;
+	};
+
 	render() {
 		return (
 			<View
@@ -132,7 +141,7 @@ class PaymentTypeItem extends React.PureComponent {
 					<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>{this.props.item.name}</Text>
 				</View>
 				<View style={[styles.itemData, { flex: 1 }]}>
-					<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold' }]}>{this.props.item.amount} </Text>
+			<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold' }]}>{this.getCurrency()} {this.props.item.amount} </Text>
 				</View>
 			</View>
 		);
@@ -161,7 +170,7 @@ class CustomerDetails extends React.PureComponent {
 		);
 	}
 	componentWillUnmount() {
-		this.props.customerActions.CustomerSelected({});
+		// this.props.customerActions.CustomerSelected({});
 		this.props.customerActions.setCustomerEditStatus(false);
 		Events.rm('ScrollCustomerTo', 'customerId1');
 	}
@@ -459,6 +468,10 @@ class CustomerDetails extends React.PureComponent {
 		};
 	}
 
+	getCurrency = () => {
+		let settings = SettingRealm.getAllSetting();
+		return settings.currency;
+	};
 
 	renderReceipt({ item, index }) {
 		return (
@@ -469,11 +482,11 @@ class CustomerDetails extends React.PureComponent {
 						</Text>
 					</View>
 					<Text style={styles.customername}>
-						{item.currency.toUpperCase()} {item.totalAmount}
+						{this.getCurrency()} {item.totalAmount}
 					</Text>
-					<View style={styles.itemData}>
+					{/* <View style={styles.itemData}>
 						<Text style={styles.customername}>{item.customerAccount.name}</Text>
-					</View>
+					</View> */}
 				</View>
 			</TouchableNativeFeedback>
 		);
@@ -621,7 +634,10 @@ class TransactionDetail extends React.PureComponent {
 		this.setState({ refresh: !this.state.refresh });
 	}
 
-
+	getCurrency = () => {
+		let settings = SettingRealm.getAllSetting();
+		return settings.currency;
+	};
 
 	render() {
 		const receiptLineItems = this.props.item.receiptLineItems.map((lineItem, idx) => {
@@ -667,9 +683,9 @@ class TransactionDetail extends React.PureComponent {
 						<Text style={styles.receiptDeleteButtonText}>X</Text>
 					</TouchableOpacity>
 				</View>
-				<View style={styles.itemData}>
+				{/* <View style={styles.itemData}>
 					<Text style={styles.customername}>{this.props.item.customerAccount.name}</Text>
-				</View>
+				</View> */}
 				<View style={styles.itemData}>
 					<Text>{format(parseISO(this.props.item.createdAt), 'iii d MMM yyyy')}
 					</Text>
@@ -713,7 +729,7 @@ class TransactionDetail extends React.PureComponent {
 				<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
 					<Text style={[styles.customername, { flex: .7, fontWeight: 'bold' }]}>TOTAL AMOUNT </Text>
 					<Text style={[styles.customername, { flex: .3, fontWeight: 'bold' }]}>
-						{this.props.item.currency.toUpperCase()} {this.props.item.totalAmount}
+						{this.getCurrency()} {this.props.item.totalAmount}
 					</Text>
 				</View>
 			</View>

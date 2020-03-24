@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, ScrollView, FlatList, TextInput, Dimensions, TouchableHighlight, StyleSheet, Alert } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, FlatList, TextInput, TouchableHighlight, StyleSheet, Alert } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
@@ -14,7 +14,6 @@ import SettingRealm from '../../database/settings/settings.operations';
 import DiscountRealm from '../../database/discount/discount.operations';
 import ToggleSwitch from 'toggle-switch-react-native';
 import slowlog from 'react-native-slowlog';
-import * as Utilities from "../../services/Utilities";
 const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
 class OrderListItem extends React.PureComponent {

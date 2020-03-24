@@ -69,22 +69,6 @@ class CreditHistory extends React.PureComponent {
                             initialNumToRender={50}
                         />
                     </View>
-                    {/* <View style={{ flex: .4 }}>
-                        <Card title={i18n.t('topup-placeholder')}>
-                            <Input
-                                placeholder={i18n.t(
-                                    'topup-placeholder'
-                                )}
-                                // label={i18n.t('topup-placeholder')}
-                                value={this.state.topup}
-                                onChangeText={this.onChangeTopup}
-                            />
-                            <Button
-                                onPress={() => this.addCredit()}
-                                buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10 }}
-                                title={i18n.t('topup')} />
-                        </Card>
-                    </View> */}
                 </View>
             </View>
         );
@@ -108,7 +92,12 @@ class CreditHistory extends React.PureComponent {
 
     closePaymentModal = () => {
         this.refs.modal6.close();
-    };
+	};
+
+	getCurrency = () => {
+		let settings = SettingRealm.getAllSetting();
+		return settings.currency;
+	};
 
     addCredit = () => {
         if (Number(this.state.topup) === 0) {
@@ -207,14 +196,9 @@ class CreditHistory extends React.PureComponent {
                 </View>
                 <View style={{ flex: 1 }}>
                     <Text style={[styles.baseItem, styles.leftMargin]}>
-                        {item.topup}
+			{this.getCurrency()} {item.topup}
                     </Text>
                 </View>
-                {/* <View style={{ flex: 1 }}>
-                    <Text style={[styles.baseItem]}>
-                        {item.balance}
-                    </Text>
-                </View> */}
 
             </View>
         );
@@ -242,12 +226,6 @@ class CreditHistory extends React.PureComponent {
                         Topup Amount
                     </Text>
                 </View>
-                {/* <View style={[{ flex: 1 }]}>
-                    <Text style={[styles.headerItem]}>
-                        Balance
-                    </Text>
-                </View> */}
-
             </View>
         );
     };

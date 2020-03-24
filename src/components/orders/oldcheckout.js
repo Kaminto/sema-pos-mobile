@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, Alert, Text, TextInput, Button, FlatList, ScrollView, TouchableHighlight, StyleSheet } from "react-native";
+import { View, TouchableOpacity, Alert, Text, TextInput, Button, FlatList, ScrollView, TouchableHighlight, StyleSheet, Dimensions, Image, TouchableNativeFeedback } from "react-native";
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as OrderActions from "../../actions/OrderActions";
@@ -26,6 +26,7 @@ import OrderRealm from '../../database/orders/orders.operations';
 import CustomerReminderRealm from '../../database/customer-reminder/customer-reminder.operations';
 
 import ReceiptPaymentTypeRealm from '../../database/reciept_payment_types/reciept_payment_types.operations';
+import * as Utilities from "../../services/Utilities";
 const uuidv1 = require('uuid/v1');
 const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
@@ -58,6 +59,8 @@ class OrderCheckout extends React.PureComponent {
 		this.onPay = this.onPay.bind(this);
 		this.handleOnPress = this.handleOnPress.bind(this);
 	}
+
+	;
 
 	showDateTimePicker = () => {
 		this.setState({ isDateTimePickerVisible: true });
@@ -538,38 +541,10 @@ class OrderCheckout extends React.PureComponent {
 		}
 
 		if (this.props.selectedPaymentTypes.length === 0) {
-			// if (this.currentCredit() <= 0) {
-			// 	if (item.name === 'cash') {
-			// 		PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
-			// 		this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(),
-			// 			isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
-			// 		isSelectedAvailable = true;
-			// 	}
-			// }
-
-			if (this.currentCredit() > 0) {
-				if (this.currentCredit() > this.calculateOrderDue()) {
-					if (item.name === 'credit') {
-						PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
-						this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(),
-							isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
-						isSelectedAvailable = true;
-					}
-				}
-
-				if (this.currentCredit() < this.calculateOrderDue()) {
-					if (item.name === 'credit') {
-						PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
-						this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(),
-							isSelected: item.isSelected === true ? false : true, amount: this.currentCredit() });
-						isSelectedAvailable = true;
-					}
-				}
-			} else {
+			if (this.currentCredit() <= 0) {
 				if (item.name === 'cash') {
 					PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
-					this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(),
-						isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
+					this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(), isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
 					isSelectedAvailable = true;
 				}
 			}
@@ -849,6 +824,7 @@ class OrderCheckout extends React.PureComponent {
 		})
 	}
 
+
 	logCredit = (amount) => {
 		CustomerDebtRealm.createCustomerDebt(amount, this.props.selectedCustomer.customerId);
 		this.props.paymentTypesActions.setCustomerPaidDebt(
@@ -858,6 +834,7 @@ class OrderCheckout extends React.PureComponent {
 			loanPaid: amount
 		})
 	}
+
 
 	updateLoanBalance = (amount) => {
 		CustomerRealm.updateCustomerDueAmount(
@@ -883,12 +860,8 @@ class OrderCheckout extends React.PureComponent {
 				    this.updateWallet(this.props.selectedCustomer.walletBalance);
 			} else if (totalAmountPaid <= 0) {
 				   this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
-				   this.updateWallet(this.props.selectedCustomer.walletBalance);
+				this.updateWallet(this.props.selectedCustomer.walletBalance);
 			}
-			// const creditIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("credit");
-			// if (creditIndex >= 0) {
-			// 	this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[creditIndex], created_at: new Date(), isSelected: this.props.paymentTypes[creditIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() - totalAmountPaid });
-			// }
 		}
 		else if (this.currentCredit() <= this.calculateOrderDue()) {
 			if (this.currentCredit() > 0) {
@@ -975,6 +948,7 @@ class OrderCheckout extends React.PureComponent {
 	};
 
 	saveOrder = () => {
+		// if
 		let receipt = null;
 		let price_total = 0;
 		let totalAmount = 0;
@@ -1047,8 +1021,6 @@ class OrderCheckout extends React.PureComponent {
 		receipt.cogs = cogs_total;
 
 		if (receipt != null) {
-			const creditIndex = this.props.selectedPaymentTypes.map(function (e) { return e.name }).indexOf("credit");
-
 			receipt.customer_account = this.props.selectedCustomer;
 			if (this.props.selectedPaymentTypes.length > 0) {
 				ReceiptPaymentTypeRealm.createManyReceiptPaymentType(this.props.selectedPaymentTypes, receipt.id);

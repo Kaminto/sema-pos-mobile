@@ -85,7 +85,7 @@ class OrderSync {
                                 delete localOrder.receipt_line_items;
                                 delete localOrder.customer_account;
                                 delete localOrder.customerAccountId;
-                                this.apiSyncOperations(localOrder,siteId);                               
+                                this.apiSyncOperations(localOrder,siteId);
                             })
                         }
 
@@ -110,7 +110,8 @@ class OrderSync {
                                         pendingBottles: localOrder.receipt_line_items[i].refillPending
                                     })
                                 }
-                                localOrder.products = products;
+								localOrder.products = products;
+								console.log('Gaffes ' + localOrder.products);
                                 delete localOrder.receipt_line_items;
                                 delete localOrder.customer_account;
                                 delete localOrder.customerAccountId;
@@ -146,8 +147,8 @@ class OrderSync {
                     console.log(
                         'Synchronization:synchronizeOrder - Removing order from pending list - ' +
                         response
-                    ); 
-                    OrderRealm.setLastOrderSync();                 
+                    );
+                    OrderRealm.setLastOrderSync();
                 })
                 .catch(error => {
                     console.log(
