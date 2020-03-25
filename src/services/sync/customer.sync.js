@@ -11,8 +11,6 @@ class CustomerSync {
                     let initlocalCustomers = CustomerRealm.getCustomerByCreatedDate(CustomerRealm.getLastCustomerSync());
                     let localCustomers = [...initlocalCustomers];
                     let remoteCustomers = [...remoteCustomer.customers];
-                   console.log('remoteCustomer', JSON.stringify(remoteCustomers));
-                   console.log('localCustomers', JSON.stringify(localCustomers));
                     if (initlocalCustomers.length === 0 && remoteCustomers.length > 0) {
                         CustomerRealm.createManyCustomers(remoteCustomer.customers);
                         CustomerRealm.setLastCustomerSync();
@@ -50,12 +48,6 @@ class CustomerSync {
                         onlyRemote.push(...remoteCustomers);
                         bothLocalRemote.inLocal = inLocal;
                         bothLocalRemote.inRemote = inRemote;
-
-                        console.log('onlyRemote', onlyRemote);
-                        console.log('onlyLocally', onlyLocally);
-                        
-                        console.log('inLocal', inLocal);
-                        console.log('inRemote', inRemote);
                         
                         if (onlyRemote.length > 0) {
                             CustomerRealm.createManyCustomers(onlyRemote);
@@ -74,9 +66,6 @@ class CustomerSync {
                                 this.apiSyncOperations(localCustomer);
                             })
                         }                      
-
-                        // console.log('localCustomers2', localCustomers);
-                        // console.log('remoteCustomers2', remoteCustomers);
                     }
                     resolve({
                         success: true,

@@ -1057,6 +1057,8 @@ class OrderCheckout extends React.PureComponent {
 				);
 			}
 
+		console.log('receipt', JSON.stringify(receipt));
+
 			OrderRealm.createOrder(receipt);
 			this.props.receiptActions.setReceipts(
 				OrderRealm.getAllOrder()

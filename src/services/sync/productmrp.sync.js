@@ -11,9 +11,6 @@ class ProductMRPSync {
                     let initlocalProductMRPs = ProductMRPRealm.getProductMRPS();
                     let localProductMRPs = [...initlocalProductMRPs];
                     let remoteProductMRPs = [...remoteProductMRP.productMRPs];
-                    console.log('initlocalProductMRPs', initlocalProductMRPs);
-                    console.log('localProductMRPs', localProductMRPs);
-                    console.log('remoteProductMRPs', remoteProductMRPs);
                     if (initlocalProductMRPs.length === 0) {
                         ProductMRPRealm.createManyProductMRP(remoteProductMRP.productMRPs);
                     }
@@ -26,17 +23,13 @@ class ProductMRPSync {
 
                     if (initlocalProductMRPs.length > 0) {
 
-                        console.log('initlocalProductMRPs', initlocalProductMRPs);
-                        console.log('localProductMRPs', localProductMRPs);
-                        console.log('remoteProductMRPs', remoteProductMRPs);
                         initlocalProductMRPs.forEach(localProductMRP => {
                             let filteredObj = remoteProductMRPs.filter(obj => obj.id === localProductMRP.id)
-                            console.log('filteredObj', filteredObj);
+                          
                             if (filteredObj.length > 0) {
                                 const remoteIndex = remoteProductMRPs.map(function (e) { return e.id }).indexOf(filteredObj[0].id);
                                 const localIndex = localProductMRPs.map(function (e) { return e.id }).indexOf(filteredObj[0].id);
-                                console.log('remoteIndex', remoteIndex);
-                                console.log('localIndex', localIndex);
+                              
                                 remoteProductMRPs.splice(remoteIndex, 1);
                                 localProductMRPs.splice(localIndex, 1);
 
@@ -47,7 +40,6 @@ class ProductMRPSync {
                             if (filteredObj.length === 0) {
                                 onlyLocally.push(localProductMRP);
                                 const localIndex = localProductMRPs.map(function (e) { return e.id }).indexOf(localProductMRP.id);
-                                console.log('localIndex', localIndex);
                                 localProductMRPs.splice(localIndex, 1);
                             }
                         });

@@ -8,16 +8,11 @@ class OrderSync {
         return new Promise(resolve => {
             OrderApi.getReceipts(siteId, OrderRealm.getLastOrderSync())
                 .then(remoteOrder => {
-                    console.log('remoteOrder', remoteOrder);
-                    console.log('Date Date', OrderRealm.getLastOrderSync());
                     let initlocalOrders = OrderRealm.getOrdersByDate2(OrderRealm.getLastOrderSync());
                     let localOrders = initlocalOrders.length > 0 ? [...initlocalOrders] : [];
                     let remoteOrders = remoteOrder.length > 0 ? [...remoteOrder] : [];
-                    console.log('localOrders', localOrders);
-                    console.log('initlocalOrders', initlocalOrders);
 
                     if (initlocalOrders.length === 0 && remoteOrders.length > 0) {
-                        console.log('createManyOrders', initlocalOrders);
                         OrderRealm.createManyOrders(remoteOrder);
                         OrderRealm.setLastOrderSync();
                     }
@@ -113,7 +108,6 @@ class OrderSync {
                                     })
                                 }
 								localOrder.products = products;
-								console.log('Gaffes ' + JSON.stringify(localOrder.products));
                                 delete localOrder.receipt_line_items;
                                 delete localOrder.customer_account;
                                 delete localOrder.customerAccountId;
@@ -128,9 +122,6 @@ class OrderSync {
 
                 })
                 .catch(error => {
-                    console.log(
-                        'Synchronization.getOrder - error ' + error
-                    );
                     resolve({
                         error: true,
                         orders: 0,
@@ -141,22 +132,15 @@ class OrderSync {
 
 
     apiSyncOperations(localOrder, siteId) {
+        console.log('localOrder', localOrder);
         if (localOrder.active === true && localOrder.syncAction === 'delete') {
             OrderApi.deleteOrder(
                 localOrder, siteId
             )
                 .then((response) => {
-                    console.log(
-                        'Synchronization:synchronizeOrder - Removing order from pending list - ' +
-                        response
-                    );
                     OrderRealm.setLastOrderSync();
                 })
                 .catch(error => {
-                    console.log(
-                        'Synchronization:synchronizeOrder Delete Order failed ' +
-                        error
-                    );
                 });
         }
 
@@ -167,16 +151,16 @@ class OrderSync {
                 .then((response) => {
                   // updateCount = updateCount + 1;
                   OrderRealm.setLastOrderSync();
-                    console.log(
-                        'Synchronization:synchronizeOrder - Removing Order from pending list - ' +
-                        response
-                    );
+                    // console.log(
+                    //     'Synchronization:synchronizeOrder - Removing Order from pending list - ' +
+                    //     response
+                    // );
                 })
                 .catch(error => {
-                    console.log(
-                        'Synchronization:synchronizeOrder Update Order failed ' +
-                        error
-                    );
+                    // console.log(
+                    //     'Synchronization:synchronizeOrder Update Order failed ' +
+                    //     error
+                    // );
                 });
 
         }

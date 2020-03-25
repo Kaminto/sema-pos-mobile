@@ -11,8 +11,8 @@ class InventorySync {
                     let initlocalInventories = InventroyRealm.getAllInventoryByDate(InventroyRealm.getLastInventorySync());
                     let localInventories = [...initlocalInventories];
                     let remoteInventories = [...remoteInventory.closingStock];
-                    console.log('remoteInventory', remoteInventory);
-                    console.log('initlocalInventories', initlocalInventories);
+
+                    
 
                   
 

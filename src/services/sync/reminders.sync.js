@@ -25,18 +25,12 @@ class ReminderSync {
 
                     if (initlocalReminder.length > 0) {
 
-                        console.log('initlocalReminder', initlocalReminder);
-                        console.log('localReminder', localReminder);
-                        console.log('remoteReminder', remoteReminder);
                         initlocalReminder.forEach(localCustomerDebt => {
                             let filteredObj = remoteReminder.filter(obj => obj.receipt_payment_type_id === localCustomerDebt.receipt_payment_type_id)
-                            console.log('filteredObj', filteredObj);
                             if (filteredObj.length > 0) {
                                 const remoteIndex = remoteReminder.map(function (e) { return e.receipt_payment_type_id }).indexOf(filteredObj[0].receipt_payment_type_id);
                                 const localIndex = localReminder.map(function (e) { return e.receipt_payment_type_id }).indexOf(filteredObj[0].receipt_payment_type_id);
-                                console.log('remoteIndex', remoteIndex);
-                                console.log('localIndex', localIndex);
-                                remoteReminder.splice(remoteIndex, 1);
+                               remoteReminder.splice(remoteIndex, 1);
                                 localReminder.splice(localIndex, 1);
 
                                 inLocal.push(localCustomerDebt);
@@ -46,7 +40,6 @@ class ReminderSync {
                             if (filteredObj.length === 0) {
                                 onlyLocally.push(localCustomerDebt);
                                 const localIndex = localReminder.map(function (e) { return e.receipt_payment_type_id }).indexOf(localCustomerDebt.receipt_payment_type_id);
-                                console.log('localIndex', localIndex);
                                 localReminder.splice(localIndex, 1);
                             }
                         });
@@ -142,8 +135,6 @@ class ReminderSync {
                         }
 
 
-                        console.log('localReminder2', localReminder);
-                        console.log('remoteReminder2', remoteReminder);
 
                     }
                     resolve({

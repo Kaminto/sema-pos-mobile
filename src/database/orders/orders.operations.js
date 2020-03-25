@@ -182,7 +182,7 @@ class OrderRealm {
 
         }
 		newOrder.receipt_line_items = JSON.stringify(receipt_line_items);
-
+        console.log('newOrder', JSON.stringify(newOrder));
         try {
             realm.write(() => {
                 realm.create('Order', newOrder);
