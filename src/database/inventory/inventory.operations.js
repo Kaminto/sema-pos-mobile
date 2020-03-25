@@ -1,6 +1,6 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-import { parseISO, isSameDay, format, sub, compareAsc } from 'date-fns';
+import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
 class InventroyRealm {
     constructor() {
         this.inventory = [];
@@ -11,7 +11,7 @@ class InventroyRealm {
             }
 
         });
-
+        //this.truncate();
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReadingSyncDate')))).length == 0) {
                 realm.create('MeterReadingSyncDate', { lastMeterReadingSync: firstSyncDate });
@@ -63,9 +63,11 @@ class InventroyRealm {
 
 
     getAllInventoryByDate(date) {
+        console.log('idate', date);
         let inventory = this.inventory = Object.values(JSON.parse(JSON.stringify(realm.objects('Inventory'))));
+        console.log('iinventory', meterReding);
         return inventory.filter(r => {
-            return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1;
+            return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1 || r.active === false;
         })
     }
 
@@ -74,9 +76,11 @@ class InventroyRealm {
     }
 
     getAllMeterReadingByDate(date) {
+        console.log('mdate', date);
         let meterReding = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
+        console.log('minventory', meterReding);
         return meterReding.filter(r => {
-            return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1;
+            return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1 || r.active === false;
         })
     }
 
@@ -130,8 +134,17 @@ class InventroyRealm {
 
     createMeterReading(meter_value, date, kiosk_id) {
         console.log('date', date + " " + meter_value + " - " + kiosk_id);
-        date = this.addDays(date, 1);
+         date = this.addDays(date, 1);
+        //date = add(date, { days: 1 });
         console.log('date-', date);
+             
+        let current_date = set(new Date(date), {
+            hours: getHours(new Date()),
+            minutes: getMinutes(new Date()),
+            seconds: getSeconds(new Date())
+        })
+        let update_date = new Date();
+
         try {
             realm.write(() => {
                 let checkExistingMeter = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
@@ -142,12 +155,12 @@ class InventroyRealm {
                     let meterUpdateObj = realm.objects('MeterReading').filtered(`meter_reading_id = "${filteredReading[0].meter_reading_id}"`);
                     meterUpdateObj[0].meter_value = meter_value;
                     meterUpdateObj[0].syncAction = 'update';
-                    meterUpdateObj[0].updated_at = new Date();
+                    meterUpdateObj[0].updated_at = update_date;
                 } else {
                     realm.create('MeterReading', {
                         meter_reading_id: uuidv1(),
                         kiosk_id,
-                        created_at: new Date(date),
+                        created_at: current_date,
                         meter_value: meter_value ? meter_value : 0,
                         syncAction: 'create',
                         active: false
@@ -156,15 +169,24 @@ class InventroyRealm {
                 // realm.create('CustomerReminder', customerReminder);
             });
         } catch (e) {
-            console.log("Error on creation inventory meter reading", e);
+            console.log("Error on creation  meter reading", e);
         }
     }
 
     createInventory(inventory, date) {
         console.log('inventory-', inventory);
-        console.log('date', date);
+        console.log('date', date );
         date = this.addDays(date, 1);
-        console.log('date-', date);
+       console.log('date-', date);
+            
+       let current_date = set(new Date(date), {
+           hours: getHours(new Date()),
+           minutes: getMinutes(new Date()),
+           seconds: getSeconds(new Date())
+       })
+       let update_date = new Date();
+
+
         try {
             realm.write(() => {
                 let checkExistingInventory = Object.values(JSON.parse(JSON.stringify(realm.objects('Inventory').filtered(`closingStockId = "${inventory.closingStockId}"`))));
@@ -181,14 +203,14 @@ class InventroyRealm {
                     } inventorUpdateObj[0].kiosk_id = inventory.kiosk_id;
                     inventorUpdateObj[0].wastageName = inventory.wastageName;
                     inventorUpdateObj[0].syncAction = 'update';
-                    inventorUpdateObj[0].updated_at = new Date();
+                    inventorUpdateObj[0].updated_at = update_date;
                 } else {
                     let saveObj = {};
                     if (inventory.type === 'closing') {
                         saveObj = {
                             ...inventory,
                             closingStockId: uuidv1(),
-                            created_at: date,
+                            created_at: current_date,
                             inventory: inventory.inventory ? inventory.inventory : 0,
                             quantity: inventory.quantity ? inventory.quantity : 0,
                             syncAction: 'create',

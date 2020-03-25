@@ -35,7 +35,6 @@ class CustomerRealm {
 
     setLastCustomerSync() {
         realm.write(() => {
-            console.log('update sync date');
             let syncDate = realm.objects('CustomerSyncDate');
             syncDate[0].lastCustomerSync = new Date()
         })
