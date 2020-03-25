@@ -18,7 +18,7 @@ const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
 class OrderListItem extends React.PureComponent {
 	render() {
-		return(
+		return (
 			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white', padding: 5 }}>
 				<View style={[{ flex: 2 }]}>
 					<Text style={[styles.baseItem, styles.leftMargin]}>{this.props.item.product.description}</Text>
@@ -34,31 +34,31 @@ class OrderListItem extends React.PureComponent {
 		)
 	}
 
-		getCurrency = (item) => {
-			if (item.hasOwnProperty('product')) {
-				return item.product.priceCurrency.toUpperCase();
-			}
-		};
+	getCurrency = (item) => {
+		if (item.hasOwnProperty('product')) {
+			return item.product.priceCurrency.toUpperCase();
+		}
+	};
 
-		getDiscountPrice = (amountPerQuantity, item) => {
-			if (!item.hasOwnProperty('discount')) {
-				return amountPerQuantity;
-			}
+	getDiscountPrice = (amountPerQuantity, item) => {
+		if (!item.hasOwnProperty('discount')) {
+			return amountPerQuantity;
+		}
 
-			if (Number(item.discount) === 0) {
-				return amountPerQuantity;
-			}
+		if (Number(item.discount) === 0) {
+			return amountPerQuantity;
+		}
 
-			if (item.type === 'Flat') {
-				return amountPerQuantity - Number(item.discount);
-			}
+		if (item.type === 'Flat') {
+			return amountPerQuantity - Number(item.discount);
+		}
 
-			if (item.type === 'Percentage') {
-				return amountPerQuantity * (Number(item.discount) / 100);
-			}
-		};
+		if (item.type === 'Percentage') {
+			return amountPerQuantity * (Number(item.discount) / 100);
+		}
+	};
 
-  }
+}
 
 class OrderItems extends React.PureComponent {
 	constructor(props) {
@@ -84,17 +84,17 @@ class OrderItems extends React.PureComponent {
 		this.refs.productModel.open();
 	}
 
-	_renderItem = ({item, index, separators}) => (
-			<TouchableHighlight
-				onPress={() => this.handleOnPress(item)}
-				onShowUnderlay={separators.highlight}
-				onHideUnderlay={separators.unhighlight}>
-				{this.getRow(item, index, separators)}
-				{/* <OrderListItem
+	_renderItem = ({ item, index, separators }) => (
+		<TouchableHighlight
+			onPress={() => this.handleOnPress(item)}
+			onShowUnderlay={separators.highlight}
+			onHideUnderlay={separators.unhighlight}>
+			{this.getRow(item, index, separators)}
+			{/* <OrderListItem
 				 item={item}
 				  /> */}
-			</TouchableHighlight>
-     )
+		</TouchableHighlight>
+	)
 
 	render() {
 		return (
@@ -185,24 +185,33 @@ class OrderItems extends React.PureComponent {
 										flex: .2,
 										width: 100,
 										marginTop: 10,
-										alignSelf: 'flex-end',
+										alignContent: 'space-between',
 										flexDirection: 'row',
 										right: 0,
 										bottom: 0
 									}}>
-									<TouchableHighlight style={{ flex: 1 }}
-										onPress={() => this.onCancelOrder()}>
-										<Text style={{ padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#036' }}>SAVE</Text>
-									</TouchableHighlight>
+
+
+									
+										<TouchableHighlight style={{ flex: 1 }}
+											onPress={() => this.removeDiscount()}>
+											<Text style={{ padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#036' }}>Remove</Text>
+										</TouchableHighlight>
+								
+										<TouchableHighlight style={{ flex: 1 }}
+											onPress={() => this.onCancelOrder()}>
+											<Text style={{ padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#036' }}>SAVE</Text>
+										</TouchableHighlight>
+									
 								</View>
 
 							</View>
 						</TouchableOpacity>
 					</ScrollView>
 
-				</Modal>
+				</Modal >
 
-			</View>
+			</View >
 
 		);
 	}
@@ -561,6 +570,13 @@ class OrderItems extends React.PureComponent {
 		this.refs.productModel.close();
 	};
 
+	removeDiscount() {
+		//this.refs.productModel.close();
+		this.refs.productModel.close();
+		let unitPrice = this.getItemPrice(this.state.selectedItem.product);
+		this.props.orderActions.RemoveProductFromOrder(this.state.selectedItem.product, unitPrice);
+	};
+
 
 	showQuantityChanger() {
 		this.props.toolbarActions.ShowScreen('quanityChanger');
@@ -578,7 +594,7 @@ class OrderItems extends React.PureComponent {
 				<View style={[{ flex: 2 }]}>
 					<Text numberOfLines={1} style={[styles.baseItem, { textAlign: 'right', paddingRight: 5 }]}>
 						{this.getCurrency().toUpperCase()} {this.getDiscountPrice((item.quantity * item.unitPrice), item)}
-						</Text>
+					</Text>
 				</View>
 			</View>
 		);

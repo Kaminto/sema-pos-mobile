@@ -41,7 +41,7 @@ class CustomerDebtsSync {
                             if (filteredObj.length === 0) {
                                 onlyLocally.push(localCustomerDebt);
                                 const localIndex = localCustomerDebts.map(function (e) { return e.receipt_payment_type_id }).indexOf(localCustomerDebt.receipt_payment_type_id);
-                                console.log('localIndex', localIndex);
+                                
                                 localCustomerDebts.splice(localIndex, 1);
                             }
                         });

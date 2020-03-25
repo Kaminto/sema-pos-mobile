@@ -12,9 +12,7 @@ class RecieptPaymentTypesSync {
                     let localRecieptPaymentTypes = [...initlocalRecieptPaymentTypes];
                     let remoteRecieptPaymentTypes = [...result];
 
-                    console.log('localRecieptPaymentTypes', localRecieptPaymentTypes);
-                    console.log('remoteRecieptPaymentTypes', remoteRecieptPaymentTypes);
-
+                  
                     if (initlocalRecieptPaymentTypes.length === 0) {
                         ReceiptPaymentTypeRealm.createManyReceiptPaymentType(result, null);
                         ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
@@ -78,9 +76,6 @@ class RecieptPaymentTypesSync {
                             })
                         }
 
-
-                        console.log('localRecieptPaymentTypes2', localRecieptPaymentTypes);
-                        console.log('remoteRecieptPaymentTypes2', remoteRecieptPaymentTypes);
 
                     }
                     resolve({

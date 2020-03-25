@@ -12,11 +12,9 @@ class CreditSync {
                     let initlocalCredits = CreditRealm.getAllCreditByDate(CreditRealm.getLastCreditSync());
                     let localCredits = [...initlocalCredits];
                     let remoteInventories = [...remoteCredit.topup];
-                    console.log('localCredits', localCredits);
-                    console.log('remoteInventories', remoteInventories);
-                    // if (initlocalCredits.length === 0) {
-                    //     CreditRealm.createManycredits(remoteCredit.topup);
-                    // }
+                    if (initlocalCredits.length === 0) {
+                        CreditRealm.createManycredits(remoteCredit.topup);
+                    }
 
                     let onlyLocally = [];
                     let onlyRemote = [];
@@ -68,13 +66,6 @@ class CreditSync {
                                 this.apiSyncOperations({...localCredit, kiosk_id: settings.siteId});
                             })
                         }
-
-                        // console.log('onlyRemote', onlyRemote);
-                        // console.log('onlyLocally', onlyLocally);
-                        // console.log('bothLocalRemote', bothLocalRemote);
-
-                        // console.log('localCredits2', localCredits);
-                        // console.log('remoteInventories2', remoteInventories);
 
                     }
                     resolve({
