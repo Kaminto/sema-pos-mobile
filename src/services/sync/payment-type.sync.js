@@ -13,9 +13,6 @@ class PaymentTypeSync {
                 let localPaymentTypes = [...initlocalPaymentTypes];
                 let remotePaymentTypes = [...remotePaymentType]; 
 
-                console.log('initlocalPaymentTypes', initlocalPaymentTypes);
-                console.log('localPaymentTypes', localPaymentTypes);
-                console.log('remotePaymentTypes', remotePaymentTypes);
 
                 if (initlocalPaymentTypes.length === 0) {
                     PaymentTypeRealm.createManyPaymentTypes(remotePaymentType);
@@ -60,9 +57,6 @@ class PaymentTypeSync {
                         PaymentTypeRealm.createManyPaymentTypes(onlyRemote)
                     }
 
-                    console.log('onlyRemote', onlyRemote);
-                    console.log('onlyLocally', onlyLocally);
-                    console.log('bothLocalRemote', bothLocalRemote);
 
                    
                 }

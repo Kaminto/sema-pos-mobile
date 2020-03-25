@@ -11,8 +11,6 @@ class MeterReadingSync {
                     let initlocalMeterReadings = InventroyRealm.getAllMeterReadingByDate(InventroyRealm.getLastMeterReadingSync());
                    let localMeterReadings = [...initlocalMeterReadings];
                     let remoteMeterReadings = [...remoteMeterReading];
-                    // console.log('remoteMeterReading', remoteMeterReading);
-                    // console.log('initlocalMeterReadings', initlocalMeterReadings);
 
                     if (localMeterReadings.length === 0) {
                         InventroyRealm.createManyMeterReading(remoteMeterReading);
@@ -176,9 +174,8 @@ class MeterReadingSync {
                 });
 
         }
-        console.log('here1');
         if (localMeterReading.active === false && localMeterReading.syncAction === 'create') {
-            console.log('here31');
+            
             MeterReadingApi.createMeterReading(
                 localMeterReading
             )

@@ -9,7 +9,6 @@ class ProductSync {
 
             ProductApi.getProducts(ProductRealm.getLastProductsync())
             .then(remoteProduct => {
-				console.log("Remote Products " + JSON.stringify(remoteProduct));
                 let initlocalProducts = ProductRealm.getProductsByDate(ProductRealm.getLastProductsync());
                 let localProducts = [...initlocalProducts];
                 let remoteProducts = [...remoteProduct.products];
