@@ -538,34 +538,7 @@ class OrderCheckout extends React.PureComponent {
 		}
 
 		if (this.props.selectedPaymentTypes.length === 0) {
-			// if (this.currentCredit() <= 0) {
-			// 	if (item.name === 'cash') {
-			// 		PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
-			// 		this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(),
-			// 			isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
-			// 		isSelectedAvailable = true;
-			// 	}
-			// }
-
-			if (this.currentCredit() > 0) {
-				if (this.currentCredit() > this.calculateOrderDue()) {
-					if (item.name === 'credit') {
-						PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
-						this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(),
-							isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
-						isSelectedAvailable = true;
-					}
-				}
-
-				if (this.currentCredit() < this.calculateOrderDue()) {
-					if (item.name === 'credit') {
-						PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
-						this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(),
-							isSelected: item.isSelected === true ? false : true, amount: this.currentCredit() });
-						isSelectedAvailable = true;
-					}
-				}
-			} else {
+			if (this.currentCredit() <= 0) {
 				if (item.name === 'cash') {
 					PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
 					this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(),
@@ -573,6 +546,33 @@ class OrderCheckout extends React.PureComponent {
 					isSelectedAvailable = true;
 				}
 			}
+
+			// if (this.currentCredit() > 0) {
+			// 	if (this.currentCredit() > this.calculateOrderDue()) {
+			// 		if (item.name === 'credit') {
+			// 			PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
+			// 			this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(),
+			// 				isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
+			// 			isSelectedAvailable = true;
+			// 		}
+			// 	}
+
+			// 	if (this.currentCredit() < this.calculateOrderDue()) {
+			// 		if (item.name === 'credit') {
+			// 			PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
+			// 			this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(),
+			// 				isSelected: item.isSelected === true ? false : true, amount: this.currentCredit() });
+			// 			isSelectedAvailable = true;
+			// 		}
+			// 	}
+			// } else {
+			// 	if (item.name === 'cash') {
+			// 		PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
+			// 		this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(),
+			// 			isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
+			// 		isSelectedAvailable = true;
+			// 	}
+			// }
 		}
 
 		if (item.name != 'loan' && item.name != 'credit') {
