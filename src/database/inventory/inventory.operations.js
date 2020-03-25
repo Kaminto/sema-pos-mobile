@@ -71,7 +71,7 @@ class InventroyRealm {
     getAllInventoryByDate(date) {
         console.log('idate', date);
         let inventory = this.inventory = Object.values(JSON.parse(JSON.stringify(realm.objects('Inventory'))));
-        console.log('iinventory', meterReding);
+        console.log('iinventory', inventory);
         return inventory.filter(r => {
             return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1 || r.active === false;
         })
