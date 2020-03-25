@@ -11,7 +11,7 @@ class MeterReadingSync {
                     let initlocalMeterReadings = InventroyRealm.getAllMeterReadingByDate(InventroyRealm.getLastMeterReadingSync());
                    let localMeterReadings = [...initlocalMeterReadings];
                     let remoteMeterReadings = [...remoteMeterReading];
-
+                    console.log('localMeterReadings', localMeterReadings);
                     if (localMeterReadings.length === 0) {
                         InventroyRealm.createManyMeterReading(remoteMeterReading);
                         InventroyRealm.setLastMeterReadingSync();

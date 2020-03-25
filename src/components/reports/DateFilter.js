@@ -5,17 +5,23 @@ import { bindActionCreators } from "redux";
 import * as reportActions from "../../actions/ReportActions";
 import { connect } from "react-redux";
 import Icon from 'react-native-vector-icons/Ionicons';
-
-const dayInMilliseconds =  24*60*60*1000;
+import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
+const dayInMilliseconds = 24 * 60 * 60 * 1000;
 
 class DateFilter extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		let currentDate = new Date();
-		this.state = {currentDate :new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() )};
-		this.maxDate = new Date( this.state.currentDate.getTime() + dayInMilliseconds );
-		this.minDate = new Date( this.maxDate.getTime() - 30 * dayInMilliseconds );
-		this.props.reportActions.setReportFilter( this.state.currentDate, new Date( this.state.currentDate.getTime() + dayInMilliseconds));
+		this.state = {
+			currentDate: set(new Date(currentDate), {
+				hours: getHours(new Date()),
+				minutes: getMinutes(new Date()),
+				seconds: getSeconds(new Date())
+			})
+		};
+		this.maxDate = new Date(this.state.currentDate.getTime() + dayInMilliseconds);
+		this.minDate = new Date(this.maxDate.getTime() - 30 * dayInMilliseconds);
+		this.props.reportActions.setReportFilter(this.state.currentDate, new Date(this.state.currentDate.getTime() - dayInMilliseconds));
 	}
 
 	render() {
@@ -34,36 +40,36 @@ class DateFilter extends React.PureComponent {
 		)
 	}
 
-	getPreviousButton(){
-		const prevDate = new Date( this.state.currentDate.getTime() - dayInMilliseconds );
-		if( prevDate > this.minDate){
+	getPreviousButton() {
+		const prevDate = new Date(this.state.currentDate.getTime() - dayInMilliseconds);
+		if (prevDate > this.minDate) {
 			return (
 				<TouchableHighlight onPress={() => this.onPreviousDay()}>
-					               {
-										<Icon
-											name='md-arrow-round-back'
-											size={40}
-											color='black'
-										/>
-									}
+					{
+						<Icon
+							name='md-arrow-round-back'
+							size={40}
+							color='black'
+						/>
+					}
 				</TouchableHighlight>
 			)
-		}else{
+		} else {
 			return (
 				<Icon
-				name='md-arrow-round-back'
-				size={40}
-				color='black'
-				style={{opacity:.4 }}
+					name='md-arrow-round-back'
+					size={40}
+					color='black'
+					style={{ opacity: .4 }}
 				/>
 
 			);
 		}
 	}
 
-	getNextButton(){
-		const nextDate = new Date( this.state.currentDate.getTime() + dayInMilliseconds );
-		if( nextDate < this.maxDate){
+	getNextButton() {
+		const nextDate = new Date(this.state.currentDate.getTime() + dayInMilliseconds);
+		if (nextDate < this.maxDate) {
 			return (
 				<TouchableHighlight onPress={() => this.onNextDay()}>
 					<Icon
@@ -73,30 +79,30 @@ class DateFilter extends React.PureComponent {
 					/>
 				</TouchableHighlight>
 			)
-		}else{
+		} else {
 			return (
 				<Icon
-						name='md-arrow-round-forward'
-						size={40}
-						color='black'
-						style={{opacity:.4 }}
-					/>
+					name='md-arrow-round-forward'
+					size={40}
+					color='black'
+					style={{ opacity: .4 }}
+				/>
 			);
 		}
 	}
 
 
-	onPreviousDay(){
-		this.setState({currentDate:new Date(this.state.currentDate.getTime() - dayInMilliseconds) }, () => this.update());
+	onPreviousDay() {
+		this.setState({ currentDate: new Date(this.state.currentDate.getTime() - dayInMilliseconds) }, () => this.update());
 	}
-	onNextDay(){
-		this.setState({currentDate:new Date(this.state.currentDate.getTime() + dayInMilliseconds) }, () => this.update());
+	onNextDay() {
+		this.setState({ currentDate: new Date(this.state.currentDate.getTime() + dayInMilliseconds) }, () => this.update());
 	}
 
-	update(){
+	update() {
 		const beginDate = this.state.currentDate;
-		const endDate = new Date( beginDate.getTime() + dayInMilliseconds );
-		this.props.reportActions.setReportFilter( beginDate, endDate );
+		const endDate = new Date(beginDate.getTime() - dayInMilliseconds);
+		this.props.reportActions.setReportFilter(beginDate, endDate);
 	}
 }
 
@@ -105,7 +111,7 @@ function mapStateToProps(state, props) {
 }
 
 function mapDispatchToProps(dispatch) {
-	return {reportActions:bindActionCreators(reportActions, dispatch) };
+	return { reportActions: bindActionCreators(reportActions, dispatch) };
 }
 
 //Connect everything
@@ -117,19 +123,19 @@ const styles = StyleSheet.create({
 		fontSize: 20
 	},
 
-	filterContainer:{
+	filterContainer: {
 		flex: .3,
 		backgroundColor: 'white',
 		marginLeft: 10,
 		marginTop: 20,
-		flexDirection:'row',
-		width:500
+		flexDirection: 'row',
+		width: 500
 	},
-	filterItemContainer:{
-		justifyContent:"center",
-		paddingLeft:10
+	filterItemContainer: {
+		justifyContent: "center",
+		paddingLeft: 10
 	},
-	filterImage:{
+	filterImage: {
 		width: 30,
 		height: 30
 	}
