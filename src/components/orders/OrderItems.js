@@ -180,30 +180,22 @@ class OrderItems extends React.PureComponent {
 
 								{this.discountCmpt()}
 
-								<View
-									style={{
-										flex: .2,
-										width: 100,
-										marginTop: 10,
-										alignContent: 'space-between',
-										flexDirection: 'row',
-										right: 0,
-										bottom: 0
-									}}>
 
-
-									
-										<TouchableHighlight style={{ flex: 1 }}
-											onPress={() => this.removeDiscount()}>
-											<Text style={{ padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#036' }}>Remove</Text>
-										</TouchableHighlight>
-								
-										<TouchableHighlight style={{ flex: 1 }}
-											onPress={() => this.onCancelOrder()}>
-											<Text style={{ padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#036' }}>SAVE</Text>
-										</TouchableHighlight>
-									
-								</View>
+								<View style={{ flex: 2, flexDirection: "row", justifyContent: 'space-between', padding: 10 }}>
+									<View style={{ backgroundColor: 'red', flex: 2, padding: 10 }}>
+									<TouchableHighlight style={{ flex: 1 }}
+										onPress={() => this.removeDiscount()}>
+										<Text style={{ padding: 10, fontWeight: 'bold', color: '#fff', textAlign: 'center'}}>Remove</Text>
+									</TouchableHighlight>
+									</View>
+									<View style={{ flex: 0.1 }} />
+									<View style={{ backgroundColor: '#036', flex: 2, padding: 10 }}>
+									<TouchableHighlight style={{ flex: 1  }}
+										onPress={() => this.onCancelOrder()}>
+										<Text style={{ padding: 10, fontWeight: 'bold', color: '#fff', textAlign: 'center'}}>Save</Text>
+									</TouchableHighlight>
+									</View>
+								</View>								
 
 							</View>
 						</TouchableOpacity>
