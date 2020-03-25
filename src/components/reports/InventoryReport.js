@@ -15,7 +15,6 @@ import i18n from '../../app/i18n';
 class InventoryEdit extends React.PureComponent {
 	constructor(props) {
 		super(props);
-
 		this.state = { inventoryQuantity: this.props.quantity };
 		this.quantityInput = React.createRef();
 	}
@@ -113,6 +112,7 @@ class InventoryReport extends React.PureComponent {
 	};
 
 	render() {
+		console.log('this.props.dateFilter',this.props.dateFilter);
 		return (
 			<View style={{ flex: 1, backgroundColor: 'white' }}>
 				<View style={{ flex: .1, flexDirection: 'row' }}>

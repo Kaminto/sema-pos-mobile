@@ -87,7 +87,7 @@ export const getMrps = products => {
 
 export const getWastageData = (beginDate, endDate, products) => {
 	return new Promise((resolve, reject) => {
-		getInventoryItem(beginDate, products)
+		getInventoryItem(beginDate, endDate)
 			.then(inventorySettings => {
 				let inventoryData = createInventory(
 					getSalesData(beginDate, endDate),
@@ -180,14 +180,14 @@ addDays = (theDate, days) => {
 	return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
 };
 
-const getInventoryItem = (beginDate) => {
+const getInventoryItem = (beginDate, yesterday) => {
 	return new Promise(resolve => {
-		const promiseToday = InventroyRealm.getWastageReportByDate(this.addDays(beginDate, 1));
-		const yesterday = new Date(beginDate);
+		const promiseToday = InventroyRealm.getWastageReportByDate(beginDate);
+		//const yesterday = new Date(beginDate);
 		const promiseYesterday = InventroyRealm.getWastageReportByDate(yesterday);
 		Promise.all([promiseToday, promiseYesterday]).then(inventoryResults => {
 			resolve({
-				date: this.addDays(beginDate, 1),
+				date: beginDate,
 				currentMeter: inventoryResults[0].currentMeter,
 				currentProductSkus: inventoryResults[0].currentProductSkus,
 				previousMeter: inventoryResults[1].currentMeter,

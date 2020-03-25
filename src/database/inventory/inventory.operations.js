@@ -11,13 +11,15 @@ class InventroyRealm {
             }
 
         });
-        //this.truncate();
+       // this.truncate();
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReadingSyncDate')))).length == 0) {
                 realm.create('MeterReadingSyncDate', { lastMeterReadingSync: firstSyncDate });
             }
             // let syncDate = realm.objects('MeterReadingSyncDate');
             // syncDate[0].lastMeterReadingSync = firstSyncDate;
+            // let syncDate2 = realm.objects('InventorySyncDate');
+            // syncDate2[0].lastInventorySync = firstSyncDate;
         });
         this.lastInventorySync = firstSyncDate;
     }
@@ -35,8 +37,12 @@ class InventroyRealm {
             realm.write(() => {
                 let inventories = realm.objects('Inventory');
                 let meterReading = realm.objects('MeterReading');
+                let meterSync = realm.objects('MeterReadingSyncDate');
+                let invSync = realm.objects('InventorySyncDate');
                 realm.delete(inventories);
                 realm.delete(meterReading);
+                realm.delete(meterSync);
+                realm.delete(invSync);
             })
         } catch (e) {
             console.log("Error on truncate inventory", e);
@@ -78,7 +84,7 @@ class InventroyRealm {
     getAllMeterReadingByDate(date) {
         console.log('mdate', date);
         let meterReding = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
-        console.log('minventory', meterReding);
+        //console.log('minventory', meterReding);
         return meterReding.filter(r => {
             return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1 || r.active === false;
         })
@@ -133,18 +139,15 @@ class InventroyRealm {
     }
 
     createMeterReading(meter_value, date, kiosk_id) {
-        console.log('date', date + " " + meter_value + " - " + kiosk_id);
-         date = this.addDays(date, 1);
-        //date = add(date, { days: 1 });
         console.log('date-', date);
-             
+
         let current_date = set(new Date(date), {
             hours: getHours(new Date()),
             minutes: getMinutes(new Date()),
             seconds: getSeconds(new Date())
-        })
+        });
         let update_date = new Date();
-
+        console.log('current_date', current_date);
         try {
             realm.write(() => {
                 let checkExistingMeter = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
@@ -175,16 +178,14 @@ class InventroyRealm {
 
     createInventory(inventory, date) {
         console.log('inventory-', inventory);
-        console.log('date', date );
-        date = this.addDays(date, 1);
-       console.log('date-', date);
-            
-       let current_date = set(new Date(date), {
-           hours: getHours(new Date()),
-           minutes: getMinutes(new Date()),
-           seconds: getSeconds(new Date())
-       })
-       let update_date = new Date();
+
+        let current_date = set(new Date(date), {
+            hours: getHours(new Date()),
+            minutes: getMinutes(new Date()),
+            seconds: getSeconds(new Date())
+        });
+        let update_date = new Date();
+        console.log('current_date', current_date);
 
 
         try {
