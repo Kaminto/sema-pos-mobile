@@ -190,8 +190,6 @@ class OrderItems extends React.PureComponent {
 										bottom: 0
 									}}>
 
-
-
 										<TouchableOpacity style={{ flex: 1 }}
 											onPress={() => this.removeDiscount()}>
 											<Text style={{ padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#f00', alignSelf: 'flex-start' }}>REMOVE</Text>
