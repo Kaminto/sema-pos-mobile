@@ -23,7 +23,6 @@ class CustomerDebtRealm {
 
     setLastCustomerDebtSync() {
         realm.write(() => {
-            console.log('update sync date');
             let syncDate = realm.objects('CustomerDebtSyncDate');
             syncDate[0].lastCustomerDebtSync = new Date();
         })

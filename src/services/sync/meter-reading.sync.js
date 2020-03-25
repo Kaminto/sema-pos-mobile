@@ -100,14 +100,14 @@ class MeterReadingSync {
             )
                 .then((response) => {
                     console.log(
-                        'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                        'Synchronization:synchronizeMeterReading - Removing MeterReading from pending list - ' +
                         response
                     );
                     InventroyRealm.setLastMeterReadingSync();
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization:synchronizeInventory Delete Inventory failed ' +
+                        'Synchronization:synchronizeMeterReading Delete MeterReading failed ' +
                         error
                     );
                 });
@@ -121,13 +121,13 @@ class MeterReadingSync {
                 .then((response) => {
                     InventroyRealm.setLastMeterReadingSync();
                     console.log(
-                        'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                        'Synchronization:synchronizeMeterReading - Removing MeterReading from pending list - ' +
                         response
                     );
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization:synchronizeInventory Update Inventory failed ' +
+                        'Synchronization:synchronizeMeterReading Update MeterReading failed ' +
                         error
                     );
                 });
@@ -149,7 +149,7 @@ class MeterReadingSync {
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization:synchronizeInventory Create Inventory failed'
+                        'Synchronization:synchronizeMeterReading Create MeterReading failed'
                     );
                 });
 
@@ -169,7 +169,7 @@ class MeterReadingSync {
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization:synchronizeInventory Create Inventory failed'
+                        'Synchronization:synchronizeMeterReading Create MeterReading failed'
                     );
                 });
 
@@ -189,7 +189,7 @@ class MeterReadingSync {
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization:synchronizeInventory Create Inventory failed'
+                        'Synchronization:synchronizeMeterReading Create MeterReading failed'
                     );
                 });
 
