@@ -182,8 +182,7 @@ class OrderItems extends React.PureComponent {
 
 								<View
 									style={{
-										flex: .2,
-										width: 100,
+										flex: 1,
 										marginTop: 10,
 										alignContent: 'space-between',
 										flexDirection: 'row',
@@ -192,17 +191,17 @@ class OrderItems extends React.PureComponent {
 									}}>
 
 
-									
-										<TouchableHighlight style={{ flex: 1 }}
+
+										<TouchableOpacity style={{ flex: 1 }}
 											onPress={() => this.removeDiscount()}>
-											<Text style={{ padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#036' }}>Remove</Text>
-										</TouchableHighlight>
-								
-										<TouchableHighlight style={{ flex: 1 }}
+											<Text style={{ padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#f00', alignSelf: 'flex-start' }}>REMOVE</Text>
+										</TouchableOpacity>
+
+										<TouchableOpacity style={{ flex: 1 }}
 											onPress={() => this.onCancelOrder()}>
-											<Text style={{ padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#036' }}>SAVE</Text>
-										</TouchableHighlight>
-									
+											<Text style={{ padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#036', alignSelf: 'flex-end' }}>SAVE</Text>
+										</TouchableOpacity>
+
 								</View>
 
 							</View>
