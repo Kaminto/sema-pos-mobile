@@ -12,7 +12,13 @@ class InventorySync {
                     let localInventories = [...initlocalInventories];
                     let remoteInventories = [...remoteInventory.closingStock];
 
-                    
+                    console.log('initlocalInventories', initlocalInventories);
+
+                    if (initlocalInventories.length === 0 && remoteInventories.length > 0) {
+                        InventroyRealm.createManyInventories(remoteInventories);
+                        InventroyRealm.setLastInventorySync();
+                    }
+
 
                   
 

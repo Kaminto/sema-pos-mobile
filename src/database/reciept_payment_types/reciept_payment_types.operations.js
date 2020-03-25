@@ -16,7 +16,6 @@ class ReceiptPaymentTypeRealm {
 
     setLastReceiptPaymentTypeSync() {
         realm.write(() => {
-            console.log('update sync date');
             let syncDate = realm.objects('ReceiptPaymentTypeSyncDate');
             syncDate[0].lastReceiptPaymentTypeSync = new Date()
         })

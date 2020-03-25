@@ -18,7 +18,6 @@ class OrderRealm {
 
     setLastOrderSync() {
         realm.write(() => {
-            console.log('update sync date');
             let syncDate = realm.objects('OrderSyncDate');
             syncDate[0].lastOrderSync = new Date();
         })
@@ -88,7 +87,7 @@ class OrderRealm {
             }
             return orderObj.filter(r => {
                 // return r.created_at === format(parseISO(date), 'yyyy-MM-dd') || r.updated_at === format(parseISO(date), 'yyyy-MM-dd')
-                return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1;
+                return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1 || r.active === false;
             });
 
         } catch (e) {
