@@ -252,8 +252,8 @@ class CustomSidebarMenu extends React.PureComponent {
       			 \n${syncResult.products} ${i18n.t('products-updated')}
        			 \n${syncResult.orders} ${i18n.t('sales-receipts-updated')}
        			 \n${syncResult.debt} ${i18n.t('debt-updated')}
-       			 \n${syncResult.meterReading} ${i18n.t('meterReading-updated')}
-      			 \n${syncResult.wastageReport} ${i18n.t('wastageReport-updated')}
+       			 \n${syncResult.meterReading.successError === 'fail' ? syncResult.meterReading.successMessage.message : syncResult.meterReading.meterReading } ${syncResult.meterReading.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('meterReading-updated')}
+              \n${syncResult.wastageReport.successError === 'fail' ? syncResult.wastageReport.successMessage.message : syncResult.wastageReport.wastageReport } ${syncResult.wastageReport.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('wastageReport-updated')}
       			 \n${syncResult.topups} ${i18n.t('topups-updated')}
         `
 		// \n${syncResult.productMrps} ${i18n.t('product-sales-channel-prices-updated')}

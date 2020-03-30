@@ -1,5 +1,6 @@
 import InventroyRealm from '../../database/inventory/inventory.operations';
 import InventoryApi from '../api/inventory.api';
+import SyncUtils from './syncUtils';
 import * as _ from 'lodash';
 
 class InventorySync {
@@ -7,76 +8,44 @@ class InventorySync {
     synchronizeInventory(kiosk_id) {
         return new Promise(resolve => {
             InventoryApi.getInventories(kiosk_id, InventroyRealm.getLastInventorySync())
-                .then(remoteInventory => {
+                .then(async remoteInventory => {
                     let initlocalInventories = InventroyRealm.getAllInventoryByDate(InventroyRealm.getLastInventorySync());
-                    let localInventories = [...initlocalInventories];
-                    let remoteInventories = [...remoteInventory.closingStock];
-
                     console.log('initlocalInventories', initlocalInventories);
+                    console.log('remoteInventory', remoteInventory);
+                    let onlyInLocal = initlocalInventories.filter(SyncUtils.compareRemoteAndLocal(remoteInventory.closingStock));
+                    let onlyInRemote = remoteInventory.closingStock.filter(SyncUtils.compareRemoteAndLocal(initlocalInventories));
 
-                    if (initlocalInventories.length === 0 && remoteInventories.length > 0) {
-                        InventroyRealm.createManyInventories(remoteInventories);
+                    let syncResponseArray = [];
+                    console.log('onlyInLocal', onlyInLocal);
+                    console.log('onlyInRemote', onlyInRemote);
+                    if (onlyInLocal.length > 0) {
+                        for (const property in onlyInLocal) {
+                            let syncResponse = await this.apiSyncOperations(onlyInLocal[property]);
+                            syncResponseArray.push(syncResponse);
+                        }
+                    }
+
+                    if (onlyInRemote.length > 0) {
+                        let localResponse = await InventroyRealm.createManyInventories(onlyInRemote);
+                        
+                        //syncResponseArray.concat(localResponse)
+                        syncResponseArray.push(...localResponse);
                         InventroyRealm.setLastInventorySync();
                     }
 
+                    console.log('syncResponseArray', syncResponseArray);
 
-                  
-
-                    let onlyLocally = [];
-                    let onlyRemote = [];
-                    let inLocal = [];
-                    let inRemote = [];
-                    let bothLocalRemote = {};
-
-                    if (initlocalInventories.length > 0) {
-
-                        initlocalInventories.forEach(localInventory => {
-                            let filteredObj = remoteInventories.filter(obj => obj.closingStockId === localInventory.closingStockId)
-
-                            if (filteredObj.length > 0) {
-                                const remoteIndex = remoteInventories.map(function (e) { return e.closingStockId }).indexOf(filteredObj[0].closingStockId);
-                                const localIndex = localInventories.map(function (e) { return e.closingStockId }).indexOf(filteredObj[0].closingStockId);
-
-                                remoteInventories.splice(remoteIndex, 1);
-                                localInventories.splice(localIndex, 1);
-
-                                inLocal.push(localInventory);
-                                inRemote.push(filteredObj[0]);
-                            }
-
-                            if (filteredObj.length === 0) {
-                                onlyLocally.push(localInventory);
-                                const localIndex = localInventories.map(function (e) { return e.closingStockId }).indexOf(localInventory.closingStockId);
-
-                                localInventories.splice(localIndex, 1);
-                            }
-                        });
-
-                        onlyRemote.push(...remoteInventories);
-                        bothLocalRemote.inLocal = inLocal;
-                        bothLocalRemote.inRemote = inRemote;
-
-
-                        if (onlyRemote.length > 0) {
-                            InventroyRealm.createManyInventories(onlyRemote)
+                    for (const i in syncResponseArray) {
+                        if (syncResponseArray[i].status === "fail" && syncResponseArray[i].message === "Closing Stock has already been sent") {
+                            InventroyRealm.deleteByClosingStockId(syncResponseArray[i].data.closingStockId);
                         }
-
-                        if (onlyLocally.length > 0) {
-                            onlyLocally.forEach(localInventory => {
-                                this.apiSyncOperations(localInventory);
-                            });
-                        }
-
-                        if (inLocal.length > 0 && inRemote.length > 0) {
-                            inLocal.forEach(localInventory => {
-                                this.apiSyncOperations(localInventory);
-                            });
-                        }
-
                     }
+
                     resolve({
-                        success: true,
-                        wastageReport: onlyLocally.length + onlyRemote.length + inLocal.length
+                        success: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
+                        wastageReport: onlyInLocal.concat(onlyInRemote).length,
+                        successError: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
+                        successMessage: syncResponseArray.length > 0 ? syncResponseArray[0] : 'success'
                     });
 
                 })
@@ -93,6 +62,8 @@ class InventorySync {
     }
 
     apiSyncOperations(localInventory) {
+
+        return new Promise(resolve => {
         if (localInventory.active === true && localInventory.syncAction === 'delete') {
             InventoryApi.deleteInventory(
                 localInventory
@@ -103,12 +74,14 @@ class InventorySync {
                         response
                     );
                     InventroyRealm.setLastInventorySync();
+                    resolve({ status: 'success', message: response, data: localInventory });
                 })
                 .catch(error => {
                     console.log(
                         'Synchronization:synchronizeInventory Delete Inventory failed ' +
                         error
                     );
+                    return { status: 'fail', message: error, data: localInventory }
                 });
         }
 
@@ -123,12 +96,15 @@ class InventorySync {
                         'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
                         response
                     );
+                    resolve({ status: 'success', message: 'synched to remote', data: localInventory });
+                  
                 })
                 .catch(error => {
                     console.log(
                         'Synchronization:synchronizeInventory Update Inventory failed ' +
                         error
                     );
+                    resolve({ status: 'fail', message: error, data: localInventory });
                 });
 
         }
@@ -145,11 +121,14 @@ class InventorySync {
                         'Synchronization:synced to remote - ' +
                         response
                     );
+                    resolve({ status: 'success', message: 'synched to remote', data: localInventory });
+                    
                 })
                 .catch(error => {
                     console.log(
                         'Synchronization:synchronizeInventory Create Inventory failed'
                     );
+                    resolve({ status: 'fail', message: error, data: localInventory });
                 });
 
         }
@@ -165,17 +144,18 @@ class InventorySync {
                         'Synchronization:synced to remote - ' +
                         response
                     );
+                    resolve({ status: 'success', message: 'synched to remote', data: localInventory });
                 })
                 .catch(error => {
                     console.log(
                         'Synchronization:synchronizeInventory Create Inventory failed'
                     );
+                    resolve({ status: 'fail', message: error, data: localInventory });
                 });
 
         }
-console.log('here1');
+
         if (localInventory.active === false && localInventory.syncAction === 'create') {
-            console.log('here31');
             InventoryApi.createInventory(
                 localInventory
             )
@@ -186,14 +166,19 @@ console.log('here1');
                         'Synchronization:synced to remote - ' +
                         response
                     );
+                    resolve({ status: 'success', message: 'synched to remote', data: localInventory });
                 })
                 .catch(error => {
                     console.log(
                         'Synchronization:synchronizeInventory Create Inventory failed'
                     );
+                    resolve({ status: 'fail', message: error, data: localInventory });
                 });
 
         }
+
+
+    })
     }
 
 }

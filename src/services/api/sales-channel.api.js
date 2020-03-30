@@ -39,7 +39,7 @@ class SalesChannelApi {
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.then(responseJson => {
-				console.log(responseJson);
+				//console.log(responseJson);
 				return responseJson;
 			})
 			.catch(error => {
