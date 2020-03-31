@@ -117,26 +117,30 @@ class Synchronization {
 						let settings = SettingRealm.getAllSetting();
 
 
-						const promiseSalesChannels = SalesChannelSync.synchronizeSalesChannels().then(
-							salesChannels => {
-								return salesChannels;
-							}
-						)
-						const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes().then(
-							customerTypes => {
-								return customerTypes;
-							}
-						)
-						const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes().then(
-							paymentTypes => {
-								return paymentTypes;
-							}
-						)
-						const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId).then(
-							discountSync => {
-								return discountSync;
-							}
-						);
+						const promiseSalesChannels = SalesChannelSync.synchronizeSalesChannels();
+						// .then(
+						// 	salesChannels => {
+						// 		return salesChannels;
+						// 	}
+						// )
+						const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes();
+						// .then(
+						// 	customerTypes => {
+						// 		return customerTypes;
+						// 	}
+						// )
+						const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes();
+						// .then(
+						// 	paymentTypes => {
+						// 		return paymentTypes;
+						// 	}
+						// )
+						const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId);
+						// .then(
+						// 	discountSync => {
+						// 		return discountSync;
+						// 	}
+						// );
 
 						const promiseCustomers = CustomerSync.synchronizeCustomers();
 						const promiseOrders = OrderSync.synchronizeSales(settings.siteId);
@@ -171,8 +175,8 @@ class Synchronization {
 								syncResult.productMrps = values[2].productMrps;								
 								syncResult.orders = values[3].orders;
 								syncResult.debt = values[4].debt;
-								syncResult.meterReading = values[5].meterReading;
-								syncResult.wastageReport = values[6].wastageReport;								
+								syncResult.meterReading = values[5];
+								syncResult.wastageReport = values[6];								
 								syncResult.recieptPayments = values[7].recieptPayments;
 								syncResult.topups = values[8].topups;
 								resolve(syncResult);

@@ -1,6 +1,6 @@
 class MeterReadingApi {
 	constructor() {
-		this._url = 'http://142.93.115.206:3002/';
+		this._url = 'http://192.168.43.153:3002/';
 		this._site = '';
 		this._user = '';
 		this._password = '';
@@ -12,7 +12,7 @@ class MeterReadingApi {
 		if (!url.endsWith('/')) {
 			url = url + '/';
 		}
-		this._url = url;
+		this._url = 'http://192.168.43.153:3002/';
 		this._site = site;
 		this._user = user;
 		this._password = password;
@@ -67,6 +67,8 @@ class MeterReadingApi {
 		return new Promise((resolve, reject) => {
 			fetch(this._url + 'sema/meter_reading/', options)
 				.then(response => {
+					console.log('header', response.headers.map.message);
+					
 					if (response.status === 200) {
 						response
 							.json()
@@ -82,13 +84,13 @@ class MeterReadingApi {
 							});
 					} else {
 						console.log(
-							'createMeterReading - Fetch status: ' + response.status
+							'createMeterReading - Fetch message: ' + response.headers.map.message
 						);
-						reject();
+						reject(response.headers.map.message);
 					}
 				})
 				.catch(error => {
-					console.log('createMeterReading - Fetch: ' + error);
+					console.log('createMeterReading - messag: ' + response.headers.map.message);
 					reject();
 				});
 		});
