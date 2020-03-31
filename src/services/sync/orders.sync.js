@@ -75,8 +75,10 @@ class OrderSync {
                                         damagedBottles: localOrder.receipt_line_items[i].emptiesDamaged,
                                         pendingBottles: localOrder.receipt_line_items[i].refillPending
                                     })
-                                }
-                                localOrder.products = products;
+								}
+
+								localOrder.products = products;
+								console.log('Gaffes ' + JSON.stringify(localOrder.products));
                                 delete localOrder.receipt_line_items;
                                 delete localOrder.customer_account;
                                 delete localOrder.customerAccountId;
