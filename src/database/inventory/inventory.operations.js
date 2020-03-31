@@ -16,10 +16,10 @@ class InventroyRealm {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReadingSyncDate')))).length == 0) {
                 realm.create('MeterReadingSyncDate', { lastMeterReadingSync: firstSyncDate });
             }
-            // let syncDate = realm.objects('MeterReadingSyncDate');
-            // syncDate[0].lastMeterReadingSync = firstSyncDate;
-            // let syncDate2 = realm.objects('InventorySyncDate');
-            // syncDate2[0].lastInventorySync = firstSyncDate;
+            let syncDate = realm.objects('MeterReadingSyncDate');
+            syncDate[0].lastMeterReadingSync = firstSyncDate;
+            let syncDate2 = realm.objects('InventorySyncDate');
+            syncDate2[0].lastInventorySync = firstSyncDate;
         });
         this.lastInventorySync = firstSyncDate;
     }
@@ -69,9 +69,9 @@ class InventroyRealm {
 
 
     getAllInventoryByDate(date) {
-        console.log('idate', date);
+        // console.log('idate', date);
         let inventory = this.inventory = Object.values(JSON.parse(JSON.stringify(realm.objects('Inventory'))));
-        console.log('iinventory', inventory);
+        //console.log('iinventory', inventory);
         return inventory.filter(r => {
             return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1 || r.active === false;
         })
@@ -175,6 +175,34 @@ class InventroyRealm {
             console.log("Error on creation  meter reading", e);
         }
     }
+
+
+    deleteByMeterId(meter_reading_id) {
+        console.log('meter_reading_id', meter_reading_id);
+        try {
+            realm.write(() => {
+                let meterUpdateObj = realm.objects('MeterReading').filtered(`meter_reading_id = "${meter_reading_id}"`);
+
+                realm.delete(meterUpdateObj);
+            })
+        } catch (e) {
+            console.log("Error on delete meter reading", e);
+        }
+    }
+
+    deleteByClosingStockId(closingStockId) {
+        console.log('closingStockId', closingStockId);
+        try {
+            realm.write(() => {
+                let inventoryUpdateObj = realm.objects('Inventory').filtered(`closingStockId = "${closingStockId}"`);
+
+                realm.delete(inventoryUpdateObj);
+            })
+        } catch (e) {
+            console.log("Error on delete inventory", e);
+        }
+    }
+
 
     createInventory(inventory, date) {
         console.log('inventory-', inventory);
@@ -320,31 +348,87 @@ class InventroyRealm {
     }
 
     createManyInventories(inventories) {
+
+        return new Promise((resolve, reject) => {
         try {
+
+
+
+            let result = [];
             realm.write(() => {
-                inventories.forEach(obj => {
-                    realm.create('Inventory', { ...obj, active: true });
-                });
+                for (i = 0; i < inventories.length; i++) {
+                    if (this.checkInvnetoryDate(inventories[i].created_at).length === 0) {
+                        let value = realm.create('Inventory', { ...inventories[i], active: true });
+                        result.push({ status: 'success', data: value, message: 'Closing Stock has been set' });
+
+                    } else if (this.checkInvnetoryDate(inventories[i].created_at).length > 0) {
+                        result.push({ status: 'fail', data: inventories[i], message: 'Local Closing Stock has already been set' });
+                    }
+                }
             });
+            resolve(result);
+
+            // realm.write(() => {
+            //     inventories.forEach(obj => {
+            //         realm.create('Inventory', { ...obj, active: true });
+            //     });
+            // });
 
         } catch (e) {
             console.log("Error on creation many inventory", e);
         }
+    });
     }
+
+    checkMeterReadingDate(date) {
+        const er = this.getAllMeterReading().filter(e => {
+            if (format(new Date(date), 'yyyy-MM-dd') === format(new Date(e.created_at), 'yyyy-MM-dd')) {
+                return { ...e }
+            }
+        })
+        return er;
+    }
+
+
+    checkInvnetoryDate(date) {
+        const er = this.getAllInventory().filter(e => {
+            if (format(new Date(date), 'yyyy-MM-dd') === format(new Date(e.created_at), 'yyyy-MM-dd')) {
+                return { ...e }
+            }
+        })
+        return er;
+    }
+
 
     createManyMeterReading(meterReadings) {
-        try {
-            realm.write(() => {
-                meterReadings.forEach(obj => {
-                    realm.create('MeterReading', { ...obj, active: true });
+        return new Promise((resolve, reject) => {
+            try {
+                let result = [];
+                realm.write(() => {
+                    for (i = 0; i < meterReadings.length; i++) {
+                        if (this.checkMeterReadingDate(meterReadings[i].created_at).length === 0) {
+                            let value = realm.create('MeterReading', { ...meterReadings[i], active: true });
+                            result.push({ status: 'success', data: value, message: 'Meter Reading has been set' });
+
+                        } else if (this.checkMeterReadingDate(meterReadings[i].created_at).length > 0) {
+                            result.push({ status: 'fail', data: meterReadings[i], message: 'Local Meter Reading has already been set' });
+                        }
+                    }
                 });
-            });
+                resolve(result);
 
-        } catch (e) {
-            console.log("Error on creation many MeterReading", e);
-        }
-
+            } catch (e) {
+                console.log("Error on creation many MeterReading", e);
+                resolve('errro');
+            }
+        });
     }
+
+
+
+
+
+
 }
 
 export default new InventroyRealm();

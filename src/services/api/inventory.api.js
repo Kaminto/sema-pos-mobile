@@ -1,7 +1,7 @@
 class InventoryApi {
 	constructor() {
 		//this._url = 'http://142.93.115.206:3002/';
-		this._url = 'http://142.93.115.206:3002/';
+		this._url = 'http://192.168.43.153:3002/';
 		this._site = '';
 		this._user = '';
 		this._password = '';
@@ -13,7 +13,7 @@ class InventoryApi {
 		if (!url.endsWith('/')) {
 			url = url + '/';
 		}
-		this._url = 'http://142.93.115.206:3002/';
+		this._url = 'http://192.168.43.153:3002/';
 		this._site = site;
 		this._user = user;
 		this._password = password;
@@ -63,6 +63,7 @@ class InventoryApi {
 		return new Promise((resolve, reject) => {
 			fetch(this._url + 'sema/kiosk_closing_stock/', options)
 				.then(response => {
+					console.log('header', response.headers.map.message);
 					if (response.status === 200) {
 						response
 							.json()
@@ -79,13 +80,13 @@ class InventoryApi {
 							});
 					} else {
 						console.log(
-							'createInventory - Fetch status: ' + response.status
+							'createInventory - Fetch message: ' + response.headers.map.message
 						);
-						reject();
+						reject(response.headers.map.message);
 					}
 				})
 				.catch(error => {
-					console.log('createInventory - Fetch: ' + error);
+					console.log('createInventory - Fetch: ' + response.headers.map.message);
 					reject();
 				});
 		});
