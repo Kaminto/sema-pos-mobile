@@ -12,8 +12,8 @@ import i18n from '../../app/i18n';
 class SalesReport extends React.PureComponent {
 	constructor(props) {
 		super(props);
-		this.startDate = new Date();
-		this.endDate = this.addDays(new Date(), 1);
+		this.currentDate = new Date();
+		this.previousDate = this.addDays(new Date(), 1);
 		this.state = {
 			refreshing: false,
 		};
@@ -111,13 +111,13 @@ class SalesReport extends React.PureComponent {
 
 	getSalesData() {
 		let sales = [];
-		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
-			if (this.props.dateFilter.startDate === this.startDate && this.props.dateFilter.endDate === this.endDate) {
+		if (this.props.dateFilter.hasOwnProperty("currentDate") && this.props.dateFilter.hasOwnProperty("previousDate")) {
+			if (this.props.dateFilter.currentDate === this.currentDate && this.props.dateFilter.previousDate === this.previousDate) {
 				sales = this.props.salesData.salesItems;
 			} else {
 				// Get new data
-				this.startDate = this.props.dateFilter.startDate;
-				this.endDate = this.props.dateFilter.endDate;
+				this.currentDate = this.props.dateFilter.currentDate;
+				this.previousDate = this.props.dateFilter.previousDate;
 				this.updateReport();
 				sales = this.props.salesData.salesItems;
 			}
@@ -198,7 +198,7 @@ class SalesReport extends React.PureComponent {
 	};
 
 	updateReport() {
-		this.props.reportActions.GetSalesReportData(this.startDate, this.endDate);
+		this.props.reportActions.GetSalesReportData(this.currentDate, this.previousDate);
 	}
 }
 

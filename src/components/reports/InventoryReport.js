@@ -91,11 +91,11 @@ class InventoryReport extends React.PureComponent {
 	constructor(props) {
 		super(props);
 
-		// this.startDate = new Date();
-		// this.endDate = this.addDays(new Date(), 1);
+		// this.currentDate = new Date();
+		// this.previousDate = this.addDays(new Date(), 1);
 		let currentDate = new Date();
-		this.startDate = null;
-		this.endDate = null;
+		this.currentDate = null;
+		this.previousDate = null;
 		this.state = {
 			currentSkuEdit: "",
 			notDispatchedEdit: "",
@@ -222,13 +222,13 @@ class InventoryReport extends React.PureComponent {
 	}
 
 	getInventoryData() {
-		if (this.props.dateFilter.hasOwnProperty("startDate") && this.props.dateFilter.hasOwnProperty("endDate")) {
-			if (isSameDay(this.props.dateFilter.startDate, this.startDate) && isSameDay(this.props.dateFilter.endDate, this.endDate)) {
+		if (this.props.dateFilter.hasOwnProperty("currentDate") && this.props.dateFilter.hasOwnProperty("previousDate")) {
+			if (isSameDay(this.props.dateFilter.currentDate, this.currentDate) && isSameDay(this.props.dateFilter.previousDate, this.previousDate)) {
 				return this.props.wastageData.salesAndProducts.salesItems;
 			} else {
-				this.startDate = this.props.dateFilter.startDate;
-				this.endDate = this.props.dateFilter.endDate;
-				this.props.wastageActions.GetInventoryReportData(this.startDate, this.endDate, this.props.products);
+				this.currentDate = this.props.dateFilter.currentDate;
+				this.previousDate = this.props.dateFilter.previousDate;
+				this.props.wastageActions.GetInventoryReportData(this.currentDate, this.previousDate, this.props.products);
 				return this.props.wastageData.salesAndProducts.salesItems;
 			}
 		}
@@ -339,7 +339,7 @@ class InventoryReport extends React.PureComponent {
 					product_id: wastageName,
 					wastageName: wastageName
 				},
-					this.props.dateFilter.startDate);
+					this.props.dateFilter.currentDate);
 			} else if (checkWastageName.length === 0) {
 				InventroyRealm.createInventory({
 					type: 'notdispatched',
@@ -348,9 +348,9 @@ class InventoryReport extends React.PureComponent {
 					product_id: wastageName,
 					wastageName: wastageName
 				},
-					this.props.dateFilter.startDate);
+					this.props.dateFilter.currentDate);
 			}
-			this.props.wastageActions.GetInventoryReportData(this.startDate, this.endDate, this.props.products);
+			this.props.wastageActions.GetInventoryReportData(this.currentDate, this.previousDate, this.props.products);
 			this.setState({ refresh: true });
 		} else {
 			// TODO - Show alert
@@ -377,7 +377,7 @@ class InventoryReport extends React.PureComponent {
 					product_id: wastageName,
 					wastageName: wastageName
 				},
-					this.props.dateFilter.startDate);
+					this.props.dateFilter.currentDate);
 			} else if (checkWastageName.length === 0) {
 				InventroyRealm.createInventory({
 					type: 'closing',
@@ -387,9 +387,9 @@ class InventoryReport extends React.PureComponent {
 					product_id: wastageName,
 					wastageName: wastageName
 				},
-					this.props.dateFilter.startDate);
+					this.props.dateFilter.currentDate);
 			}
-			this.props.wastageActions.GetInventoryReportData(this.startDate, this.endDate, this.props.products);
+			this.props.wastageActions.GetInventoryReportData(this.currentDate, this.previousDate, this.props.products);
 			this.setState({ refresh: true });
 		} else {
 			// TODO - Show alert
@@ -459,6 +459,8 @@ class InventoryReport extends React.PureComponent {
 	}
 
 	getInventorySkuForDisplay(currentPrev, item) {
+		//console.log('item', item);
+	//	console.log('currentProductSkus', this.props.wastageData.inventory.currentProductSkus);
 		let inventoryArray = (currentPrev) ? this.props.wastageData.inventory.currentProductSkus : this.props.wastageData.inventory.previousProductSkus;
 		for (let index = 0; index < inventoryArray.length; index++) {
 			if (inventoryArray[index].wastageName === item.wastageName) {
@@ -641,7 +643,7 @@ class InventoryReport extends React.PureComponent {
 		}
 		if (!isNaN(update)) {
 			this.props.wastageData.inventory.currentMeter = update;
-			InventroyRealm.createMeterReading(update, this.props.dateFilter.startDate, this.props.settings.siteId);
+			InventroyRealm.createMeterReading(update, this.props.dateFilter.currentDate, this.props.settings.siteId);
 			this.setState({ refresh: !this.state.refresh });
 		} else {
 			// TODO - Show alert

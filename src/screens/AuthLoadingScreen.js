@@ -72,6 +72,8 @@ class AuthLoadingScreen extends React.PureComponent {
         console.log('last meter reading sync',InventroyRealm.getLastMeterReadingSync());
         console.log('last inventory sync',InventroyRealm.getLastInventorySync());
         console.log('last CustomerDebtRealm sync',CustomerDebtRealm.getLastCustomerDebtSync());
+        //InventroyRealm.truncate()
+        console.log('inventory data',InventroyRealm.getAllInventory());
         if (settings.site != "" && settings.siteId > 0) {
             this.loadSyncedData();
             if (settings.token.length > 1) {

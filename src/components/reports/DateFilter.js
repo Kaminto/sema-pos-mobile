@@ -19,9 +19,10 @@ class DateFilter extends React.PureComponent {
 				seconds: getSeconds(new Date())
 			})
 		};
+		console.log('currentDate', new Date());
 		this.maxDate = new Date(this.state.currentDate.getTime() + dayInMilliseconds);
 		this.minDate = new Date(this.maxDate.getTime() - 30 * dayInMilliseconds);
-		this.props.reportActions.setReportFilter(this.state.currentDate, new Date(this.state.currentDate.getTime() - dayInMilliseconds));
+		this.props.reportActions.setReportFilter(new Date(), new Date(this.state.currentDate.getTime() - dayInMilliseconds));
 	}
 
 	render() {
@@ -100,9 +101,9 @@ class DateFilter extends React.PureComponent {
 	}
 
 	update() {
-		const beginDate = this.state.currentDate;
-		const endDate = new Date(beginDate.getTime() - dayInMilliseconds);
-		this.props.reportActions.setReportFilter(beginDate, endDate);
+		const currentDate = this.state.currentDate;
+		const previousDate = new Date(currentDate.getTime() - dayInMilliseconds);
+		this.props.reportActions.setReportFilter(currentDate, previousDate);
 	}
 }
 

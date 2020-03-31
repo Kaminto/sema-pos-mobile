@@ -11,16 +11,16 @@ import PaymentTypeRealm from '../database/payment_types/payment_types.operations
 import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_payment_types.operations';
 
 
-export function GetSalesReportData(beginDate, endDate) {
+export function GetSalesReportData(beginDate, previousDate) {
 	return dispatch => {
 		dispatch({
 			type: SALES_REPORT_FROM_ORDERS,
-			data: { salesData: { ...getSalesData(beginDate, endDate), totalDebt: getTotalDebt(beginDate, endDate) } }
+			data: { salesData: { ...getSalesData(beginDate, previousDate), totalDebt: getTotalDebt(beginDate, previousDate) } }
 		});
 	};
 }
 
-function getTotalDebt(beginDate, endDate) {
+function getTotalDebt(beginDate, previousDate) {
 	const customerDebts = CustomerDebtRealm.getCustomerDebts();
 	const filteredDebt = customerDebts.filter(debt =>
 		isSameDay(parseISO(debt.created_at), beginDate)
@@ -28,11 +28,11 @@ function getTotalDebt(beginDate, endDate) {
 	return filteredDebt.reduce((total, item) => { return (total + item.due_amount) }, 0);
 }
 
-export function setReportFilter(startDate, endDate) {
+export function setReportFilter(currentDate, previousDate) {
 	return dispatch => {
 		dispatch({
 			type: REPORT_FILTER,
-			data: { startDate: startDate, endDate: endDate }
+			data: { currentDate: currentDate, previousDate: previousDate }
 		});
 	};
 }

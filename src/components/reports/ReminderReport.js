@@ -194,7 +194,7 @@ class RemindersReport extends React.PureComponent {
 	filterDate(data) {
 		let filteredItems = data.filter((item) => {
 			if (!item.customReminderDate) {
-				if (isSameDay(parseISO(item.reminder_date), this.props.dateFilter.startDate)) {
+				if (isSameDay(parseISO(item.reminder_date), this.props.dateFilter.currentDate)) {
 					return true;
 				} else {
 					return false;
@@ -202,7 +202,7 @@ class RemindersReport extends React.PureComponent {
 			}
 
 			if (item.customReminderDate) {
-				if (isSameDay(parseISO(item.customReminderDate), this.props.dateFilter.startDate)) {
+				if (isSameDay(parseISO(item.customReminderDate), this.props.dateFilter.currentDate)) {
 					return true;
 				} else {
 					return false;
