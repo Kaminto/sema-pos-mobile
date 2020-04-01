@@ -16,10 +16,10 @@ class InventroyRealm {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReadingSyncDate')))).length == 0) {
                 realm.create('MeterReadingSyncDate', { lastMeterReadingSync: firstSyncDate });
             }
-            // let syncDate = realm.objects('MeterReadingSyncDate');
-            // syncDate[0].lastMeterReadingSync = firstSyncDate;
-            // let syncDate2 = realm.objects('InventorySyncDate');
-            // syncDate2[0].lastInventorySync = firstSyncDate;
+            let syncDate = realm.objects('MeterReadingSyncDate');
+            syncDate[0].lastMeterReadingSync = firstSyncDate;
+            let syncDate2 = realm.objects('InventorySyncDate');
+            syncDate2[0].lastInventorySync = firstSyncDate;
         });
         this.lastInventorySync = firstSyncDate;
     }
