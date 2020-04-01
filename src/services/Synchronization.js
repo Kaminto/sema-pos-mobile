@@ -117,41 +117,22 @@ class Synchronization {
 						let settings = SettingRealm.getAllSetting();
 
 
-						const promiseSalesChannels = SalesChannelSync.synchronizeSalesChannels();
-						// .then(
-						// 	salesChannels => {
-						// 		return salesChannels;
-						// 	}
-						// )
-						const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes();
-						// .then(
-						// 	customerTypes => {
-						// 		return customerTypes;
-						// 	}
-						// )
-						const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes();
-						// .then(
-						// 	paymentTypes => {
-						// 		return paymentTypes;
-						// 	}
-						// )
-						const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId);
-						// .then(
-						// 	discountSync => {
-						// 		return discountSync;
-						// 	}
-						// );
+						// const promiseSalesChannels = SalesChannelSync.synchronizeSalesChannels();
+						// const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes();
+						// const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes();
+						// const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId);
+					
 
-						const promiseCustomers = CustomerSync.synchronizeCustomers();
-						const promiseOrders = OrderSync.synchronizeSales(settings.siteId);
-						const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts();
-						const promiseProducts = ProductSync.synchronizeProducts();
-						const promiseProductMrps = ProductMRPSync.synchronizeProductMrps();
+						// const promiseCustomers = CustomerSync.synchronizeCustomers();
+						// const promiseOrders = OrderSync.synchronizeSales(settings.siteId);
+						// const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts();
+						// const promiseProducts = ProductSync.synchronizeProducts();
+						// const promiseProductMrps = ProductMRPSync.synchronizeProductMrps();
 
 						const promiseMeterReading = MeterReadingSync.synchronizeMeterReading(settings.siteId);
 						const promiseInventory = InventorySync.synchronizeInventory(settings.siteId);
-						const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId);
-						const promiseTopUps = CreditSync.synchronizeCredits();
+						// const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId);
+						// const promiseTopUps = CreditSync.synchronizeCredits();
 
 
 					

@@ -7,11 +7,11 @@ export const REPORT_TYPE = 'REPORT_TYPE';
 export const REPORT_FILTER = 'REPORT_FILTER';
 import { parseISO, isSameDay } from 'date-fns';
 
-export function GetInventoryReportData(beginDate, endDate, products) {
+export function GetInventoryReportData(beginDate, previousDate, products) {
 	return dispatch => {
-		getWastageData(beginDate, endDate, getMrps(products))
+		getWastageData(beginDate, previousDate, getMrps(products))
 			.then(inventoryData => {
-
+				// console.log('inventoryData', JSON.stringify(inventoryData));
 				dispatch({
 					type: INVENTORY_REPORT,
 					data: { inventoryData: inventoryData }
@@ -39,7 +39,7 @@ function groupBySku(objectArray, property) {
 
 function totalByProperty(objectArray, property) {
 	return objectArray.reduce((accumulator, currentValue) => {
-		return accumulator + (!isNaN(Number(currentValue[property])) ? Number(currentValue[property]): 0);
+		return accumulator + (!isNaN(Number(currentValue[property])) ? Number(currentValue[property]) : 0);
 	}, 0);
 }
 
@@ -85,12 +85,12 @@ export const getMrps = products => {
 	return waterProducts;
 };
 
-export const getWastageData = (beginDate, endDate, products) => {
+export const getWastageData = (beginDate, previousDate, products) => {
 	return new Promise((resolve, reject) => {
-		getInventoryItem(beginDate, endDate)
+		getInventoryItem(beginDate, previousDate)
 			.then(inventorySettings => {
 				let inventoryData = createInventory(
-					getSalesData(beginDate, endDate),
+					getSalesData(beginDate),
 					inventorySettings,
 					products
 				);

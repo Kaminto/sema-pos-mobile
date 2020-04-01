@@ -96,8 +96,8 @@ class DateFilter extends React.PureComponent {
 
 	update(){
 		const beginDate = this.state.currentDate;
-		const endDate = new Date( beginDate.getTime() + dayInMilliseconds );
-		this.props.reportActions.setReportFilter( beginDate, endDate );
+		const previousDate = new Date( beginDate.getTime() + dayInMilliseconds );
+		this.props.reportActions.setReportFilter( beginDate, previousDate );
 	}
 }
 

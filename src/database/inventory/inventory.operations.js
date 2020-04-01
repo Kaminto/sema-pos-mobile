@@ -11,15 +11,15 @@ class InventroyRealm {
             }
 
         });
-       // this.truncate();
+        // this.truncate();
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReadingSyncDate')))).length == 0) {
                 realm.create('MeterReadingSyncDate', { lastMeterReadingSync: firstSyncDate });
             }
-            let syncDate = realm.objects('MeterReadingSyncDate');
-            syncDate[0].lastMeterReadingSync = firstSyncDate;
-            let syncDate2 = realm.objects('InventorySyncDate');
-            syncDate2[0].lastInventorySync = firstSyncDate;
+            // let syncDate = realm.objects('MeterReadingSyncDate');
+            // syncDate[0].lastMeterReadingSync = firstSyncDate;
+            // let syncDate2 = realm.objects('InventorySyncDate');
+            // syncDate2[0].lastInventorySync = firstSyncDate;
         });
         this.lastInventorySync = firstSyncDate;
     }
@@ -39,9 +39,10 @@ class InventroyRealm {
                 let meterReading = realm.objects('MeterReading');
                 let meterSync = realm.objects('MeterReadingSyncDate');
                 let invSync = realm.objects('InventorySyncDate');
-                realm.delete(inventories);
+
                 realm.delete(meterReading);
                 realm.delete(meterSync);
+                realm.delete(inventories);
                 realm.delete(invSync);
             })
         } catch (e) {
@@ -69,7 +70,7 @@ class InventroyRealm {
 
 
     getAllInventoryByDate(date) {
-        // console.log('idate', date);
+        console.log('idate', date);
         let inventory = this.inventory = Object.values(JSON.parse(JSON.stringify(realm.objects('Inventory'))));
         //console.log('iinventory', inventory);
         return inventory.filter(r => {
@@ -114,28 +115,47 @@ class InventroyRealm {
 
     getWastageReportByDate(date) {
         return new Promise(resolve => {
-            let checkExistingMeter = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
-            const filteredReading = checkExistingMeter.filter(element =>
-                isSameDay(parseISO(element.created_at), date)
-            );
 
-            let checkExistingWastage = Object.values(JSON.parse(JSON.stringify(realm.objects('Inventory'))));
-            const filteredWastage = checkExistingWastage.filter(element =>
-                isSameDay(parseISO(element.created_at), date)
-            );
+            try {
+                if (!date) {
+                    resolve({
+                        currentMeter: 0,
+                        currentProductSkus: []
+                    });
+                }
 
-            if (filteredReading.length > 0 || filteredWastage.length > 0) {
-                resolve({
-                    currentMeter: filteredReading.length > 0 ? filteredReading[0].meter_value : 0,
-                    currentProductSkus: filteredWastage.length > 0 ? filteredWastage : []
-                })
-            } else {
-                resolve({
-                    currentMeter: 0,
-                    currentProductSkus: []
-                });
+                let checkExistingMeter = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
+                const filteredReading = checkExistingMeter.filter(element =>
+                    isSameDay(new Date(format(new Date((element.created_at).split('T')[0]), 'yyyy-MM-dd')), new Date(format(new Date((date.toISOString().split('T')[0])), 'yyyy-MM-dd')))
+                );
+                // console.log('date',  date);
+                //console.log('checkExistingMeter', filteredReading);
+                let checkExistingWastage = Object.values(JSON.parse(JSON.stringify(realm.objects('Inventory'))));
+                const filteredWastage = checkExistingWastage.filter(element =>
+                    isSameDay(new Date(format(new Date((element.created_at).split('T')[0]), 'yyyy-MM-dd')), new Date(format(new Date((date.toISOString().split('T')[0])), 'yyyy-MM-dd')))
+                );
+
+                // console.log('checkExistingWastage', filteredWastage);
+
+                if (filteredReading.length > 0 || filteredWastage.length > 0) {
+                    resolve({
+                        currentMeter: filteredReading.length > 0 ? filteredReading[0].meter_value : 0,
+                        currentProductSkus: filteredWastage.length > 0 ? filteredWastage : []
+                    })
+                } else {
+                    resolve({
+                        currentMeter: 0,
+                        currentProductSkus: []
+                    });
+                }
+
+            } catch (e) {
+                console.log("error on gettting getWastageReportByDate", e)
             }
+
         })
+
+
     }
 
     createMeterReading(meter_value, date, kiosk_id) {
@@ -318,7 +338,6 @@ class InventroyRealm {
 
 
     // Hard delete when active property is false or when active property and syncAction is delete
-
     hardDeleteInventory(inventory) {
         try {
             realm.write(() => {
@@ -348,57 +367,38 @@ class InventroyRealm {
     }
 
     createManyInventories(inventories) {
-
         return new Promise((resolve, reject) => {
-        try {
+            try {
+                let result = [];
+                realm.write(() => {
+                    for (i = 0; i < inventories.length; i++) {
 
+                        let isCheckInvnetoryDate = this.checkInvnetoryDate(inventories[i].created_at).length;
+                        console.log('isCheckInvnetoryDate-created_at', inventories[i].created_at);
+                        console.log('checkInvnetoryDate', this.checkInvnetoryDate(inventories[i].created_at));
+                        console.log('isCheckInvnetoryDate', isCheckInvnetoryDate);
 
+                        if (isCheckInvnetoryDate === 0) {
+                            let value = realm.create('Inventory', { ...inventories[i], wastageName: inventories[i].product_id, inventory: inventories[i].quantity, active: true });
+                            result.push({ status: 'success', data: value, message: 'Closing Stock has been set' });
 
-            let result = [];
-            realm.write(() => {
-                for (i = 0; i < inventories.length; i++) {
-                    if (this.checkInvnetoryDate(inventories[i].created_at).length === 0) {
-                        let value = realm.create('Inventory', { ...inventories[i], active: true });
-                        result.push({ status: 'success', data: value, message: 'Closing Stock has been set' });
-
-                    } else if (this.checkInvnetoryDate(inventories[i].created_at).length > 0) {
-                        result.push({ status: 'fail', data: inventories[i], message: 'Local Closing Stock has already been set' });
+                        } else if (isCheckInvnetoryDate > 0) {
+                            result.push({ status: 'fail', data: inventories[i], message: 'Local Closing Stock has already been set' });
+                        }
                     }
-                }
-            });
-            resolve(result);
+                });
+                resolve(result);
 
-            // realm.write(() => {
-            //     inventories.forEach(obj => {
-            //         realm.create('Inventory', { ...obj, active: true });
-            //     });
-            // });
-
-        } catch (e) {
-            console.log("Error on creation many inventory", e);
-        }
-    });
-    }
-
-    checkMeterReadingDate(date) {
-        const er = this.getAllMeterReading().filter(e => {
-            if (format(new Date(date), 'yyyy-MM-dd') === format(new Date(e.created_at), 'yyyy-MM-dd')) {
-                return { ...e }
+            } catch (e) {
+                console.log("Error on creation many inventory", e);
             }
-        })
-        return er;
+        });
     }
-
 
     checkInvnetoryDate(date) {
-        const er = this.getAllInventory().filter(e => {
-            if (format(new Date(date), 'yyyy-MM-dd') === format(new Date(e.created_at), 'yyyy-MM-dd')) {
-                return { ...e }
-            }
-        })
-        return er;
-    }
 
+        return this.getAllInventory().filter(e => isSameDay(new Date(format(new Date((date).split('T')[0]), 'yyyy-MM-dd')), new Date(format(new Date((e.created_at).split('T')[0]), 'yyyy-MM-dd'))))
+    }
 
     createManyMeterReading(meterReadings) {
         return new Promise((resolve, reject) => {
@@ -424,6 +424,9 @@ class InventroyRealm {
         });
     }
 
+    checkMeterReadingDate(date) {
+        return this.getAllMeterReading().filter(e => isSameDay(new Date(format(new Date((date).split('T')[0]), 'yyyy-MM-dd')), new Date(format(new Date((e.created_at).split('T')[0]), 'yyyy-MM-dd'))));
+    }
 
 
 
