@@ -10,15 +10,18 @@ class MeterReadingSync {
             MeterReadingApi.getMeterReading(kiosk_id, InventroyRealm.getLastMeterReadingSync())
                 .then(async remoteMeterReading => {
                     let initlocalMeterReadings = InventroyRealm.getAllMeterReadingByDate(InventroyRealm.getLastMeterReadingSync());
-                    
-                    console.log('initlocalMeterReadings', initlocalMeterReadings);
-                    console.log('remoteMeterReading', remoteMeterReading);
                     let onlyInLocal = initlocalMeterReadings.filter(SyncUtils.compareRemoteAndLocal(remoteMeterReading));
                     let onlyInRemote = remoteMeterReading.filter(SyncUtils.compareRemoteAndLocal(initlocalMeterReadings));
 
                     let syncResponseArray = [];
-                    console.log('onlyInLocal', onlyInLocal);
-                    console.log('onlyInRemote', onlyInRemote);
+
+                    if (onlyInRemote.length > 0) {
+                        let localResponse = await InventroyRealm.createManyMeterReading(onlyInRemote);
+                        syncResponseArray.push(...localResponse);
+                        InventroyRealm.setLastMeterReadingSync();
+                    }
+
+
                     if (onlyInLocal.length > 0) {
 
                         for (const property in onlyInLocal) {
@@ -31,15 +34,7 @@ class MeterReadingSync {
 
                     }
 
-                    if (onlyInRemote.length > 0) {
-                        let localResponse = await InventroyRealm.createManyMeterReading(onlyInRemote);
-                        
-                        //syncResponseArray.concat(localResponse)
-                        syncResponseArray.push(...localResponse);
-                        InventroyRealm.setLastMeterReadingSync();
-                    }
 
-                    console.log('syncResponseArray', syncResponseArray);
 
                     for (const i in syncResponseArray) {
                         if (syncResponseArray[i].status === "fail" && syncResponseArray[i].message === "Meter Reading has already been sent") {
@@ -162,7 +157,7 @@ class MeterReadingSync {
                     });
 
             }
-            
+
             if (localMeterReading.active === false && localMeterReading.syncAction === 'create') {
 
                 return MeterReadingApi.createMeterReading(

@@ -10,14 +10,11 @@ class InventorySync {
             InventoryApi.getInventories(kiosk_id, InventroyRealm.getLastInventorySync())
                 .then(async remoteInventory => {
                     let initlocalInventories = InventroyRealm.getAllInventoryByDate(InventroyRealm.getLastInventorySync());
-                    console.log('initlocalInventories', initlocalInventories);
-                    console.log('remoteInventory', remoteInventory);
+
                     let onlyInLocal = initlocalInventories.filter(SyncUtils.compareRemoteAndLocal(remoteInventory.closingStock));
                     let onlyInRemote = remoteInventory.closingStock.filter(SyncUtils.compareRemoteAndLocal(initlocalInventories));
 
                     let syncResponseArray = [];
-                    console.log('onlyInLocal', onlyInLocal);
-                    console.log('onlyInRemote', onlyInRemote);
                     if (onlyInLocal.length > 0) {
                         for (const property in onlyInLocal) {
                             let syncResponse = await this.apiSyncOperations(onlyInLocal[property]);
@@ -27,13 +24,11 @@ class InventorySync {
 
                     if (onlyInRemote.length > 0) {
                         let localResponse = await InventroyRealm.createManyInventories(onlyInRemote);
-                        
+
                         //syncResponseArray.concat(localResponse)
                         syncResponseArray.push(...localResponse);
                         InventroyRealm.setLastInventorySync();
                     }
-
-                    console.log('syncResponseArray', syncResponseArray);
 
                     for (const i in syncResponseArray) {
                         if (syncResponseArray[i].status === "fail" && syncResponseArray[i].message === "Closing Stock has already been sent") {
@@ -54,9 +49,9 @@ class InventorySync {
                         'Synchronization.getInventory - error ' + error
                     );
                     resolve({
-						error: false,
+                        error: false,
                         wastageReport: 0,
-					});
+                    });
                 });
         });
     }
@@ -64,121 +59,121 @@ class InventorySync {
     apiSyncOperations(localInventory) {
 
         return new Promise(resolve => {
-        if (localInventory.active === true && localInventory.syncAction === 'delete') {
-            InventoryApi.deleteInventory(
-                localInventory
-            )
-                .then((response) => {
-                    console.log(
-                        'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
-                        response
-                    );
-                    InventroyRealm.setLastInventorySync();
-                    resolve({ status: 'success', message: response, data: localInventory });
-                })
-                .catch(error => {
-                    console.log(
-                        'Synchronization:synchronizeInventory Delete Inventory failed ' +
-                        error
-                    );
-                    return { status: 'fail', message: error, data: localInventory }
-                });
-        }
+            if (localInventory.active === true && localInventory.syncAction === 'delete') {
+                InventoryApi.deleteInventory(
+                    localInventory
+                )
+                    .then((response) => {
+                        console.log(
+                            'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                            response
+                        );
+                        InventroyRealm.setLastInventorySync();
+                        resolve({ status: 'success', message: response, data: localInventory });
+                    })
+                    .catch(error => {
+                        console.log(
+                            'Synchronization:synchronizeInventory Delete Inventory failed ' +
+                            error
+                        );
+                        return { status: 'fail', message: error, data: localInventory }
+                    });
+            }
 
-        if (localInventory.active === true && localInventory.syncAction === 'update') {
+            if (localInventory.active === true && localInventory.syncAction === 'update') {
 
-            InventoryApi.updateInventory(
-                localInventory
-            )
-                .then((response) => {
-                    InventroyRealm.setLastInventorySync();
-                    console.log(
-                        'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
-                        response
-                    );
-                    resolve({ status: 'success', message: 'synched to remote', data: localInventory });
-                  
-                })
-                .catch(error => {
-                    console.log(
-                        'Synchronization:synchronizeInventory Update Inventory failed ' +
-                        error
-                    );
-                    resolve({ status: 'fail', message: error, data: localInventory });
-                });
+                InventoryApi.updateInventory(
+                    localInventory
+                )
+                    .then((response) => {
+                        InventroyRealm.setLastInventorySync();
+                        console.log(
+                            'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                            response
+                        );
+                        resolve({ status: 'success', message: 'synched to remote', data: localInventory });
 
-        }
+                    })
+                    .catch(error => {
+                        console.log(
+                            'Synchronization:synchronizeInventory Update Inventory failed ' +
+                            error
+                        );
+                        resolve({ status: 'fail', message: error, data: localInventory });
+                    });
 
-        if (localInventory.active === false && localInventory.syncAction === 'update') {
+            }
 
-            InventoryApi.createInventory(
-                localInventory
-            )
-                .then((response) => {
-                    InventroyRealm.synched(localInventory);
-                    InventroyRealm.setLastInventorySync();
-                    console.log(
-                        'Synchronization:synced to remote - ' +
-                        response
-                    );
-                    resolve({ status: 'success', message: 'synched to remote', data: localInventory });
-                    
-                })
-                .catch(error => {
-                    console.log(
-                        'Synchronization:synchronizeInventory Create Inventory failed'
-                    );
-                    resolve({ status: 'fail', message: error, data: localInventory });
-                });
+            if (localInventory.active === false && localInventory.syncAction === 'update') {
 
-        }
+                InventoryApi.createInventory(
+                    localInventory
+                )
+                    .then((response) => {
+                        InventroyRealm.synched(localInventory);
+                        InventroyRealm.setLastInventorySync();
+                        console.log(
+                            'Synchronization:synced to remote - ' +
+                            response
+                        );
+                        resolve({ status: 'success', message: 'synched to remote', data: localInventory });
 
-        if (localInventory.active === false && localInventory.syncAction === 'delete') {
-            InventoryApi.createInventory(
-                localInventory
-            )
-                .then((response) => {
-                    InventroyRealm.synched(localInventory);
-                    InventroyRealm.setLastInventorySync();
-                    console.log(
-                        'Synchronization:synced to remote - ' +
-                        response
-                    );
-                    resolve({ status: 'success', message: 'synched to remote', data: localInventory });
-                })
-                .catch(error => {
-                    console.log(
-                        'Synchronization:synchronizeInventory Create Inventory failed'
-                    );
-                    resolve({ status: 'fail', message: error, data: localInventory });
-                });
+                    })
+                    .catch(error => {
+                        console.log(
+                            'Synchronization:synchronizeInventory Create Inventory failed'
+                        );
+                        resolve({ status: 'fail', message: error, data: localInventory });
+                    });
 
-        }
+            }
 
-        if (localInventory.active === false && localInventory.syncAction === 'create') {
-            InventoryApi.createInventory(
-                localInventory
-            )
-                .then((response) => {
-                    InventroyRealm.synched(localInventory);
-                    InventroyRealm.setLastInventorySync();
-                    console.log(
-                        'Synchronization:synced to remote - ' +
-                        response
-                    );
-                    resolve({ status: 'success', message: 'synched to remote', data: localInventory });
-                })
-                .catch(error => {
-                    console.log(
-                        'Synchronization:synchronizeInventory Create Inventory failed'
-                    );
-                    resolve({ status: 'fail', message: error, data: localInventory });
-                });
+            if (localInventory.active === false && localInventory.syncAction === 'delete') {
+                InventoryApi.createInventory(
+                    localInventory
+                )
+                    .then((response) => {
+                        InventroyRealm.synched(localInventory);
+                        InventroyRealm.setLastInventorySync();
+                        console.log(
+                            'Synchronization:synced to remote - ' +
+                            response
+                        );
+                        resolve({ status: 'success', message: 'synched to remote', data: localInventory });
+                    })
+                    .catch(error => {
+                        console.log(
+                            'Synchronization:synchronizeInventory Create Inventory failed'
+                        );
+                        resolve({ status: 'fail', message: error, data: localInventory });
+                    });
 
-        }
+            }
+
+            if (localInventory.active === false && localInventory.syncAction === 'create') {
+                InventoryApi.createInventory(
+                    localInventory
+                )
+                    .then((response) => {
+                        InventroyRealm.synched(localInventory);
+                        InventroyRealm.setLastInventorySync();
+                        console.log(
+                            'Synchronization:synced to remote - ' +
+                            response
+                        );
+                        resolve({ status: 'success', message: 'synched to remote', data: localInventory });
+                    })
+                    .catch(error => {
+                        console.log(
+                            'Synchronization:synchronizeInventory Create Inventory failed'
+                        );
+                        resolve({ status: 'fail', message: error, data: localInventory });
+                    });
+
+            }
 
 
-    })
+        })
     }
 
 }

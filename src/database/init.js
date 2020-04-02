@@ -4,16 +4,16 @@ import { CreditSchema, CreditSyncDateSchema } from './credit/credit.model';
 import { InventorySchema, InventorySyncDateSchema } from './inventory/inventory.model';
 import { ProductMRPSchema, ProductMRPSyncDateSchema } from './productmrp/productmrp.model';
 import { ProductSchema, ProductSyncDateSchema } from './products/product.model';
-import { SalesChannelSchema } from './sales-channels/sales-channels.model';
-import { CustomerTypesSchema } from './customer-types/customer-types.model';
+import { SalesChannelSchema, SalesChannelSyncDateSchema } from './sales-channels/sales-channels.model';
+import { CustomerTypesSchema, CustomerTypesSyncDateSchema } from './customer-types/customer-types.model';
 import { SettingsSchema, TokenExpirySchema } from './settings/settings.model';
 import { OrderSyncDateSchema, OrderSchema } from './orders/orders.model';
-import { DiscountSchema } from './discount/discount.model';
+import { DiscountSchema, DiscountSyncDateSchema } from './discount/discount.model';
 import { CustomerDebtSchema, CustomerDebtSyncDateSchema } from './customer_debt/customer_debt.model';
 import { MeterReadingSchema, MeterReadingSyncDateSchema } from './inventory/meter-reading.model';
 import { CustomerReminderSchema } from './customer-reminder/customer-reminder.model';
 
-import { PaymentTypeSchema } from './payment_types/payment_type.model';
+import { PaymentTypeSchema, PaymentTypeSyncDateSchema } from './payment_types/payment_type.model';
 import { ReceiptPaymentTypeSchema, ReceiptPaymentTypeSyncDateSchema } from './reciept_payment_types/reciept_payment_types.model';
 
 // Realm schema creation
@@ -40,22 +40,26 @@ export default realm = new Realm({
         ProductSchema,
         ProductSyncDateSchema,
         CustomerTypesSchema,
+        CustomerTypesSyncDateSchema,
         SalesChannelSchema,
+        SalesChannelSyncDateSchema,
         SettingsSchema,
         TokenExpirySchema,
         OrderSchema,
         OrderSyncDateSchema,
-        ReceiptPaymentTypeSyncDateSchema,
         DiscountSchema,
+        DiscountSyncDateSchema,
         PaymentTypeSchema,
-        ReceiptPaymentTypeSchema,
+        PaymentTypeSyncDateSchema,
+        ReceiptPaymentTypeSchema,        
+        ReceiptPaymentTypeSyncDateSchema,
         CustomerDebtSchema,
         CustomerReminderSchema,
         MeterReadingSchema,
         MeterReadingSyncDateSchema,
         CustomerDebtSyncDateSchema
     ],
-    schemaVersion: 85,
+    schemaVersion: 89,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
         if (oldRealm.schemaVersion < 1) {

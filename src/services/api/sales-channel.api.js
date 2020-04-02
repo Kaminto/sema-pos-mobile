@@ -14,7 +14,7 @@ class SalesChannelApi {
 		if (!url.endsWith('/')) {
 			url = url + '/';
 		}
-		this._url = url;
+		this._url = 'http://142.93.115.206:3002/';
 		this._site = site;
 		this._user = user;
 		this._password = password;
@@ -28,14 +28,14 @@ class SalesChannelApi {
 		this._siteId = siteId;
 	}
 
-    getSalesChannels() {
+    getSalesChannels(date) {
 		let options = {
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-		let url = 'sema/sales-channels';
+		let url = `sema/sales-channels/${date}`;
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.then(responseJson => {

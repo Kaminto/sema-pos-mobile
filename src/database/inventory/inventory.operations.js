@@ -1,5 +1,7 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
+import SyncUtils from '../../services/sync/syncUtils';
+
 import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
 class InventroyRealm {
     constructor() {
@@ -11,7 +13,6 @@ class InventroyRealm {
             }
 
         });
-        // this.truncate();
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReadingSyncDate')))).length == 0) {
                 realm.create('MeterReadingSyncDate', { lastMeterReadingSync: firstSyncDate });
@@ -39,7 +40,6 @@ class InventroyRealm {
                 let meterReading = realm.objects('MeterReading');
                 let meterSync = realm.objects('MeterReadingSyncDate');
                 let invSync = realm.objects('InventorySyncDate');
-
                 realm.delete(meterReading);
                 realm.delete(meterSync);
                 realm.delete(inventories);
@@ -68,11 +68,9 @@ class InventroyRealm {
         return this.inventory = Object.values(JSON.parse(JSON.stringify(realm.objects('Inventory'))));
     }
 
-
     getAllInventoryByDate(date) {
         console.log('idate', date);
         let inventory = this.inventory = Object.values(JSON.parse(JSON.stringify(realm.objects('Inventory'))));
-        //console.log('iinventory', inventory);
         return inventory.filter(r => {
             return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1 || r.active === false;
         })
@@ -85,7 +83,6 @@ class InventroyRealm {
     getAllMeterReadingByDate(date) {
         console.log('mdate', date);
         let meterReding = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
-        //console.log('minventory', meterReding);
         return meterReding.filter(r => {
             return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1 || r.active === false;
         })
@@ -106,16 +103,15 @@ class InventroyRealm {
         if (day.toString().length == 1) {
             day = "0" + day;
         }
-
         return date = year + '-' + month + '-' + day;
     }
+
     addDays = (theDate, days) => {
         return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
     };
 
     getWastageReportByDate(date) {
         return new Promise(resolve => {
-
             try {
                 if (!date) {
                     resolve({
@@ -123,20 +119,10 @@ class InventroyRealm {
                         currentProductSkus: []
                     });
                 }
-
                 let checkExistingMeter = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
-                const filteredReading = checkExistingMeter.filter(element =>
-                    isSameDay(new Date(format(new Date((element.created_at).split('T')[0]), 'yyyy-MM-dd')), new Date(format(new Date((date.toISOString().split('T')[0])), 'yyyy-MM-dd')))
-                );
-                // console.log('date',  date);
-                //console.log('checkExistingMeter', filteredReading);
+                const filteredReading = checkExistingMeter.filter(element => SyncUtils.isSimilarDay(element.created_at, date));
                 let checkExistingWastage = Object.values(JSON.parse(JSON.stringify(realm.objects('Inventory'))));
-                const filteredWastage = checkExistingWastage.filter(element =>
-                    isSameDay(new Date(format(new Date((element.created_at).split('T')[0]), 'yyyy-MM-dd')), new Date(format(new Date((date.toISOString().split('T')[0])), 'yyyy-MM-dd')))
-                );
-
-                // console.log('checkExistingWastage', filteredWastage);
-
+                const filteredWastage = checkExistingWastage.filter(element => SyncUtils.isSimilarDay(element.created_at, date));
                 if (filteredReading.length > 0 || filteredWastage.length > 0) {
                     resolve({
                         currentMeter: filteredReading.length > 0 ? filteredReading[0].meter_value : 0,
@@ -148,31 +134,23 @@ class InventroyRealm {
                         currentProductSkus: []
                     });
                 }
-
             } catch (e) {
                 console.log("error on gettting getWastageReportByDate", e)
             }
-
         })
-
-
     }
 
     createMeterReading(meter_value, date, kiosk_id) {
-        console.log('date-', date);
-
         let current_date = set(new Date(date), {
             hours: getHours(new Date()),
             minutes: getMinutes(new Date()),
             seconds: getSeconds(new Date())
         });
         let update_date = new Date();
-        console.log('current_date', current_date);
         try {
             realm.write(() => {
                 let checkExistingMeter = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
-                const filteredReading = checkExistingMeter.filter(element =>
-                    isSameDay(parseISO(element.created_at), date)
+                const filteredReading = checkExistingMeter.filter(element => SyncUtils.isSimilarDay(element.created_at, date)
                 );
                 if (filteredReading.length > 0) {
                     let meterUpdateObj = realm.objects('MeterReading').filtered(`meter_reading_id = "${filteredReading[0].meter_reading_id}"`);
@@ -189,13 +167,11 @@ class InventroyRealm {
                         active: false
                     });
                 }
-                // realm.create('CustomerReminder', customerReminder);
             });
         } catch (e) {
             console.log("Error on creation  meter reading", e);
         }
     }
-
 
     deleteByMeterId(meter_reading_id) {
         console.log('meter_reading_id', meter_reading_id);
@@ -222,7 +198,6 @@ class InventroyRealm {
             console.log("Error on delete inventory", e);
         }
     }
-
 
     createInventory(inventory, date) {
         console.log('inventory-', inventory);
@@ -285,7 +260,6 @@ class InventroyRealm {
         }
     }
 
-
     updateInventory(inventory) {
         try {
             realm.write(() => {
@@ -321,7 +295,6 @@ class InventroyRealm {
 
     }
 
-
     synchedMeterReading(meterReading) {
         try {
             realm.write(() => {
@@ -336,7 +309,6 @@ class InventroyRealm {
 
     }
 
-
     // Hard delete when active property is false or when active property and syncAction is delete
     hardDeleteInventory(inventory) {
         try {
@@ -346,7 +318,6 @@ class InventroyRealm {
                 let deleteInventory = inventories.filtered(`closingStockId = "${inventory.closingStockId}"`);
                 realm.delete(deleteInventory);
             })
-
         } catch (e) {
             console.log("Error on hard delete inventory", e);
         }
@@ -360,7 +331,6 @@ class InventroyRealm {
                     inventoryObj[0].syncAction = 'delete';
                 })
             })
-
         } catch (e) {
             console.log("Error on soft delete inventory", e);
         }
@@ -372,16 +342,10 @@ class InventroyRealm {
                 let result = [];
                 realm.write(() => {
                     for (i = 0; i < inventories.length; i++) {
-
-                        let isCheckInvnetoryDate = this.checkInvnetoryDate(inventories[i].created_at).length;
-                        console.log('isCheckInvnetoryDate-created_at', inventories[i].created_at);
-                        console.log('checkInvnetoryDate', this.checkInvnetoryDate(inventories[i].created_at));
-                        console.log('isCheckInvnetoryDate', isCheckInvnetoryDate);
-
+                        let isCheckInvnetoryDate = this.checkInvnetoryDate(inventories[i].created_at, inventories[i].product_id).length;
                         if (isCheckInvnetoryDate === 0) {
                             let value = realm.create('Inventory', { ...inventories[i], wastageName: inventories[i].product_id, inventory: inventories[i].quantity, active: true });
                             result.push({ status: 'success', data: value, message: 'Closing Stock has been set' });
-
                         } else if (isCheckInvnetoryDate > 0) {
                             result.push({ status: 'fail', data: inventories[i], message: 'Local Closing Stock has already been set' });
                         }
@@ -395,9 +359,8 @@ class InventroyRealm {
         });
     }
 
-    checkInvnetoryDate(date) {
-
-        return this.getAllInventory().filter(e => isSameDay(new Date(format(new Date((date).split('T')[0]), 'yyyy-MM-dd')), new Date(format(new Date((e.created_at).split('T')[0]), 'yyyy-MM-dd'))))
+    checkInvnetoryDate(date, product_id) {
+        return this.getAllInventory().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.product_id === product_id)
     }
 
     createManyMeterReading(meterReadings) {
@@ -409,14 +372,12 @@ class InventroyRealm {
                         if (this.checkMeterReadingDate(meterReadings[i].created_at).length === 0) {
                             let value = realm.create('MeterReading', { ...meterReadings[i], active: true });
                             result.push({ status: 'success', data: value, message: 'Meter Reading has been set' });
-
                         } else if (this.checkMeterReadingDate(meterReadings[i].created_at).length > 0) {
                             result.push({ status: 'fail', data: meterReadings[i], message: 'Local Meter Reading has already been set' });
                         }
                     }
                 });
                 resolve(result);
-
             } catch (e) {
                 console.log("Error on creation many MeterReading", e);
                 resolve('errro');
@@ -425,12 +386,8 @@ class InventroyRealm {
     }
 
     checkMeterReadingDate(date) {
-        return this.getAllMeterReading().filter(e => isSameDay(new Date(format(new Date((date).split('T')[0]), 'yyyy-MM-dd')), new Date(format(new Date((e.created_at).split('T')[0]), 'yyyy-MM-dd'))));
+        return this.getAllMeterReading().filter(e => SyncUtils.isSimilarDay(e.created_at, date))
     }
-
-
-
-
 
 }
 

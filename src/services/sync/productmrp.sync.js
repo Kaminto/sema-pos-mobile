@@ -1,64 +1,44 @@
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import ProductApi from '../api/product.api';
+import SyncUtils from './syncUtils';
 import * as _ from 'lodash';
 
 class ProductMRPSync {
 
-    synchronizeProductMrps() {
+    synchronizeProductMrps(siteId) {
         return new Promise(resolve => {
-            ProductApi.getProductMrps(null, false)
-                .then(remoteProductMRP => {
-                    let initlocalProductMRPs = ProductMRPRealm.getProductMRPS();
+            ProductApi.getProductMrps(siteId, ProductMRPRealm.getLastProductMRPSync())
+                .then(async remoteProductMRP => {
+                    let initlocalProductMRPs = ProductMRPRealm.getProductMRPSByDate(ProductMRPRealm.getLastProductMRPSync());
                     let localProductMRPs = [...initlocalProductMRPs];
-                    let remoteProductMRPs = [...remoteProductMRP.productMRPs];
-                    if (initlocalProductMRPs.length === 0) {
-                        ProductMRPRealm.createManyProductMRP(remoteProductMRP.productMRPs);
-                    }
-
-                    let onlyLocally = [];
-                    let onlyRemote = [];
-                    let inLocal = [];
-                    let inRemote = [];
-                    let bothLocalRemote = {};
-
-                    if (initlocalProductMRPs.length > 0) {
-
-                        initlocalProductMRPs.forEach(localProductMRP => {
-                            let filteredObj = remoteProductMRPs.filter(obj => obj.id === localProductMRP.id)
-                          
-                            if (filteredObj.length > 0) {
-                                const remoteIndex = remoteProductMRPs.map(function (e) { return e.id }).indexOf(filteredObj[0].id);
-                                const localIndex = localProductMRPs.map(function (e) { return e.id }).indexOf(filteredObj[0].id);
-                              
-                                remoteProductMRPs.splice(remoteIndex, 1);
-                                localProductMRPs.splice(localIndex, 1);
-
-                                inLocal.push(localProductMRP);
-                                inRemote.push(filteredObj[0]);
-                            }
-
-                            if (filteredObj.length === 0) {
-                                onlyLocally.push(localProductMRP);
-                                const localIndex = localProductMRPs.map(function (e) { return e.id }).indexOf(localProductMRP.id);
-                                localProductMRPs.splice(localIndex, 1);
-                            }
-                        });
-
-                        onlyRemote.push(...remoteProductMRPs);
-                        bothLocalRemote.inLocal = inLocal;
-                        bothLocalRemote.inRemote = inRemote;
+                    let remoteProductMRPs = [...remoteProductMRP.pricing];
 
 
-                        if (onlyRemote.length > 0) {
-                            ProductMRPRealm.createManyProductMRP(onlyRemote)
+                    let onlyInLocal = localProductMRPs.filter(SyncUtils.compareRemoteAndLocal(remoteProductMRPs, 'id'));
+                    let onlyInRemote = remoteProductMRPs.filter(SyncUtils.compareRemoteAndLocal(localProductMRPs, 'id'));
+
+
+
+                    let syncResponseArray = [];
+                    if (onlyInLocal.length > 0) {
+                        for (const property in onlyInLocal) {
+
                         }
-
-
-
                     }
+
+                    if (onlyInRemote.length > 0) {
+                        let localResponse = await ProductMRPRealm.createManyProductMRP(onlyInRemote);
+                        syncResponseArray.push(...localResponse);
+                        ProductMRPRealm.setLastProductMRPSync();
+                    }
+
+
+
                     resolve({
-                        success: true,
-                        productMrps: onlyLocally.length + onlyRemote.length + inLocal.length,
+                        success: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
+                        productMrps: onlyInLocal.concat(onlyInRemote).length,
+                        successError: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
+                        successMessage: syncResponseArray.length > 0 ? syncResponseArray[0] : 'success'
                     });
 
                 })
