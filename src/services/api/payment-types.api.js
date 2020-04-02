@@ -12,7 +12,7 @@ class PaymentTypesApi {
 		if (!url.endsWith('/')) {
 			url = url + '/';
 		}
-		this._url = url;
+		this._url = 'http://142.93.115.206:3002/';
 		this._site = site;
 		this._user = user;
 		this._password = password;
@@ -27,11 +27,11 @@ class PaymentTypesApi {
 		this._siteId = siteId;
 	}
 
-	getPaymentTypes() {
+	getPaymentTypes(date) {
 		let options = {
 			method: 'GET',
 		};
-		let url = 'sema/payment_type';
+		let url = `sema/payment_type/${date}`;
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.then(responseJson => {

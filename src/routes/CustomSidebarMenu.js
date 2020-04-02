@@ -170,7 +170,6 @@ class CustomSidebarMenu extends React.PureComponent {
       CreditRealm.getAllCredit()
     );
 
-
     this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
     this.props.inventoryActions.setInventory(
       InventroyRealm.getAllInventory()
@@ -223,6 +222,8 @@ class CustomSidebarMenu extends React.PureComponent {
           OrderRealm.getAllOrder()
         );
 
+        
+
         Alert.alert(
           i18n.t('sync-results'),
           this._getSyncResults(syncResult),
@@ -239,26 +240,29 @@ class CustomSidebarMenu extends React.PureComponent {
 
         if (
           syncResult.customers == 0 &&
-          syncResult.products == 0 &&
+          syncResult.products.products == 0 &&
           syncResult.orders == 0 &&
-          syncResult.meterReading == 0 &&
-          syncResult.wastageReport == 0 &&
+          syncResult.meterReading.meterReading == 0 &&
+          syncResult.wastageReport.wastageReport == 0 &&
           syncResult.recieptPayments == 0 &&
           syncResult.topups == 0
         ) {
           return i18n.t('data-is-up-to-date');
         } else {
           return `${syncResult.customers} ${i18n.t('customers-updated')}
-      			 \n${syncResult.products} ${i18n.t('products-updated')}
+             \n${syncResult.products.successError === 'fail' ? syncResult.products.successMessage.message : syncResult.products.products } ${syncResult.meterReading.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('products-updated')}
+           
        			 \n${syncResult.orders} ${i18n.t('sales-receipts-updated')}
        			 \n${syncResult.debt} ${i18n.t('debt-updated')}
        			 \n${syncResult.meterReading.successError === 'fail' ? syncResult.meterReading.successMessage.message : syncResult.meterReading.meterReading } ${syncResult.meterReading.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('meterReading-updated')}
               \n${syncResult.wastageReport.successError === 'fail' ? syncResult.wastageReport.successMessage.message : syncResult.wastageReport.wastageReport } ${syncResult.wastageReport.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('wastageReport-updated')}
-      			 \n${syncResult.topups} ${i18n.t('topups-updated')}
+             \n${syncResult.topups} ${i18n.t('topups-updated')}
+             \n${syncResult.salesChannels.successError === 'fail' ? syncResult.salesChannels.successMessage.message : syncResult.salesChannels.salesChannels } ${syncResult.salesChannels.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('salechannel-updated')}
+              \n${syncResult.productMrps.successError === 'fail' ? syncResult.productMrps.successMessage.message : syncResult.productMrps.productMrps } ${syncResult.salesChannels.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('pricing-sheme-updated')}
+		          \n${syncResult.recieptPayments} ${i18n.t('recieptPayments-updated')}
+		         \n${syncResult.topups} ${i18n.t('topups-updated')}
         `
-		// \n${syncResult.productMrps} ${i18n.t('product-sales-channel-prices-updated')}
-		// \n${syncResult.recieptPayments} ${i18n.t('recieptPayments-updated')}
-		// ${syncResult.topups.localTopup} ${i18n.t('topups-updated')}
+		
         ;
         }
 

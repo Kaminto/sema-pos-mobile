@@ -1,65 +1,45 @@
 import DiscountRealm from '../../database/discount/discount.operations';
 import DiscountApi from '../api/discounts.api';
+import SyncUtils from './syncUtils';
 import * as _ from 'lodash';
 
 class DiscountSync {
 
     synchronizeDiscount(siteId) {
         return new Promise(resolve => {
-            DiscountApi.getDiscounts(siteId)
-                .then(remoteDiscount => {
-                    let initlocalDiscounts = DiscountRealm.getDiscounts();
+            DiscountApi.getDiscounts(siteId, DiscountRealm.getLastDiscountSync())
+                .then(async remoteDiscount => {
+                    let initlocalDiscounts = DiscountRealm.geDiscountsByDate(DiscountRealm.getLastDiscountSync());
                     let localDiscounts = [...initlocalDiscounts];
                     let remoteDiscounts = [...remoteDiscount.promotion];
-                    if (initlocalDiscounts.length === 0) {
-                        DiscountRealm.createManyDiscount(remoteDiscount.promotion);
-                    }
-
-                    let onlyLocally = [];
-                    let onlyRemote = [];
-                    let inLocal = [];
-                    let inRemote = [];
-                    let bothLocalRemote = {};
-
-                    if (initlocalDiscounts.length > 0) {
-
-                        initlocalDiscounts.forEach(localDiscount => {
-                            let filteredObj = remoteDiscounts.filter(obj => obj.id === localDiscount.id)
-
-                            if (filteredObj.length > 0) {
-                                const remoteIndex = remoteDiscounts.map(function (e) { return e.id }).indexOf(filteredObj[0].id);
-                                const localIndex = localDiscounts.map(function (e) { return e.id }).indexOf(filteredObj[0].id);
-
-                                remoteDiscounts.splice(remoteIndex, 1);
-                                localDiscounts.splice(localIndex, 1);
-
-                                inLocal.push(localDiscount);
-                                inRemote.push(filteredObj[0]);
-                            }
-
-                            if (filteredObj.length === 0) {
-                                onlyLocally.push(localDiscount);
-                                const localIndex = localDiscounts.map(function (e) { return e.id }).indexOf(localDiscount.id);
-
-                                localDiscounts.splice(localIndex, 1);
-                            }
-                        });
-
-                        onlyRemote.push(...remoteDiscounts);
-                        bothLocalRemote.inLocal = inLocal;
-                        bothLocalRemote.inRemote = inRemote;
 
 
-                        if (onlyRemote.length > 0) {
-                            DiscountRealm.createManyDiscount(onlyRemote)
+
+                    let onlyInLocal = localDiscounts.filter(SyncUtils.compareRemoteAndLocal(remoteDiscounts, 'id'));
+                    let onlyInRemote = remoteDiscounts.filter(SyncUtils.compareRemoteAndLocal(localDiscounts, 'id'));
+
+
+
+                    let syncResponseArray = [];
+                    if (onlyInLocal.length > 0) {
+                        for (const property in onlyInLocal) {
+
                         }
-
-
-
                     }
+
+                    if (onlyInRemote.length > 0) {
+                        let localResponse = await DiscountRealm.createManyDiscount(onlyInRemote);
+                        syncResponseArray.push(...localResponse);
+                        DiscountRealm.setLastDiscountSync();
+                    }
+
+
+
                     resolve({
-                        error: null,
-                        remoteDiscounts: onlyLocally.length + onlyRemote.length,
+                        success: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
+                        discounts: onlyInLocal.concat(onlyInRemote).length,
+                        successError: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
+                        successMessage: syncResponseArray.length > 0 ? syncResponseArray[0] : 'success'
                     });
 
                 })
@@ -69,7 +49,7 @@ class DiscountSync {
                     );
                     resolve({
                         error: error,
-                        remoteDiscounts: 0
+                        discounts: 0
                     });
                 });
         });

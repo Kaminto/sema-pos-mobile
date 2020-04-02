@@ -12,7 +12,7 @@ class ProductApi {
 		if (!url.endsWith('/')) {
 			url = url + '/';
 		}
-		this._url = url;
+		this._url = 'http://142.93.115.206:3002/';
 		this._site = site;
 		this._user = user;
 		this._password = password;
@@ -27,18 +27,14 @@ class ProductApi {
 		this._siteId = siteId;
 	}
 
-	getProducts(updatedSince) {
+	getProducts(date) {
 		let options = {
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-		let url = 'sema/products';
-
-		if (updatedSince) {
-			url = url + '?updated-date=' + updatedSince;
-		}
+		let url = `sema/products/${date}`;
 		console.log(this._url + url);
 		return fetch(this._url + url, options)
 			.then(response => response.json())
@@ -54,20 +50,14 @@ class ProductApi {
 
 	// getAll will determine whether to get all product mappings or not, if it's true,
 	// it will send a site/kiosk ID of -1 to the server
-	getProductMrps(updatedSince, getAll) {
+	getProductMrps(siteId, date) {
 		let options = {
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-		let url = `sema/site/product-mrps?site-id=${
-			getAll ? -1 : this._siteId
-			}`;
-
-		if (updatedSince) {
-			url = url + '&updated-date=' + updatedSince.toISOString();
-		}
+		let url = `sema/sema_pricing/${siteId}/${date}`;
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.then(responseJson => {

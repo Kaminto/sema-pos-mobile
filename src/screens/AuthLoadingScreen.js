@@ -26,18 +26,19 @@ import CreditRealm from '../database/credit/credit.operations';
 import CustomerRealm from '../database/customers/customer.operations'
 import InventroyRealm from '../database/inventory/inventory.operations';
 import SettingRealm from '../database/settings/settings.operations';
-import ProductsRealm from '../database/products/product.operations';
+import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
 import OrderRealm from '../database/orders/orders.operations';
-import DiscountRealm from '../database/discount/discount.operations';
-
+import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_payment_types.operations';
 import CustomerReminderRealm from '../database/customer-reminder/customer-reminder.operations';
 
-import Synchronization from '../services/Synchronization';
-
-import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
-
+import ProductsRealm from '../database/products/product.operations';
+import DiscountRealm from '../database/discount/discount.operations';
 import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
-import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_payment_types.operations';
+import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
+import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
+import ProductMRPRealm from '../database/productmrp/productmrp.operations';
+
+import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
 import NetInfo from "@react-native-community/netinfo";
 
@@ -67,13 +68,21 @@ class AuthLoadingScreen extends React.PureComponent {
             this.props.navigation.navigate('Login');
         }
        // CustomerDebtRealm.truncate()
+      // SalesChannelRealm.truncate();
+       //InventroyRealm.truncate();
         console.log('last order sync',OrderRealm.getLastOrderSync());
         console.log('last customer sync',CustomerRealm.getLastCustomerSync());
         console.log('last meter reading sync',InventroyRealm.getLastMeterReadingSync());
         console.log('last inventory sync',InventroyRealm.getLastInventorySync());
         console.log('last CustomerDebtRealm sync',CustomerDebtRealm.getLastCustomerDebtSync());
-        //InventroyRealm.truncate()
-        console.log('inventory data',InventroyRealm.getAllInventory());
+        console.log('last SalesChannelRealm sync',SalesChannelRealm.getLastSalesChannelSync());
+        console.log('last PaymentTypeRealm sync',PaymentTypeRealm.getLastPaymentTypeSync());
+        console.log('last DiscountRealm sync',DiscountRealm.getLastDiscountSync());
+        console.log('last ProductMRPRealm sync',ProductMRPRealm.getLastProductMRPSync());
+        console.log('last ProductsRealm sync',ProductsRealm.getLastProductsync());
+        
+      
+     //   console.log('inventory data',ProductsRealm.getProducts());
         if (settings.site != "" && settings.siteId > 0) {
             this.loadSyncedData();
             if (settings.token.length > 1) {
@@ -119,7 +128,7 @@ class AuthLoadingScreen extends React.PureComponent {
         this.props.receiptActions.setReceipts(
             OrderRealm.getAllOrder()
         );
-        //PaymentTypeRealm.truncate();
+      
         this.props.paymentTypesActions.setPaymentTypes(
             PaymentTypeRealm.getPaymentTypes()
         );

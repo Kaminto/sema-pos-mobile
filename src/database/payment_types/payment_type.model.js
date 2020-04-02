@@ -11,3 +11,11 @@ export const PaymentTypeSchema = {
         updated_at: { type: 'date', optional: true },
     }
 };
+
+export const PaymentTypeSyncDateSchema = {
+    name: 'PaymentTypeSyncDate',
+    properties: {
+        lastPaymentTypeSync: 'date',
+    }
+};
+  

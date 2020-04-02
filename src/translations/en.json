@@ -4,14 +4,11 @@
   "offline": "OFFLINE",
   "site": "Site",
   "logout": "Logout",
-
   "all": "all",
   "credit": "credit",
-
   "sign-in": "Sign In",
   "signing-in": "Signing in...",
   "invalid-credentials": "Invalid user name and/or password",
-
   "settings": "Settings",
   "service-url-label": "SEMA Service URL",
   "service-url-placeholder": "SEMA Service URL, (http://sema-service)",
@@ -38,17 +35,15 @@
   "topups-updated": "Top Ups Updated",
   "products-updated": "products updated",
   "sales-receipts-updated": "sales receipts updated",
-
   "debt-updated": "Debt Updated",
   "meterReading-updated": "Meter Readings Updated",
   "wastageReport-updated": "Wastage Reports Updated",
+  "salechannel-updated": "Sales Channel Reports Updated",
   "recieptPayments-updated": "Reciept Payments Updated",
-
-
+  "pricing-sheme-updated": "Pricing Scheme Updated",
   "product-sales-channel-prices-updated": "product/sales channel prices updated",
   "clear-all-data": "Clear All Data",
   "delete-all-data": "delete all data (This cannot be undone)",
-
   "search-placeholder": "Search by Name or Phone",
   "salefilter-placeholder": "Search by Name",
   "account-name": "Customer Name",
@@ -57,20 +52,15 @@
   "backdating": "Change Receipt Date",
   "over-due-amount-title": "Over Due Amount",
   "over-due-amount-text": "The payoff amount is greater than the due amount. The due amount is : ",
-
   "credit-due-amount-title": "Credit Amount",
   "credit-due-amount-text": "The Credit amount is greater than the due amount. The due amount is : ",
-
   "product": "Product",
-
   "address": "Address",
   "balance": "Loan Balance",
   "channel": "Channel",
   "edit": "Edit",
   "delete": "Delete",
-
   "details": "Details",
-
   "edit-customer": "Edit Customer",
   "new-customer": "New Customer",
   "update-customer": "Update Customer",
@@ -78,22 +68,18 @@
   "sales-channel": "Sales Channel",
   "customer-type": "Customer Type",
   "updating": "Updating...",
-
   "delete-this-customer": "delete this customer",
   "delete-specific-customer": "Delete Customer {{customerName}}",
   "credit-customer-no-delete": "Customer {{customerName}} has an outstanding credit and cannot be deleted",
-
   "order-summary": "Order Summary",
   "cart": "Cart",
   "pay": "Pay",
   "save-order": "Save Order",
-
   "order-total": "Order Total",
   "item": "Item",
   "quantity": "Quantity",
   "unitPrice": "Unit Price",
   "charge": "Charge",
-
   "cash": "Cash",
   "loan": "Loan",
   "mobile": "Mobile",
@@ -107,22 +93,17 @@
   "customer-wallet": "Customer Wallet",
   "complete-sale": "Complete Sale",
   "processing-order": "Processing order...",
-
   "sales": "Sales",
   "inventory": "Closing Stock",
   "meter-reading": "Meter Reading",
-
   "cancel-this-order": "cancel this order",
   "cancel-order": "Cancel Order",
-
   "daily-data": "Daily Data",
-
   "liters-per-sku": "Liters/SKU",
   "total-liters": "Total Liters",
   "price-per-sku": "Price/SKU",
   "total-sales": "Total Sales",
-  "payoff":"Loan Repayment",
-
+  "payoff": "Loan Repayment",
   "make-payment": "Make Payment",
   "clear-loan": "Clear Loan",
   "no-username": "Wrong Credentials",
@@ -144,7 +125,6 @@
   "closing-meter": "Closing Meter",
   "total-production": "Total Production",
   "wastage": "Wastage",
-
   "are-you-sure": "Are you sure you want to {{doThat}}?",
   "cancel": "Cancel",
   "ok": "OK",

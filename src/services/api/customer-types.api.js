@@ -12,7 +12,7 @@ class CustomerTypeApi {
 		if (!url.endsWith('/')) {
 			url = url + '/';
 		}
-		this._url = url;
+		this._url ='http://142.93.115.206:3002/';
 		this._site = site;
 		this._user = user;
 		this._password = password;
@@ -27,14 +27,14 @@ class CustomerTypeApi {
 		this._siteId = siteId;
 	}
 
-    getCustomerTypes() {
+    getCustomerTypes(date) {
 		let options = {
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-		let url = 'sema/customer-types';
+		let url = `sema/customer-types/${date}`;
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.then(responseJson => {

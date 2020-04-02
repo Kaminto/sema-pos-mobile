@@ -1,16 +1,20 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
+import SyncUtils from '../../services/sync/syncUtils';
+import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
 
 class ProductMRPRealm {
     constructor() {
         this.productMRP = [];
-        let firstSyncDate = new Date('November 7, 1973');
+        let firstSyncDate = format(sub(new Date(), { years: 3 }), 'yyyy-MM-dd');
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('ProductMRPSyncDate')))).length == 0) {
                 realm.create('ProductMRPSyncDate', { lastProductMRPSync: firstSyncDate });
             }
+            // let syncDate = realm.objects('ProductMRPSyncDate');
+            // syncDate[0].lastProductMRPSync = firstSyncDate;
         });
-        this.lastProductMRPSync = firstSyncDate;
+      
     }
 
     getLastProductMRPSync() {
@@ -21,6 +25,7 @@ class ProductMRPRealm {
         try {
             realm.write(() => {
                 let productMRPs = realm.objects('ProductMRP');
+                realm.delete(realm.objects('ProductMRPSyncDate'));
                 realm.delete(productMRPs);
             })
         } catch (e) {
@@ -28,10 +33,10 @@ class ProductMRPRealm {
         }
     }
 
-    setLastProductMRPSync(lastSyncTime) {
+    setLastProductMRPSync() {
         realm.write(() => {
         let syncDate = realm.objects('ProductMRPSyncDate');
-        syncDate[0].lastProductMRPSync = lastSyncTime.toISOString()
+        syncDate[0].lastProductMRPSync = new Date()
         })
     }
 
@@ -58,6 +63,13 @@ class ProductMRPRealm {
 
     getProductMRPS() {
         return Object.values(JSON.parse(JSON.stringify(realm.objects('ProductMRP'))));
+    }
+
+    getProductMRPSByDate(date) {
+        let productMrps = Object.values(JSON.parse(JSON.stringify(realm.objects('ProductMRP'))));
+        return productMrps.filter(r => {
+            return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1 || r.active === false;
+        })
     }
 
     initialise() {
@@ -169,18 +181,58 @@ class ProductMRPRealm {
         }
     }
 
+ 
+
+
     createManyProductMRP(productMRPs) {
-        try {
-            realm.write(() => {
-                productMRPs.forEach(obj => {
-                    realm.create('ProductMRP', obj);
+
+        return new Promise((resolve, reject) => {
+            try {
+                let result = [];
+                realm.write(() => {
+                    for (i = 0; i < productMRPs.length; i++) {
+                        let ischeckproductMRPs = this.checkProductMrps(productMRPs[i].created_at, productMRPs[i].id).length;
+                        if (ischeckproductMRPs === 0) {
+                            let value = realm.create('ProductMRP', {
+                                ...productMRPs[i],
+                                priceAmount: Number(productMRPs[i].priceAmount),
+                                cogsAmount: Number(productMRPs[i].cogsAmount),
+                                productId: Number(productMRPs[i].productId),
+                                salesChannelId: Number(productMRPs[i].salesChannelId),
+                                siteId: Number(productMRPs[i].siteId),
+                                active: true
+                            });
+                            result.push({ status: 'success', data: value, message: 'Product MRP has been set' });
+                        } else if (ischeckproductMRPs > 0) {
+                            let discountObj = realm.objects('ProductMRP').filtered(`id = "${productMRPs[i].id}"`);
+                           
+                             discountObj[0].priceAmount=  Number(productMRPs[i].priceAmount);
+                             discountObj[0].cogsAmount = Number(productMRPs[i].cogsAmount);
+                             discountObj[0].productId = Number(productMRPs[i].productId);
+                             discountObj[0].salesChannelId = Number(productMRPs[i].salesChannelId);
+                             discountObj[0].siteId =Number(productMRPs[i].siteId);
+                             discountObj[0].currencyCode = productMRPs[i].currencyCode;
+                             discountObj[0].updated_at = productMRPs[i].updated_at;
+                             result.push({ status: 'success', data: productMRPs[i], message: 'Local Product MRP has been updated' });
+                           
+
+                        }
+                    }
+
                 });
-            });
+                resolve(result);
+            } catch (e) {
+                console.log("Error on creation", e);
+            }
+        });
+    }
 
-        } catch (e) {
-            console.log("Error on creation", e);
-        }
 
+
+
+
+    checkProductMrps(date, id) {
+        return this.getProductMRPS().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.id === id)
     }
 }
 

@@ -1,20 +1,49 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
+import SyncUtils from '../../services/sync/syncUtils';
+import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
 
 class DiscountRealm {
     constructor() {
         this.discount = [];
+        let firstSyncDate = format(sub(new Date(), { years: 3 }), 'yyyy-MM-dd');
+        realm.write(() => {
+            if (Object.values(JSON.parse(JSON.stringify(realm.objects('DiscountSyncDate')))).length == 0) {
+                realm.create('DiscountSyncDate', { lastDiscountSync: firstSyncDate });
+            }
+            // let syncDate = realm.objects('DiscountSyncDate');
+            // syncDate[0].lastDiscountSync = firstSyncDate;
+        });
     }
 
     truncate() {
         try {
             realm.write(() => {
                 let discounts = realm.objects('Discount');
+                realm.delete(realm.objects('DiscountSyncDate'));
                 realm.delete(discounts);
             })
         } catch (e) {
             console.log("Error on truncate discounts", e);
         }
+    }
+
+    getLastDiscountSync() {
+        return JSON.parse(JSON.stringify(realm.objects('DiscountSyncDate')))['0'].lastDiscountSync;
+    }
+
+    setLastDiscountSync() {
+        realm.write(() => {
+            let syncDate = realm.objects('DiscountSyncDate');
+            syncDate[0].lastDiscountSync = new Date();
+        })
+    }
+
+    geDiscountsByDate(date) {
+        let discounts = Object.values(JSON.parse(JSON.stringify(realm.objects('Discount'))));
+        return discounts.filter(r => {
+            return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1 || r.active === false;
+        })
     }
 
     getDiscounts() {
@@ -158,19 +187,56 @@ class DiscountRealm {
         }
     }
 
+  
+
     createManyDiscount(discounts) {
-        try {
-            realm.write(() => {
-                discounts.forEach(obj => {
-                    realm.create('Discount', { ...obj, amount: Number(obj.amount) });
+
+        return new Promise((resolve, reject) => {
+            try {
+                let result = [];
+                realm.write(() => {
+                    for (i = 0; i < discounts.length; i++) {
+                        let ischeckdiscounts = this.checkdiscounts(discounts[i].created_at, discounts[i].id).length;
+                        if (ischeckdiscounts === 0) {
+                            let value = realm.create('Discount', {
+                                ...discounts[i],
+                                amount: Number(discounts[i].amount),
+                                active: true
+                            });
+                            result.push({ status: 'success', data: value, message: 'Discount has been set' });
+                        } else if (ischeckdiscounts > 0) {
+                            let discountObj = realm.objects('Discount').filtered(`id = "${discounts[i].id}"`);
+                           
+                             discountObj[0].amount=  Number(discounts[i].amount);
+                             discountObj[0].applies_to = discounts[i].applies_to;
+                             discountObj[0].start_date = discounts[i].start_date;
+                             discountObj[0].end_date = discounts[i].end_date;
+                             discountObj[0].product_id = discounts[i].product_id;
+                             discountObj[0].region_id = discounts[i].region_id;
+                             discountObj[0].base64encoded_image = discounts[i].base64encoded_image;
+                             discountObj[0].kiosk_id = discounts[i].kiosk_id;
+                             discountObj[0].sku = discounts[i].sku;
+                             discountObj[0].type = discounts[i].type; 
+                             discountObj[0].updated_at = discounts[i].updated_at;
+                             result.push({ status: 'success', data: discounts[i], message: 'Local Discount has been updated' });
+                           
+
+                        }
+                    }
+
                 });
-            });
-
-        } catch (e) {
-            console.log("Error on create many discounts", e);
-        }
-
+                resolve(result);
+            } catch (e) {
+                console.log("Error on creation", e);
+            }
+        });
     }
+
+    checkdiscounts(date, id) {
+        return this.getDiscounts().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.id === id)
+    }
+
+
 }
 
 export default new DiscountRealm();

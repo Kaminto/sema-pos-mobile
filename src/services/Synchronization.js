@@ -113,7 +113,6 @@ class Synchronization {
 			try {
 				this._refreshToken()
 					.then(() => {
-						let lastProductSync = this.lastProductSync;
 						let settings = SettingRealm.getAllSetting();
 
 
@@ -121,45 +120,64 @@ class Synchronization {
 						const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes();
 						const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes();
 						const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId);
-					
-
-						const promiseCustomers = CustomerSync.synchronizeCustomers();
-						const promiseOrders = OrderSync.synchronizeSales(settings.siteId);
-						const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts();
-						const promiseProducts = ProductSync.synchronizeProducts();
-						const promiseProductMrps = ProductMRPSync.synchronizeProductMrps();
-
+						const promiseProductMrps = ProductMRPSync.synchronizeProductMrps(settings.siteId);
+						const promiseProducts = ProductSync.synchronizeProducts();				
 						const promiseMeterReading = MeterReadingSync.synchronizeMeterReading(settings.siteId);
 						const promiseInventory = InventorySync.synchronizeInventory(settings.siteId);
+						
+
+						const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts();
 						const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId);
-						const promiseTopUps = CreditSync.synchronizeCredits();
-
-
+						const promiseTopUps = CreditSync.synchronizeCredits();						
+						const promiseCustomers = CustomerSync.synchronizeCustomers();
+						const promiseOrders = OrderSync.synchronizeSales(settings.siteId);
 					
+
+
 
 
 						Promise.all([
-							promiseCustomers,
+							promiseSalesChannels,
+							promiseCustomerTypes,
+							promisePaymentTypes,
+							promiseDiscounts,
+							promiseProductMrps,														
 							promiseProducts,
-							promiseProductMrps,
-							promiseOrders,
-							promiseCustomerDebts,
 							promiseMeterReading,
 							promiseInventory,
+
+							
+							promiseCustomerDebts,						
 							promiseRecieptPaymentTypes,
-							promiseTopUps
+							promiseTopUps,
+							promiseCustomers,
+							promiseOrders
+
+
 						])
 							.then(values => {
+								syncResult.salesChannels = values[0];
+								syncResult.customerTypes = values[1];
+								syncResult.paymentTypes = values[2];
+								syncResult.discounts = values[3];
+								syncResult.productMrps = values[4];
+								syncResult.products = values[5];
+								syncResult.meterReading = values[6];
+								syncResult.wastageReport = values[7];
+
 								console.log('values', values);
-								syncResult.customers = values[0].customers;
-								syncResult.products = values[1].products;
-								syncResult.productMrps = values[2].productMrps;								
-								syncResult.orders = values[3].orders;
-								syncResult.debt = values[4].debt;
-								syncResult.meterReading = values[5];
-								syncResult.wastageReport = values[6];								
-								syncResult.recieptPayments = values[7].recieptPayments;
-								syncResult.topups = values[8].topups;
+								syncResult.debt = values[8].debt;
+								syncResult.recieptPayments = values[9].recieptPayments;
+								syncResult.topups = values[10].topups;
+								syncResult.customers = values[11].customers;
+								syncResult.orders = values[12].orders;
+																
+								
+								
+
+
+
+
 								resolve(syncResult);
 							});
 					})

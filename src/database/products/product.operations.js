@@ -1,11 +1,12 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-import { format, parseISO, sub } from 'date-fns';
+import SyncUtils from '../../services/sync/syncUtils';
+import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
 
 class ProductsRealm {
     constructor() {
         this.product = [];
-        let firstSyncDate = format(sub(new Date(), { days: 1000 }), 'yyyy-MM-dd');
+        let firstSyncDate = format(sub(new Date(), { years: 3 }), 'yyyy-MM-dd');
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('ProductSyncDate')))).length == 0) {
                 realm.create('ProductSyncDate', { lastProductSync: firstSyncDate });
@@ -24,6 +25,7 @@ class ProductsRealm {
         try {
             realm.write(() => {
                 let products = realm.objects('Product');
+                realm.delete(realm.objects('ProductSyncDate'));
                 realm.delete(products);
             })
         } catch (e) {
@@ -46,19 +48,11 @@ class ProductsRealm {
 
     getProductsByDate(date) {
         try {
-            let orderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('Product'))));
+            let products = Object.values(JSON.parse(JSON.stringify(realm.objects('Product'))));
+            return products.filter(r => {
+                return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1 || r.active === false;
+            })
 
-            let orderObj2 = orderObj.map(
-                item => {
-                    return {
-                        ...item, created_at: format(parseISO(item.created_at), 'yyyy-MM-dd')
-                    }
-                });
-
-            return orderObj2.filter(r => {
-                return r.created_at === format(parseISO(date), 'yyyy-MM-dd');
-
-            });
         } catch (e) {
             console.log("Error on get products ", e);
             return e;
@@ -177,19 +171,77 @@ class ProductsRealm {
         }
     }
 
+
+
+
     createManyProducts(products) {
-        try {
-            realm.write(() => {
-                products.forEach(obj => {
-                    realm.create('Product', obj);
+
+        return new Promise((resolve, reject) => {
+            try {
+                let result = [];
+                realm.write(() => {
+                    for (i = 0; i < products.length; i++) {
+                        let ischeckproducts = this.checkProduct(products[i].created_at, products[i].id).length;
+                        if (ischeckproducts === 0) {
+                            let value = realm.create('Product', {
+                                ...products[i],
+                                productId: products[i].id,
+                                sku: products[i].sku,
+                                description: products[i].description,
+                                categoryId: products[i].category,
+                                priceAmount: Number(products[i].priceAmount),
+                                priceCurrency: products[i].priceCurrency,
+                                minimumQuantity: products[i].minQuantity,
+                                maximumQuantity: products[i].maxQuantity,
+                                unitPerProduct: products[i].unitsPerProduct,
+                                unitMeasure: products[i].unitMeasurement,
+                                cogsAmount: Number(products[i].costOfGoods),
+                                updated_at: products[i].updated_at,
+                                base64encodedImage: products[i].base64Image,
+                                active: true
+                            });
+                            result.push({ status: 'success', data: value, message: 'Product has been set' });
+                        } else if (ischeckproducts > 0) {
+                            let discountObj = realm.objects('Product').filtered(`id = "${products[i].id}"`);
+
+                            discountObj[0].productId = products[i].id;
+                            discountObj[0].sku = products[i].sku;
+                            discountObj[0].description = products[i].description;
+                            discountObj[0].categoryId = products[i].category;
+                            discountObj[0].priceAmount = Number(products[i].priceAmount);
+                            discountObj[0].priceCurrency = products[i].priceCurrency;
+                            discountObj[0].minimumQuantity = products[i].minQuantity;
+                            discountObj[0].maximumQuantity = products[i].maxQuantity;
+                            discountObj[0].unitPerProduct = products[i].unitsPerProduct;
+                            discountObj[0].unitMeasure = products[i].unitMeasurement;
+                            discountObj[0].cogsAmount = Number(products[i].costOfGoods);
+                            discountObj[0].updated_at = products[i].updated_at;
+                            discountObj[0].base64encodedImage = products[i].base64Image;
+
+
+
+
+
+                            result.push({ status: 'success', data: products[i], message: 'Local Product has been updated' });
+
+
+                        }
+                    }
+
                 });
-            });
-
-        } catch (e) {
-            console.log("Error on creation many products", e);
-        }
-
+                resolve(result);
+            } catch (e) {
+                console.log("Error on creation", e);
+            }
+        });
     }
+
+    checkProduct(date, id) {
+        return this.getProducts().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.id === id)
+    }
+
+
+
 }
 
 export default new ProductsRealm();

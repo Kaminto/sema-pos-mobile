@@ -19,3 +19,11 @@ export const DiscountSchema = {
         updated_at: { type: 'date', optional: true },
     }
 };
+
+
+export const DiscountSyncDateSchema = {
+    name: 'DiscountSyncDate',
+    properties: {
+        lastDiscountSync: 'date',
+    }
+};

@@ -200,7 +200,6 @@ class ReceiptPaymentTypeRealm {
                     });
                 }
                 if (!receiptId) {
-                    console.log('sync');
                     receiptPaymentTypes.forEach(obj => {
                         let syncObj = {
                             active: true,
