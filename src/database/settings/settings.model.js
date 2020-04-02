@@ -7,6 +7,7 @@ export const SettingsSchema = {
         password: { type: 'string', optional: true },
         uiLanguage: { type: 'string', optional: true },
         siteId: { type: 'int', optional: true },
+        regionId: { type: 'int', optional: true },
         token: { type: 'string', optional: true },
 		loginSync: { type: 'bool', optional: true },
 		currency: { type: 'string', optional: true },

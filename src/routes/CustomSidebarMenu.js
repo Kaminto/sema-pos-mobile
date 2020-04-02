@@ -260,7 +260,7 @@ class CustomSidebarMenu extends React.PureComponent {
              \n${syncResult.salesChannels.successError === 'fail' ? syncResult.salesChannels.successMessage.message : syncResult.salesChannels.salesChannels } ${syncResult.salesChannels.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('salechannel-updated')}
               \n${syncResult.productMrps.successError === 'fail' ? syncResult.productMrps.successMessage.message : syncResult.productMrps.productMrps } ${syncResult.salesChannels.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('pricing-sheme-updated')}
 		          \n${syncResult.recieptPayments} ${i18n.t('recieptPayments-updated')}
-		         \n${syncResult.topups} ${i18n.t('topups-updated')}
+		      
         `
 		
         ;

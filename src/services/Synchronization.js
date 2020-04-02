@@ -120,7 +120,7 @@ class Synchronization {
 						const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes();
 						const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes();
 						const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId);
-						const promiseProductMrps = ProductMRPSync.synchronizeProductMrps(settings.siteId);
+						const promiseProductMrps = ProductMRPSync.synchronizeProductMrps(settings.regionId);
 						const promiseProducts = ProductSync.synchronizeProducts();				
 						const promiseMeterReading = MeterReadingSync.synchronizeMeterReading(settings.siteId);
 						const promiseInventory = InventorySync.synchronizeInventory(settings.siteId);
