@@ -82,7 +82,7 @@ class AuthLoadingScreen extends React.PureComponent {
         console.log('last ProductsRealm sync',ProductsRealm.getLastProductsync());
         
       
-     //   console.log('inventory data',ProductsRealm.getProducts());
+      console.log('inventory data',ProductMRPRealm.getProductMRPS());
         if (settings.site != "" && settings.siteId > 0) {
             this.loadSyncedData();
             if (settings.token.length > 1) {

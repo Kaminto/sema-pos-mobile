@@ -214,6 +214,7 @@ class Login extends React.PureComponent {
 						this.state.selectedLanguage,
 						result.response.token,
 						result.response.data.kiosk.id,
+						result.response.data.kiosk.region_id,
 						false,
 						currency
 					);

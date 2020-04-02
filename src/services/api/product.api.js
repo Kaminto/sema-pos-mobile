@@ -50,14 +50,14 @@ class ProductApi {
 
 	// getAll will determine whether to get all product mappings or not, if it's true,
 	// it will send a site/kiosk ID of -1 to the server
-	getProductMrps(siteId, date) {
+	getProductMrps(regionId, date) {
 		let options = {
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-		let url = `sema/sema_pricing/${siteId}/${date}`;
+		let url = `sema/sema_pricing/${regionId}/${date}`;
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.then(responseJson => {

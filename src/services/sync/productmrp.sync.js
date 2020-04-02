@@ -5,9 +5,9 @@ import * as _ from 'lodash';
 
 class ProductMRPSync {
 
-    synchronizeProductMrps(siteId) {
+    synchronizeProductMrps(regionId) {
         return new Promise(resolve => {
-            ProductApi.getProductMrps(siteId, ProductMRPRealm.getLastProductMRPSync())
+            ProductApi.getProductMrps(regionId, ProductMRPRealm.getLastProductMRPSync())
                 .then(async remoteProductMRP => {
                     let initlocalProductMRPs = ProductMRPRealm.getProductMRPSByDate(ProductMRPRealm.getLastProductMRPSync());
                     let localProductMRPs = [...initlocalProductMRPs];
