@@ -239,13 +239,13 @@ class CustomSidebarMenu extends React.PureComponent {
     try {
 
         if (
-          syncResult.customers == 0 &&
+          syncResult.customers.customers == 0 &&
           syncResult.products.products == 0 &&
-          syncResult.orders == 0 &&
+          syncResult.orders.orders == 0 &&
           syncResult.meterReading.meterReading == 0 &&
           syncResult.wastageReport.wastageReport == 0 &&
-          syncResult.recieptPayments == 0 &&
-          syncResult.topups == 0
+          syncResult.recieptPayments.recieptPayments == 0 &&
+          syncResult.topups.topups == 0
         ) {
           return i18n.t('data-is-up-to-date');
         } else {
