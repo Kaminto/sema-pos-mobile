@@ -1,6 +1,7 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-import { format, parseISO, sub, compareAsc } from 'date-fns';
+import SyncUtils from '../../services/sync/syncUtils';
+import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
 
 class CreditRealm {
     constructor() {
@@ -11,7 +12,7 @@ class CreditRealm {
                 realm.create('CreditSyncDate', { lastCreditSync: firstSyncDate });
             }
         });
-        this.lastCreditSync = firstSyncDate;
+        //this.lastCreditSync = firstSyncDate;
     }
 
     getLastCreditSync() {
@@ -22,6 +23,7 @@ class CreditRealm {
         try {
             realm.write(() => {
                 let credits = realm.objects('Credit');
+                realm.delete(realm.objects('CreditSyncDate'));
                 realm.delete(credits);
             })
         } catch (e) {
@@ -145,18 +147,58 @@ class CreditRealm {
         }
     }
 
-    createManycredits(credits) {
-        try {
-            realm.write(() => {
-                credits.forEach(obj => {
-					console.log(obj);
-                    realm.create('Credit', { ...obj, topup: Number(obj.topup), balance: Number(obj.balance) });
+ 
+
+
+    createManycredits(credit) {
+
+        return new Promise((resolve, reject) => {
+            try {
+                let result = [];
+                realm.write(() => {
+                    for (i = 0; i < credit.length; i++) {
+                        let ischeckCredit = this.checkCredit(credit[i].created_at, credit[i].topUpId).length;
+                        if (ischeckCredit === 0) {
+                            console.log('saveing',value)
+                            let value = realm.create('Credit', {
+                                ...credit[i],
+                                topup: Number(credit[i].topup), 
+                                balance: Number(credit[i].balance),
+                                active: true
+                            });
+                            console.log('saved',value)
+                            result.push({ status: 'success', data: value, message: 'Credit has been set' });
+                        } else if (ischeckCredit > 0) {
+                            let discountObj = realm.objects('Credit').filtered(`topUpId = "${credit[i].topUpId}"`);
+                           
+                             discountObj[0].topup=  Number(credit[i].topup);
+                             discountObj[0].balance=  Number(credit[i].balance);
+                             discountObj[0].kiosk_id = credit[i].kiosk_id;
+                             discountObj[0].customer_account_id = credit[i].customer_account_id;
+                             discountObj[0].id = credit[i].id;
+                             discountObj[0].topUpId = credit[i].topUpId;
+                             discountObj[0].updated_at = credit[i].updated_at;
+                             result.push({ status: 'success', data: credit[i], message: 'Local Credit has been updated' });
+                           
+
+                        }
+                    }
+
                 });
-            });
-        } catch (e) {
-            console.log("Error on many creation", e);
-        }
+                resolve(result);
+            } catch (e) {
+                console.log("Error on creation", e);
+            }
+        });
     }
+
+    checkCredit(date, topUpId) {
+        return this.getAllCredit().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.topUpId === topUpId)
+    }
+
+
+
+
 }
 
 export default new CreditRealm();

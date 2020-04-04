@@ -1,75 +1,43 @@
 import CustomerRealm from '../../database/customers/customer.operations';
 import CustomerApi from '../api/customer.api';
 import * as _ from 'lodash';
-
+import SyncUtils from '../../services/sync/syncUtils';
 class CustomerSync {
 
-    synchronizeCustomers() {
+    synchronizeCustomers(siteId) {
         return new Promise(resolve => {
             CustomerApi.getCustomers(CustomerRealm.getLastCustomerSync())
-                .then(remoteCustomer => {
-                    let initlocalCustomers = CustomerRealm.getCustomerByCreatedDate(CustomerRealm.getLastCustomerSync());
+                .then(async remoteCustomer => {
+                    let initlocalCustomers = CustomerRealm.getCustomerBycreated_at(CustomerRealm.getLastCustomerSync());
                     let localCustomers = [...initlocalCustomers];
                     let remoteCustomers = [...remoteCustomer.customers];
-                    if (initlocalCustomers.length === 0 && remoteCustomers.length > 0) {
-                        CustomerRealm.createManyCustomers(remoteCustomer.customers);
+
+                    let onlyInLocal = localCustomers.filter(SyncUtils.compareRemoteAndLocal(remoteCustomers, 'customerId'));
+                    let onlyInRemote = remoteCustomers.filter(SyncUtils.compareRemoteAndLocal(localCustomers, 'customerId'));
+
+                    let syncResponseArray = [];
+
+                    if (onlyInRemote.length > 0) {
+                        let localResponse = await CustomerRealm.createManyCustomers(onlyInRemote);
+                        syncResponseArray.push(...localResponse);
                         CustomerRealm.setLastCustomerSync();
                     }
 
-                    let onlyLocally = [];
-                    let onlyRemote = [];
-                    let inLocal = [];
-                    let inRemote = [];
-                    let bothLocalRemote = {};
-                    let updateCount = 0;
-                    if (initlocalCustomers.length > 0) {
-                        initlocalCustomers.forEach(localCustomer => {
-                            let filteredObj = remoteCustomers.filter(obj => obj.customerId === localCustomer.customerId)
 
-                            if (filteredObj.length > 0) {
-                                const remoteIndex = remoteCustomers.map(function (e) { return e.customerId }).indexOf(filteredObj[0].customerId);
-                                const localIndex = localCustomers.map(function (e) { return e.customerId }).indexOf(filteredObj[0].customerId);
+                    if (onlyInLocal.length > 0) {
 
-                                remoteCustomers.splice(remoteIndex, 1);
-                                localCustomers.splice(localIndex, 1);
-
-                                inLocal.push(localCustomer);
-                                inRemote.push(filteredObj[0]);
-                            }
-
-                            if (filteredObj.length === 0) {
-                                onlyLocally.push(localCustomer);
-                                const localIndex = localCustomers.map(function (e) { return e.customerId }).indexOf(localCustomer.customerId);
-
-                                localCustomers.splice(localIndex, 1);
-                            }
-                        });
-
-                        onlyRemote.push(...remoteCustomers);
-                        bothLocalRemote.inLocal = inLocal;
-                        bothLocalRemote.inRemote = inRemote;
-                        
-                        if (onlyRemote.length > 0) {
-                            CustomerRealm.createManyCustomers(onlyRemote);
-                            CustomerRealm.setLastCustomerSync();
+                        for (const property in onlyInLocal) {
+                            let syncResponse = await this.apiSyncOperations({ ...onlyInLocal[property], kiosk_id: siteId });
+                            syncResponseArray.push(syncResponse);
                         }
 
-                        if (onlyLocally.length > 0) {
-                            onlyLocally.forEach(localCustomer => {                               
-                                this.apiSyncOperations(localCustomer);;
-                            })
-                        }
-
-
-                        if (inLocal.length > 0 && inRemote.length > 0) {
-                            inLocal.forEach(localCustomer => {
-                                this.apiSyncOperations(localCustomer);
-                            })
-                        }                      
                     }
+
                     resolve({
-                        success: true,
-                        customers: onlyLocally.length + onlyRemote.length + inLocal.length
+                        success: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
+                        customers: onlyInLocal.concat(onlyInRemote).length,
+                        successError: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
+                        successMessage: syncResponseArray.length > 0 ? syncResponseArray[0] : 'success'
                     });
 
                 })
@@ -78,117 +46,132 @@ class CustomerSync {
                         'Synchronization.getCustomers - error ' + error
                     );
                     resolve({
-						error: false,
+                        error: false,
                         customers: 0,
-					});
+                    });
                 });
         });
     }
 
-    apiSyncOperations(localCustomer){
-        if (localCustomer.active === true && localCustomer.syncAction === 'delete') {
-            CustomerApi.deleteCustomer(
-                localCustomer
-            )
-                .then((response) => {
-                    console.log(
-                        'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
-                        response
-                    );
-                    CustomerRealm.synched(localCustomer);
-                    CustomerRealm.setLastCustomerSync();
-                   // updateCount = updateCount + 1;
-                   
-                })
-                .catch(error => {
-                    console.log(
-                        'Synchronization:synchronizeInventory Delete Inventory failed ' +
-                        error
-                    );
-                });
-        }
+    apiSyncOperations(localCustomer) {
 
-        if (localCustomer.active === true && localCustomer.syncAction === 'update') {
-            CustomerApi.updateCustomer(
-                localCustomer
-            )
-                .then((response) => {
-                   // updateCount = updateCount + 1;
-                    console.log(
-                        'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
-                        response
-                    );
-                    CustomerRealm.synched(localCustomer);
-                    CustomerRealm.setLastCustomerSync();
-                })
-                .catch(error => {
-                    console.log(
-                        'Synchronization:synchronizeInventory Update Inventory failed ' +
-                        error
-                    );
-                });
+        return new Promise(resolve => {
+            if (localCustomer.active === true && localCustomer.syncAction === 'delete') {
+                CustomerApi.deleteCustomer(
+                    localCustomer
+                )
+                    .then((response) => {
+                        console.log(
+                            'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                            response
+                        );
+                        CustomerRealm.synched(localCustomer);
+                        CustomerRealm.setLastCustomerSync();
+                        // updateCount = updateCount + 1;
+                        resolve({ status: 'success', message: 'synched', data: localCustomer });
 
-        } 
-        
-         if (localCustomer.active === false && localCustomer.syncAction === 'update') {
-            CustomerApi.createCustomer(
-                localCustomer
-            )
-                .then((response) => {
-                   // updateCount = updateCount + 1;
-                    CustomerRealm.synched(localCustomer);
-                    CustomerRealm.setLastCustomerSync();
-                    console.log(
-                        'Synchronization:synced to remote - ' +
-                        response
-                    );
-                })
-                .catch(error => {
-                    console.log(
-                        'Synchronization:synchronizeInventory Create Inventory failed',error
-                    );
-                });
-        }
+                    })
+                    .catch(error => {
+                        console.log(
+                            'Synchronization:synchronizeInventory Delete Inventory failed ' +
+                            error
+                        );
+                        resolve({ status: 'fail', message: 'error', data: localCustomer });
+                    });
+            }
 
-        if (localCustomer.active === false && localCustomer.syncAction === 'delete') {
-            CustomerApi.createCustomer(
-                localCustomer
-            )
-                .then((response) => {
-                   // updateCount = updateCount + 1;
-                    CustomerRealm.synched(localCustomer);
-                    CustomerRealm.setLastCustomerSync();
-                    console.log(
-                        'Synchronization:synced to remote - ' +
-                        response
-                    );
-                })
-                .catch(error => {
-                    console.log(
-                        'Synchronization:synchronizeInventory Create Inventory failed',error
-                    );
-                });
-        }
+            if (localCustomer.active === true && localCustomer.syncAction === 'update') {
+                CustomerApi.updateCustomer(
+                    localCustomer
+                )
+                    .then((response) => {
+                        // updateCount = updateCount + 1;
+                        console.log(
+                            'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
+                            response
+                        );
+                        CustomerRealm.synched(localCustomer);
+                        CustomerRealm.setLastCustomerSync();
+                        resolve({ status: 'success', message: 'synched', data: localCustomer });
+                    })
+                    .catch(error => {
+                        console.log(
+                            'Synchronization:synchronizeInventory Update Inventory failed ' +
+                            error
+                        );
+                        resolve({ status: 'fail', message: 'synched', data: localCustomer });
+                    });
 
-        if (localCustomer.active === false && localCustomer.syncAction === 'create') {
-            CustomerApi.createCustomer(
-                localCustomer
-            )
-                .then((response) => {
-                   // updateCount = updateCount + 1;
-                    CustomerRealm.synched(localCustomer);
-                    CustomerRealm.setLastCustomerSync();
-                    console.log(
-                        'Synchronization:synced to remote - ' +
-                        response
-                    );
-                })
-                .catch(error => {
-                    console.log(
-                        'Synchronization:synchronizeInventory Create Inventory failed',error
-                    );
-                });
-        }
+            }
+
+            if (localCustomer.active === false && localCustomer.syncAction === 'update') {
+                CustomerApi.createCustomer(
+                    localCustomer
+                )
+                    .then((response) => {
+                        // updateCount = updateCount + 1;
+                        CustomerRealm.synched(localCustomer);
+                        CustomerRealm.setLastCustomerSync();
+                        console.log(
+                            'Synchronization:synced to remote - ' +
+                            response
+                        );
+                        resolve({ status: 'success', message: 'synched', data: localCustomer });
+                    })
+                    .catch(error => {
+                        console.log(
+                            'Synchronization:synchronizeInventory Create Inventory failed', error
+                        );
+                        resolve({ status: 'fail', message: 'error', data: localCustomer });
+                    });
+            }
+
+            if (localCustomer.active === false && localCustomer.syncAction === 'delete') {
+                CustomerApi.createCustomer(
+                    localCustomer
+                )
+                    .then((response) => {
+                        // updateCount = updateCount + 1;
+                        CustomerRealm.synched(localCustomer);
+                        CustomerRealm.setLastCustomerSync();
+                        console.log(
+                            'Synchronization:synced to remote - ' +
+                            response
+                        );
+                        resolve({ status: 'success', message: 'synched', data: localCustomer });
+                    })
+                    .catch(error => {
+                        console.log(
+                            'Synchronization:synchronizeInventory Create Inventory failed', error
+                        );
+                        resolve({ status: 'fail', message: 'error', data: localCustomer });
+                    });
+            }
+
+            if (localCustomer.active === false && localCustomer.syncAction === 'create') {
+                CustomerApi.createCustomer(
+                    localCustomer
+                )
+                    .then((response) => {
+                        // updateCount = updateCount + 1;
+                        CustomerRealm.synched(localCustomer);
+                        CustomerRealm.setLastCustomerSync();
+                        console.log(
+                            'Synchronization:synced to remote - ' +
+                            response
+                        );
+                        resolve({ status: 'success', message: 'synched', data: localCustomer });
+                    })
+                    .catch(error => {
+                        console.log(
+                            'Synchronization:synchronizeInventory Create Inventory failed', error
+                        );
+                        resolve({ status: 'fail', message: 'error', data: localCustomer });
+                    });
+            }
+
+
+        });
     }
 
 

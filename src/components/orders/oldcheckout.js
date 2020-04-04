@@ -959,7 +959,7 @@ class OrderCheckout extends React.PureComponent {
 
 		receipt = {
 			id: uuidv1(),
-			createdDate: receiptDate,
+			created_at: receiptDate,
 			currency_code: this.props.products[0].product.priceCurrency,
 			customer_account_id: this.props.selectedCustomer.customerId,
 			isWalkIn: this.props.payment.isWalkIn,

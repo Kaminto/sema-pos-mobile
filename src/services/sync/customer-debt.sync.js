@@ -8,72 +8,47 @@ class CustomerDebtsSync {
     synchronizeCustomerDebts() {
         return new Promise(resolve => {
             CustomerDebtApi.getCustomerDebts(settings.siteId, CustomerDebtRealm.getLastCustomerDebtSync())
-                .then(result => {
+                .then(async result => {
                     let initlocalCustomerDebts = CustomerDebtRealm.getCustomerDebtsByDate(CustomerDebtRealm.getLastCustomerDebtSync());
                     let localCustomerDebts = [...initlocalCustomerDebts];
                     let remoteCustomerDebts = [...result];
-                    if (initlocalCustomerDebts.length === 0) {
-                        CustomerDebtRealm.createManyCustomerDebt(result, null);
+                   
+                   
+                   
+                    console.log('remoteCustomerDebts', remoteCustomerDebts);
+                    console.log('localCustomerDebts', localCustomerDebts);
+
+                    let onlyInLocal = localCustomerDebts.filter(SyncUtils.compareRemoteAndLocal(remoteCustomerDebts, 'customer_debt_id'));
+                    let onlyInRemote = remoteCustomerDebts.filter(SyncUtils.compareRemoteAndLocal(localCustomerDebts, 'customer_debt_id'));
+
+                    let syncResponseArray = [];
+
+                    if (onlyInRemote.length > 0) {
+                        let localResponse = await CustomerDebtRealm.syncManyCustomerDebt(onlyRemote);                   
+                        syncResponseArray.push(...localResponse);
                         CustomerDebtRealm.setLastCustomerDebtSync();
                     }
 
-                    let onlyLocally = [];
-                    let onlyRemote = [];
-                    let inLocal = [];
-                    let inRemote = [];
-                    let bothLocalRemote = {};
 
-                    if (initlocalCustomerDebts.length > 0) {
-                        initlocalCustomerDebts.forEach(localCustomerDebt => {
-                            let filteredObj = remoteCustomerDebts.filter(obj => obj.receipt_payment_type_id === localCustomerDebt.receipt_payment_type_id)
+                    if (onlyInLocal.length > 0) {
 
-                            if (filteredObj.length > 0) {
-                                const remoteIndex = remoteCustomerDebts.map(function (e) { return e.receipt_payment_type_id }).indexOf(filteredObj[0].receipt_payment_type_id);
-                                const localIndex = localCustomerDebts.map(function (e) { return e.receipt_payment_type_id }).indexOf(filteredObj[0].receipt_payment_type_id);
-
-                                remoteCustomerDebts.splice(remoteIndex, 1);
-                                localCustomerDebts.splice(localIndex, 1);
-
-                                inLocal.push(localCustomerDebt);
-                                inRemote.push(filteredObj[0]);
-                            }
-
-                            if (filteredObj.length === 0) {
-                                onlyLocally.push(localCustomerDebt);
-                                const localIndex = localCustomerDebts.map(function (e) { return e.receipt_payment_type_id }).indexOf(localCustomerDebt.receipt_payment_type_id);
-                                
-                                localCustomerDebts.splice(localIndex, 1);
-                            }
-                        });
-
-                        onlyRemote.push(...remoteCustomerDebts);
-                        bothLocalRemote.inLocal = inLocal;
-                        bothLocalRemote.inRemote = inRemote;
-
-                        if (onlyRemote.length > 0) {
-                            CustomerDebtRealm.createManyCustomerDebt(onlyRemote, null);
-                            CustomerDebtRealm.setLastCustomerDebtSync();
-                        }
-
-                        if (onlyLocally.length > 0) {
-                            onlyLocally.forEach(localCustomerDebt => {
-                                this.apiSyncOperations({ ...localCustomerDebt, kiosk_id: settings.siteId });
-                            })
-                        }
-
-                        if (inLocal.length > 0 && inRemote.length > 0) {
-                            inLocal.forEach(localCustomerDebt => {
-
-                                this.apiSyncOperations({ ...localCustomerDebt, kiosk_id: settings.siteId });
-
-                            })
+                        for (const property in onlyInLocal) {
+                            let syncResponse = await this.apiSyncOperations({ ...onlyInLocal[property], kiosk_id: settings.siteId });
+                            syncResponseArray.push(syncResponse);
                         }
 
                     }
+
+                    console.log('syncResponseArray', syncResponseArray);
+
                     resolve({
-                        success: true,
-                        debt: onlyLocally.length + onlyRemote.length + inLocal.length,
+                        success: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
+                        debt: onlyInLocal.concat(onlyInRemote).length,
+                        successError: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
+                        successMessage: syncResponseArray.length > 0 ? syncResponseArray[0] : 'success'
                     });
+
+
 
                 })
                 .catch(error => {
@@ -90,6 +65,8 @@ class CustomerDebtsSync {
 
 
     apiSyncOperations(localCustomerDebt) {
+
+        return new Promise(resolve => {
         if (localCustomerDebt.active === true && localCustomerDebt.syncAction === 'delete') {
             CustomerDebtApi.deleteCustomerDebt(
                 localCustomerDebt
@@ -100,12 +77,14 @@ class CustomerDebtsSync {
                         response
                     );
                     CustomerDebtRealm.setLastCustomerDebtSync();
+                    resolve({ status: 'success', message: 'synched', data: localCustomerDebt });
                 })
                 .catch(error => {
                     console.log(
                         'Synchronization:synchronizeOrder Delete Order failed ' +
                         error
                     );
+                    resolve({ status: 'fail', message: 'error', data: localCustomerDebt });
                 });
         }
 
@@ -120,12 +99,14 @@ class CustomerDebtsSync {
                         'Synchronization:synchronizeOrder - Removing Order from pending list - ' +
                         response
                     );
+                    resolve({ status: 'success', message: 'synched', data: localCustomerDebt });
                 })
                 .catch(error => {
                     console.log(
                         'Synchronization:synchronizeOrder Update Order failed ' +
                         error
                     );
+                    resolve({ status: 'fail', message: 'error', data: localCustomerDebt });
                 });
 
         }
@@ -142,11 +123,13 @@ class CustomerDebtsSync {
                         'Synchronization:synced to remote - ' +
                         response
                     );
+                    resolve({ status: 'success', message: 'synched', data: localCustomerDebt });
                 })
                 .catch(error => {
                     console.log(
                         'Synchronization:synchronizeOrder Create Order failed', error
                     );
+                    resolve({ status: 'fail', message: 'error', data: localCustomerDebt });
                 });
         }
 
@@ -162,11 +145,13 @@ class CustomerDebtsSync {
                         'Synchronization:synced to remote - ' +
                         response
                     );
+                    resolve({ status: 'success', message: 'synched', data: localCustomerDebt });
                 })
                 .catch(error => {
                     console.log(
                         'Synchronization:synchronizeOrder Create Order failed', error
                     );
+                    resolve({ status: 'fail', message: 'error', data: localCustomerDebt });
                 });
         }
 
@@ -182,13 +167,18 @@ class CustomerDebtsSync {
                         'Synchronization:synced to remote - ',
                         response
                     );
+                    resolve({ status: 'success', message: 'synched', data: localCustomerDebt });
                 })
                 .catch(error => {
                     console.log(
                         'Synchronization:synchronizeOrder Create Order failed', error
                     );
+                    resolve({ status: 'error', message: 'error', data: localCustomerDebt });
                 });
         }
+
+    })
+
     }
 
 }

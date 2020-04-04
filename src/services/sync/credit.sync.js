@@ -2,75 +2,45 @@ import CreditRealm from '../../database/credit/credit.operations';
 import CreditApi from '../api/credit.api';
 import SettingRealm from '../../database/settings/settings.operations';
 import * as _ from 'lodash';
+import SyncUtils from './syncUtils';
 let settings = SettingRealm.getAllSetting();
 class CreditSync {
 
     synchronizeCredits() {
         return new Promise(resolve => {
             CreditApi.getTopUps(settings.siteId, CreditRealm.getLastCreditSync())
-                .then(remoteCredit => {
+                .then(async remoteCredit => {
                     let initlocalCredits = CreditRealm.getAllCreditByDate(CreditRealm.getLastCreditSync());
                     let localCredits = [...initlocalCredits];
-                    let remoteInventories = [...remoteCredit.topup];
-                    if (initlocalCredits.length === 0) {
-                        CreditRealm.createManycredits(remoteCredit.topup);
+                    let remoteTopUps = [...remoteCredit.topup];
+
+                    
+                    let onlyInLocal = localCredits.filter(SyncUtils.compareRemoteAndLocal(remoteTopUps,'topUpId'));
+                    let onlyInRemote = remoteTopUps.filter(SyncUtils.compareRemoteAndLocal(localCredits,'topUpId'));
+
+                    let syncResponseArray = [];
+                    if (onlyInRemote.length > 0) {
+                        let localResponse = await CreditRealm.createManycredits(onlyInRemote);
+                        syncResponseArray.push(...localResponse);
+                        CreditRealm.setLastCreditSync();
                     }
 
-                    let onlyLocally = [];
-                    let onlyRemote = [];
-                    let inLocal = [];
-                    let inRemote = [];
-                    let bothLocalRemote = {};
 
-                    if (initlocalCredits.length > 0) {
-                        initlocalCredits.forEach(localCredit => {
-                            let filteredObj = remoteInventories.filter(obj => obj.topUpId === localCredit.topUpId)
+                    if (onlyInLocal.length > 0) {
 
-                            if (filteredObj.length > 0) {
-                                const remoteIndex = remoteInventories.map(function (e) { return e.topUpId }).indexOf(filteredObj[0].topUpId);
-                                const localIndex = localCredits.map(function (e) { return e.topUpId }).indexOf(filteredObj[0].topUpId);
-
-                                remoteInventories.splice(remoteIndex, 1);
-                                localCredits.splice(localIndex, 1);
-
-                                inLocal.push(localCredit);
-                                inRemote.push(filteredObj[0]);
-                            }
-
-                            if (filteredObj.length === 0) {
-                                onlyLocally.push(localCredit);
-                                const localIndex = localCredits.map(function (e) { return e.topUpId }).indexOf(localCredit.topUpId);
-
-                                localCredits.splice(localIndex, 1);
-                            }
-                        });
-
-                        onlyRemote.push(...remoteInventories);
-                        bothLocalRemote.inLocal = inLocal;
-                        bothLocalRemote.inRemote = inRemote;
-
-
-                        if (onlyRemote.length > 0) {
-                            CreditRealm.createManycredits(onlyRemote);
-                            CreditRealm.setLastCreditSync();
-                        }
-
-                        if (onlyLocally.length > 0) {
-                            onlyLocally.forEach(localCredit => {
-                                this.apiSyncOperations({...localCredit, kiosk_id: settings.siteId});
-                            })
-                        }
-
-                        if (inLocal.length > 0 && inRemote.length > 0) {
-                            inLocal.forEach(localCredit => {
-                                this.apiSyncOperations({...localCredit, kiosk_id: settings.siteId});
-                            })
+                        for (const property in onlyInLocal) {
+                            let syncResponse = await this.apiSyncOperations({...onlyInLocal[property], kiosk_id: settings.siteId});
+                            syncResponseArray.push(syncResponse);
                         }
 
                     }
+
+
                     resolve({
-                        success: true,
-                        topups: onlyLocally.length + onlyRemote.length + inLocal.length
+                        success: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
+                        topups: onlyInLocal.concat(onlyInRemote).length,
+                        successError: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
+                        successMessage: syncResponseArray.length > 0 ? syncResponseArray[0] : 'success'
                     });
 
                 })
@@ -87,22 +57,26 @@ class CreditSync {
     }
 
     apiSyncOperations(localCredit) {
+        return new Promise(resolve => {
+
         if (localCredit.active === true && localCredit.syncAction === 'delete') {
             CreditApi.deleteTopUp(
                 localCredit
             )
                 .then((response) => {
                     console.log(
-                        'Synchronization:synchronizeOrder - Removing order from pending list - ' +
+                        'Synchronization:synchronizeCredit - Removing Credit from pending list - ' +
                         response
                     );
                     CreditRealm.setLastCreditSync();
+                    resolve({ status: 'success', message: response, data: localCredit });
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization:synchronizeOrder Delete Order failed ' +
+                        'Synchronization:synchronizeCredit Delete Credit failed ' +
                         error
                     );
+                    return { status: 'fail', message: error, data: localCredit }
                 });
         }
 
@@ -114,15 +88,18 @@ class CreditSync {
                     // updateCount = updateCount + 1;
                     CreditRealm.setLastCreditSync();
                     console.log(
-                        'Synchronization:synchronizeOrder - Removing Order from pending list - ' +
+                        'Synchronization:synchronizeCredit - Removing Credit from pending list - ' +
                         response
                     );
+                    resolve({ status: 'success', message: 'synched to remote', data: localCredit });
+                
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization:synchronizeOrder Update Order failed ' +
+                        'Synchronization:synchronizeCredit Update Credit failed ' +
                         error
                     );
+                    resolve({ status: 'fail', message: error, data: localCredit });
                 });
 
         }
@@ -139,11 +116,14 @@ class CreditSync {
                         'Synchronization:synced to remote - ' +
                         response
                     );
+                    resolve({ status: 'success', message: 'synched to remote', data: localCredit });
+                   
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization:synchronizeOrder Create Order failed', error
+                        'Synchronization:synchronizeCredit Create Credit failed', error
                     );
+                    resolve({ status: 'fail', message: 'error', data: localCredit });
                 });
         }
 
@@ -159,11 +139,13 @@ class CreditSync {
                         'Synchronization:synced to remote - ' +
                         response
                     );
+                    resolve({ status: 'success', message: 'synched to remote', data: localCredit });
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization:synchronizeOrder Create Order failed', error
+                        'Synchronization:synchronizeCredit Create Credit failed', error
                     );
+                    resolve({ status: 'fail', message: 'error', data: localCredit });
                 });
         }
 
@@ -179,13 +161,17 @@ class CreditSync {
                         'Synchronization:synced to remote - ',
                         response
                     );
+                    resolve({ status: 'success', message: 'synched to remote', data: localCredit });
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization:synchronizeOrder Create Order failed', error
+                        'Synchronization:synchronizeCredit Create Credit failed', error
                     );
+                    resolve({ status: 'fail', message: 'error', data: localCredit });
                 });
         }
+
+    });
     }
 
 

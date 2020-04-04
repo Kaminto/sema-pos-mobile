@@ -218,7 +218,7 @@ class CustomerDetails extends React.PureComponent {
 				return {
 					active: topup.active,
 					//id: topup.id,
-					createdAt: topup.createdDate,
+					createdAt: topup.created_at,
 					topUpId: topup.topUpId,
 					customer_account_id: topup.customer_account_id,
 					total: topup.total,

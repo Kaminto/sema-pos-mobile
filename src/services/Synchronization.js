@@ -126,10 +126,11 @@ class Synchronization {
 						const promiseInventory = InventorySync.synchronizeInventory(settings.siteId);
 						
 
-						const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts();
-						const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId);
+						const promiseCustomers = CustomerSync.synchronizeCustomers(settings.siteId);
 						const promiseTopUps = CreditSync.synchronizeCredits();						
-						const promiseCustomers = CustomerSync.synchronizeCustomers();
+						
+					    const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts();
+						const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId);
 						const promiseOrders = OrderSync.synchronizeSales(settings.siteId);
 					
 
@@ -150,8 +151,8 @@ class Synchronization {
 							promiseCustomerDebts,						
 							promiseRecieptPaymentTypes,
 							promiseTopUps,
-							promiseCustomers,
-							promiseOrders
+							 promiseCustomers,
+							 promiseOrders
 
 
 						])
@@ -164,13 +165,12 @@ class Synchronization {
 								syncResult.products = values[5];
 								syncResult.meterReading = values[6];
 								syncResult.wastageReport = values[7];
-
 								console.log('values', values);
 								syncResult.debt = values[8].debt;
-								syncResult.recieptPayments = values[9].recieptPayments;
-								syncResult.topups = values[10].topups;
-								syncResult.customers = values[11].customers;
-								syncResult.orders = values[12].orders;
+								syncResult.recieptPayments = values[9];
+								syncResult.topups = values[10];
+								syncResult.customers = values[11];
+								syncResult.orders = values[12];
 																
 								
 								

@@ -19,8 +19,8 @@ export const CustomerSchema = {
         secondPhoneNumber: { type: 'string', optional: true },
         active: { type: 'bool', optional: true },
         syncAction: { type: 'string', optional: true },
-        createdDate: 'date',
-        updatedDate: 'date'
+        created_at: 'date',
+        updated_at: 'date'
     }
 
 };
