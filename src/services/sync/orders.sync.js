@@ -13,11 +13,6 @@ class OrderSync {
                     let remoteOrders = remoteOrder.length > 0 ? [...remoteOrder] : [];
 
 
-
-
-                    console.log('remoteOrders', remoteOrders);
-                    console.log('localOrders', localOrders);
-
                     let onlyInLocal = localOrders.filter(SyncUtils.compareRemoteAndLocal(remoteOrders, 'uuid'));
                     let onlyInRemote = remoteOrders.filter(SyncUtils.compareRemoteAndLocal(localOrders, 'uuid'));
 

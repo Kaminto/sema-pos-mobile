@@ -1,6 +1,8 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-import { format, parseISO, sub, compareAsc } from 'date-fns';
+import SyncUtils from '../../services/sync/syncUtils';
+import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
+
 
 class ReceiptPaymentTypeRealm {
     constructor() {
@@ -235,7 +237,7 @@ class ReceiptPaymentTypeRealm {
                                 ...receiptPaymentTypes[i],
                                 active: true,
                                 amount: Number(receiptPaymentTypes[i].amount),
-                                created_at: receiptPaymentTypes[i][i].created_at,
+                                created_at: receiptPaymentTypes[i].created_at,
                                 id: receiptPaymentTypes[i].id,
                                 payment_type_id: receiptPaymentTypes[i].payment_type_id,
                                 receipt_id: receiptPaymentTypes[i].receipt_id,
@@ -245,13 +247,13 @@ class ReceiptPaymentTypeRealm {
 
                             result.push({ status: 'success', data: value, message: 'ReceiptPaymentType has been set' });
                         } else if (ischeckReceiptPaymentType > 0) {
-                            let receiptPaymentTypeUpdate = realm.objects('ReceiptPaymentType').filtered(`topUpId = "${receiptPaymentTypes[i].topUpId}"`);
+                            let receiptPaymentTypeUpdate = realm.objects('ReceiptPaymentType').filtered(`receipt_payment_type_id = "${receiptPaymentTypes[i].receipt_payment_type_id}"`);
 
 
 
 
                             receiptPaymentTypeUpdate[0].amount = Number(receiptPaymentTypes[i].amount);
-                            receiptPaymentTypeUpdate[0].created_at = receiptPaymentTypes[i][i].created_at;
+                            receiptPaymentTypeUpdate[0].created_at = receiptPaymentTypes[i].created_at;
                             receiptPaymentTypeUpdate[0].id = receiptPaymentTypes[i].id;
                             receiptPaymentTypeUpdate[0].payment_type_id = receiptPaymentTypes[i].payment_type_id;
                             receiptPaymentTypeUpdate[0].receipt_id = receiptPaymentTypes[i].receipt_id;

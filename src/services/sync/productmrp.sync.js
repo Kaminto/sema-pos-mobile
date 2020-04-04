@@ -10,8 +10,8 @@ class ProductMRPSync {
             ProductApi.getProductMrps(regionId, ProductMRPRealm.getLastProductMRPSync())
                 .then(async remoteProductMRP => {
                     let initlocalProductMRPs = ProductMRPRealm.getProductMRPSByDate(ProductMRPRealm.getLastProductMRPSync());
-                    let localProductMRPs = [...initlocalProductMRPs];
-                    let remoteProductMRPs = [...remoteProductMRP.pricing];
+                    let localProductMRPs = initlocalProductMRPs.length > 0 ? [...initlocalProductMRPs] : [];
+                    let remoteProductMRPs = remoteProductMRP.pricing.length > 0 ? [...remoteProductMRP.pricing] : [];
 
 
                     let onlyInLocal = localProductMRPs.filter(SyncUtils.compareRemoteAndLocal(remoteProductMRPs, 'id'));
@@ -55,37 +55,37 @@ class ProductMRPSync {
     }
 
     synchronizeProductMrpsBySiteid(siteId) {
-		return new Promise(async resolve => {
-			console.log('Synchronization:synchronizeProductMrps - Begin');
-			Communications.getProductMrpsBySiteId(siteId)
-				.then(productMrps => {
-					if (productMrps.hasOwnProperty('productMRPs')) {
-						console.log(
-							'Synchronization:synchronizeProductMrps. No of remote product MRPs: ' +
-							productMrps.productMRPs.length
-						);
-						if (
-							!_.isEqual(
-								savedProductMrps,
-								productMrps.productMRPs
-							)
-						) {
-							Events.trigger('ProductMrpsUpdated', {});
-						}
-						resolve({
-							error: null,
-							remoteProductMrps: productMrps.productMRPs.length
-						});
-					}
-				})
-				.catch(error => {
-					resolve({ error: error, remoteProducts: null });
-					console.log(
-						'Synchronization.ProductsMrpsUpdated - error ' + error
-					);
-				});
-		});
-	}
+        return new Promise(async resolve => {
+            console.log('Synchronization:synchronizeProductMrps - Begin');
+            Communications.getProductMrpsBySiteId(siteId)
+                .then(productMrps => {
+                    if (productMrps.hasOwnProperty('productMRPs')) {
+                        console.log(
+                            'Synchronization:synchronizeProductMrps. No of remote product MRPs: ' +
+                            productMrps.productMRPs.length
+                        );
+                        if (
+                            !_.isEqual(
+                                savedProductMrps,
+                                productMrps.productMRPs
+                            )
+                        ) {
+                            Events.trigger('ProductMrpsUpdated', {});
+                        }
+                        resolve({
+                            error: null,
+                            remoteProductMrps: productMrps.productMRPs.length
+                        });
+                    }
+                })
+                .catch(error => {
+                    resolve({ error: error, remoteProducts: null });
+                    console.log(
+                        'Synchronization.ProductsMrpsUpdated - error ' + error
+                    );
+                });
+        });
+    }
 
 }
 export default new ProductMRPSync();

@@ -10,8 +10,10 @@ class CustomerTypeSync {
             CustomerTypeApi.getCustomerTypes(CustomerTypeRealm.getLastCustomerTypesSync())
                 .then(async remoteCustomerType => {
                     let initlocalCustomerTypes = CustomerTypeRealm.getCustomerTypesByDate(CustomerTypeRealm.getLastCustomerTypesSync());
-                    let localCustomerTypes = [...initlocalCustomerTypes];
-                    let remoteCustomerTypes = [...remoteCustomerType.customerTypes];
+                    let localCustomerTypes = initlocalCustomerTypes.length > 0 ?  [...initlocalCustomerTypes] : [];
+                    let remoteCustomerTypes = remoteCustomerType.customerTypes.length > 0 ?  [...remoteCustomerType.customerTypes] : [];
+
+                   
 
 
                     let onlyInLocal = localCustomerTypes.filter(SyncUtils.compareRemoteAndLocal(remoteCustomerTypes,'id'));

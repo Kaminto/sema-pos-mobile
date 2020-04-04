@@ -10,11 +10,10 @@ class DiscountSync {
             DiscountApi.getDiscounts(siteId, DiscountRealm.getLastDiscountSync())
                 .then(async remoteDiscount => {
                     let initlocalDiscounts = DiscountRealm.geDiscountsByDate(DiscountRealm.getLastDiscountSync());
-                    let localDiscounts = [...initlocalDiscounts];
-                    let remoteDiscounts = [...remoteDiscount.promotion];
-
-
-
+                  
+                    let localDiscounts = initlocalDiscounts.length > 0 ? [...initlocalDiscounts] : [];
+                    let remoteDiscounts = remoteDiscount.promotion.length > 0 ? [...remoteDiscount.promotion] : [];
+                  
                     let onlyInLocal = localDiscounts.filter(SyncUtils.compareRemoteAndLocal(remoteDiscounts, 'id'));
                     let onlyInRemote = remoteDiscounts.filter(SyncUtils.compareRemoteAndLocal(localDiscounts, 'id'));
 

@@ -1,5 +1,8 @@
 import realm from '../init';
-import { format, parseISO, sub, compareAsc } from 'date-fns';
+import SyncUtils from '../../services/sync/syncUtils';
+import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
+
+
 class OrderRealm {
     constructor() {
         this.order = [];
@@ -134,6 +137,7 @@ class OrderRealm {
             amountjibuCredit: receipt.amountjibuCredit,
             isWalkIn: receipt.isWalkIn,
             delivery: receipt.delivery,
+            notes: receipt.notes,
             cogs: receipt.cogs,
             customer_account: JSON.stringify(receipt.customer_account),
             created_at: receipt.created_at.toISOString(),
@@ -149,13 +153,13 @@ class OrderRealm {
             kiosk_id: receipt.siteId,
             total: receipt.total,
             syncAction: 'create',
-		};
+        };
 
         newOrder.uuid = newOrder.receiptId;
         let receipt_line_items = [];
         for (let i in receipt.products) {
-            
-	
+
+
             receipt_line_items.push({
                 currency_code: newOrder.currency_code,
                 price_total: receipt.products[i].price_total,
@@ -180,8 +184,8 @@ class OrderRealm {
 
 
         }
-		newOrder.receipt_line_items = JSON.stringify(receipt_line_items);
-       // console.log('newOrder', JSON.stringify(newOrder));
+        newOrder.receipt_line_items = JSON.stringify(receipt_line_items);
+        // console.log('newOrder', JSON.stringify(newOrder));
         try {
             realm.write(() => {
                 realm.create('Order', newOrder);
@@ -285,10 +289,10 @@ class OrderRealm {
                 let result = [];
                 realm.write(() => {
                     for (i = 0; i < orders.length; i++) {
-                     //   console.log('orders[i]', orders[i])
+                        //   console.log('orders[i]', orders[i])
                         let ischeckOrder = this.checkOrder(orders[i].created_at, orders[i].uuid).length;
                         if (ischeckOrder === 0) {
-                          //  console.log('saveing', value)
+                            //  console.log('saveing', value)
                             let value = realm.create('Order', {
                                 ...orders[i],
                                 amount_cash: Number(orders[i].amount_cash),
@@ -300,7 +304,7 @@ class OrderRealm {
                                 customer_account: JSON.stringify(orders[i].customer_account),
                                 receipt_line_items: JSON.stringify(orders[i].receipt_line_items),
                             });
-                          //  console.log('saved', value)
+                            //  console.log('saved', value)
                             result.push({ status: 'success', data: value, message: 'Order has been set' });
                         } else if (ischeckOrder > 0) {
                             let orderObj = realm.objects('Order').filtered(`uuid = "${orders[i].uuid}"`);
@@ -308,21 +312,22 @@ class OrderRealm {
 
                             orderObj[0].cogs = Number(orders[i].cogs);
                             orderObj[0].total = Number(orders[i].total);
+                            orderObj[0].notes = orders[i].notes;
                             orderObj[0].active = true;
                             orderObj[0].customer_account = JSON.stringify(orders[i].customer_account);
                             orderObj[0].receipt_line_items = JSON.stringify(orders[i].receipt_line_items);
-                            orderObj[0].delivery= orders[i].delivery;
-                            orderObj[0].customer_account= JSON.stringify(orders[i].customer_account);
-                            orderObj[0].updated_at= orders[i].updated_at;
-                            orderObj[0].currency_code= orders[i].currency_code;
-                            orderObj[0].customer_account_id= orders[i].customer_account_id;
-                            orderObj[0].customer_type_id= orders[i].customer_type_id;
-                            orderObj[0].id= orders[i].id;
-                            orderObj[0].payment_type= orders[i].payment_type;
-                            orderObj[0].receiptId= orders[i].id;
-                            orderObj[0].sales_channel_id= orders[i].sales_channel_id;
-                            orderObj[0].kiosk_id= orders[i].siteId;
-                            orderObj[0].total= orders[i].total;
+                            orderObj[0].delivery = orders[i].delivery;
+                            orderObj[0].customer_account = JSON.stringify(orders[i].customer_account);
+                            orderObj[0].updated_at = orders[i].updated_at;
+                            orderObj[0].currency_code = orders[i].currency_code;
+                            orderObj[0].customer_account_id = orders[i].customer_account_id;
+                            orderObj[0].customer_type_id = orders[i].customer_type_id;
+                            orderObj[0].id = orders[i].id;
+                            orderObj[0].payment_type = orders[i].payment_type;
+                            orderObj[0].receiptId = orders[i].id;
+                            orderObj[0].sales_channel_id = orders[i].sales_channel_id;
+                            orderObj[0].kiosk_id = orders[i].siteId;
+                            orderObj[0].total = orders[i].total;
 
                             result.push({ status: 'success', data: orders[i], message: 'Local Order has been updated' });
 
