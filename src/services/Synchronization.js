@@ -127,7 +127,7 @@ class Synchronization {
 						
 
 						const promiseCustomers = CustomerSync.synchronizeCustomers(settings.siteId);
-						const promiseTopUps = CreditSync.synchronizeCredits();						
+						const promiseTopUps = CreditSync.synchronizeCredits();				
 						
 					    const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts();
 						const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId);
