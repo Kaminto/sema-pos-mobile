@@ -10,8 +10,8 @@ class MeterReadingSync {
             MeterReadingApi.getMeterReading(kiosk_id, InventroyRealm.getLastMeterReadingSync())
                 .then(async remoteMeterReading => {
                     let initlocalMeterReadings = InventroyRealm.getAllMeterReadingByDate(InventroyRealm.getLastMeterReadingSync());
-                    let onlyInLocal = initlocalMeterReadings.filter(SyncUtils.compareRemoteAndLocal(remoteMeterReading));
-                    let onlyInRemote = remoteMeterReading.filter(SyncUtils.compareRemoteAndLocal(initlocalMeterReadings));
+                    let onlyInLocal = initlocalMeterReadings.filter(SyncUtils.compareRemoteAndLocal(remoteMeterReading, 'meter_reading_id'));
+                    let onlyInRemote = remoteMeterReading.filter(SyncUtils.compareRemoteAndLocal(initlocalMeterReadings, 'meter_reading_id'));
 
                     let syncResponseArray = [];
 

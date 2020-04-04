@@ -220,6 +220,68 @@ class ReceiptPaymentTypeRealm {
             console.log("Error on Reciept payment creation", e);
         }
     }
+
+
+
+    syncManyReceiptPaymentType(receiptPaymentTypes) {
+        return new Promise((resolve, reject) => {
+            try {
+                let result = [];
+                realm.write(() => {
+                    for (i = 0; i < receiptPaymentTypes.length; i++) {
+                        let ischeckReceiptPaymentType = this.checkReceiptPaymentType(receiptPaymentTypes[i].created_at, receiptPaymentTypes[i].receipt_payment_type_id).length;
+                        if (ischeckReceiptPaymentType === 0) {
+                            let value = realm.create('ReceiptPaymentType', {
+                                ...receiptPaymentTypes[i],
+                                active: true,
+                                amount: Number(receiptPaymentTypes[i].amount),
+                                created_at: receiptPaymentTypes[i][i].created_at,
+                                id: receiptPaymentTypes[i].id,
+                                payment_type_id: receiptPaymentTypes[i].payment_type_id,
+                                receipt_id: receiptPaymentTypes[i].receipt_id,
+                                receipt_payment_type_id: receiptPaymentTypes[i].receipt_payment_type_id,
+                                updated_at: receiptPaymentTypes[i].updated_at,
+                            });
+
+                            result.push({ status: 'success', data: value, message: 'ReceiptPaymentType has been set' });
+                        } else if (ischeckReceiptPaymentType > 0) {
+                            let receiptPaymentTypeUpdate = realm.objects('ReceiptPaymentType').filtered(`topUpId = "${receiptPaymentTypes[i].topUpId}"`);
+
+
+
+
+                            receiptPaymentTypeUpdate[0].amount = Number(receiptPaymentTypes[i].amount);
+                            receiptPaymentTypeUpdate[0].created_at = receiptPaymentTypes[i][i].created_at;
+                            receiptPaymentTypeUpdate[0].id = receiptPaymentTypes[i].id;
+                            receiptPaymentTypeUpdate[0].payment_type_id = receiptPaymentTypes[i].payment_type_id;
+                            receiptPaymentTypeUpdate[0].receipt_id = receiptPaymentTypes[i].receipt_id;
+                            receiptPaymentTypeUpdate[0].receipt_payment_type_id = receiptPaymentTypes[i].receipt_payment_type_id;
+                            receiptPaymentTypeUpdate[0].updated_at = receiptPaymentTypes[i].updated_at;
+
+                            result.push({ status: 'success', data: receiptPaymentTypes[i], message: 'Local ReceiptPaymentType has been updated' });
+
+
+                        }
+                    }
+
+                });
+                resolve(result);
+            } catch (e) {
+                console.log("Error on creation", e);
+            }
+        });
+    }
+
+
+    checkReceiptPaymentType(date, receipt_payment_type_id) {
+        return this.getReceiptPaymentTypes().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.receipt_payment_type_id === receipt_payment_type_id)
+    }
+
+
+
+
+
+
 }
 
 export default new ReceiptPaymentTypeRealm();

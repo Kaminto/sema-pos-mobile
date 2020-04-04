@@ -45,7 +45,7 @@ class CustomerDebtRealm {
 
 
     getCustomerDebtsByDate(date) {
-        let customerDebt = Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerDebt')))); 
+        let customerDebt = Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerDebt'))));
         return customerDebt.filter(r => {
             return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1;
         }
@@ -174,7 +174,7 @@ class CustomerDebtRealm {
                 }
                 if (!customer_account_id) {
                     customerDebts.forEach(obj => {
-                        realm.create('CustomerDebt', {...obj, due_amount: obj.due_amount ? Number(obj.due_amount) : Number(obj.amount), });
+                        realm.create('CustomerDebt', { ...obj, due_amount: obj.due_amount ? Number(obj.due_amount) : Number(obj.amount), });
                     });
                 }
             });
@@ -182,6 +182,50 @@ class CustomerDebtRealm {
             console.log("Error on create many customer debts", e);
         }
     }
+
+
+
+    syncManyCustomerDebt(customerDebts) {
+        return new Promise((resolve, reject) => {
+            try {
+                let result = [];
+                realm.write(() => {
+                    for (i = 0; i < customerDebts.length; i++) {
+                        let ischeckCustomerDebt = this.checkCustomerDebt(customerDebts[i].created_at, customerDebts[i].customer_debt_id).length;
+                        if (ischeckCustomerDebt === 0) {
+                            let value = realm.create('CustomerDebt', {
+                                ...customerDebts[i],
+                                due_amount: customerDebts[i].due_amount ? Number(customerDebts[i].due_amount) : Number(customerDebts[i].amount),
+                            });
+
+                            result.push({ status: 'success', data: value, message: 'Customer Debt has been set' });
+                        } else if (ischeckCustomerDebt > 0) {
+                            let customerDebtUpdate = realm.objects('CustomerDebt').filtered(`customer_debt_id = "${customerDebts[i].customer_debt_id}"`);
+
+                            customerDebtUpdate[0].customer_account_id = customerDebts[i].customer_account_id;
+                            customerDebtUpdate[0].due_amount = customerDebts[i].due_amount ? Number(customerDebts[i].due_amount) : Number(customerDebts[i].amount);
+                            customerDebtUpdate[0].updated_at = customerDebts[i].updated_at;
+
+
+                            result.push({ status: 'success', data: customerDebts[i], message: 'Local Customer Debt has been updated' });
+
+
+                        }
+                    }
+
+                });
+                resolve(result);
+            } catch (e) {
+                console.log("Error on creation", e);
+            }
+        });
+    }
+
+    checkCustomerDebt(date, customer_debt_id) {
+        return this.getCustomerDebts().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.customer_debt_id === customer_debt_id)
+    }
+
+
 
     createCustomerDebt(due_amount, customer_account_id) {
         try {

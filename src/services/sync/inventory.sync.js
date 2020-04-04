@@ -11,8 +11,8 @@ class InventorySync {
                 .then(async remoteInventory => {
                     let initlocalInventories = InventroyRealm.getAllInventoryByDate(InventroyRealm.getLastInventorySync());
 
-                    let onlyInLocal = initlocalInventories.filter(SyncUtils.compareRemoteAndLocal(remoteInventory.closingStock));
-                    let onlyInRemote = remoteInventory.closingStock.filter(SyncUtils.compareRemoteAndLocal(initlocalInventories));
+                    let onlyInLocal = initlocalInventories.filter(SyncUtils.compareRemoteAndLocal(remoteInventory.closingStock, 'closingStockId'));
+                    let onlyInRemote = remoteInventory.closingStock.filter(SyncUtils.compareRemoteAndLocal(initlocalInventories, 'closingStockId'));
 
                     let syncResponseArray = [];
                     if (onlyInLocal.length > 0) {

@@ -214,7 +214,7 @@ class TransactionDetail extends React.PureComponent {
 		}
 
 		if (this.props.item.paymentTypes !== undefined) {
-			console.log("Enoch " + JSON.stringify(this.props.item.paymentTypes));
+			//console.log("Enoch " + JSON.stringify(this.props.item.paymentTypes));
 			paymentTypes = this.props.item.paymentTypes.map((paymentItem, idx) => {
 				return (
 

@@ -70,6 +70,7 @@ class AuthLoadingScreen extends React.PureComponent {
        // CustomerDebtRealm.truncate()
       // SalesChannelRealm.truncate();
        //InventroyRealm.truncate();
+     //  CreditRealm.truncate()
         console.log('last order sync',OrderRealm.getLastOrderSync());
         console.log('last customer sync',CustomerRealm.getLastCustomerSync());
         console.log('last meter reading sync',InventroyRealm.getLastMeterReadingSync());
@@ -80,9 +81,11 @@ class AuthLoadingScreen extends React.PureComponent {
         console.log('last DiscountRealm sync',DiscountRealm.getLastDiscountSync());
         console.log('last ProductMRPRealm sync',ProductMRPRealm.getLastProductMRPSync());
         console.log('last ProductsRealm sync',ProductsRealm.getLastProductsync());
+        console.log('last CreditRealm sync',CreditRealm.getLastCreditSync());
+        
         
       
-      console.log('inventory data',ProductMRPRealm.getProductMRPS());
+    console.log('inventory data',CreditRealm.getAllCredit());
         if (settings.site != "" && settings.siteId > 0) {
             this.loadSyncedData();
             if (settings.token.length > 1) {

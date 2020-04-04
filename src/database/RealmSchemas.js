@@ -23,8 +23,8 @@ export const customerSchema = {
 	primaryKey: 'customerId',
 	properties: {
 		customerId: 'int',
-		createdDate: 'date',
-		updatedDate: 'date',
+		created_at: 'date',
+		updated_at: 'date',
 		active: 'bool',
 		address: 'string',
 		name: 'string',
@@ -44,7 +44,7 @@ export const productSchema = {
 	primaryKey: 'productId',
 	properties: {
 		productId: 'int',
-		updatedDate: 'date',
+		updated_at: 'date',
 		active: 'bool',
 		base64encodedImage: 'string',
 		categoryId: 'int',
@@ -65,8 +65,8 @@ export const saleSchema = {
 	primaryKey: 'id',
 	properties: {
 		id: 'string',
-		createdDate: 'date',
-		updatedDate: 'date',
+		created_at: 'date',
+		updated_at: 'date',
 		amountCash: 'int',
 		amountLoan: 'int',
 		amountMobile: 'int',
@@ -181,8 +181,8 @@ export const pendingCustomerSchema = {
 	primaryKey: 'customerId',
 	properties: {
 		customerId: 'int',
-		createdDate: 'date',
-		updatedDate: 'date',
+		created_at: 'date',
+		updated_at: 'date',
 		active: 'bool',
 		address: 'string',
 		name: 'string',
@@ -202,8 +202,8 @@ export const pendingSalesSchema = {
 	primaryKey: 'id',
 	properties: {
 		id: 'string',
-		createdDate: 'date',
-		updatedDate: 'date',
+		created_at: 'date',
+		updated_at: 'date',
 		amountCash: 'int',
 		amountLoan: 'int',
 		amountMobile: 'int',

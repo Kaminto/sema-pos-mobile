@@ -20,16 +20,11 @@ class ProductListScreen extends React.PureComponent {
 		this.state = {
 			salesChannel: SalesChannelRealm.getSalesChannelFromId(this.props.selectedCustomer.salesChannelId)
 		}
-	}
-
-	;
+	};
 
 	render() {
 		if (this.state.salesChannel) {
-			return (
-
-					<ProductList filter={this.state.salesChannel.name} viewWidth={this.viewWidth} />
-			);
+			return (<ProductList filter={this.state.salesChannel.name} viewWidth={this.viewWidth} />);
 		}
 		return null;
 	}

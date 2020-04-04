@@ -82,6 +82,9 @@ class SyncUtils {
   }
 
   isSimilarDay(dayRight, dateLeft) {
+    if (dayRight === undefined || dateLeft === undefined) {
+      return false
+    }
     if (dayRight === null || dateLeft === null) {
       return false
     }

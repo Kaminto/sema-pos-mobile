@@ -1,6 +1,8 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-import { format, parseISO, sub, compareAsc } from 'date-fns';
+import SyncUtils from '../../services/sync/syncUtils';
+import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
+
 class CustomerRealm {
     constructor() {
         this.customer = [];
@@ -10,8 +12,8 @@ class CustomerRealm {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerSyncDate')))).length == 0) {
                 realm.create('CustomerSyncDate', { lastCustomerSync: firstSyncDate });
             }
-            //   let syncDate = realm.objects('CustomerSyncDate');
-            //  syncDate[0].lastCustomerSync = firstSyncDate;
+            // let syncDate = realm.objects('CustomerSyncDate');
+            // syncDate[0].lastCustomerSync = firstSyncDate;
         });
         this.lastCustomerSync = firstSyncDate;
     }
@@ -24,8 +26,7 @@ class CustomerRealm {
         try {
             realm.write(() => {
                 let customers = realm.objects('Customer');
-               // let customerSyncDate = realm.objects('CustomerSyncDate');
-                //realm.delete(customerSyncDate);
+                realm.delete(realm.objects('CustomerSyncDate'));
                 realm.delete(customers);
             })
         } catch (e) {
@@ -47,11 +48,11 @@ class CustomerRealm {
         })
     }
 
-    getCustomerByCreatedDate(date) {
+    getCustomerBycreated_at(date) {
         try {
             let orderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('Customer'))));
             return orderObj.filter(r => {
-            return compareAsc(parseISO(r.createdDate), parseISO(date)) === 1 || compareAsc(parseISO(r.updatedDate), parseISO(date)) === 1;
+                return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1;
             }
             );
         } catch (e) {
@@ -100,8 +101,8 @@ class CustomerRealm {
             dueAmount: 0,
             salesChannelId: salesChannelId,
             customerTypeId: customerTypeId,
-            createdDate: now,
-            updatedDate: now,
+            created_at: now,
+            updated_at: now,
             frequency: frequency.toString(),
             secondPhoneNumber: secondPhoneNumber,
             syncAction: 'create',
@@ -138,7 +139,7 @@ class CustomerRealm {
                 customerObj[0].address = address;
                 customerObj[0].salesChannelId = salesChannelId;
                 customerObj[0].customerTypeId = customerTypeId;
-                customerObj[0].updatedDate = new Date();
+                customerObj[0].updated_at = new Date();
                 customerObj[0].syncAction = 'update';
                 customerObj[0].frequency = frequency.toString();
                 customerObj[0].secondPhoneNumber = secondPhoneNumber;
@@ -167,7 +168,7 @@ class CustomerRealm {
         try {
             realm.write(() => {
                 let customerObj = realm.objects('Customer').filtered(`customerId = "${customer.customerId}"`);
-                customerObj[0].updatedDate = new Date();
+                customerObj[0].updated_at = new Date();
                 customerObj[0].syncAction = 'update';;
                 customerObj[0].dueAmount = dueAmount;
             })
@@ -185,7 +186,7 @@ class CustomerRealm {
         try {
             realm.write(() => {
                 let customerObj = realm.objects('Customer').filtered(`customerId = "${customer.customerId}"`);
-                customerObj[0].updatedDate = new Date();
+                customerObj[0].updated_at = new Date();
                 customerObj[0].syncAction = 'update';;
                 customerObj[0].walletBalance = walletBalance;
             })
@@ -232,7 +233,7 @@ class CustomerRealm {
                 let customerObj = realm.objects('Customer').filtered(`customerId = "${customer.customerId}"`);
                 customerObj[0].syncAction = 'delete';
                 customerObj[0].is_delete = 0;
-                customerObj[0].updatedDate = new Date();
+                customerObj[0].updated_at = new Date();
             })
 
         } catch (e) {
@@ -240,39 +241,83 @@ class CustomerRealm {
         }
     }
 
-    createManyCustomers(customers) {
-        console.log('customerscustomers', customers);
-        try {
-            realm.write(() => {
-                customers.forEach(obj => {
-                    realm.create('Customer', 
-                    {
-                        customerId: obj.id,
-                        name: obj.name,
-                        customerTypeId: obj.customer_type_id,
-                        salesChannelId: obj.sales_channel_id,
-                        siteId: obj.kiosk_id,
-                        is_delete: obj.is_delete === null ? 1 : obj.is_delete ,
-                        reminder_date: obj.reminder_date,
-                        frequency: obj.frequency,
-                        dueAmount: obj.due_amount === null ? 0 : Number(obj.due_amount),
-                        walletBalance: obj.wallet_balance === null ? 0 : Number(obj.wallet_balance),
-                        address: obj.address_line1,
-                        gpsCoordinates: obj.gps_coordinates,
-                        phoneNumber: obj.phone_number,
-                        secondPhoneNumber: obj.second_phone_number,
-                        active: true ,
-                        createdDate: obj.created_at,
-                        updatedDate: obj.updated_at   
-                    }
-                    );
-                });
-            });
-        } catch (e) {
-            console.log("Error on creation", e);
-        }
 
+    createManyCustomers(customers) {
+        return new Promise((resolve, reject) => {
+            try {
+                let result = [];
+                realm.write(() => {
+                    for (i = 0; i < customers.length; i++) {
+                     //   console.log('customers[i]', customers[i])
+                        let ischeckCustomer = this.checkCustomer(customers[i].created_at, customers[i].customerId).length;
+                        if (ischeckCustomer === 0) {
+                          //  console.log('saveing', value)
+                            let value = realm.create('Customer', {
+                                ...customers[i],
+                                customerId: customers[i].id,
+                                name: customers[i].name,
+                                customerTypeId: customers[i].customer_type_id,
+                                salesChannelId: customers[i].sales_channel_id,
+                                siteId: customers[i].kiosk_id,
+                                is_delete: customers[i].is_delete === null ? 1 : customers[i].is_delete,
+                                reminder_date: customers[i].reminder_date,
+                                frequency: customers[i].frequency,
+                                dueAmount: customers[i].due_amount === null ? 0 : Number(customers[i].due_amount),
+                                walletBalance: customers[i].wallet_balance === null ? 0 : Number(customers[i].wallet_balance),
+                                address: customers[i].address_line1,
+                                gpsCoordinates: customers[i].gps_coordinates,
+                                phoneNumber: customers[i].phone_number,
+                                secondPhoneNumber: customers[i].second_phone_number,
+                                active: true,
+                                created_at: customers[i].created_at,
+                                updated_at: customers[i].updated_at
+                            });
+                          //  console.log('saved', value)
+                            result.push({ status: 'success', data: value, message: 'Customer has been set' });
+                        } else if (ischeckCustomer > 0) {
+                            let customerObj = realm.objects('Customer').filtered(`topUpId = "${customers[i].topUpId}"`);
+
+
+                            customerObj[0].customerId = customers[i].id;
+                            customerObj[0].name = customers[i].name;
+                            customerObj[0].customerTypeId = customers[i].customer_type_id;
+                            customerObj[0].salesChannelId = customers[i].sales_channel_id;
+                            customerObj[0].siteId = customers[i].kiosk_id;
+                            customerObj[0].is_delete = customers[i].is_delete === null ? 1 : customers[i].is_delete;
+                            customerObj[0].reminder_date = customers[i].reminder_date;
+                            customerObj[0].frequency = customers[i].frequency;
+                            customerObj[0].dueAmount = customers[i].due_amount === null ? 0 : Number(customers[i].due_amount);
+                            customerObj[0].walletBalance = customers[i].wallet_balance === null ? 0 : Number(customers[i].wallet_balance);
+                            customerObj[0].address = customers[i].address_line1;
+                            customerObj[0].gpsCoordinates = customers[i].gps_coordinates;
+                            customerObj[0].phoneNumber = customers[i].phone_number;
+                            customerObj[0].secondPhoneNumber = customers[i].second_phone_number;
+                            customerObj[0].active = true;
+                            customerObj[0].created_at = customers[i].created_at;
+                            customerObj[0].updated_at = customers[i].updated_at;
+
+                            result.push({ status: 'success', data: customers[i], message: 'Local Customer has been updated' });
+
+
+                        }
+                    }
+
+                });
+                resolve(result);
+            } catch (e) {
+                console.log("Error on creation", e);
+            }
+        });
     }
+
+
+    checkCustomer(date, customerId) {
+        return this.getAllCustomer().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.customerId === customerId)
+    }
+
+
+
+
 }
 
 export default new CustomerRealm();
