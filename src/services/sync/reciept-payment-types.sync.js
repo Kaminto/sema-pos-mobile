@@ -9,8 +9,8 @@ class RecieptPaymentTypesSync {
             RecieptPaymentTypesApi.getReceiptPaymentTypes(kiosk_id, ReceiptPaymentTypeRealm.getLastReceiptPaymentTypeSync())
                 .then(async result => {
                     let initlocalRecieptPaymentTypes = ReceiptPaymentTypeRealm.getReceiptPaymentTypesByDate(ReceiptPaymentTypeRealm.getLastReceiptPaymentTypeSync());
-                    let localRecieptPaymentTypes = [...initlocalRecieptPaymentTypes];
-                    let remoteRecieptPaymentTypes = [...result];
+                    let localRecieptPaymentTypes = initlocalRecieptPaymentTypes.length > 0 ? [...initlocalRecieptPaymentTypes] : [];
+                    let remoteRecieptPaymentTypes = result.length > 0 ? [...result] : [];
 
 
                     console.log('remoteRecieptPaymentTypes', remoteRecieptPaymentTypes);

@@ -182,6 +182,7 @@ class Synchronization {
 							});
 					})
 					.catch(error => {
+						console.log('errors', error)
 						syncResult.error = error;
 						syncResult.status = 'failure';
 						resolve(syncResult);

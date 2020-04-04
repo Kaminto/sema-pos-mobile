@@ -7,11 +7,12 @@ class ReminderSync {
 
     synchronizeReminder(lastReminderSync) {
         return new Promise(resolve => {
-            CustomerDebtApi.getReminder(settings.siteId,new Date(lastReminderSync))
+            CustomerDebtApi.getReminder(settings.siteId, new Date(lastReminderSync))
                 .then(result => {
                     let initlocalReminder = ReminderRealm.getReminder();
-                    let localReminder = [...initlocalReminder];
-                    let remoteReminder = [...result];
+                    
+                    let localReminder = initlocalReminder.length > 0 ? [...initlocalReminder] : [];
+                    let remoteReminder = result.length > 0 ? [...result] : [];
 
                     if (initlocalReminder.length === 0) {
                         ReminderRealm.createManyCustomerDebt(result, null);
@@ -30,7 +31,7 @@ class ReminderSync {
                             if (filteredObj.length > 0) {
                                 const remoteIndex = remoteReminder.map(function (e) { return e.receipt_payment_type_id }).indexOf(filteredObj[0].receipt_payment_type_id);
                                 const localIndex = localReminder.map(function (e) { return e.receipt_payment_type_id }).indexOf(filteredObj[0].receipt_payment_type_id);
-                               remoteReminder.splice(remoteIndex, 1);
+                                remoteReminder.splice(remoteIndex, 1);
                                 localReminder.splice(localIndex, 1);
 
                                 inLocal.push(localCustomerDebt);
@@ -50,13 +51,13 @@ class ReminderSync {
 
 
                         if (onlyRemote.length > 0) {
-                            ReminderRealm.createCustomerDebt(onlyRemote,null)
+                            ReminderRealm.createCustomerDebt(onlyRemote, null)
                         }
 
                         if (onlyLocally.length > 0) {
                             onlyLocally.forEach(localCustomerDebt => {
                                 CustomerDebtApi.createCustomerDebt(
-                                    {...localCustomerDebt, kiosk_id: settings.siteId }
+                                    { ...localCustomerDebt, kiosk_id: settings.siteId }
                                 )
                                     .then((response) => {
                                         ReminderRealm.synched(localCustomerDebt);

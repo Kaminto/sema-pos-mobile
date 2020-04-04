@@ -9,8 +9,10 @@ class CustomerSync {
             CustomerApi.getCustomers(CustomerRealm.getLastCustomerSync())
                 .then(async remoteCustomer => {
                     let initlocalCustomers = CustomerRealm.getCustomerBycreated_at(CustomerRealm.getLastCustomerSync());
-                    let localCustomers = [...initlocalCustomers];
-                    let remoteCustomers = [...remoteCustomer.customers];
+                   
+                    let localCustomers = initlocalCustomers.length > 0 ? [...initlocalCustomers] : [];
+                    let remoteCustomers = remoteCustomer.customers.length > 0 ? [...remoteCustomer.customers] : [];
+
 
                     let onlyInLocal = localCustomers.filter(SyncUtils.compareRemoteAndLocal(remoteCustomers, 'customerId'));
                     let onlyInRemote = remoteCustomers.filter(SyncUtils.compareRemoteAndLocal(localCustomers, 'customerId'));

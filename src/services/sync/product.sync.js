@@ -11,8 +11,8 @@ class ProductSync {
             ProductApi.getProducts(ProductRealm.getLastProductsync())
             .then(async remoteProduct => {
                 let initlocalProducts = ProductRealm.getProductsByDate(ProductRealm.getLastProductsync());
-                let localProducts = [...initlocalProducts];
-                let remoteProducts = [...remoteProduct.products];
+                let localProducts = initlocalProducts.length > 0 ?  [...initlocalProducts] : [];
+                let remoteProducts = remoteProduct.products.length > 0 ?  [...remoteProduct.products] : [];
 
 
                 let onlyInLocal = localProducts.filter(SyncUtils.compareRemoteAndLocal(remoteProducts, 'id'));

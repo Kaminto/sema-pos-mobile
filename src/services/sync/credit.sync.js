@@ -10,9 +10,10 @@ class CreditSync {
         return new Promise(resolve => {
             CreditApi.getTopUps(settings.siteId, CreditRealm.getLastCreditSync())
                 .then(async remoteCredit => {
+                    console.log('remoteCredit', remoteCredit)
                     let initlocalCredits = CreditRealm.getAllCreditByDate(CreditRealm.getLastCreditSync());
-                    let localCredits = [...initlocalCredits];
-                    let remoteTopUps = [...remoteCredit.topup];
+                    let localCredits = initlocalCredits.length > 0 ?  [...initlocalCredits] : [];
+                    let remoteTopUps = remoteCredit.topup.length > 0 ?  [...remoteCredit.topup] : [];
 
                     
                     let onlyInLocal = localCredits.filter(SyncUtils.compareRemoteAndLocal(remoteTopUps,'topUpId'));
