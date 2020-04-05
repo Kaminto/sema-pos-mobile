@@ -184,7 +184,7 @@ class OrderCheckout extends React.PureComponent {
 							<View style={{ flex: 1, paddingLeft: 10 }}>
 								<View style={{ flex: 1, flexDirection: 'row', height: 50 }}>
 									<View style={{ flex: 1, flexDirection: 'row' }}>
-										<Text style={[{ textAlign: 'left' }, styles.headerItem]}>General Notes.</Text>
+										<Text style={[{ textAlign: 'left' }, styles.headerItem]}>Additional Notes.</Text>
 									</View>
 									<View
 										style={{
@@ -352,7 +352,7 @@ class OrderCheckout extends React.PureComponent {
 									<TouchableHighlight underlayColor='#c0c0c0'
 										onPress={this.onNotes}>
 										<Text
-											style={{ padding: 10, margin: 10, borderRadius: 5, color: 'white', backgroundColor: '#036', textAlign: 'center', alignSelf: 'flex-end' }}>Notes</Text>
+											style={{ padding: 10, margin: 10, borderRadius: 5, color: 'white', backgroundColor: '#036', textAlign: 'center', alignSelf: 'flex-end' }}>Additional Notes</Text>
 									</TouchableHighlight>
 
 								</View>
