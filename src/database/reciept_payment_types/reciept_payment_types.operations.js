@@ -110,7 +110,6 @@ class ReceiptPaymentTypeRealm {
                 let receiptPaymentTypeObj = realm.objects('ReceiptPaymentType');
 
                 receiptPaymentTypeObj.forEach(element => {
-                    // console.log('element',element);
                     element.isSelected = false;
                 })
 
@@ -182,12 +181,9 @@ class ReceiptPaymentTypeRealm {
     }
 
     createManyReceiptPaymentType(receiptPaymentTypes, receiptId) {
-        // console.log('testing sync');
         try {
-            // console.log('testing sync2');
             realm.write(() => {
                 if (receiptId) {
-                    console.log('no sync');
                     receiptPaymentTypes.forEach(obj => {
                         realm.create('ReceiptPaymentType', {
                             receipt_id: receiptId ? receiptId : null,

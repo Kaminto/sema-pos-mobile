@@ -146,6 +146,7 @@ class OrderRealm {
             customer_account_id: receipt.customer_account_id,
             customer_type_id: receipt.customer_type_id,
             id: receipt.id,
+            uuid: receipt.uuid,
             payment_type: receipt.payment_type,
             receipt_line_items: receipt.products,
             receiptId: receipt.id,
@@ -155,7 +156,7 @@ class OrderRealm {
             syncAction: 'create',
         };
 
-        newOrder.uuid = newOrder.receiptId;
+        //newOrder.uuid = newOrder.receiptId;
         let receipt_line_items = [];
         for (let i in receipt.products) {
 
@@ -185,7 +186,6 @@ class OrderRealm {
 
         }
         newOrder.receipt_line_items = JSON.stringify(receipt_line_items);
-        // console.log('newOrder', JSON.stringify(newOrder));
         try {
             realm.write(() => {
                 realm.create('Order', newOrder);
@@ -289,10 +289,8 @@ class OrderRealm {
                 let result = [];
                 realm.write(() => {
                     for (i = 0; i < orders.length; i++) {
-                        //   console.log('orders[i]', orders[i])
                         let ischeckOrder = this.checkOrder(orders[i].created_at, orders[i].uuid).length;
                         if (ischeckOrder === 0) {
-                            //  console.log('saveing', value)
                             let value = realm.create('Order', {
                                 ...orders[i],
                                 amount_cash: Number(orders[i].amount_cash),
@@ -304,7 +302,6 @@ class OrderRealm {
                                 customer_account: JSON.stringify(orders[i].customer_account),
                                 receipt_line_items: JSON.stringify(orders[i].receipt_line_items),
                             });
-                            //  console.log('saved', value)
                             result.push({ status: 'success', data: value, message: 'Order has been set' });
                         } else if (ischeckOrder > 0) {
                             let orderObj = realm.objects('Order').filtered(`uuid = "${orders[i].uuid}"`);

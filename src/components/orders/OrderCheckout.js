@@ -428,7 +428,6 @@ class OrderCheckout extends React.PureComponent {
 	};
 
 	setNotes = notes => {
-		console.log('je', notes);
 		this.setState({ notes });
 	}
 
@@ -947,10 +946,10 @@ class OrderCheckout extends React.PureComponent {
 				this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
 				this.updateWallet(this.props.selectedCustomer.walletBalance);
 			}
-			// const creditIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("credit");
-			// if (creditIndex >= 0) {
-			// 	this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[creditIndex], created_at: new Date(), isSelected: this.props.paymentTypes[creditIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() - totalAmountPaid });
-			// }
+			const creditIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("credit");
+			if (creditIndex >= 0) {
+				this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[creditIndex], created_at: new Date(), isSelected: this.props.paymentTypes[creditIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() - totalAmountPaid });
+			}
 		}
 		else if (this.currentCredit() <= this.calculateOrderDue()) {
 			if (this.currentCredit() > 0) {
@@ -1057,8 +1056,8 @@ class OrderCheckout extends React.PureComponent {
 			: new Date(Date.now());
 
 		receipt = {
-			//id: uuidv1(),
-			id: SettingRealm.getAllSetting().siteId + '-' + this.invoiceid(),
+			id: uuidv1(),
+			uuid: SettingRealm.getAllSetting().siteId + '-' + this.invoiceid(),
 			created_at: receiptDate,
 			currency_code: this.props.products[0].product.priceCurrency,
 			customer_account_id: this.props.selectedCustomer.customerId,
@@ -1132,7 +1131,6 @@ class OrderCheckout extends React.PureComponent {
 				);
 			}
 
-			console.log('receipt', JSON.stringify(receipt));
 
 			OrderRealm.createOrder(receipt);
 			this.props.receiptActions.setReceipts(
