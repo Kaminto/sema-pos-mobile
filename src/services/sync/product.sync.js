@@ -22,8 +22,8 @@ class ProductSync {
                 })
                 console.log('remoteProducts3',remoteProducts3)
 
-                let onlyInLocal = localProducts.filter(SyncUtils.compareRemoteAndLocal(remoteProducts, 'productId'));
-                let onlyInRemote = remoteProducts.filter(SyncUtils.compareRemoteAndLocal(localProducts, 'productId'));
+                let onlyInLocal = localProducts.filter(SyncUtils.compareRemoteAndLocal(remoteProducts, 'id'));
+                let onlyInRemote = remoteProducts.filter(SyncUtils.compareRemoteAndLocal(localProducts, 'id'));
 
 
 
