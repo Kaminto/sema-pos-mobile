@@ -14,9 +14,16 @@ class ProductSync {
                 let localProducts = initlocalProducts.length > 0 ?  [...initlocalProducts] : [];
                 let remoteProducts = remoteProduct.products.length > 0 ?  [...remoteProduct.products] : [];
 
+                let remoteProducts2 = remoteProduct.products.length > 0 ?  [...remoteProduct.products] : [];
 
-                let onlyInLocal = localProducts.filter(SyncUtils.compareRemoteAndLocal(remoteProducts, 'id'));
-                let onlyInRemote = remoteProducts.filter(SyncUtils.compareRemoteAndLocal(localProducts, 'id'));
+                remoteProducts3 = remoteProducts2.map(e=>{
+                    delete e.base64encodedImage;
+                    return {...e};
+                })
+                console.log('remoteProducts3',remoteProducts3)
+
+                let onlyInLocal = localProducts.filter(SyncUtils.compareRemoteAndLocal(remoteProducts, 'productId'));
+                let onlyInRemote = remoteProducts.filter(SyncUtils.compareRemoteAndLocal(localProducts, 'productId'));
 
 
 

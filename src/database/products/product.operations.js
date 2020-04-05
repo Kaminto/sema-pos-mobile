@@ -146,7 +146,6 @@ class ProductsRealm {
     hardDeleteProducts(product) {
         try {
             realm.write(() => {
-                console.log("product", product);
                 let products = realm.objects('Product');
                 let deleteProducts = products.filtered(`productId = "${product.productId}"`);
                 realm.delete(deleteProducts);
@@ -175,7 +174,6 @@ class ProductsRealm {
 
 
     createManyProducts(products) {
-
         return new Promise((resolve, reject) => {
             try {
                 let result = [];
@@ -183,6 +181,7 @@ class ProductsRealm {
                     for (i = 0; i < products.length; i++) {
                         let ischeckproducts = this.checkProduct(products[i].created_at, products[i].id).length;
                         if (ischeckproducts === 0) {
+                            console.log('products[i].wastageName', products[i].wastageName)
                             let value = realm.create('Product', {
                                 ...products[i],
                                 productId: products[i].id,
@@ -198,6 +197,7 @@ class ProductsRealm {
                                 cogsAmount: Number(products[i].costOfGoods),
                                 updated_at: products[i].updated_at,
                                 base64encodedImage: products[i].base64Image,
+                                wastageName: products[i].wastageName, 
                                 active: true
                             });
                             result.push({ status: 'success', data: value, message: 'Product has been set' });
@@ -217,10 +217,7 @@ class ProductsRealm {
                             discountObj[0].cogsAmount = Number(products[i].costOfGoods);
                             discountObj[0].updated_at = products[i].updated_at;
                             discountObj[0].base64encodedImage = products[i].base64Image;
-
-
-
-
+                            discountObj[0].wastageName = products[i].wastageName;
 
                             result.push({ status: 'success', data: products[i], message: 'Local Product has been updated' });
 

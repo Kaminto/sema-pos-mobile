@@ -116,7 +116,6 @@ class DiscountRealm {
                 let discountObj = realm.objects('Discount');
 
                 discountObj.forEach(element=>{
-                   // console.log('element',element);
                     element.isSelected = false;
                 })
 

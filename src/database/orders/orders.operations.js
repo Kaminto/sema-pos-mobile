@@ -237,7 +237,6 @@ class OrderRealm {
     }
 
     synched(order) {
-        console.log('synched');
         try {
             realm.write(() => {
                 let orderObj = realm.objects('Order').filtered(`receiptId = "${order.receiptId}"`);
