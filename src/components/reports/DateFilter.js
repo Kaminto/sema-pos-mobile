@@ -19,7 +19,6 @@ class DateFilter extends React.PureComponent {
 				seconds: getSeconds(new Date())
 			})
 		};
-		console.log('currentDate', new Date());
 		this.maxDate = new Date(this.state.currentDate.getTime() + dayInMilliseconds);
 		this.minDate = new Date(this.maxDate.getTime() - 30 * dayInMilliseconds);
 		this.props.reportActions.setReportFilter(new Date(), new Date(this.state.currentDate.getTime() - dayInMilliseconds));

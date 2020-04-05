@@ -59,8 +59,6 @@ class OrderSync {
 
                     }
 
-                    console.log('syncResponseArray', syncResponseArray);
-
                     resolve({
                         success: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
                         orders: onlyInLocal.concat(onlyInRemote).length,
@@ -80,7 +78,6 @@ class OrderSync {
 
 
     apiSyncOperations(localOrder, siteId) {
-        console.log('localOrder', localOrder);
 
         return new Promise(resolve => {
 

@@ -16,9 +16,6 @@ class CustomerDebtsSync {
                     let remoteCustomerDebts = result.length > 0 ? [...result] : [];
 
 
-                    console.log('remoteCustomerDebts', remoteCustomerDebts);
-                    console.log('localCustomerDebts', localCustomerDebts);
-
                     let onlyInLocal = localCustomerDebts.filter(SyncUtils.compareRemoteAndLocal(remoteCustomerDebts, 'customer_debt_id'));
                     let onlyInRemote = remoteCustomerDebts.filter(SyncUtils.compareRemoteAndLocal(localCustomerDebts, 'customer_debt_id'));
 
@@ -39,8 +36,6 @@ class CustomerDebtsSync {
                         }
 
                     }
-
-                    console.log('syncResponseArray', syncResponseArray);
 
                     resolve({
                         success: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',

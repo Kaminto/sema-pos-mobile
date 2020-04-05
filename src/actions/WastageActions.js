@@ -37,6 +37,18 @@ function groupBySku(objectArray, property) {
 	}, {});
 }
 
+function groupBySku2(objectArray, property) {
+	return objectArray.reduce(function (acc, obj) {
+		let key = obj[property];
+		if (!acc[key]) {
+			acc[key] = [];
+		}
+		delete obj.base64encodedImage;
+		acc[key].push(obj);
+		return acc;
+	}, {});
+}
+
 function totalByProperty(objectArray, property) {
 	return objectArray.reduce((accumulator, currentValue) => {
 		return accumulator + (!isNaN(Number(currentValue[property])) ? Number(currentValue[property]) : 0);
@@ -54,6 +66,11 @@ const getSalesData = (beginDate) => {
 	}, []);
 
 	let groupedOrderItems = groupBySku(filteredOrderItems, "sku");
+
+
+	// let groupedProductItems = groupBySku2(ProductsRealm.getProducts(), "sku");
+	// console.log('groupedOrderItems', JSON.stringify(groupedOrderItems));
+	// console.log('ProductsRealm', JSON.stringify(groupedProductItems));
 
 	let todaySales = [];
 	for (let i of Object.getOwnPropertyNames(groupedOrderItems)) {
@@ -80,7 +97,13 @@ const getSalesData = (beginDate) => {
 export const getMrps = products => {
 	let productMrp = ProductMRPRealm.getFilteredProductMRP();
 	let ids = Object.keys(productMrp).map(key => productMrp[key].productId);
-	let matchProducts = products.filter(prod => ids.includes(prod.productId));
+	let filProduct = products.map(e=>{
+		delete e.base64encodedImage;
+		return {...e }
+	})
+	console.log('filProduct-productMrp', productMrp);
+	console.log('filProduct-filProduct', filProduct);
+	let matchProducts = filProduct.filter(prod => ids.includes(prod.productId));	
 	let waterProducts = matchProducts.filter(prod => 3 === prod.categoryId);
 	return waterProducts;
 };
@@ -105,6 +128,7 @@ export const getWastageData = (beginDate, previousDate, products) => {
 };
 
 const createInventory = (salesData, inventorySettings, products) => {
+	//console.log('products-products', products);
 	let salesAndProducts = { ...salesData };
 	salesAndProducts.salesItems = salesData.salesItems.slice();
 	let emptyProducts = [];

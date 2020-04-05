@@ -21,8 +21,6 @@ let initialState = {
 };
 
 const wastageReducer = (state = initialState, action) => {
-	// console.log('wastageReducer: ' + action.type);
-
 	let newState;
 	switch (action.type) {
 		case SALES_REPORT_FROM_ORDERS:
