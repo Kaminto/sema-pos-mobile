@@ -136,6 +136,7 @@ const getSalesData = (beginDate) => {
 	}, []);
 
 	let groupedOrderItems = groupBySku(filteredOrderItems, "sku");
+	console.log('groupedOrderItems', JSON.stringify(groupedOrderItems));
 	let todaySales = [];
 	for (let i of Object.getOwnPropertyNames(groupedOrderItems)) {
 
@@ -162,6 +163,7 @@ const getSalesData = (beginDate) => {
 		salesItems: todaySales,
 		totalTypes: totalTypes
 	}
+	console.log('finalData', finalData);
 	return { ...finalData };
 };
 
