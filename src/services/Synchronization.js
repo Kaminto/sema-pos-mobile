@@ -165,7 +165,7 @@ class Synchronization {
 								syncResult.products = values[5];
 								syncResult.meterReading = values[6];
 								syncResult.wastageReport = values[7];
-								console.log('values', values);
+								//console.log('values', values);
 								syncResult.debt = values[8];
 								syncResult.recieptPayments = values[9];
 								syncResult.topups = values[10];

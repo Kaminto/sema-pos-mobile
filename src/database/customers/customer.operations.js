@@ -7,7 +7,6 @@ class CustomerRealm {
     constructor() {
         this.customer = [];
         let firstSyncDate = format(sub(new Date(), { days: 180 }), 'yyyy-MM-dd');
-        // console.log('firstSyncDate',firstSyncDate)
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerSyncDate')))).length == 0) {
                 realm.create('CustomerSyncDate', { lastCustomerSync: firstSyncDate });
@@ -248,10 +247,8 @@ class CustomerRealm {
                 let result = [];
                 realm.write(() => {
                     for (i = 0; i < customers.length; i++) {
-                     //   console.log('customers[i]', customers[i])
                         let ischeckCustomer = this.checkCustomer(customers[i].created_at, customers[i].customerId).length;
                         if (ischeckCustomer === 0) {
-                          //  console.log('saveing', value)
                             let value = realm.create('Customer', {
                                 ...customers[i],
                                 customerId: customers[i].id,
@@ -272,7 +269,6 @@ class CustomerRealm {
                                 created_at: customers[i].created_at,
                                 updated_at: customers[i].updated_at
                             });
-                          //  console.log('saved', value)
                             result.push({ status: 'success', data: value, message: 'Customer has been set' });
                         } else if (ischeckCustomer > 0) {
                             let customerObj = realm.objects('Customer').filtered(`topUpId = "${customers[i].topUpId}"`);

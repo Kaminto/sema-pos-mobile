@@ -13,9 +13,6 @@ class RecieptPaymentTypesSync {
                     let remoteRecieptPaymentTypes = result.length > 0 ? [...result] : [];
 
 
-                    console.log('remoteRecieptPaymentTypes', remoteRecieptPaymentTypes);
-                    console.log('localRecieptPaymentTypes', localRecieptPaymentTypes);
-
                     let onlyInLocal = localRecieptPaymentTypes.filter(SyncUtils.compareRemoteAndLocal(remoteRecieptPaymentTypes, 'receipt_payment_type_id'));
                     let onlyInRemote = remoteRecieptPaymentTypes.filter(SyncUtils.compareRemoteAndLocal(localRecieptPaymentTypes, 'receipt_payment_type_id'));
 
@@ -37,7 +34,6 @@ class RecieptPaymentTypesSync {
 
                     }
 
-                    console.log('syncResponseArray', syncResponseArray);
 
                     resolve({
                         success: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',

@@ -1,5 +1,6 @@
 import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
 import OrderRealm from '../database/orders/orders.operations';
+import ProductsRealm from '../database/products/product.operations';
 import { parseISO, isSameDay } from 'date-fns';
 export const SALES_REPORT_FROM_ORDERS = 'SALES_REPORT_FROM_ORDERS';
 export const INVENTORY_REPORT = 'INVENTORY_REPORT';
@@ -136,7 +137,7 @@ const getSalesData = (beginDate) => {
 	}, []);
 
 	let groupedOrderItems = groupBySku(filteredOrderItems, "sku");
-	console.log('groupedOrderItems', JSON.stringify(groupedOrderItems));
+
 	let todaySales = [];
 	for (let i of Object.getOwnPropertyNames(groupedOrderItems)) {
 
@@ -163,7 +164,6 @@ const getSalesData = (beginDate) => {
 		salesItems: todaySales,
 		totalTypes: totalTypes
 	}
-	console.log('finalData', finalData);
 	return { ...finalData };
 };
 

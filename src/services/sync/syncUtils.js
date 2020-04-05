@@ -60,10 +60,8 @@ class SyncUtils {
         newArray.push(option1[i]);
       }
 
-      console.log(result);
 
       for (var b in result) {
-        //console.log(result[b]);
         let currentDatediff = differenceInMilliseconds(
           new Date(option1[i].created_at),
           new Date(result[b].created_at)

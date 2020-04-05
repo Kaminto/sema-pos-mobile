@@ -69,7 +69,6 @@ class InventroyRealm {
     }
 
     getAllInventoryByDate(date) {
-        console.log('idate', date);
         let inventory = this.inventory = Object.values(JSON.parse(JSON.stringify(realm.objects('Inventory'))));
         return inventory.filter(r => {
             return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1 || r.active === false;
@@ -81,7 +80,6 @@ class InventroyRealm {
     }
 
     getAllMeterReadingByDate(date) {
-        console.log('mdate', date);
         let meterReding = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
         return meterReding.filter(r => {
             return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1 || r.active === false;
@@ -174,7 +172,6 @@ class InventroyRealm {
     }
 
     deleteByMeterId(meter_reading_id) {
-        console.log('meter_reading_id', meter_reading_id);
         try {
             realm.write(() => {
                 let meterUpdateObj = realm.objects('MeterReading').filtered(`meter_reading_id = "${meter_reading_id}"`);
@@ -187,7 +184,6 @@ class InventroyRealm {
     }
 
     deleteByClosingStockId(closingStockId) {
-        console.log('closingStockId', closingStockId);
         try {
             realm.write(() => {
                 let inventoryUpdateObj = realm.objects('Inventory').filtered(`closingStockId = "${closingStockId}"`);
@@ -200,15 +196,12 @@ class InventroyRealm {
     }
 
     createInventory(inventory, date) {
-        console.log('inventory-', inventory);
-
         let current_date = set(new Date(date), {
             hours: getHours(new Date()),
             minutes: getMinutes(new Date()),
             seconds: getSeconds(new Date())
         });
         let update_date = new Date();
-        console.log('current_date', current_date);
 
 
         try {
@@ -313,7 +306,6 @@ class InventroyRealm {
     hardDeleteInventory(inventory) {
         try {
             realm.write(() => {
-                console.log("inventory", inventory);
                 let inventories = realm.objects('Inventory');
                 let deleteInventory = inventories.filtered(`closingStockId = "${inventory.closingStockId}"`);
                 realm.delete(deleteInventory);

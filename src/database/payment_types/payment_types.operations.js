@@ -110,7 +110,7 @@ class PaymentTypeRealm {
                             let value = realm.create('PaymentType', {
                                 ...paymentTypes[i],
                                 name: paymentTypes[i].name,
-                                description: paymentTypes[i].description ===null ? '' : paymentTypes[i].description,
+                                description: paymentTypes[i].description === null ? '' : paymentTypes[i].description,
                                 active: true
                             });
                             result.push({ status: 'success', data: value, message: 'Customer Type has been set' });
@@ -136,12 +136,11 @@ class PaymentTypeRealm {
         return this.getPaymentTypes().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.id === id)
     }
 
-    resetSelected(){
+    resetSelected() {
         try {
             realm.write(() => {
                 let paymentTypeObj = realm.objects('PaymentType');
-                paymentTypeObj.forEach(element=>{
-                   // console.log('element',element);
+                paymentTypeObj.forEach(element => {
                     element.isSelected = false;
                 })
             })
@@ -151,7 +150,7 @@ class PaymentTypeRealm {
 
     }
 
-    isSelected(paymentType,isSelected) {
+    isSelected(paymentType, isSelected) {
         try {
             realm.write(() => {
                 let paymentTypeObj = realm.objects('PaymentType').filtered(`id = "${paymentType.id}"`);
@@ -209,7 +208,7 @@ class PaymentTypeRealm {
         }
     }
 
-  
+
 }
 
 export default new PaymentTypeRealm();

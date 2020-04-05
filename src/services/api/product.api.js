@@ -34,7 +34,9 @@ class ProductApi {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-		let url = `sema/products/${date}`;
+	     let url = `sema/products/${date}`;
+		//let url = `sema/products?updated-date=${date}`;
+		
 		console.log(this._url + url);
 		return fetch(this._url + url, options)
 			.then(response => response.json())
