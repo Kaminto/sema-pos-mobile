@@ -101,8 +101,6 @@ export const getMrps = products => {
 		delete e.base64encodedImage;
 		return {...e }
 	})
-	console.log('filProduct-productMrp', productMrp);
-	console.log('filProduct-filProduct', filProduct);
 	let matchProducts = filProduct.filter(prod => ids.includes(prod.productId));	
 	let waterProducts = matchProducts.filter(prod => 3 === prod.categoryId);
 	return waterProducts;

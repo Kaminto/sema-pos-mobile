@@ -59,7 +59,7 @@ export default realm = new Realm({
         MeterReadingSyncDateSchema,
         CustomerDebtSyncDateSchema
     ],
-    schemaVersion: 3,
+    schemaVersion: 7,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
         if (oldRealm.schemaVersion < 1) {

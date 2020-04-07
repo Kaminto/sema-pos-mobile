@@ -42,7 +42,7 @@ class ProductMRPRealm {
 
     getFilteredProductMRP() {
         let productMrpDict = {}; // Note - This assumes that all productMrps are being saved        
-        let productMrpsArray = Object.values(JSON.parse(JSON.stringify(realm.objects('ProductMRP'))));
+        let productMrpsArray = Object.values(JSON.parse(JSON.stringify(realm.objects('ProductMRP').filtered(`active = ${true}`))));
         productMrpsArray.forEach(productMrp => {
             const key = this.getProductMrpKey(productMrp);
 			productMrpDict[key] = productMrp;
@@ -141,7 +141,7 @@ class ProductMRPRealm {
         try {
             realm.write(() => {
                 let productMRPObj = realm.objects('ProductMRP').filtered(`id = "${productMRP.id}"`);
-                productMRPObj[0].active = true;
+                productMRPObj[0].isSynched = true;
                 productMRPObj[0].syncAction = null;
             })
 
@@ -200,7 +200,6 @@ class ProductMRPRealm {
                                 productId: Number(productMRPs[i].productId),
                                 salesChannelId: Number(productMRPs[i].salesChannelId),
                                 siteId: Number(productMRPs[i].siteId),
-                                active: true
                             });
                             result.push({ status: 'success', data: value, message: 'Product MRP has been set' });
                         } else if (ischeckproductMRPs > 0) {
@@ -211,7 +210,8 @@ class ProductMRPRealm {
                              discountObj[0].productId = Number(productMRPs[i].productId);
                              discountObj[0].salesChannelId = Number(productMRPs[i].salesChannelId);
                              discountObj[0].siteId =Number(productMRPs[i].siteId);
-                             discountObj[0].currencyCode = productMRPs[i].currencyCode;
+                             discountObj[0].currencyCode = productMRPs[i].currencyCode;                             
+                             discountObj[0].active = productMRPs[i].active;
                              discountObj[0].updated_at = productMRPs[i].updated_at;
                              result.push({ status: 'success', data: productMRPs[i], message: 'Local Product MRP has been updated' });
                            
