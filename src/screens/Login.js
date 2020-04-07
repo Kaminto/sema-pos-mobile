@@ -187,61 +187,73 @@ class Login extends React.PureComponent {
 		Communications.login(this.state.user, this.state.password)
 			.then(result => {
 				if (result.status === 200) {
-					let oldSettings = { ...SettingRealm.getAllSetting() };
-					let currency = '';
-					if (result.response.data.kiosk.region_id == 201) {
-						currency = 'UGX'
-					} else if (result.response.data.kiosk.region_id == 301) {
-						currency = 'RWF'
-					} else if (result.response.data.kiosk.region_id == 401) {
-						currency = 'KES'
-					} else if (result.response.data.kiosk.region_id == 501) {
-						currency = 'TZS'
-					} else if (result.response.data.kiosk.region_id == 601) {
-						currency = 'USD'
-					} else if (result.response.data.kiosk.region_id == 602) {
-						currency = 'USD'
-					} else if (result.response.data.kiosk.region_id == 701) {
-						currency = 'ZMW'
-					} else if (result.response.data.kiosk.region_id == 801) {
-						currency = 'FBU'
-					}
-					SettingRealm.saveSettings(
-						"http://142.93.115.206:3002/",
-						result.response.data.kiosk.name,
-						this.state.user,
-						this.state.password,
-						this.state.selectedLanguage,
-						result.response.token,
-						result.response.data.kiosk.id,
-						result.response.data.kiosk.region_id,
-						false,
-						currency
-					);
 
-					Communications.initialize(
-						"http://142.93.115.206:3002/",
-						result.response.data.kiosk.name,
-						this.state.user,
-						this.state.password,
-						result.response.token,
-						result.response.data.kiosk.id,
-					);
+					if (result.response.userSatus) {
+						let oldSettings = { ...SettingRealm.getAllSetting() };
+						let currency = '';
+						if (result.response.data.kiosk.region_id == 201) {
+							currency = 'UGX'
+						} else if (result.response.data.kiosk.region_id == 301) {
+							currency = 'RWF'
+						} else if (result.response.data.kiosk.region_id == 401) {
+							currency = 'KES'
+						} else if (result.response.data.kiosk.region_id == 501) {
+							currency = 'TZS'
+						} else if (result.response.data.kiosk.region_id == 601) {
+							currency = 'USD'
+						} else if (result.response.data.kiosk.region_id == 602) {
+							currency = 'USD'
+						} else if (result.response.data.kiosk.region_id == 701) {
+							currency = 'ZMW'
+						} else if (result.response.data.kiosk.region_id == 801) {
+							currency = 'FBU'
+						}
+						SettingRealm.saveSettings(
+							"http://142.93.115.206:3002/",
+							result.response.data.kiosk.name,
+							this.state.user,
+							this.state.password,
+							this.state.selectedLanguage,
+							result.response.token,
+							result.response.data.kiosk.id,
+							result.response.data.kiosk.region_id,
+							false,
+							currency
+						);
 
-					Communications.setToken(
-						result.response.token
-					);
-					Communications.setSiteId(result.response.data.kiosk.id);
-					SettingRealm.setTokenExpiration();
+						Communications.initialize(
+							"http://142.93.115.206:3002/",
+							result.response.data.kiosk.name,
+							this.state.user,
+							this.state.password,
+							result.response.token,
+							result.response.data.kiosk.id,
+						);
 
-					if (this.isSiteIdDifferent(result.response.data.kiosk.id, oldSettings.siteId)) {
-						this.onSynchronize();
-					}
+						Communications.setToken(
+							result.response.token
+						);
+						Communications.setSiteId(result.response.data.kiosk.id);
+						SettingRealm.setTokenExpiration();
 
-					if (!this.isSiteIdDifferent(result.response.data.kiosk.id, oldSettings.siteId)) {
-						this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
+						if (this.isSiteIdDifferent(result.response.data.kiosk.id, oldSettings.siteId)) {
+							this.onSynchronize();
+						}
+
+						if (!this.isSiteIdDifferent(result.response.data.kiosk.id, oldSettings.siteId)) {
+							this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
+							this.setState({ isLoading: false });
+							this.props.navigation.navigate('App');
+						}
+
+					}else{
+						Alert.alert(
+							i18n.t('network-connection'),
+							`Account has been De-activated`,
+							[{ text: i18n.t('ok'), style: 'cancel' }],
+							{ cancelable: true }
+						);
 						this.setState({ isLoading: false });
-						this.props.navigation.navigate('App');
 					}
 
 				} else {

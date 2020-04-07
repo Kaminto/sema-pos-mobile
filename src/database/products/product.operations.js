@@ -181,7 +181,6 @@ class ProductsRealm {
                     for (i = 0; i < products.length; i++) {
                         let ischeckproducts = this.checkProduct(products[i].created_at, products[i].id).length;
                         if (ischeckproducts === 0) {
-                            console.log('products[i].wastageName', products[i].wastageName)
                             let value = realm.create('Product', {
                                 ...products[i],
                                 productId: products[i].id,

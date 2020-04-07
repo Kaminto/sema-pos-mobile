@@ -10,6 +10,7 @@ export const ProductMRPSchema = {
         siteId: { type: 'int' },
         active: { type: 'bool', optional: true },
         syncAction: { type: 'string', optional: true },
+        isSynched: { type: 'bool', optional: true },
         created_at: { type: 'date', optional: true },
         updated_at: { type: 'date', optional: true },
     }
