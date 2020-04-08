@@ -202,7 +202,6 @@ class CustomSidebarMenu extends React.PureComponent {
       DiscountRealm.getDiscounts()
     );
 
-
   };
 
   onSynchronize() {
@@ -220,9 +219,7 @@ class CustomSidebarMenu extends React.PureComponent {
 
         this.props.receiptActions.setReceipts(
           OrderRealm.getAllOrder()
-        );
-
-        
+        );        
 
         Alert.alert(
           i18n.t('sync-results'),
