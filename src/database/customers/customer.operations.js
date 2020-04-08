@@ -47,6 +47,13 @@ class CustomerRealm {
         })
     }
 
+
+    getCustomerById(customerId) {
+        let customers = Object.values(JSON.parse(JSON.stringify(realm.objects('Customer').filtered(`customerId = "${customerId}"`))));
+        return customers[0]
+    }
+
+
     getCustomerBycreated_at(date) {
         try {
             let orderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('Customer'))));
@@ -271,7 +278,7 @@ class CustomerRealm {
                             });
                             result.push({ status: 'success', data: value, message: 'Customer has been set' });
                         } else if (ischeckCustomer > 0) {
-                            let customerObj = realm.objects('Customer').filtered(`topUpId = "${customers[i].topUpId}"`);
+                            let customerObj = realm.objects('Customer').filtered(`customerId = "${customers[i].id}"`);
 
 
                             customerObj[0].customerId = customers[i].id;
