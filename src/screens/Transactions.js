@@ -193,7 +193,6 @@ class TransactionDetail extends React.PureComponent {
 	};
 
 	render() {
-		console.log('item-details', this.props.item);
 		var receiptLineItems;
 		var paymentTypes;
 
@@ -316,12 +315,9 @@ class TransactionDetail extends React.PureComponent {
 						marginBottom: 5,
 						marginTop: 5
 					}}>
-
-
-
 					<View style={{ flex: 1, padding: 15 }}>
 						<ScrollView style={{ flex: 1 }}>
-							<View style={styles.deleteButtonContainer}>
+							{/* <View style={styles.deleteButtonContainer}>
 								<TouchableOpacity
 									onPress={this.onDeleteReceipt(this.props.item)}
 									style={[
@@ -330,7 +326,7 @@ class TransactionDetail extends React.PureComponent {
 									]}>
 									<Text style={styles.receiptDeleteButtonText}>X</Text>
 								</TouchableOpacity>
-							</View>
+							</View> */}
 							<View style={styles.itemData}>
 								<Text style={styles.customername}>{this.props.item.customerAccount.name}</Text>
 							</View>
@@ -365,13 +361,42 @@ class TransactionDetail extends React.PureComponent {
 								<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>Amount</Text>
 							</View>
 
-							<View style={[styles.itemData, { flex: 3 }]}>
-								<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
-									{this.props.item.name == 'credit' ? 'Wallet' : this.props.item.name}</Text>
+							<View
+								style={{
+									flex: 1,
+									flexDirection: 'row',
+									marginBottom: 5,
+									marginTop: 5
+								}}>
+								<View style={[styles.itemData, { flex: 3 }]}>
+									<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
+										{this.props.item.type}</Text>
+
+								</View>
+								<View style={[styles.itemData, { flex: 1 }]}>
+									<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {this.props.item.totalAmount} </Text>
+								</View>
 							</View>
-							<View style={[styles.itemData, { flex: 1 }]}>
-								<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {this.props.item.totalAmount} </Text>
+
+
+							<View
+								style={{
+									flex: 1,
+									flexDirection: 'row',
+									marginBottom: 5,
+									marginTop: 5
+								}}>
+								<View style={[styles.itemData, { flex: 3 }]}>
+									<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
+										Balance</Text>
+
+								</View>
+								<View style={[styles.itemData, { flex: 1 }]}>
+									<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {this.props.item.balance} </Text>
+								</View>
 							</View>
+
+
 
 							{/* <View>
 								<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>PRODUCTS</Text>
@@ -573,7 +598,8 @@ class Transactions extends React.PureComponent {
 				// currency: receipt.currency_code,
 				isReceipt: false,
 				type: 'Debt Payment',
-				totalAmount: receipt.due_amount
+				totalAmount: receipt.due_amount,
+				balance: receipt.balance
 			};
 		});
 
@@ -611,6 +637,7 @@ class Transactions extends React.PureComponent {
 				// currency: receipt.currency_code,
 				isReceipt: false,
 				type: 'Top Up',
+				balance: receipt.balance,
 				totalAmount: receipt.topup
 			};
 		});
@@ -642,11 +669,21 @@ class Transactions extends React.PureComponent {
 		let topups = this.prepareTopUpData();
 		let deptPayment = this.prepareCustomerDebt();
 
+		// console.log('receipts', receipts);
+		//	console.log('topups', JSON.stringify(topups));
+		// console.log('deptPayment',deptPayment);
 
 
 
-		let transformedarray = this.groupBySectionTitle((receipts.concat(topups)).concat(deptPayment), 'sectiontitle');
+		let finalArray = (deptPayment.concat(topups)).concat(receipts).sort((a, b) => {
+			return isBefore(new Date(a.createdAt), new Date(b.createdAt))
+				? 1
+				: -1;
+		});
 
+		let transformedarray = this.groupBySectionTitle(finalArray, 'sectiontitle');
+		//let transformedarray = this.groupBySectionTitle((receipts.concat(topups)).concat(deptPayment), 'sectiontitle');
+		//console.log('transformedarray', transformedarray);
 		let newarray = [];
 		for (let i of Object.getOwnPropertyNames(transformedarray)) {
 			newarray.push({
@@ -654,7 +691,6 @@ class Transactions extends React.PureComponent {
 				data: transformedarray[i],
 			});
 		}
-		//console.log('newarray', JSON.stringify(newarray[0]));
 		return newarray;
 	}
 
@@ -750,7 +786,7 @@ class Transactions extends React.PureComponent {
 			<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
 				<View key={index} style={{ padding: 10 }}>
 					<View style={styles.itemData}>
-					{/* <Icon name={`md-albums`} size={25} color="#808080" /> */}
+						{/* <Icon name={`md-albums`} size={25} color="#808080" /> */}
 						<Text style={styles.customername}>{item.type}</Text>
 					</View>
 					<View style={styles.itemData}>

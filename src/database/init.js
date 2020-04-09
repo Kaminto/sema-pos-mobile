@@ -16,6 +16,10 @@ import { CustomerReminderSchema } from './customer-reminder/customer-reminder.mo
 import { PaymentTypeSchema, PaymentTypeSyncDateSchema } from './payment_types/payment_type.model';
 import { ReceiptPaymentTypeSchema, ReceiptPaymentTypeSyncDateSchema } from './reciept_payment_types/reciept_payment_types.model';
 
+
+import { DebtTopupPaymentTypeSchema, DebtTopupPaymentTypeSyncDateSchema } from './debtTopupPaymentTypes/debtTopupPaymentTypes.model';
+
+
 // Realm schema creation
 const SEMA_SCHEMA = {
     name: 'SemaRealm',
@@ -57,9 +61,11 @@ export default realm = new Realm({
         CustomerReminderSchema,
         MeterReadingSchema,
         MeterReadingSyncDateSchema,
-        CustomerDebtSyncDateSchema
+        CustomerDebtSyncDateSchema,
+        DebtTopupPaymentTypeSchema,
+        DebtTopupPaymentTypeSyncDateSchema
     ],
-    schemaVersion: 7,
+    schemaVersion: 90,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
         if (oldRealm.schemaVersion < 1) {
