@@ -898,11 +898,11 @@ class OrderCheckout extends React.PureComponent {
 		);
 	}
 
-	topUpWallet = (amount) => {
+	topUpWallet = (amount, balance) => {
 		CreditRealm.createCredit(
 			this.props.selectedCustomer.customerId,
 			Number(amount),
-			Number(amount)
+			Number(balance)
 		);
 		this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
 		this.setState({
@@ -910,8 +910,8 @@ class OrderCheckout extends React.PureComponent {
 		})
 	}
 
-	logCredit = (amount) => {
-		CustomerDebtRealm.createCustomerDebt(amount, this.props.selectedCustomer.customerId);
+	logCredit = (amount, balance) => {
+		CustomerDebtRealm.createCustomerDebt(amount, this.props.selectedCustomer.customerId, balance);
 		this.props.paymentTypesActions.setCustomerPaidDebt(
 			CustomerDebtRealm.getCustomerDebts()
 		);
@@ -990,23 +990,24 @@ class OrderCheckout extends React.PureComponent {
 				if (totalAmountPaid > 0) {
 					if (totalAmountPaid > this.calculateOrderDue()) {
 						if (this.calculateLoanBalance() === 0) {
-							this.topUpWallet(Number(totalAmountPaid - this.calculateOrderDue()));
 							this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + Number(totalAmountPaid - this.calculateOrderDue());
 							this.updateWallet(this.props.selectedCustomer.walletBalance);
+							this.topUpWallet(Number(totalAmountPaid - this.calculateOrderDue()), this.props.selectedCustomer.walletBalance);
+
 						} else if (this.calculateLoanBalance() > 0) {
 							let postToLoan = Number(totalAmountPaid) - this.calculateOrderDue();
 							if (postToLoan > this.calculateLoanBalance()) {
 								const topUpExpected = Number(postToLoan) - this.calculateLoanBalance();
 								this.props.selectedCustomer.dueAmount = 0;
-								this.logCredit(Number(this.calculateLoanBalance()));
+								this.logCredit(Number(this.calculateLoanBalance()), 0);
 								this.updateLoanBalance(this.props.selectedCustomer.dueAmount);
-								this.topUpWallet(topUpExpected);
 								this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + topUpExpected;
 								this.updateWallet(this.props.selectedCustomer.walletBalance);
+								this.topUpWallet(topUpExpected, this.props.selectedCustomer.walletBalance);
 							} else if (postToLoan <= this.calculateLoanBalance()) {
 								this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - postToLoan;
 								this.updateLoanBalance(this.props.selectedCustomer.dueAmount);
-								this.logCredit(Number(postToLoan));
+								this.logCredit(Number(postToLoan), this.props.selectedCustomer.dueAmount);
 							}
 						}
 					} else if (totalAmountPaid < this.calculateOrderDue()) {
