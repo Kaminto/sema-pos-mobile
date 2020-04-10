@@ -898,11 +898,12 @@ class OrderCheckout extends React.PureComponent {
 		);
 	}
 
-	topUpWallet = (amount, balance) => {
+	topUpWallet = (amount, balance, recieptId) => {
 		CreditRealm.createCredit(
 			this.props.selectedCustomer.customerId,
 			Number(amount),
-			Number(balance)
+			Number(balance),
+			recieptId
 		);
 		this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
 		this.setState({
@@ -910,8 +911,8 @@ class OrderCheckout extends React.PureComponent {
 		})
 	}
 
-	logCredit = (amount, balance) => {
-		CustomerDebtRealm.createCustomerDebt(amount, this.props.selectedCustomer.customerId, balance);
+	logCredit = (amount, balance, recieptId) => {
+		CustomerDebtRealm.createCustomerDebt(amount, this.props.selectedCustomer.customerId, balance, recieptId);
 		this.props.paymentTypesActions.setCustomerPaidDebt(
 			CustomerDebtRealm.getCustomerDebts()
 		);
@@ -935,6 +936,7 @@ class OrderCheckout extends React.PureComponent {
 		this.setState({
 			buttonDisabled: true
 		});
+		let recieptId = uuidv1();
 		let totalAmountPaid = this.props.selectedPaymentTypes.reduce((total, item) => { return (total + item.amount) }, 0);
 
 		if (this.currentCredit() > this.calculateOrderDue()) {
@@ -992,22 +994,22 @@ class OrderCheckout extends React.PureComponent {
 						if (this.calculateLoanBalance() === 0) {
 							this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + Number(totalAmountPaid - this.calculateOrderDue());
 							this.updateWallet(this.props.selectedCustomer.walletBalance);
-							this.topUpWallet(Number(totalAmountPaid - this.calculateOrderDue()), this.props.selectedCustomer.walletBalance);
+							this.topUpWallet(Number(totalAmountPaid - this.calculateOrderDue()), this.props.selectedCustomer.walletBalance, recieptId);
 
 						} else if (this.calculateLoanBalance() > 0) {
 							let postToLoan = Number(totalAmountPaid) - this.calculateOrderDue();
 							if (postToLoan > this.calculateLoanBalance()) {
 								const topUpExpected = Number(postToLoan) - this.calculateLoanBalance();
-								this.props.selectedCustomer.dueAmount = 0;
-								this.logCredit(Number(this.calculateLoanBalance()), 0);
-								this.updateLoanBalance(this.props.selectedCustomer.dueAmount);
+								//this.props.selectedCustomer.dueAmount = 0;
+								this.updateLoanBalance(0);
+								this.logCredit(Number(this.props.selectedCustomer.dueAmount), 0,recieptId);								
 								this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + topUpExpected;
 								this.updateWallet(this.props.selectedCustomer.walletBalance);
-								this.topUpWallet(topUpExpected, this.props.selectedCustomer.walletBalance);
+								this.topUpWallet(topUpExpected, this.props.selectedCustomer.walletBalance,recieptId);
 							} else if (postToLoan <= this.calculateLoanBalance()) {
 								this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - postToLoan;
 								this.updateLoanBalance(this.props.selectedCustomer.dueAmount);
-								this.logCredit(Number(postToLoan), this.props.selectedCustomer.dueAmount);
+								this.logCredit(Number(postToLoan), this.props.selectedCustomer.dueAmount,recieptId);
 							}
 						}
 					} else if (totalAmountPaid < this.calculateOrderDue()) {
@@ -1033,7 +1035,7 @@ class OrderCheckout extends React.PureComponent {
 
 		}
 
-		this.saveOrder(true);
+		this.saveOrder(true, recieptId);
 	};
 
 	invoiceid = () => {
@@ -1047,7 +1049,7 @@ class OrderCheckout extends React.PureComponent {
 		return uuid;
 	};
 
-	saveOrder = () => {
+	saveOrder = (status, recieptId) => {
 		let receipt = null;
 		let price_total = 0;
 		let totalAmount = 0;
@@ -1057,7 +1059,7 @@ class OrderCheckout extends React.PureComponent {
 			: new Date(Date.now());
 
 		receipt = {
-			id: uuidv1(),
+			id: recieptId,
 			uuid: SettingRealm.getAllSetting().siteId + '-' + this.invoiceid(),
 			created_at: receiptDate,
 			currency_code: this.props.products[0].product.priceCurrency,

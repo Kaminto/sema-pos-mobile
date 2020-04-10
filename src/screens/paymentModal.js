@@ -405,7 +405,7 @@ class PaymentModal extends React.PureComponent {
 					CustomerRealm.getAllCustomer()
 				);
 
-				CustomerDebtRealm.createCustomerDebt(amountPaid, this.props.selectedCustomer.customerId, this.props.selectedCustomer.dueAmount);
+				CustomerDebtRealm.createCustomerDebt(amountPaid, this.props.selectedCustomer.customerId, this.props.selectedCustomer.dueAmount, null);
 				this.props.paymentTypesActions.setCustomerPaidDebt(
 					CustomerDebtRealm.getCustomerDebts()
 				);
@@ -431,7 +431,7 @@ class PaymentModal extends React.PureComponent {
 						CustomerRealm.getAllCustomer()
 					);
 
-					CustomerDebtRealm.createCustomerDebt(amountCleared, this.props.selectedCustomer.customerId, this.props.selectedCustomer.dueAmount);
+					CustomerDebtRealm.createCustomerDebt(amountCleared, this.props.selectedCustomer.customerId, this.props.selectedCustomer.dueAmount, null);
 					this.props.paymentTypesActions.setCustomerPaidDebt(
 						CustomerDebtRealm.getCustomerDebts()
 					);
@@ -455,7 +455,8 @@ class PaymentModal extends React.PureComponent {
 					CreditRealm.createCredit(
 						this.props.selectedCustomer.customerId,
 						creditsurplus,
-						this.props.selectedCustomer.walletBalance
+						this.props.selectedCustomer.walletBalance,
+						null
 					);
 					this.setState({ topup: "" });
 					this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
