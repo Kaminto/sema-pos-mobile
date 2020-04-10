@@ -44,6 +44,11 @@ class CustomerDebtRealm {
         return Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerDebt'))));
     }
 
+    
+    getCustomerDebtsTransactions() {
+        return Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerDebt').filtered(`receipt_id = ${null}`))));
+    }
+
 
     getCustomerDebtsByDate(date) {
         let customerDebt = Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerDebt'))));
@@ -145,6 +150,11 @@ class CustomerDebtRealm {
         }
     }
 
+    getCustomerDebtByRecieptId(receipt_id) {
+        let customerDebt = Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerDebt').filtered(`receipt_id = "${receipt_id}"`))));
+        return customerDebt[0]
+    }
+
     softDeleteCustomerDebt(customerDebt) {
         try {
             realm.write(() => {
@@ -208,7 +218,7 @@ class CustomerDebtRealm {
                             customerDebtUpdate[0].customer_account_id = customerDebts[i].customer_account_id;
                             customerDebtUpdate[0].due_amount = customerDebts[i].due_amount ? Number(customerDebts[i].due_amount) : Number(customerDebts[i].amount);
                             customerDebtUpdate[0].updated_at = customerDebts[i].updated_at;
-                            customerDebtUpdate[0].balance= customerDebts[i].balance;
+                            customerDebtUpdate[0].balance = customerDebts[i].balance;
 
 
                             result.push({ status: 'success', data: customerDebts[i], message: 'Local Customer Debt has been updated' });
@@ -229,9 +239,7 @@ class CustomerDebtRealm {
         return this.getCustomerDebts().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.customer_debt_id === customer_debt_id)
     }
 
-
-
-    createCustomerDebt(due_amount, customer_account_id, balance) {
+    createCustomerDebt(due_amount, customer_account_id, balance, receipt_id) {
         try {
             realm.write(() => {
                 realm.create('CustomerDebt', {
@@ -239,6 +247,7 @@ class CustomerDebtRealm {
                     customer_debt_id: uuidv1(),
                     balance,
                     due_amount: Number(due_amount),
+                    receipt_id,
                     active: false,
                     syncAction: 'create',
                     created_at: new Date(),

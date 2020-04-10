@@ -42,6 +42,11 @@ class CreditRealm {
         return this.credit = Object.values(JSON.parse(JSON.stringify(realm.objects('Credit'))));
     }
 
+    getCreditTransactions() {
+        return Object.values(JSON.parse(JSON.stringify(realm.objects('Credit').filtered(`receipt_id = ${null}`))));
+    }
+
+
     getAllCreditByDate(date) {
         let credit = Object.values(JSON.parse(JSON.stringify(realm.objects('Credit'))));
         return credit.filter(r => {
@@ -70,7 +75,7 @@ class CreditRealm {
     }
 
 
-    createCredit(customer_account_id, topupval, balanceval) {
+    createCredit(customer_account_id, topupval, balanceval, receipt_id) {
         const nowDate = new Date();
         let topup = Number(topupval);
         let balance = Number(balanceval);
@@ -80,6 +85,7 @@ class CreditRealm {
             customer_account_id,
             topup,
             balance,
+            receipt_id,
             created_at: nowDate,
             updated_at: nowDate,
             syncAction: 'create',
@@ -111,6 +117,12 @@ class CreditRealm {
         }
 
     }
+
+    getCreditByRecieptId(receipt_id) {
+        let credit = Object.values(JSON.parse(JSON.stringify(realm.objects('Credit').filtered(`receipt_id = "${receipt_id}"`))));
+        return credit[0]
+    }
+
 
     synched(credit) {
         try {
