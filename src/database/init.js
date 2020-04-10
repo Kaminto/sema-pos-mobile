@@ -65,7 +65,7 @@ export default realm = new Realm({
         DebtTopupPaymentTypeSchema,
         DebtTopupPaymentTypeSyncDateSchema
     ],
-    schemaVersion: 90,
+    schemaVersion: 91,
     migration: (oldRealm, newRealm) => {
         // only apply this change if upgrading to schemaVersion 1
         if (oldRealm.schemaVersion < 1) {
