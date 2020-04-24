@@ -1002,7 +1002,7 @@ class OrderCheckout extends React.PureComponent {
 								const topUpExpected = Number(postToLoan) - this.calculateLoanBalance();
 								//this.props.selectedCustomer.dueAmount = 0;
 								this.updateLoanBalance(0);
-								this.logCredit(Number(this.props.selectedCustomer.dueAmount), 0,recieptId);								
+								this.logCredit(Number(this.props.selectedCustomer.dueAmount), 0,recieptId);
 								this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + topUpExpected;
 								this.updateWallet(this.props.selectedCustomer.walletBalance);
 								this.topUpWallet(topUpExpected, this.props.selectedCustomer.walletBalance,recieptId);
