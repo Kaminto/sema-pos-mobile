@@ -1,4 +1,5 @@
 class ReminderApi {
+
 	constructor() {
 		this._url = 'http://142.93.115.206:3002/';
 		this._site = '';
@@ -6,14 +7,13 @@ class ReminderApi {
 		this._password = '';
 		this._token = '';
 		this._siteId = '';
-		this.customer_account_id = '';
 	}
 
 	initialize(url, site, user, password, token, siteId) {
 		if (!url.endsWith('/')) {
 			url = url + '/';
 		}
-		this._url = url;
+		this._url = 'http://142.93.115.206:3002/';
 		this._site = site;
 		this._user = user;
 		this._password = password;
@@ -24,35 +24,38 @@ class ReminderApi {
 	setToken(token) {
 		this._token = token;
 	}
+
 	setSiteId(siteId) {
 		this._siteId = siteId;
 	}
 
-	getReminders(kiosk_id,updatedSince) {
+	getCustomerReminder(kiosk_id, date) {
 		let options = {
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer ' + this._token
 			}
 		};
-		let url = `sema/reminders/${kiosk_id}`;
-		console.log('this._url', this._url);
-		// if (updatedSince) {
-		// 	url = url + '?updated-date=' + updatedSince;
-		// }
+		let url = `sema/customer_reminders/${kiosk_id}/${date}`;
 
+		// if (updatedSince) {
+		// 	url = url + '&updated-date=' + updatedSince;
+		// }
+		console.log('Customer Reminder link', this._url + url);
 		return fetch(this._url + url, options)
-		.then(response => response.json())
+			.then(response => response.json())
 			.then(responseJson => {
 				return responseJson;
 			})
 			.catch(error => {
-				console.log('Communications: Customer Debt: ' + error);
+				console.log('Communications:getCustomerReminder: ' + error);
 				throw error;
 			});
 	}
 
-	createReminder(customerDebt) {
+	createCustomerReminder(CustomerReminder) {
+		// TODO - Resolve CustomerReminder.... Is it needed, currently hardcoded...
+
 		let options = {
 			method: 'POST',
 			headers: {
@@ -60,41 +63,42 @@ class ReminderApi {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + this._token
 			},
-			body: JSON.stringify(customerDebt)
+			body: JSON.stringify(CustomerReminder)
 		};
 		console.log('this._url', this._url);
 		return new Promise((resolve, reject) => {
-			fetch(this._url + 'sema/reminders', options)
+			fetch(this._url + 'sema/customer_reminders/', options)
 				.then(response => {
+					console.log('header', response.headers.map.message);
+					
 					if (response.status === 200) {
 						response
 							.json()
 							.then(responseJson => {
-
 								resolve(responseJson);
 							})
 							.catch(error => {
 								console.log(
-									'createReminder - Parse JSON: ' +
+									'createCustomerReminder - Parse JSON: ' +
 									error
 								);
 								reject();
 							});
 					} else {
 						console.log(
-							'createReminder - Fetch status: ' + response.status
+							'createCustomerReminder - Fetch message: ' + response.headers.map.message
 						);
-						reject();
+						reject(response.headers.map.message);
 					}
 				})
 				.catch(error => {
-					console.log('createReminder - Fetch: ' + error);
+					console.log('createCustomerReminder - messag: ' + response.headers.map.message);
 					reject();
 				});
 		});
-    }
-
-	deleteReminder(customerDebt) {
+	}
+	// Note that deleting a CustomerReminder actually just deactivates the CustomerReminder
+	deleteCustomerReminder(CustomerReminder) {
 		let options = {
 			method: 'DELETE',
 			headers: {
@@ -108,7 +112,7 @@ class ReminderApi {
 		};
 		return new Promise((resolve, reject) => {
 			fetch(
-				this._url + 'sema/reminders/' + customerDebt.customer_debt_id,
+				this._url + 'sema/customer_reminders/' + CustomerReminder.reminder_id,
 				options
 			)
 				.then(response => {
@@ -116,19 +120,19 @@ class ReminderApi {
 						resolve();
 					} else {
 						console.log(
-							'deleteReminder - Fetch status: ' + response.status
+							'deleteCustomerReminder - Fetch status: ' + response.status
 						);
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('deleteReminder - Fetch: ' + error);
+					console.log('deleteCustomerReminder - Fetch: ' + error);
 					reject();
 				});
 		});
 	}
 
-	updateReminder(customerDebt) {
+	updateCustomerReminder(CustomerReminder) {
 		let options = {
 			method: 'PUT',
 			headers: {
@@ -136,11 +140,11 @@ class ReminderApi {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + this._token
 			},
-			body: JSON.stringify(customerDebt)
+			body: JSON.stringify(CustomerReminder)
 		};
 		return new Promise((resolve, reject) => {
 			fetch(
-				this._url + 'sema/reminders/' + customerDebt.customer_debt_id,
+				this._url + 'sema/customer_reminders/' + CustomerReminder.reminder_id,
 				options
 			)
 				.then(response => {
@@ -152,24 +156,26 @@ class ReminderApi {
 							})
 							.catch(error => {
 								console.log(
-									'updateReminder - Parse JSON: ' +
+									'updateCustomerReminder - Parse JSON: ' +
 									error
 								);
 								reject();
 							});
 					} else {
 						console.log(
-							'updateReminder - Fetch status: ' + response.status
+							'updateCustomerReminder - Fetch status: ' + response.status
 						);
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('createReminder - Fetch: ' + error);
+					console.log('createCustomerReminder - Fetch: ' + error);
 					reject();
 				});
 		});
 	}
+
+
 }
 
 export default new ReminderApi();

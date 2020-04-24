@@ -54,8 +54,8 @@ class ReminderRealm {
     updateReminder(reminder) {
         try {
             realm.write(() => {
-                let reminderObj = realm.objects('Reminder').filtered(`id = "${reminder.reminderId}"`);
-                reminderObj[0].reminderId = reminder.reminderId;
+                let reminderObj = realm.objects('Reminder').filtered(`id = "${reminder.reminder_id}"`);
+                reminderObj[0].reminder_id = reminder.reminder_id;
                 reminderObj[0].name = reminder.name;
 
 				reminderObj[0].frequency = reminder.frequency;
@@ -87,7 +87,7 @@ class ReminderRealm {
     isSelected(reminder, isSelected) {
         try {
             realm.write(() => {
-                let reminderObj = realm.objects('Reminder').filtered(`id = "${reminder.reminderId}"`);
+                let reminderObj = realm.objects('Reminder').filtered(`id = "${reminder.reminder_id}"`);
                 reminderObj[0].isSelected = isSelected;
 
             })
@@ -100,7 +100,7 @@ class ReminderRealm {
     synched(reminder) {
         try {
             realm.write(() => {
-                let reminderObj = realm.objects('Reminder').filtered(`id = "${reminder.reminderId}"`);
+                let reminderObj = realm.objects('Reminder').filtered(`id = "${reminder.reminder_id}"`);
                 reminderObj[0].active = true;
                 reminderObj[0].syncAction = null;
             })
@@ -115,7 +115,7 @@ class ReminderRealm {
         try {
             realm.write(() => {
                 let reminders = realm.objects('Reminder');
-                let deleteReminder = reminders.filtered(`id = "${reminder.reminderId}"`);
+                let deleteReminder = reminders.filtered(`id = "${reminder.reminder_id}"`);
                 realm.delete(deleteReminder);
             })
 
@@ -128,7 +128,7 @@ class ReminderRealm {
         try {
             realm.write(() => {
                 realm.write(() => {
-                    let reminderObj = realm.objects('Reminder').filtered(`id = "${reminder.reminderId}"`);
+                    let reminderObj = realm.objects('Reminder').filtered(`id = "${reminder.reminder_id}"`);
                     reminderObj[0].syncAction = 'delete';
                 })
             })
@@ -144,7 +144,7 @@ class ReminderRealm {
                     reminders.forEach(obj => {
                         realm.create('Reminder', {
                             customer_account_id: customer_account_id ? customer_account_id : null,
-                            reminderId: uuidv1(),
+                            reminder_id: uuidv1(),
                             due_amount: obj.amount,
                             syncAction: obj.syncAction ? obj.syncAction : 'CREATE',
                             created_at: new Date(),

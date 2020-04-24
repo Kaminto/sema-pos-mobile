@@ -242,7 +242,8 @@ class CustomSidebarMenu extends React.PureComponent {
           syncResult.meterReading.meterReading == 0 &&
           syncResult.wastageReport.wastageReport == 0 &&
           syncResult.recieptPayments.recieptPayments == 0 &&
-          syncResult.topups.topups == 0
+          syncResult.topups.topups == 0  &&
+          syncResult.customerReminder.customerReminder == 0
         ) {
           return i18n.t('data-is-up-to-date');
         } else {
@@ -255,7 +256,10 @@ class CustomSidebarMenu extends React.PureComponent {
               \n${syncResult.wastageReport.successError === 'fail' ? syncResult.wastageReport.successMessage.message : syncResult.wastageReport.wastageReport } ${syncResult.wastageReport.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('wastageReport-updated')}
              \n${syncResult.topups.successError === 'fail' ? syncResult.topups.successMessage.message : syncResult.topups.topups } ${syncResult.topups.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('topups-updated')}             
              \n${syncResult.salesChannels.successError === 'fail' ? syncResult.salesChannels.successMessage.message : syncResult.salesChannels.salesChannels } ${syncResult.salesChannels.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('salechannel-updated')}
-              \n${syncResult.productMrps.successError === 'fail' ? syncResult.productMrps.successMessage.message : syncResult.productMrps.productMrps } ${syncResult.salesChannels.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('pricing-sheme-updated')}
+              \n${syncResult.productMrps.successError === 'fail' ? syncResult.productMrps.successMessage.message : syncResult.productMrps.productMrps } ${syncResult.productMrps.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('pricing-sheme-updated')}
+
+              \n${syncResult.customerReminder.successError === 'fail' ? syncResult.customerReminder.successMessage.message : syncResult.customerReminder.customerReminder } ${syncResult.customerReminder.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('customer-reminder-updated')}
+
               \n${syncResult.recieptPayments.successError === 'fail' ? syncResult.recieptPayments.successMessage.message : syncResult.recieptPayments.recieptPayments } ${syncResult.recieptPayments.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('recieptPayments-updated')}
            
 		      

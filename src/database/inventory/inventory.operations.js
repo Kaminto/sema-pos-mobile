@@ -11,8 +11,8 @@ class InventroyRealm {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('InventorySyncDate')))).length == 0) {
                 realm.create('InventorySyncDate', { lastInventorySync: firstSyncDate });
             }
-
         });
+        
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReadingSyncDate')))).length == 0) {
                 realm.create('MeterReadingSyncDate', { lastMeterReadingSync: firstSyncDate });

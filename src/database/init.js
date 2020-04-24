@@ -11,7 +11,7 @@ import { OrderSyncDateSchema, OrderSchema } from './orders/orders.model';
 import { DiscountSchema, DiscountSyncDateSchema } from './discount/discount.model';
 import { CustomerDebtSchema, CustomerDebtSyncDateSchema } from './customer_debt/customer_debt.model';
 import { MeterReadingSchema, MeterReadingSyncDateSchema } from './inventory/meter-reading.model';
-import { CustomerReminderSchema } from './customer-reminder/customer-reminder.model';
+import { CustomerReminderSchema, CustomerReminderSyncDateSchema } from './customer-reminder/customer-reminder.model';
 
 import { PaymentTypeSchema, PaymentTypeSyncDateSchema } from './payment_types/payment_type.model';
 import { ReceiptPaymentTypeSchema, ReceiptPaymentTypeSyncDateSchema } from './reciept_payment_types/reciept_payment_types.model';
@@ -59,6 +59,7 @@ export default realm = new Realm({
         ReceiptPaymentTypeSyncDateSchema,
         CustomerDebtSchema,
         CustomerReminderSchema,
+        CustomerReminderSyncDateSchema,
         MeterReadingSchema,
         MeterReadingSyncDateSchema,
         CustomerDebtSyncDateSchema,
