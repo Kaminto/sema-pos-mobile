@@ -106,8 +106,10 @@ class PaymentTypeItem extends React.PureComponent {
 					marginBottom: 5,
 					marginTop: 5
 				}}>
+
 				<View style={[styles.itemData, { flex: 3 }]}>
-					<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
+			    	<Icon name={`md-cash`} size={25} color="#808080" />
+					<Text style={[styles.label, { paddingLeft: 10,fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
 						{this.props.item.name == 'credit' ? 'Wallet' : this.props.item.name}</Text>
 				</View>
 				<View style={[styles.itemData, { flex: 1 }]}>
@@ -169,7 +171,6 @@ class TransactionDetail extends React.PureComponent {
 		};
 	}
 
-
 	deleteReceipt(item) {
 		OrderRealm.softDeleteOrder(item);
 		const loanIndex = item.paymentTypes.map(function (e) { return e.name }).indexOf("loan");
@@ -204,21 +205,19 @@ class TransactionDetail extends React.PureComponent {
 					style={{
 						flex: 1,
 						flexDirection: 'row',
-						marginBottom: 5,
-						marginTop: 5
+						 marginTop: 10
 					}}>
-					<View style={{ flex: 1, padding: 15 }}>
+					<View style={{ flex: 1}}>
 
-						<View>
+						{/* <View>
 							<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>Top Up</Text>
-						</View>
+						</View> */}
 
 						<View
 							style={{
 								flex: 1,
 								flexDirection: 'row',
-								marginBottom: 5,
-								marginTop: 5
+
 							}}>
 							<View style={[styles.itemData, { flex: 3 }]}>
 								<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
@@ -231,7 +230,7 @@ class TransactionDetail extends React.PureComponent {
 						</View>
 
 
-						<View
+						{/* <View
 							style={{
 								flex: 1,
 								flexDirection: 'row',
@@ -246,7 +245,7 @@ class TransactionDetail extends React.PureComponent {
 							<View style={[styles.itemData, { flex: 1 }]}>
 								<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {item.topUp.balance} </Text>
 							</View>
-						</View>
+						</View> */}
 					</View>
 				</View>
 
@@ -267,21 +266,18 @@ class TransactionDetail extends React.PureComponent {
 					style={{
 						flex: 1,
 						flexDirection: 'row',
-						marginBottom: 5,
-						marginTop: 5
+						marginTop: 10
 					}}>
-					<View style={{ flex: 1, padding: 15 }}>
+					<View style={{ flex: 1 }}>
 
-						<View>
+						{/* <View>
 							<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>Loan Cleared</Text>
-						</View>
+						</View> */}
 
 						<View
 							style={{
 								flex: 1,
-								flexDirection: 'row',
-								marginBottom: 5,
-								marginTop: 5
+								flexDirection: 'row'
 							}}>
 							<View style={[styles.itemData, { flex: 3 }]}>
 								<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
@@ -294,7 +290,7 @@ class TransactionDetail extends React.PureComponent {
 						</View>
 
 
-						<View
+						{/* <View
 							style={{
 								flex: 1,
 								flexDirection: 'row',
@@ -309,7 +305,7 @@ class TransactionDetail extends React.PureComponent {
 							<View style={[styles.itemData, { flex: 1 }]}>
 								<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {item.debt.balance} </Text>
 							</View>
-						</View>
+						</View> */}
 					</View>
 				</View>
 
@@ -321,8 +317,6 @@ class TransactionDetail extends React.PureComponent {
 			)
 		}
 	}
-
-
 
 	render() {
 		var receiptLineItems;
@@ -416,8 +410,6 @@ class TransactionDetail extends React.PureComponent {
 
 							{paymentTypes}
 
-
-
 							<View>
 								<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>PRODUCTS</Text>
 							</View>
@@ -425,18 +417,15 @@ class TransactionDetail extends React.PureComponent {
 							{receiptLineItems}
 
 							<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
-								<Text style={[styles.customername, { flex: .7, fontWeight: 'bold' }]}>Items Purchased</Text>
-								<Text style={[styles.customername, { flex: .3, fontWeight: 'bold', paddingRight: 20, alignSelf: 'flex-end' }]}>
+								<Text style={[styles.customername, { flex: 3, fontWeight: 'bold' }]}>Items Purchased</Text>
+								<Text style={[styles.customername, { flex: 1, fontWeight: 'bold', paddingRight: 20, alignSelf: 'flex-end' }]}>
 									{this.getCurrency().toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}
 								</Text>
 							</View>
 
 							{this.renderTopUp(this.props.item)}
 
-
 							{this.renderDebt(this.props.item)}
-
-
 
 						</ScrollView>
 					</View>
@@ -935,7 +924,7 @@ class Transactions extends React.PureComponent {
 			<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
 				<View key={index} style={{ padding: 10 }}>
 					<View style={styles.itemData}>
-						{/* <Icon name={`md-albums`} size={25} color="#808080" /> */}
+						<Icon name={`md-barcode`} size={25} color="#808080" />
 						<Text style={styles.customername}>{item.type}</Text>
 					</View>
 					<View style={styles.itemData}>
