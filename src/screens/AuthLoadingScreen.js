@@ -21,7 +21,6 @@ import * as receiptActions from '../actions/ReceiptActions';
 import * as discountActions from '../actions/DiscountActions';
 import * as paymentTypesActions from '../actions/PaymentTypesActions';
 import * as CustomerReminderActions from '../actions/CustomerReminderActions';
-
 import CreditRealm from '../database/credit/credit.operations';
 import CustomerRealm from '../database/customers/customer.operations'
 import InventroyRealm from '../database/inventory/inventory.operations';
@@ -82,8 +81,8 @@ class AuthLoadingScreen extends React.PureComponent {
         console.log('last ProductMRPRealm sync', ProductMRPRealm.getLastProductMRPSync());
         console.log('last ProductsRealm sync', ProductsRealm.getLastProductsync());
         console.log('last CreditRealm sync', CreditRealm.getLastCreditSync());
-
-
+        console.log('last CustomerReminderRealm sync', CustomerReminderRealm.getCustomerReminders());
+        console.log('last CustomerReminderRealm sync', CustomerReminderRealm.getLastCustomerReminderSync());
 
      //  console.log('inventory data', CustomerDebtRealm.getCustomerDebts());
         if (settings.site != "" && settings.siteId > 0) {

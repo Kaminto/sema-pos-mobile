@@ -177,7 +177,7 @@ class CustomerDebtRealm {
                             customer_account_id: customer_account_id ? customer_account_id : null,
                             customer_debt_id: uuidv1(),
                             due_amount: obj.due_amount ? Number(obj.due_amount) : Number(obj.amount),
-                            balance: obj.balance,
+                            balance: Number(obj.balance),
                             active: false,
                             syncAction: obj.syncAction ? obj.syncAction : 'create',
                             created_at: new Date(),
@@ -208,7 +208,7 @@ class CustomerDebtRealm {
                             let value = realm.create('CustomerDebt', {
                                 ...customerDebts[i],
                                 due_amount: customerDebts[i].due_amount ? Number(customerDebts[i].due_amount) : Number(customerDebts[i].amount),
-                                balance: customerDebts[i].balance
+                                balance: Number(customerDebts[i].balance)
                             });
 
                             result.push({ status: 'success', data: value, message: 'Customer Debt has been set' });
@@ -218,7 +218,7 @@ class CustomerDebtRealm {
                             customerDebtUpdate[0].customer_account_id = customerDebts[i].customer_account_id;
                             customerDebtUpdate[0].due_amount = customerDebts[i].due_amount ? Number(customerDebts[i].due_amount) : Number(customerDebts[i].amount);
                             customerDebtUpdate[0].updated_at = customerDebts[i].updated_at;
-                            customerDebtUpdate[0].balance = customerDebts[i].balance;
+                            customerDebtUpdate[0].balance = Number(customerDebts[i].balance);
 
 
                             result.push({ status: 'success', data: customerDebts[i], message: 'Local Customer Debt has been updated' });

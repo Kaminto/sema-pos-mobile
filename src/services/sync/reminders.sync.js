@@ -1,162 +1,194 @@
-import ReminderRealm from '../../database/reminders/reminder.operations';
-import CustomerDebtApi from '../api/customer-debt.api';
-import SettingRealm from '../../database/settings/settings.operations';
+import CustomerReminderRealm from '../../database/customer-reminder/customer-reminder.operations';
+import ReminderApi from '../api/reminder.api';
+import SyncUtils from './syncUtils';
 import * as _ from 'lodash';
-let settings = SettingRealm.getAllSetting();
+import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
 class ReminderSync {
 
-    synchronizeReminder(lastReminderSync) {
+    synchronizeCustomerReminders(kiosk_id) {
         return new Promise(resolve => {
-            CustomerDebtApi.getReminder(settings.siteId, new Date(lastReminderSync))
-                .then(result => {
-                    let initlocalReminder = ReminderRealm.getReminder();
-                    
-                    let localReminder = initlocalReminder.length > 0 ? [...initlocalReminder] : [];
-                    let remoteReminder = result.length > 0 ? [...result] : [];
+            ReminderApi.getCustomerReminder(kiosk_id, CustomerReminderRealm.getLastCustomerReminderSync())
+                .then(async remoteResult => {
+                    let initlocalCustomerReminders = CustomerReminderRealm.getAllCustomerReminderByDate(CustomerReminderRealm.getLastCustomerReminderSync());
+                    console.log('initlocalCustomerReminders', initlocalCustomerReminders)
+                    let localCustomerReminders = initlocalCustomerReminders.length > 0 ? [...initlocalCustomerReminders] : [];
+                    let remoteCustomerReminder = remoteResult.length > 0 ? [...remoteResult] : [];
 
-                    if (initlocalReminder.length === 0) {
-                        ReminderRealm.createManyCustomerDebt(result, null);
+                    let onlyInLocal = localCustomerReminders.filter(SyncUtils.compareRemoteAndLocal(remoteCustomerReminder, 'reminder_id'));
+                    let onlyInRemote = remoteCustomerReminder.filter(SyncUtils.compareRemoteAndLocal(localCustomerReminders, 'reminder_id'));
+
+                    let syncResponseArray = [];
+
+                    if (onlyInRemote.length > 0) {
+                        let localResponse = await CustomerReminderRealm.createManyCustomerReminder(onlyInRemote);
+                        syncResponseArray.push(...localResponse);
+                        CustomerReminderRealm.setLastCustomerReminderSync();
                     }
 
-                    let onlyLocally = [];
-                    let onlyRemote = [];
-                    let inLocal = [];
-                    let inRemote = [];
-                    let bothLocalRemote = {};
 
-                    if (initlocalReminder.length > 0) {
+                    if (onlyInLocal.length > 0) {
 
-                        initlocalReminder.forEach(localCustomerDebt => {
-                            let filteredObj = remoteReminder.filter(obj => obj.receipt_payment_type_id === localCustomerDebt.receipt_payment_type_id)
-                            if (filteredObj.length > 0) {
-                                const remoteIndex = remoteReminder.map(function (e) { return e.receipt_payment_type_id }).indexOf(filteredObj[0].receipt_payment_type_id);
-                                const localIndex = localReminder.map(function (e) { return e.receipt_payment_type_id }).indexOf(filteredObj[0].receipt_payment_type_id);
-                                remoteReminder.splice(remoteIndex, 1);
-                                localReminder.splice(localIndex, 1);
-
-                                inLocal.push(localCustomerDebt);
-                                inRemote.push(filteredObj[0]);
-                            }
-
-                            if (filteredObj.length === 0) {
-                                onlyLocally.push(localCustomerDebt);
-                                const localIndex = localReminder.map(function (e) { return e.receipt_payment_type_id }).indexOf(localCustomerDebt.receipt_payment_type_id);
-                                localReminder.splice(localIndex, 1);
-                            }
-                        });
-
-                        onlyRemote.push(...remoteReminder);
-                        bothLocalRemote.inLocal = inLocal;
-                        bothLocalRemote.inRemote = inRemote;
-
-
-                        if (onlyRemote.length > 0) {
-                            ReminderRealm.createCustomerDebt(onlyRemote, null)
+                        for (const property in onlyInLocal) {
+                            let syncResponse = await this.apiSyncOperations({
+                                ...onlyInLocal[property],
+                                kiosk_id
+                            });
+                            syncResponseArray.push(syncResponse);
                         }
-
-                        if (onlyLocally.length > 0) {
-                            onlyLocally.forEach(localCustomerDebt => {
-                                CustomerDebtApi.createCustomerDebt(
-                                    { ...localCustomerDebt, kiosk_id: settings.siteId }
-                                )
-                                    .then((response) => {
-                                        ReminderRealm.synched(localCustomerDebt);
-                                        console.log(
-                                            'Synchronization:synced to remote - ' +
-                                            response
-                                        );
-                                    })
-                                    .catch(error => {
-                                        console.log(
-                                            'Synchronization:synchronizeReminders Create Reminders failed'
-                                        );
-                                    });
-                            })
-                        }
-
-                        if (inLocal.length > 0 && inRemote.length > 0) {
-                            inLocal.forEach(localCustomerDebt => {
-
-                                if (localCustomerDebt.active === true && localCustomerDebt.syncAction === 'delete') {
-                                    CustomerDebtApi.deleteCustomerDebt(
-                                        localCustomerDebt
-                                    )
-                                        .then((response) => {
-                                            console.log(
-                                                'Synchronization:synchronizeReminders - Removing Reminders from pending list - ' +
-                                                response
-                                            );
-                                            ReminderRealm.hardDeleteCustomerDebt(
-                                                localCustomerDebt
-                                            );
-                                        })
-                                        .catch(error => {
-                                            console.log(
-                                                'Synchronization:synchronizeReminders Delete Reminders failed ' +
-                                                error
-                                            );
-                                        });
-                                }
-
-                                if (localCustomerDebt.active === true && localCustomerDebt.syncAction === 'update') {
-                                    CustomerDebtApi.updateCustomerDebt(
-                                        localCustomerDebt
-                                    )
-                                        .then((response) => {
-                                            console.log(
-                                                'Synchronization:synchronizeReminders - Removing Reminders from pending list - ' +
-                                                response
-                                            );
-                                        })
-                                        .catch(error => {
-                                            console.log(
-                                                'Synchronization:synchronizeReminders Update Reminders failed ' +
-                                                error
-                                            );
-                                        });
-
-                                } else if (localCustomerDebt.active === false && localCustomerDebt.syncAction === 'update') {
-                                    CustomerDebtApi.createCustomerDebt(
-                                        localCustomerDebt
-                                    )
-                                        .then((response) => {
-                                            ReminderRealm.synched(localCustomerDebt);
-                                            console.log(
-                                                'Synchronization:synced to remote - ' +
-                                                response
-                                            );
-                                        })
-                                        .catch(error => {
-                                            console.log(
-                                                'Synchronization:synchronizeReminders Create Reminders failed'
-                                            );
-                                        });
-                                }
-                            })
-                        }
-
-
 
                     }
+
+
+
+                    for (const i in syncResponseArray) {
+                        if (syncResponseArray[i].status === "fail" && syncResponseArray[i].message === "Customer Reminder has already been sent") {
+                            CustomerReminderRealm.deleteCustomerReminder(syncResponseArray[i].data.reminder_id);
+                        }
+                    }
+
                     resolve({
-                        error: null,
-                        localCustomerDebt: onlyLocally.length,
-                        result: onlyRemote.length
+                        success: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
+                        customerReminder: onlyInLocal.concat(onlyInRemote).length,
+                        successError: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
+                        successMessage: syncResponseArray.length > 0 ? syncResponseArray[0] : 'success'
                     });
 
                 })
                 .catch(error => {
                     console.log(
-                        'Synchronization.getReminders - error ' + error
+                        'Synchronization.getCustomerReminder - error ' + error
                     );
                     resolve({
-                        error: error,
-                        localCustomerDebt: 0,
-                        result: 0
+                        error: true,
+                        message: error,
+                        customerReminder: 0,
                     });
                 });
+
+
         });
     }
+
+
+    apiSyncOperations(localCustomerReminder) {
+        return new Promise(resolve => {
+
+            if (localCustomerReminder.active === true && localCustomerReminder.syncAction === 'delete') {
+                return ReminderApi.deleteCustomerReminder(
+                    localCustomerReminder
+                )
+                    .then((response) => {
+                        console.log(
+                            'Synchronization:synchronizeCustomerReminder - Removing CustomerReminder from pending list - ' +
+                            response
+                        );
+                        CustomerReminderRealm.setLastCustomerReminderSync();
+                        resolve({ status: 'success', message: response, data: localCustomerReminder });
+                    })
+                    .catch(error => {
+                        console.log(
+                            'Synchronization:synchronizeCustomerReminder Delete CustomerReminder failed ' +
+                            error
+                        );
+                        return { status: 'fail', message: error, data: localCustomerReminder }
+                    });
+            }
+
+            if (localCustomerReminder.active === true && localCustomerReminder.syncAction === 'update') {
+
+                return ReminderApi.updateCustomerReminder(
+                    localCustomerReminder
+                )
+                    .then((response) => {
+                        CustomerReminderRealm.setLastCustomerReminderSync();
+                        console.log(
+                            'Synchronization:synchronizeCustomerReminder - Removing CustomerReminder from pending list - ' +
+                            response
+                        );
+                        resolve({ status: 'success', message: 'synched to remote', data: localCustomerReminder });
+                    })
+                    .catch(error => {
+                        console.log(
+                            'Synchronization:synchronizeCustomerReminder Update CustomerReminder failed ' +
+                            error
+                        );
+                        resolve({ status: 'fail', message: error, data: localCustomerReminder });
+                    });
+
+            }
+
+            if (localCustomerReminder.active === false && localCustomerReminder.syncAction === 'update') {
+
+                return ReminderApi.createCustomerReminder(
+                    localCustomerReminder
+                )
+                    .then((response) => {
+                        CustomerReminderRealm.synchedCustomerReminder(localCustomerReminder);
+                        CustomerReminderRealm.setLastCustomerReminderSync();
+                        console.log(
+                            'Synchronization:synced to remote - ' +
+                            response
+                        );
+                        resolve({ status: 'success', message: 'synched to remote', data: localCustomerReminder });
+                    })
+                    .catch(error => {
+                        console.log(
+                            'Synchronization:synchronizeCustomerReminder Create CustomerReminder', error
+                        );
+                        resolve({ status: 'fail', message: error, data: localCustomerReminder });
+                    });
+
+            }
+
+            if (localCustomerReminder.active === false && localCustomerReminder.syncAction === 'delete') {
+                return ReminderApi.createCustomerReminder(
+                    localCustomerReminder
+                )
+                    .then((response) => {
+                        CustomerReminderRealm.synchedCustomerReminder(localCustomerReminder);
+                        CustomerReminderRealm.setLastCustomerReminderSync();
+                        console.log(
+                            'Synchronization:synced to remote - ' +
+                            response
+                        );
+                        resolve({ status: 'success', message: response, data: localCustomerReminder });
+                    })
+                    .catch(error => {
+                        console.log(
+                            'Synchronization:synchronizeCustomerReminder Create CustomerReminder', error
+                        );
+                        return { status: 'fail', message: error, data: localCustomerReminder }
+                    });
+
+            }
+
+            if (localCustomerReminder.active === false && localCustomerReminder.syncAction === 'create') {
+
+                return ReminderApi.createCustomerReminder(
+                    localCustomerReminder
+                )
+                    .then((response) => {
+                        CustomerReminderRealm.synchedCustomerReminder(localCustomerReminder);
+                        CustomerReminderRealm.setLastCustomerReminderSync();
+                        console.log(
+                            'Synchronization:synced to remote - ' +
+                            response
+                        );
+                        resolve({ status: 'success', message: 'synched to remote', data: localCustomerReminder });
+                    })
+                    .catch(error => {
+                        console.log(
+                            'Synchronization:synchronizeCustomerReminder Create CustomerReminder,', error
+                        );
+                        resolve({ status: 'fail', message: error, data: localCustomerReminder })
+                    });
+
+            }
+
+        });
+
+    }
+
 
 }
 export default new ReminderSync();

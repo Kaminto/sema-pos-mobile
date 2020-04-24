@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Text, View, StyleSheet, TouchableHighlight, Alert, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -23,7 +22,7 @@ class RemindersReport extends React.PureComponent {
 			isDateTimePickerVisible: false,
 			isDatePickerFilterVisible: false,
 			checkedType: {},
-			customReminderDate: new Date(),
+			custom_reminder_date: new Date(),
 
 		};
 
@@ -109,16 +108,16 @@ class RemindersReport extends React.PureComponent {
 		return (
 			<View style={{ flex: 1, flexDirection: 'row', height: 50, alignItems: 'center' }}>
 				<View style={{ flex: 2 }}>
-					<Text style={[styles.baseItem, styles.leftMargin]}>{item.name}</Text>
+					<Text style={[styles.baseItem, styles.leftMargin]}>{item.customer.name}</Text>
 				</View>
 				<View style={{ flex: 1.5 }}>
-					<Text style={[styles.baseItem]}>{item.phoneNumber}</Text>
+					<Text style={[styles.baseItem]}>{item.customer.phoneNumber}</Text>
 				</View>
 				<View style={{ flex: 1.5 }}>
-					<Text style={[styles.baseItem]}>{item.address}</Text>
+					<Text style={[styles.baseItem]}>{item.customer.address}</Text>
 				</View>
 				<View style={{ flex: 2 }}>
-					<Text style={[styles.baseItem]}>{format(parseISO(item.lastPurchaseDate), 'iiii d MMM yyyy')}
+					<Text style={[styles.baseItem]}>{format(parseISO(item.last_purchase_date), 'iiii d MMM yyyy')}
 					</Text>
 				</View>
 				<View style={{ flex: 2 }}>
@@ -127,7 +126,7 @@ class RemindersReport extends React.PureComponent {
 						onPress={() => this.showDateTimePicker(item)}
 						underlayColor='#18376A'>
 						<Text style={[styles.currentInventoryText, { padding: 5 }]}>
-							{item.customReminderDate ? format(new Date(item.customReminderDate), 'iiii d MMM yyyy'): 'SET'}
+							{item.custom_reminder_date ? format(new Date(item.custom_reminder_date), 'iiii d MMM yyyy'): 'SET'}
 						</Text>
 					</TouchableHighlight>
 					<DateTimePicker
@@ -193,7 +192,7 @@ class RemindersReport extends React.PureComponent {
 
 	filterDate(data) {
 		let filteredItems = data.filter((item) => {
-			if (!item.customReminderDate) {
+			if (!item.custom_reminder_date) {
 				if (isSameDay(parseISO(item.reminder_date), this.props.dateFilter.currentDate)) {
 					return true;
 				} else {
@@ -201,8 +200,8 @@ class RemindersReport extends React.PureComponent {
 				}
 			}
 
-			if (item.customReminderDate) {
-				if (isSameDay(parseISO(item.customReminderDate), this.props.dateFilter.currentDate)) {
+			if (item.custom_reminder_date) {
+				if (isSameDay(parseISO(item.custom_reminder_date), this.props.dateFilter.currentDate)) {
 					return true;
 				} else {
 					return false;

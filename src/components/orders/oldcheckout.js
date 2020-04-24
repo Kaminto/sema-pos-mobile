@@ -1112,7 +1112,7 @@ class OrderCheckout extends React.PureComponent {
 				avg: Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length))) >= 0 ? Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length))) : 0,
 				reminder: this.addDays(new Date(lastDay), Math.ceil(arrAvg(this.pairwiseDifference(dateArray, dateArray.length)))),
 				dates: groupCustomers(data)[key].map(e => e.created_at),
-				lastPurchaseDate: new Date(lastDay)
+				last_purchase_date: new Date(lastDay)
 			});
 		}
 		return final;

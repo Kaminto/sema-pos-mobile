@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 import InventorySync from './sync/inventory.sync';
 import CreditSync from './sync/credit.sync';
 import MeterReadingSync from './sync/meter-reading.sync'
+import ReminderSync from './sync/reminders.sync'
 import CustomerSync from './sync/customer.sync';
 import ProductSync from './sync/product.sync';
 import ProductMRPSync from './sync/productmrp.sync';
@@ -15,6 +16,7 @@ import CustomerTypeSync from './sync/customer-types.sync';
 import OrderSync from './sync/orders.sync';
 import DiscountSync from './sync/discounts.sync';
 import PaymentTypeSync from './sync/payment-type.sync';
+
 
 import RecieptPaymentTypesSync from './sync/reciept-payment-types.sync';
 import CustomerDebtsSync from './sync/customer-debt.sync';
@@ -123,6 +125,9 @@ class Synchronization {
 						const promiseProductMrps = ProductMRPSync.synchronizeProductMrps(settings.regionId);
 						const promiseProducts = ProductSync.synchronizeProducts();				
 						const promiseMeterReading = MeterReadingSync.synchronizeMeterReading(settings.siteId);
+						
+						const promiseReminder = ReminderSync.synchronizeCustomerReminders(settings.siteId);
+						
 						const promiseInventory = InventorySync.synchronizeInventory(settings.siteId);
 						
 
@@ -151,8 +156,9 @@ class Synchronization {
 							promiseCustomerDebts,						
 							promiseRecieptPaymentTypes,
 							promiseTopUps,
-							 promiseCustomers,
-							 promiseOrders
+							promiseCustomers,
+							promiseOrders,
+							promiseReminder
 
 
 						])
@@ -171,6 +177,7 @@ class Synchronization {
 								syncResult.topups = values[10];
 								syncResult.customers = values[11];
 								syncResult.orders = values[12];
+								syncResult.customerReminder = values[13];
 																
 								
 								
