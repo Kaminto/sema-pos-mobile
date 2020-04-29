@@ -148,7 +148,7 @@ class InventoryReport extends React.PureComponent {
 								<Text style={[styles.rowItemCenter, {
 									flex: .55,
 									borderRadius: 5,
-									fontSize: 25,
+									fontSize: 22,
 									fontWeight: 'bold',
 									backgroundColor: '#CCC'
 								}]}>{this.getInventoryMeterForDisplay(false)}</Text>
@@ -577,7 +577,7 @@ class InventoryReport extends React.PureComponent {
 					style={styles.currentInventory}
 					onPress={() => { this.displayCurrentMeter() }}
 					underlayColor='#18376A'>
-					<Text style={[styles.currentInventoryText, { padding: 5, fontWeight: 'bold', fontSize: 25 }]}>{this.getInventoryMeterForDisplay(true)}</Text>
+					<Text style={[styles.currentInventoryText, { padding: 5, fontWeight: 'bold', fontSize: 22 }]}>{this.getInventoryMeterForDisplay(true)}</Text>
 				</TouchableHighlight>
 			</View>
 		);

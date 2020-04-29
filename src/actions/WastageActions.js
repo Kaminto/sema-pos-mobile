@@ -67,11 +67,6 @@ const getSalesData = (beginDate) => {
 
 	let groupedOrderItems = groupBySku(filteredOrderItems, "sku");
 
-
-	// let groupedProductItems = groupBySku2(ProductsRealm.getProducts(), "sku");
-	// console.log('groupedOrderItems', JSON.stringify(groupedOrderItems));
-	// console.log('ProductsRealm', JSON.stringify(groupedProductItems));
-
 	let todaySales = [];
 	for (let i of Object.getOwnPropertyNames(groupedOrderItems)) {
 		todaySales.push({
@@ -101,7 +96,7 @@ export const getMrps = products => {
 		delete e.base64encodedImage;
 		return {...e }
 	})
-	let matchProducts = filProduct.filter(prod => ids.includes(prod.productId));	
+	let matchProducts = filProduct.filter(prod => ids.includes(prod.productId));
 	let waterProducts = matchProducts.filter(prod => 3 === prod.categoryId);
 	return waterProducts;
 };
@@ -126,7 +121,6 @@ export const getWastageData = (beginDate, previousDate, products) => {
 };
 
 const createInventory = (salesData, inventorySettings, products) => {
-	//console.log('products-products', products);
 	let salesAndProducts = { ...salesData };
 	salesAndProducts.salesItems = salesData.salesItems.slice();
 	let emptyProducts = [];
@@ -205,7 +199,7 @@ addDays = (theDate, days) => {
 const getInventoryItem = (beginDate, yesterday) => {
 	return new Promise(resolve => {
 		const promiseToday = InventroyRealm.getWastageReportByDate(beginDate);
-		//const yesterday = new Date(beginDate);
+
 		const promiseYesterday = InventroyRealm.getWastageReportByDate(yesterday);
 		Promise.all([promiseToday, promiseYesterday]).then(inventoryResults => {
 			resolve({

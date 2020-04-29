@@ -28,7 +28,7 @@ import CustomerReminderRealm from '../../database/customer-reminder/customer-rem
 import ReceiptPaymentTypeRealm from '../../database/reciept_payment_types/reciept_payment_types.operations';
 const uuidv1 = require('uuid/v1');
 const widthQuanityModal = '70%';
-const heightQuanityModal = 500;
+const heightQuanityModal = 510;
 
 import { withNavigation } from 'react-navigation';
 
@@ -173,8 +173,6 @@ class OrderCheckout extends React.PureComponent {
 					</ScrollView>
 				</Modal>
 
-
-
 				<Modal style={styles.modal2}
 					coverScreen={true}
 					position={"center"} ref={"notesModal"}
@@ -232,7 +230,7 @@ class OrderCheckout extends React.PureComponent {
 									justifyContent: 'flex-end',
 									flexDirection: 'row',
 									right: 10,
-									top: 0
+									top: 10
 								}}>
 								{this.getCancelButton()}
 							</View>
@@ -243,7 +241,7 @@ class OrderCheckout extends React.PureComponent {
 									marginLeft: 20,
 									marginRight: 20
 								}}>
-								<Card containerStyle={{ backgroundColor: '#ABC1DE', padding: 10 }}>
+								<Card containerStyle={{ backgroundColor: '#ABC1DE', padding: 5 }}>
 
 									<View style={{ flex: 1, flexDirection: 'row' }}>
 										{/* {this.getSaleAmount()} */}
@@ -357,7 +355,7 @@ class OrderCheckout extends React.PureComponent {
 
 								</View>
 								<View style={{ flex: 1, flexDirection: 'row' }}>
-									<Text style={[styles.baseItem, { fontSize: 16, paddingTop: 15, textAlign: 'left' }]}>Are you recording an old sale?</Text>
+									<Text style={[styles.baseItem, { fontSize: 16, paddingTop: 10, textAlign: 'left' }]}>Are you recording an old sale?</Text>
 									<View
 										style={{
 											padding: 10
@@ -604,32 +602,6 @@ class OrderCheckout extends React.PureComponent {
 				}
 			}
 
-			// if (this.currentCredit() > 0) {
-			// 	if (this.currentCredit() > this.calculateOrderDue()) {
-			// 		if (item.name === 'credit') {
-			// 			PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
-			// 			this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(),
-			// 				isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
-			// 			isSelectedAvailable = true;
-			// 		}
-			// 	}
-
-			// 	if (this.currentCredit() < this.calculateOrderDue()) {
-			// 		if (item.name === 'credit') {
-			// 			PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
-			// 			this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(),
-			// 				isSelected: item.isSelected === true ? false : true, amount: this.currentCredit() });
-			// 			isSelectedAvailable = true;
-			// 		}
-			// 	}
-			// } else {
-			// 	if (item.name === 'cash') {
-			// 		PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
-			// 		this.props.paymentTypesActions.setSelectedPaymentTypes({ ...item, created_at: new Date(),
-			// 			isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
-			// 		isSelectedAvailable = true;
-			// 	}
-			// }
 		}
 
 		if (item.name != 'loan' && item.name != 'credit') {
