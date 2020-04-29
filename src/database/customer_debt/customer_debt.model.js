@@ -7,6 +7,7 @@ export const CustomerDebtSchema = {
         customer_account_id:  { type: 'string', optional: true },
         due_amount: { type: 'int', optional: true },
         balance: { type: 'int', optional: true },
+        synched: { type: 'bool', optional: true },
         syncAction: { type: 'string', optional: true },
         created_at: { type: 'date', optional: true },
         active: { type: 'bool', optional: true },

@@ -84,7 +84,7 @@ class CustomerDebtRealm {
                 let customerDebtObj = realm.objects('CustomerDebt').filtered(`id = "${customerDebt.customer_debt_id}"`);
                 customerDebtObj[0].customer_debt_id = customerDebt.customer_debt_id;
                 customerDebtObj[0].name = customerDebt.name;
-                customerDebtObj[0].active = customerDebt.active;
+                customerDebtObj[0].synched = customerDebt.synched;
                 customerDebtObj[0].description = customerDebt.description;
                 customerDebtObj[0].syncAction = customerDebt.syncAction;
                 customerDebtObj[0].created_at = customerDebt.created_at;
@@ -127,7 +127,7 @@ class CustomerDebtRealm {
         try {
             realm.write(() => {
                 let customerDebtObj = realm.objects('CustomerDebt').filtered(`id = "${customerDebt.customer_debt_id}"`);
-                customerDebtObj[0].active = true;
+                customerDebtObj[0].synched = true;
                 customerDebtObj[0].syncAction = null;
             })
         } catch (e) {
@@ -136,7 +136,7 @@ class CustomerDebtRealm {
     }
 
 
-    // Hard delete when active property is false or when active property and syncAction is delete
+    // Hard delete when synched property is false or when synched property and syncAction is delete
     hardDeleteCustomerDebt(customerDebt) {
         try {
             realm.write(() => {
@@ -158,11 +158,13 @@ class CustomerDebtRealm {
     softDeleteCustomerDebt(customerDebt) {
         try {
             realm.write(() => {
-                realm.write(() => {
-                    let customerDebtObj = realm.objects('CustomerDebt').filtered(`id = "${customerDebt.customer_debt_id}"`);
+                    let customerDebtObj = realm.objects('CustomerDebt').filtered(`customer_debt_id = "${customerDebt.customer_debt_id}"`);
+                    console.log('customerDebtObj[0]', customerDebtObj[0]);
                     customerDebtObj[0].syncAction = 'delete';
+                    customerDebtObj[0].active = false;
+                    customerDebtObj[0].updated_at = new Date();
                 })
-            })
+            
         } catch (e) {
             console.log("Error on soft delete customer debt", e);
         }
@@ -178,7 +180,7 @@ class CustomerDebtRealm {
                             customer_debt_id: uuidv1(),
                             due_amount: obj.due_amount ? Number(obj.due_amount) : Number(obj.amount),
                             balance: Number(obj.balance),
-                            active: false,
+                            synched: false,
                             syncAction: obj.syncAction ? obj.syncAction : 'create',
                             created_at: new Date(),
                         });
@@ -248,7 +250,8 @@ class CustomerDebtRealm {
                     balance,
                     due_amount: Number(due_amount),
                     receipt_id,
-                    active: false,
+                    synched: false,
+                    active: true,
                     syncAction: 'create',
                     created_at: new Date(),
                 });

@@ -40,7 +40,6 @@ class PaymentModal extends React.PureComponent {
 	render() {
 		return (
 			<ScrollView>
-				{/* <TouchableOpacity> */}
 				<View
 					style={{
 						flex: 1,
@@ -99,7 +98,6 @@ class PaymentModal extends React.PureComponent {
 						</View>
 					</View>
 				</View>
-				{/* </TouchableOpacity> */}
 			</ScrollView>
 
 		);
@@ -440,8 +438,6 @@ class PaymentModal extends React.PureComponent {
 
 
 				if (creditsurplus > 0) {
-					
-
 					this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + Number(creditsurplus);
 					CustomerRealm.updateCustomerWalletBalance(
 						this.props.selectedCustomer,
@@ -460,11 +456,7 @@ class PaymentModal extends React.PureComponent {
 					);
 					this.setState({ topup: "" });
 					this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
-
 				}
-
-
-
 			}
 
 
@@ -481,7 +473,6 @@ class PaymentModal extends React.PureComponent {
 			);
 
 		}
-
 		return true;
 	};
 

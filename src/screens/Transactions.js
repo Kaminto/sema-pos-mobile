@@ -26,7 +26,8 @@ import OrderRealm from '../database/orders/orders.operations';
 import SettingRealm from '../database/settings/settings.operations';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as receiptActions from '../actions/ReceiptActions';
-
+import * as paymentTypesActions from '../actions/PaymentTypesActions';
+import * as TopUpActions from '../actions/TopUpActions';
 import CreditRealm from '../database/credit/credit.operations';
 import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
 
@@ -36,9 +37,7 @@ import { format, parseISO, isBefore } from 'date-fns';
 class ReceiptLineItem extends React.PureComponent {
 	constructor(props) {
 		super(props);
-	}
-
-	;
+	};
 
 	render() {
 		return (
@@ -108,8 +107,8 @@ class PaymentTypeItem extends React.PureComponent {
 				}}>
 
 				<View style={[styles.itemData, { flex: 3 }]}>
-			    	<Icon name={`md-cash`} size={25} color="#808080" />
-					<Text style={[styles.label, { paddingLeft: 10,fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
+					<Icon name={`md-cash`} size={25} color="#808080" />
+					<Text style={[styles.label, { paddingLeft: 10, fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
 						{this.props.item.name == 'credit' ? 'Wallet' : this.props.item.name}</Text>
 				</View>
 				<View style={[styles.itemData, { flex: 1 }]}>
@@ -141,6 +140,7 @@ class TransactionDetail extends React.PureComponent {
 	}
 
 	onDeleteReceipt(item) {
+		//console.log('item-r', item);
 		return () => {
 			if (item.is_delete === 0) {
 				return ToastAndroid.show(
@@ -171,23 +171,91 @@ class TransactionDetail extends React.PureComponent {
 		};
 	}
 
+
+	onTopupCreditDelete(item) {
+		return () => {
+
+			if (!item.active) {
+				return ToastAndroid.show(
+					`${item.type} already deleted`,
+					ToastAndroid.SHORT
+				);
+			}
+
+			Alert.alert(
+				`Confirm ${item.type}  Deletion`,
+				`Are you sure you want to delete this ${item.type}? (this cannot be undone)`,
+				[
+					{
+						text: i18n.t('no'),
+						onPress: () => console.log('Cancel Pressed'),
+						style: 'cancel'
+					},
+					{
+						text: i18n.t('yes'),
+						onPress: () => {
+							this.deleteReceipt(item);
+							this.setState({ refresh: !this.state.refresh });
+						}
+					}
+				],
+				{ cancelable: true }
+			);
+		};
+	}
+
 	deleteReceipt(item) {
-		OrderRealm.softDeleteOrder(item);
-		const loanIndex = item.paymentTypes.map(function (e) { return e.name }).indexOf("loan");
-		if (loanIndex >= 0) {
-			item.customerAccount.dueAmount = Number(item.customerAccount.dueAmount) - Number(this.props.selectedPaymentTypes[loanIndex].amount);
+
+		if (item.isReceipt) {
+			OrderRealm.softDeleteOrder(item);
+			const loanIndex = item.paymentTypes.map(function (e) { return e.name }).indexOf("loan");
+			if (loanIndex >= 0) {
+				item.customerAccount.dueAmount = Number(item.customerAccount.dueAmount) - Number(this.props.selectedPaymentTypes[loanIndex].amount);
+				CustomerRealm.updateCustomerDueAmount(
+					item.customerAccount,
+					item.customerAccount.dueAmount
+				);
+				this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
+				this.props.customerActions.setCustomers(
+					CustomerRealm.getAllCustomer()
+				);
+			}
+			this.props.receiptActions.setReceipts(
+				OrderRealm.getAllOrder()
+			);
+		}
+
+
+		if (item.isDebt) {
+			item.customerAccount.dueAmount = Number(item.customerAccount.dueAmount) + Number(item.totalAmount);
 			CustomerRealm.updateCustomerDueAmount(
 				item.customerAccount,
 				item.customerAccount.dueAmount
 			);
-			this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
+			CustomerDebtRealm.softDeleteCustomerDebt(item);
 			this.props.customerActions.setCustomers(
 				CustomerRealm.getAllCustomer()
 			);
+			this.props.paymentTypesActions.setCustomerPaidDebt(
+				CustomerDebtRealm.getCustomerDebts()
+			);
 		}
-		this.props.receiptActions.setReceipts(
-			OrderRealm.getAllOrder()
-		);
+
+		if (item.isTopUp) {
+			item.customerAccount.walletBalance = Number(item.customerAccount.walletBalance) - Number(item.totalAmount);
+			CustomerRealm.updateCustomerWalletBalance(
+				item.customerAccount,
+				item.customerAccount.walletBalance
+			);
+			CreditRealm.softDeleteCredit(item);
+			this.props.customerActions.setCustomers(
+				CustomerRealm.getAllCustomer()
+			);
+			this.props.topUpActions.setTopups(
+				CreditRealm.getAllCredit()
+			);
+		}
+
 
 	}
 
@@ -205,9 +273,9 @@ class TransactionDetail extends React.PureComponent {
 					style={{
 						flex: 1,
 						flexDirection: 'row',
-						 marginTop: 10
+						marginTop: 10
 					}}>
-					<View style={{ flex: 1}}>
+					<View style={{ flex: 1 }}>
 
 						{/* <View>
 							<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>Top Up</Text>
@@ -448,16 +516,16 @@ class TransactionDetail extends React.PureComponent {
 					}}>
 					<View style={{ flex: 1, padding: 15 }}>
 						<ScrollView style={{ flex: 1 }}>
-							{/* <View style={styles.deleteButtonContainer}>
+							<View style={styles.deleteButtonContainer}>
 								<TouchableOpacity
-									onPress={this.onDeleteReceipt(this.props.item)}
+									onPress={this.onTopupCreditDelete(this.props.item)}
 									style={[
 										styles.receiptDeleteButton,
-										{ backgroundColor: (this.props.item.is_delete != 0) ? 'red' : 'grey' }
+										{ backgroundColor: (this.props.item.active) ? 'red' : 'grey' }
 									]}>
 									<Text style={styles.receiptDeleteButtonText}>X</Text>
 								</TouchableOpacity>
-							</View> */}
+							</View>
 							<View style={styles.itemData}>
 								<Text style={styles.customername}>{this.props.item.customerAccount.name}</Text>
 							</View>
@@ -468,12 +536,12 @@ class TransactionDetail extends React.PureComponent {
 
 							</View>
 							<View style={styles.receiptStats}>
-								{this.props.item.is_delete === 0 && (
+								{!this.props.item.active && (
 									<Text style={styles.receiptStatusText}>
 										{'Deleted -'.toUpperCase()}
 									</Text>
 								)}
-								{!this.props.item.active ? (
+								{!this.props.item.synched ? (
 									<View style={{ flexDirection: 'row' }}>
 										<Text style={styles.receiptPendingText}>
 											{' Pending'.toUpperCase()}
@@ -481,7 +549,7 @@ class TransactionDetail extends React.PureComponent {
 									</View>
 								) : (
 										<View style={{ flexDirection: 'row' }}>
-											{!this.props.item.active && <Text> - </Text>}
+											{!this.props.item.synched && <Text> - </Text>}
 											<Text style={styles.receiptSyncedText}>
 												{' Synced'.toUpperCase()}
 											</Text>
@@ -638,6 +706,9 @@ class Transactions extends React.PureComponent {
 							// key={}
 							item={this.state.selected}
 							products={this.props.products}
+							customerActions={this.props.customerActions}
+							paymentTypesActions={this.props.paymentTypesActions}
+							topUpActions={this.props.topUpActions}							
 							receiptActions={this.props.receiptActions}
 							receipts={this.props.receipts}
 							paymentTypes={this.props.receiptsPaymentTypes}
@@ -676,6 +747,7 @@ class Transactions extends React.PureComponent {
 		let receipts = this.comparePaymentTypeReceipts().map((receipt, index) => {
 			return {
 				active: receipt.active,
+				synched: receipt.synched,
 				id: receipt.id,
 				receiptId: receipt.id,
 				createdAt: receipt.created_at,
@@ -718,11 +790,13 @@ class Transactions extends React.PureComponent {
 		let debtPayment = debtArray.map((receipt, index) => {
 			return {
 				active: receipt.active,
+				synched: receipt.synched,
 				id: receipt.customer_debt_id,
+				customer_debt_id: receipt.customer_debt_id,
 				receiptId: receipt.receipt_id,
 				createdAt: receipt.created_at,
 				sectiontitle: format(parseISO(receipt.created_at), 'iiii d MMM yyyy'),
-				customerAccount: CustomerRealm.getCustomerById(receipt.customer_account_id) ? CustomerRealm.getCustomerById(receipt.customer_account_id).name : receipt.customer_account_id,
+				customerAccount: CustomerRealm.getCustomerById(receipt.customer_account_id) ? CustomerRealm.getCustomerById(receipt.customer_account_id) : receipt.customer_account_id,
 				receiptLineItems: undefined,
 				paymentTypes: undefined,
 				description: [{ amount: receipt.due_amount, name: 'cash' }],
@@ -735,6 +809,8 @@ class Transactions extends React.PureComponent {
 				totalCount,
 				// currency: receipt.currency_code,
 				isReceipt: false,
+				isDebt: true,
+				isTopUp: false,
 				type: 'Debt Payment',
 				totalAmount: receipt.due_amount,
 				balance: receipt.balance
@@ -758,11 +834,13 @@ class Transactions extends React.PureComponent {
 		let topups = creditArray.map((receipt, index) => {
 			return {
 				active: receipt.active,
+				synched: receipt.synched,
 				id: receipt.topUpId,
+				topUpId: receipt.topUpId,
 				receiptId: receipt.receipt_id,
 				createdAt: receipt.created_at,
 				sectiontitle: format(parseISO(receipt.created_at), 'iiii d MMM yyyy'),
-				customerAccount: CustomerRealm.getCustomerById(receipt.customer_account_id) ? CustomerRealm.getCustomerById(receipt.customer_account_id).name : receipt.customer_account_id,
+				customerAccount: CustomerRealm.getCustomerById(receipt.customer_account_id) ? CustomerRealm.getCustomerById(receipt.customer_account_id) : receipt.customer_account_id,
 				receiptLineItems: undefined,
 				paymentTypes: undefined,
 				description: [{ amount: receipt.due_amount, name: 'cash' }],
@@ -775,6 +853,8 @@ class Transactions extends React.PureComponent {
 				totalCount,
 				// currency: receipt.currency_code,
 				isReceipt: false,
+				isDebt: false,
+				isTopUp: true,
 				type: 'Top Up',
 				balance: receipt.balance,
 				totalAmount: receipt.topup
@@ -807,13 +887,6 @@ class Transactions extends React.PureComponent {
 		let receipts = this.prepareData();
 		let topups = this.prepareTopUpData();
 		let deptPayment = this.prepareCustomerDebt();
-
-		console.log('receipts-', receipts[0]);
-		//console.log('topups', JSON.stringify(topups));
-		// console.log('deptPayment', JSON.stringify(deptPayment));
-
-
-
 		let finalArray = (deptPayment.concat(topups)).concat(receipts).sort((a, b) => {
 			return isBefore(new Date(a.createdAt), new Date(b.createdAt))
 				? 1
@@ -821,8 +894,6 @@ class Transactions extends React.PureComponent {
 		});
 
 		let transformedarray = this.groupBySectionTitle(finalArray, 'sectiontitle');
-		//let transformedarray = this.groupBySectionTitle((receipts.concat(topups)).concat(deptPayment), 'sectiontitle');
-		//console.log('transformedarray', transformedarray);
 		let newarray = [];
 		for (let i of Object.getOwnPropertyNames(transformedarray)) {
 			newarray.push({
@@ -928,18 +999,37 @@ class Transactions extends React.PureComponent {
 						<Text style={styles.customername}>{item.type}</Text>
 					</View> */}
 					<View style={styles.itemData}>
-						<Text style={styles.customername}>{item.isReceipt ? item.customerAccount.name : item.customerAccount}</Text>
+						<Text style={styles.customername}>{item.isReceipt ? item.customerAccount.name : item.customerAccount.name}</Text>
 					</View>
 					<Text style={styles.customername}>
 						{this.getCurrency().toUpperCase()} {item.totalAmount}
 					</Text>
 					<View style={styles.receiptStats}>
-						{item.is_delete === 0 && (
+						{item.isReceipt ? item.is_delete === 0 && (
 							<Text style={styles.receiptStatusText}>
 								{'Deleted - '.toUpperCase()}
 							</Text>
-						)}
-						{!item.active ? (
+						): !item.isReceipt ? !item.active && (
+							<Text style={styles.receiptStatusText}>
+								{'Deleted - '.toUpperCase()}
+							</Text>
+						): null}
+						
+						{!item.isReceipt ?  !item.synched ? (
+							<View style={{ flexDirection: 'row' }}>
+								<Text style={styles.receiptPendingText}>
+									{' Pending'.toUpperCase()}
+								</Text>
+							</View>
+						) : (
+								<View style={{ flexDirection: 'row' }}>
+									{!item.synched && <Text> - </Text>}
+									<Text style={styles.receiptSyncedText}>
+										{' Synced'.toUpperCase()}
+									</Text>
+								</View>
+							)   :
+						!item.active ? (
 							<View style={{ flexDirection: 'row' }}>
 								<Text style={styles.receiptPendingText}>
 									{' Pending'.toUpperCase()}
@@ -1037,6 +1127,8 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
 	return {
 		customerActions: bindActionCreators(CustomerActions, dispatch),
+		paymentTypesActions: bindActionCreators(paymentTypesActions, dispatch),
+		topUpActions: bindActionCreators(TopUpActions, dispatch),
 		receiptActions: bindActionCreators(receiptActions, dispatch)
 	};
 }

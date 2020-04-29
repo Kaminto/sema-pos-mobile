@@ -63,7 +63,7 @@ class CustomerDebtsSync {
     apiSyncOperations(localCustomerDebt) {
 
         return new Promise(resolve => {
-            if (localCustomerDebt.active === true && localCustomerDebt.syncAction === 'delete') {
+            if (localCustomerDebt.synched === true && localCustomerDebt.syncAction === 'delete') {
                 CustomerDebtApi.deleteCustomerDebt(
                     localCustomerDebt
                 )
@@ -84,7 +84,7 @@ class CustomerDebtsSync {
                     });
             }
 
-            if (localCustomerDebt.active === true && localCustomerDebt.syncAction === 'update') {
+            if (localCustomerDebt.synched === true && localCustomerDebt.syncAction === 'update') {
                 CustomerDebtApi.updateCustomerDebt(
                     localCustomerDebt
                 )
@@ -107,7 +107,7 @@ class CustomerDebtsSync {
 
             }
 
-            if (localCustomerDebt.active === false && localCustomerDebt.syncAction === 'update') {
+            if (localCustomerDebt.synched === false && localCustomerDebt.syncAction === 'update') {
                 CustomerDebtApi.createCustomerDebt(
                     localCustomerDebt
                 )
@@ -129,7 +129,7 @@ class CustomerDebtsSync {
                     });
             }
 
-            if (localCustomerDebt.active === false && localCustomerDebt.syncAction === 'delete') {
+            if (localCustomerDebt.synched === false && localCustomerDebt.syncAction === 'delete') {
                 CustomerDebtApi.createCustomerDebt(
                     localCustomerDebt
                 )
@@ -151,7 +151,7 @@ class CustomerDebtsSync {
                     });
             }
 
-            if (localCustomerDebt.active === false && localCustomerDebt.syncAction === 'create') {
+            if (localCustomerDebt.synched === false && localCustomerDebt.syncAction === 'create') {
                 CustomerDebtApi.createCustomerDebt(
                     localCustomerDebt
                 )
