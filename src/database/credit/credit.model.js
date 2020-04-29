@@ -9,6 +9,7 @@ export const CreditSchema = {
         topup: { type: 'int', optional: true },
         balance: { type: 'int', optional: true },
         active: { type: 'bool', optional: true },
+        synched: { type: 'bool', optional: true },
         syncAction: { type: 'string', optional: true },
         created_at: { type: 'date', optional: true },
         updated_at: { type: 'date', optional: true },

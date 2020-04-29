@@ -89,7 +89,8 @@ class CreditRealm {
             created_at: nowDate,
             updated_at: nowDate,
             syncAction: 'create',
-            active: false
+            synched: false,
+            active: true,
         };
 
         try {
@@ -128,7 +129,7 @@ class CreditRealm {
         try {
             realm.write(() => {
                 let creditObj = realm.objects('Credit').filtered(`topUpId = "${credit.topUpId}"`);
-                creditObj[0].active = true;
+                creditObj[0].synched = true;
                 creditObj[0].syncAction = null;
             })
         } catch (e) {
@@ -153,6 +154,8 @@ class CreditRealm {
             realm.write(() => {
                 let creditObj = realm.objects('Credit').filtered(`topUpId = "${credit.topUpId}"`);
                 creditObj[0].syncAction = 'delete';
+                creditObj[0].active = false;
+                creditObj[0].updated_at = new Date();
             })
         } catch (e) {
             console.log("Error on soft delete", e);
@@ -176,7 +179,7 @@ class CreditRealm {
                                 ...credit[i],
                                 topup: Number(credit[i].topup), 
                                 balance: Number(credit[i].balance),
-                                active: true
+                                synched: true
                             });
                             console.log('saved',value)
                             result.push({ status: 'success', data: value, message: 'Credit has been set' });

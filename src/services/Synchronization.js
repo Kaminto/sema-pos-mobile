@@ -125,19 +125,19 @@ class Synchronization {
 						const promiseProductMrps = ProductMRPSync.synchronizeProductMrps(settings.regionId);
 						const promiseProducts = ProductSync.synchronizeProducts();				
 						const promiseMeterReading = MeterReadingSync.synchronizeMeterReading(settings.siteId);
-						
+
 						const promiseReminder = ReminderSync.synchronizeCustomerReminders(settings.siteId);
-						
+
 						const promiseInventory = InventorySync.synchronizeInventory(settings.siteId);
-						
+
 
 						const promiseCustomers = CustomerSync.synchronizeCustomers(settings.siteId);
 						const promiseTopUps = CreditSync.synchronizeCredits();				
-						
-					    const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts();
+
+						const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts();
 						const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId);
 						const promiseOrders = OrderSync.synchronizeSales(settings.siteId);
-					
+
 
 
 
@@ -152,7 +152,7 @@ class Synchronization {
 							promiseMeterReading,
 							promiseInventory,
 
-							
+
 							promiseCustomerDebts,						
 							promiseRecieptPaymentTypes,
 							promiseTopUps,
@@ -171,17 +171,17 @@ class Synchronization {
 								syncResult.products = values[5];
 								syncResult.meterReading = values[6];
 								syncResult.wastageReport = values[7];
-								//console.log('values', values);
+
 								syncResult.debt = values[8];
 								syncResult.recieptPayments = values[9];
 								syncResult.topups = values[10];
 								syncResult.customers = values[11];
 								syncResult.orders = values[12];
 								syncResult.customerReminder = values[13];
-																
-								
-								
 
+
+
+								console.log('values', values);
 
 
 

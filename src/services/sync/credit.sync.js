@@ -60,7 +60,7 @@ class CreditSync {
     apiSyncOperations(localCredit) {
         return new Promise(resolve => {
 
-        if (localCredit.active === true && localCredit.syncAction === 'delete') {
+        if (localCredit.synched === true && localCredit.syncAction === 'delete') {
             CreditApi.deleteTopUp(
                 localCredit
             )
@@ -81,7 +81,7 @@ class CreditSync {
                 });
         }
 
-        if (localCredit.active === true && localCredit.syncAction === 'update') {
+        if (localCredit.synched === true && localCredit.syncAction === 'update') {
             CreditApi.updateCustomerCredit(
                 localCredit
             )
@@ -105,7 +105,7 @@ class CreditSync {
 
         }
 
-        if (localCredit.active === false && localCredit.syncAction === 'update') {
+        if (localCredit.synched === false && localCredit.syncAction === 'update') {
             CreditApi.createTopUp(
                 localCredit
             )
@@ -128,7 +128,7 @@ class CreditSync {
                 });
         }
 
-        if (localCredit.active === false && localCredit.syncAction === 'delete') {
+        if (localCredit.synched === false && localCredit.syncAction === 'delete') {
             CreditApi.createTopUp(
                 localCredit
             )
@@ -150,7 +150,7 @@ class CreditSync {
                 });
         }
 
-        if (localCredit.active === false && localCredit.syncAction === 'create') {
+        if (localCredit.synched === false && localCredit.syncAction === 'create') {
             CreditApi.createTopUp(
                 localCredit
             )
