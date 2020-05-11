@@ -92,5 +92,17 @@ class SyncUtils {
     return isSameDay(parseISO(dayRight), parseISO(dateLeft))
   }
 
+  convertDate(dayRight) {
+    if (dayRight === undefined) {
+      return false
+    }
+    if (dayRight === null) {
+      return false
+    }
+    dayRight = typeof dayRight === 'string' ? dayRight.split('T')[0] : dayRight.toISOString().split('T')[0];
+   
+    return dayRight
+  }
+
 }
 export default new SyncUtils();
