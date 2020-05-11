@@ -124,7 +124,7 @@ class CustomerEdit extends React.PureComponent {
 
 	render() {
 		const cplaceholder = {
-			label: 'Choose a Customer Type',
+			label: '',
 			value: null,
 			color: '#333',
 		};
@@ -211,7 +211,7 @@ class CustomerEdit extends React.PureComponent {
 
 
 							<RNPickerSelect
-								placeholder={{}}
+								placeholder={{  }}
 								items={this.customerTypesOptions}
 								onValueChange={(value, itemKey) => {
 									this.setState({ customerType: value });

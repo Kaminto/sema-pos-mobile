@@ -619,7 +619,11 @@ class InventoryReport extends React.PureComponent {
 			if (isNaN(wastage)) {
 				return 'N/A'
 			} else {
+				if(wastage < 0) {
+					return 0
+				} else{
 				return wastage.toFixed(2) + ' %';
+				}
 			}
 		}
 
