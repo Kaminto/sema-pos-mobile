@@ -49,11 +49,11 @@ class ProductListItem extends React.PureComponent {
 	}
 
 	getImage = item => {
-		if (item.base64encodedImage.startsWith('data:image')) {
+		//if (item.base64encodedImage.startsWith('data:image')) {
 			return item.base64encodedImage;
-		} else {
-			return 'data:image/png;base64,' + item.base64encoded_image;
-		}
+		// } else {
+		// 	return 'data:image/png;base64,' + item.base64encoded_image;
+		// }
 	};
 
 	getItemBackground = index => {
@@ -172,11 +172,11 @@ class ProductList extends React.PureComponent {
 	};
 
 	getImage = item => {
-		if (item.base64encodedImage.startsWith('data:image')) {
+		//if (item.base64encodedImage.startsWith('data:image')) {
 			return item.base64encodedImage;
-		} else {
-			return 'data:image/png;base64,' + item.base64encoded_image;
-		}
+		// } else {
+		// 	return 'data:image/png;base64,' + item.base64encoded_image;
+		// }
 	};
 
 	getItemBackground = index => {

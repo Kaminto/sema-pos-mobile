@@ -916,9 +916,12 @@ class OrderCheckout extends React.PureComponent {
 				this.props.selectedCustomer.walletBalance =
 					Number(this.props.selectedCustomer.walletBalance) + Number(totalAmountPaid) - (this.calculateOrderDue());
 				this.updateWallet(this.props.selectedCustomer.walletBalance);
+				this.topUpWallet(Number(totalAmountPaid - this.calculateOrderDue()), this.props.selectedCustomer.walletBalance, recieptId);
 			} else if (totalAmountPaid <= 0) {
 				this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) - this.calculateOrderDue();
 				this.updateWallet(this.props.selectedCustomer.walletBalance);
+
+				//this.topUpWallet(Number(totalAmountPaid - this.calculateOrderDue()), this.props.selectedCustomer.walletBalance, recieptId);
 			}
 			const creditIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("credit");
 			if (creditIndex >= 0) {
@@ -974,14 +977,14 @@ class OrderCheckout extends React.PureComponent {
 								const topUpExpected = Number(postToLoan) - this.calculateLoanBalance();
 								//this.props.selectedCustomer.dueAmount = 0;
 								this.updateLoanBalance(0);
-								this.logCredit(Number(this.props.selectedCustomer.dueAmount), 0,recieptId);
+								this.logCredit(Number(this.props.selectedCustomer.dueAmount), 0, recieptId);
 								this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + topUpExpected;
 								this.updateWallet(this.props.selectedCustomer.walletBalance);
-								this.topUpWallet(topUpExpected, this.props.selectedCustomer.walletBalance,recieptId);
+								this.topUpWallet(topUpExpected, this.props.selectedCustomer.walletBalance, recieptId);
 							} else if (postToLoan <= this.calculateLoanBalance()) {
 								this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - postToLoan;
 								this.updateLoanBalance(this.props.selectedCustomer.dueAmount);
-								this.logCredit(Number(postToLoan), this.props.selectedCustomer.dueAmount,recieptId);
+								this.logCredit(Number(postToLoan), this.props.selectedCustomer.dueAmount, recieptId);
 							}
 						}
 					} else if (totalAmountPaid < this.calculateOrderDue()) {
