@@ -208,6 +208,8 @@ const styles = StyleSheet.create({
 		width: '85%',
 		justifyContent: 'center',
 		color: 'white',
+		marginBottom: 50,
+		
 		paddingBottom: 10
 	},
 
