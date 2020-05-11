@@ -2,7 +2,7 @@ import realm from '../init';
 const uuidv1 = require('uuid/v1');
 import SyncUtils from '../../services/sync/syncUtils';
 
-import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
+import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc, compareDesc } from 'date-fns';
 class InventroyRealm {
     constructor() {
         this.inventory = [];
@@ -12,7 +12,7 @@ class InventroyRealm {
                 realm.create('InventorySyncDate', { lastInventorySync: firstSyncDate });
             }
         });
-        
+
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReadingSyncDate')))).length == 0) {
                 realm.create('MeterReadingSyncDate', { lastMeterReadingSync: firstSyncDate });
@@ -77,6 +77,23 @@ class InventroyRealm {
 
     getAllMeterReading() {
         return Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
+    }
+
+    getMeterReadingLessDate(date) {
+        let meterReding = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
+        let filtered = meterReding.filter(r => {
+            //console.log('tt', parseISO(r.created_at), '-', parseISO(SyncUtils.convertDate(date)), '-', compareAsc(parseISO(r.created_at), parseISO(date))); 
+            return compareAsc(parseISO(r.created_at), parseISO(SyncUtils.convertDate(date))) === -1;
+        })
+        let datesArrays = filtered.map(e => {
+            return parseISO(e.created_at)
+        }).sort(compareDesc)
+        //console.log('datesArrays', datesArrays)
+        let checkExistingMeter = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
+        const filteredReading = checkExistingMeter.filter(element => SyncUtils.isSimilarDay(element.created_at, datesArrays[0]));
+
+       // console.log('filteredReading', filteredReading)
+        return filteredReading;
     }
 
     getAllMeterReadingByDate(date) {
