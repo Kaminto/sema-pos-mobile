@@ -53,7 +53,12 @@ const CustomerTransactionStack = createStackNavigator({
 
 const TabNavigator = createBottomTabNavigator({
     Transaction: CustomerTransactionStack,
-    CustomerWallet: CreditHistoryStack,
+    CustomerWallet: {
+        screen: CreditHistoryStack,
+        navigationOptions: ({ navigation }) => ({
+            title: `Customer Wallet`,
+        }),
+    },
 
 },
     {
@@ -80,9 +85,9 @@ const ListCustomerStack = createStackNavigator({
     CustomerList: {
         screen: CustomerList,
         navigationOptions: ({ navigation }) => ({
-            headerTitle: () => <CustomerTitle title={`Customers`}/>,
-			// headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
-			headerLeft: () => <NavigationDrawerStructure />,
+            headerTitle: () => <CustomerTitle title={`Customers`} />,
+            // headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
+            headerLeft: () => <NavigationDrawerStructure />,
             headerStyle: {
                 backgroundColor: '#00549C'
             },
@@ -114,7 +119,7 @@ const ListCustomerStack = createStackNavigator({
     OrderView: {
         screen: OrderView,
         navigationOptions: ({ navigation }) => ({
-			headerTitle: () => <CustomerTitle />,
+            headerTitle: () => <CustomerTitle />,
             headerStyle: {
                 backgroundColor: '#00549C',
             },
@@ -125,7 +130,7 @@ const ListCustomerStack = createStackNavigator({
 
     {
         initialRouteName: 'CustomerList',
-		headerMode: 'float'
+        headerMode: 'float'
     }
 );
 
@@ -174,8 +179,8 @@ const SalesReportStack = createStackNavigator({
         screen: SalesReport,
         navigationOptions: ({ navigation }) => ({
             title: 'Sales Report',
-			// headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
-			headerLeft: () => <NavigationDrawerStructure  />,
+            // headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
+            headerLeft: () => <NavigationDrawerStructure />,
             headerStyle: {
                 backgroundColor: '#00549C',
             },
@@ -189,8 +194,8 @@ const InventoryStack = createStackNavigator({
         screen: InventoryReport,
         navigationOptions: ({ navigation }) => ({
             title: 'Wastage Report',
-			// headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
-			headerLeft: () => <NavigationDrawerStructure  />,
+            // headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
+            headerLeft: () => <NavigationDrawerStructure />,
             headerStyle: {
                 backgroundColor: '#00549C',
             },
@@ -204,8 +209,8 @@ const ReminderStack = createStackNavigator({
         screen: RemindersReport,
         navigationOptions: ({ navigation }) => ({
             title: 'Reminders',
-			// headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
-			headerLeft: () => <NavigationDrawerStructure  />,
+            // headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
+            headerLeft: () => <NavigationDrawerStructure />,
             headerStyle: {
                 backgroundColor: '#00549C',
             },
@@ -269,8 +274,8 @@ const JibuDrawerNavigation = createDrawerNavigator({
             light: '#eee',
             dark: 'rgba(40,40,40,1)',
         },
-		drawerType: 'slide',
-		drawerWidth: Dimensions.get('window').width * .3,
+        drawerType: 'slide',
+        drawerWidth: Dimensions.get('window').width * .3,
     });
 
 const JibuRouter = createSwitchNavigator(
