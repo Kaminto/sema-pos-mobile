@@ -972,7 +972,7 @@ class OrderCheckout extends React.PureComponent {
 						const loanIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("loan");
 					
 						if (loanIndex >= 0) {
-							this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[loanIndex], created_at: new Date(), isSelected: this.props.paymentTypes[loanIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() - totalAmountPaid });
+							this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[loanIndex], created_at: new Date(), isSelected: this.props.paymentTypes[loanIndex].isSelected === true ? false : true, amount: (this.calculateOrderDue() - totalAmountPaid) - this.currentCredit() });
 						}
 
 						const creditIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("credit");
@@ -990,7 +990,7 @@ class OrderCheckout extends React.PureComponent {
 					this.updateLoanBalance(this.props.selectedCustomer.dueAmount);
 					const loanIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("loan");
 					if (loanIndex >= 0) {
-						this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[loanIndex], created_at: new Date(), isSelected: this.props.paymentTypes[loanIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() - totalAmountPaid });
+						this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[loanIndex], created_at: new Date(), isSelected: this.props.paymentTypes[loanIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() - this.currentCredit() });
 					}
 					const creditIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("credit");
 					if (creditIndex >= 0) {
