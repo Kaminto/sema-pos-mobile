@@ -123,7 +123,6 @@ class CustomerDebtRealm {
     }
 
     synched(customerDebt) {
-        console.log('localCustomerDebt', localCustomerDebt)
         try {
             realm.write(() => {
                 let customerDebtObj = realm.objects('CustomerDebt').filtered(`id = "${customerDebt.customer_debt_id}"`);
