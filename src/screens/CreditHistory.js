@@ -47,7 +47,7 @@ class CreditHistory extends React.PureComponent {
                     topupTotal={this.totalTopUp()}
                     selectedCustomer={this.props.selectedCustomer} />
 
-                <View style={{ flexDirection: 'row', paddingTop: 20, flex: .75, width: '85%', alignSelf: 'center', backgroundColor: '#FFF' }}>
+                <View style={{ flexDirection: 'row', flex: .75, width: '85%', alignSelf: 'center', backgroundColor: '#FFF' }}>
 
                     <View style={{ flex: 1 }}>
                         <FlatList

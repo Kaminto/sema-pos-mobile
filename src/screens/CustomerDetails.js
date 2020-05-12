@@ -814,7 +814,9 @@ class CustomerDetails extends React.PureComponent {
 	getTransactionDetail() {
 		if (this.state.selected) {
 			return (
-				<View style={{ flex: 1, flexDirection: 'row',marginLeft: 20, }}>
+				// <View style={{ flex: 1, flexDirection: 'row',marginLeft: 20, }}>
+		 <View style={{ flexDirection: 'row', flex: .75, width: '85%', alignSelf: 'center', backgroundColor: '#FFF' }}>
+
 					<View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 1, borderRightColor: '#CCC' }}>
 						<SafeAreaView style={styles.container}>
 							<ScrollView

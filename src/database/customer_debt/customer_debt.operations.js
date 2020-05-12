@@ -44,7 +44,7 @@ class CustomerDebtRealm {
         return Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerDebt'))));
     }
 
-    
+
     getCustomerDebtsTransactions() {
         return Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerDebt').filtered(`receipt_id = ${null}`))));
     }
@@ -123,7 +123,6 @@ class CustomerDebtRealm {
     }
 
     synched(customerDebt) {
-        console.log('localCustomerDebt', localCustomerDebt)
         try {
             realm.write(() => {
                 let customerDebtObj = realm.objects('CustomerDebt').filtered(`id = "${customerDebt.customer_debt_id}"`);
@@ -164,7 +163,7 @@ class CustomerDebtRealm {
                     customerDebtObj[0].active = false;
                     customerDebtObj[0].updated_at = new Date();
                 })
-            
+
         } catch (e) {
             console.log("Error on soft delete customer debt", e);
         }
