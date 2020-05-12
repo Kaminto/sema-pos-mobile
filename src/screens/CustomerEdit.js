@@ -126,8 +126,9 @@ class CustomerEdit extends React.PureComponent {
 		const cplaceholder = {
 			label: '',
 			value: null,
-			color: '#333',
+			key: 0,
 		};
+
 
 		return (
 			<View style={{ flex: 1, backgroundColor: '#f1f1f1', justifyContent: 'center' }}>
@@ -211,11 +212,16 @@ class CustomerEdit extends React.PureComponent {
 
 
 							<RNPickerSelect
-								placeholder={{  }}
+								placeholder={{
+									label: 'Select a customer type',
+									value: null,
+									key: 0,
+								}}
 								items={this.customerTypesOptions}
 								onValueChange={(value, itemKey) => {
+									console.log(JSON.stringify(this.customerTypesOptions));
 									this.setState({ customerType: value });
-									this.setState({ customerChannel: this.customerTypesOptions[itemKey].key });
+									this.setState({ customerChannel: this.customerTypesOptions[itemKey - 1].key });
 								}}
 								value={this.state.customerType}
 								useNativeAndroidPickerStyle={false}

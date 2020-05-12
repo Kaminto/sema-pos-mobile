@@ -28,7 +28,7 @@ import * as receiptActions from '../actions/ReceiptActions';
 
 import SelectedCustomerDetails from './CustomerDetailSubHeader';
 
-    
+
 import CreditRealm from '../database/credit/credit.operations';
 import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
 
@@ -846,7 +846,7 @@ class CustomerDetails extends React.PureComponent {
 							products={this.props.products}
 							customerActions={this.props.customerActions}
 							paymentTypesActions={this.props.paymentTypesActions}
-							topUpActions={this.props.topUpActions}							
+							topUpActions={this.props.topUpActions}
 							receiptActions={this.props.receiptActions}
 							receipts={this.props.receipts}
 							paymentTypes={this.props.receiptsPaymentTypes}
@@ -865,7 +865,7 @@ class CustomerDetails extends React.PureComponent {
 		}
 	}
 
- 
+
 
 	prepareData() {
 		// Used for enumerating receipts
@@ -906,7 +906,7 @@ class CustomerDetails extends React.PureComponent {
 				: -1;
 		});
 	//
-	
+
 	//console.log(receipts);
 
 		return [...receipts.filter(r => r.customerAccount.customerId === this.props.selectedCustomer.customerId)];
@@ -1147,7 +1147,7 @@ class CustomerDetails extends React.PureComponent {
 								{'Deleted - '.toUpperCase()}
 							</Text>
 						): null}
-						
+
 						{!item.isReceipt ?  !item.synched ? (
 							<View style={{ flexDirection: 'row' }}>
 								<Text style={styles.receiptPendingText}>
@@ -1251,8 +1251,6 @@ class CustomerDetails extends React.PureComponent {
 
 }
 
-
-
 function mapStateToProps(state, props) {
 	return {
 		selectedCustomer: state.customerReducer.selectedCustomer,
@@ -1333,7 +1331,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white',
 	},
 	modal3: {
-		width: 1000,
+		width: '70%',
 		height: 500,
 	},
 	modal: {
