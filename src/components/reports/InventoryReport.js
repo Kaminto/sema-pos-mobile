@@ -624,7 +624,7 @@ class InventoryReport extends React.PureComponent {
 			}
 
 			if (parseFloat(current) < parseFloat(previous)) {
-				return (parseFloat(previous) - parseFloat(current)).toFixed(2) + ' L';
+				return 0 + ' L';
 			}
 
 		}
