@@ -2,6 +2,7 @@ import realm from '../init';
 const uuidv1 = require('uuid/v1');
 import { parseISO, isSameDay, format, sub, set, add, isValid, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
 import CustomerRealm from '../customers/customer.operations';
+import SyncUtils from '../../services/sync/syncUtils';
 class CustomerReminderRealm {
     constructor() {
         this.customerReminder = [];
