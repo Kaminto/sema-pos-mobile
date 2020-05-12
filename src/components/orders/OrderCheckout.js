@@ -970,8 +970,14 @@ class OrderCheckout extends React.PureComponent {
 
 						this.updateLoanBalance(this.props.selectedCustomer.dueAmount);
 						const loanIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("loan");
+					
 						if (loanIndex >= 0) {
 							this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[loanIndex], created_at: new Date(), isSelected: this.props.paymentTypes[loanIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() - totalAmountPaid });
+						}
+
+						const creditIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("credit");
+						if (creditIndex >= 0) {
+							this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[creditIndex], created_at: new Date(), isSelected: this.props.paymentTypes[creditIndex].isSelected === true ? false : true, amount: this.currentCredit() });
 						}
 
 						this.props.selectedCustomer.walletBalance = 0;
@@ -986,9 +992,12 @@ class OrderCheckout extends React.PureComponent {
 					if (loanIndex >= 0) {
 						this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[loanIndex], created_at: new Date(), isSelected: this.props.paymentTypes[loanIndex].isSelected === true ? false : true, amount: this.calculateOrderDue() - totalAmountPaid });
 					}
+					const creditIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("credit");
+					if (creditIndex >= 0) {
+						this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[creditIndex], created_at: new Date(), isSelected: this.props.paymentTypes[creditIndex].isSelected === true ? false : true, amount: this.currentCredit() });
+					}
 
 					this.props.selectedCustomer.walletBalance = 0;
-
 					this.updateWallet(this.props.selectedCustomer.walletBalance);
 				}
 			} else if (this.currentCredit() <= 0) {
