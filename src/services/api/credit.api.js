@@ -1,7 +1,7 @@
 class CreditApi {
 	constructor() {
 		//this._url = 'http://192.168.43.153:3002/';
-		this._url = 'http://142.93.115.206:3002/';
+		this._url = 'http://192.168.43.153:3002/';
 		this._site = '';
 		this._user = '';
 		this._password = '';
@@ -14,7 +14,7 @@ class CreditApi {
 		if (!url.endsWith('/')) {
 			url = url + '/';
 		}
-		this._url = 'http://142.93.115.206:3002/';
+		this._url = 'http://192.168.43.153:3002/';
 		this._site = site;
 		this._user = user;
 		this._password = password;
@@ -107,7 +107,7 @@ console.log(this._url + url);
 		};
 		return new Promise((resolve, reject) => {
 			fetch(
-				this._url + 'sema/customer_credit/' + topup.topUpId,
+				this._url + 'sema/customer_credit/' + topup.top_up_id,
 				options
 			)
 				.then(response => {
@@ -139,7 +139,7 @@ console.log(this._url + url);
 		};
 		return new Promise((resolve, reject) => {
 			fetch(
-				this._url + 'sema/customer_credit/' + topup.topUpId,
+				this._url + 'sema/customer_credit/' + topup.top_up_id,
 				options
 			)
 				.then(response => {

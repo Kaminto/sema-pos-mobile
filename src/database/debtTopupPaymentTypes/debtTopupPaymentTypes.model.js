@@ -4,7 +4,7 @@ export const DebtTopupPaymentTypeSchema = {
 		id: { type: 'int', optional: true },
 		debtTopupPaymentTypesId:  { type: 'string', optional: true },
         customer_debt_id:  { type: 'string', optional: true },
-        topUpId:  { type: 'string', optional: true },
+        top_up_id:  { type: 'string', optional: true },
         type:  { type: 'string', optional: true },
         payment_type_id: { type: 'int', optional: true },
         amount: { type: 'int', optional: true },

@@ -461,8 +461,9 @@ class PaymentModal extends React.PureComponent {
 
 
 			Alert.alert(
-				'SEMA',
-				'Payment Made',
+				'Payment Made.',
+				'Customer\'s Loan Balance: ' + this.props.selectedCustomer.dueAmount +
+				'\nCustomer Wallet Balance: ' + this.props.selectedCustomer.walletBalance,
 				[{
 					text: 'OK',
 					onPress: () => {
@@ -500,6 +501,8 @@ class PaymentModal extends React.PureComponent {
 	}
 
 	closePaymentModal() {
+		PaymentTypeRealm.resetSelected();
+		this.props.paymentTypesActions.resetSelectedPayment();
 		this.props.closePaymentModal();
 	};
 

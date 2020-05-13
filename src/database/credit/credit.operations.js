@@ -81,7 +81,7 @@ class CreditRealm {
         let balance = Number(balanceval);
 
         const newCredit = {
-            topUpId: uuidv1(),
+            top_up_id: uuidv1(),
             customer_account_id,
             topup,
             balance,
@@ -105,7 +105,7 @@ class CreditRealm {
     updateCredit(credit) {
         try {
             realm.write(() => {
-                let creditObj = realm.objects('Credit').filtered(`topUpId = "${credit.topUpId}"`);
+                let creditObj = realm.objects('Credit').filtered(`top_up_id = "${credit.top_up_id}"`);
                 creditObj[0].customer_account_id = credit.customer_account_id;
                 creditObj[0].topup = credit.topup;
                 creditObj[0].balance = credit.balance;
@@ -128,7 +128,7 @@ class CreditRealm {
     synched(credit) {
         try {
             realm.write(() => {
-                let creditObj = realm.objects('Credit').filtered(`topUpId = "${credit.topUpId}"`);
+                let creditObj = realm.objects('Credit').filtered(`top_up_id = "${credit.top_up_id}"`);
                 creditObj[0].synched = true;
                 creditObj[0].syncAction = null;
             })
@@ -141,7 +141,7 @@ class CreditRealm {
         try {
             realm.write(() => {
                 let credits = realm.objects('Credit');
-                let deleteCredit = credits.filtered(`topUpId = "${credit.topUpId}"`);
+                let deleteCredit = credits.filtered(`top_up_id = "${credit.top_up_id}"`);
                 realm.delete(deleteCredit);
             })
         } catch (e) {
@@ -152,7 +152,7 @@ class CreditRealm {
     softDeleteCredit(credit) {
         try {
             realm.write(() => {
-                let creditObj = realm.objects('Credit').filtered(`topUpId = "${credit.topUpId}"`);
+                let creditObj = realm.objects('Credit').filtered(`top_up_id = "${credit.top_up_id}"`);
                 creditObj[0].syncAction = 'delete';
                 creditObj[0].active = false;
                 creditObj[0].updated_at = new Date();
@@ -172,7 +172,7 @@ class CreditRealm {
                 let result = [];
                 realm.write(() => {
                     for (i = 0; i < credit.length; i++) {
-                        let ischeckCredit = this.checkCredit(credit[i].created_at, credit[i].topUpId).length;
+                        let ischeckCredit = this.checkCredit(credit[i].created_at, credit[i].top_up_id).length;
                         if (ischeckCredit === 0) {
                             console.log('saveing',value)
                             let value = realm.create('Credit', {
@@ -184,14 +184,14 @@ class CreditRealm {
                             console.log('saved',value)
                             result.push({ status: 'success', data: value, message: 'Credit has been set' });
                         } else if (ischeckCredit > 0) {
-                            let discountObj = realm.objects('Credit').filtered(`topUpId = "${credit[i].topUpId}"`);
+                            let discountObj = realm.objects('Credit').filtered(`top_up_id = "${credit[i].top_up_id}"`);
                            
                              discountObj[0].topup=  Number(credit[i].topup);
                              discountObj[0].balance=  Number(credit[i].balance);
                              discountObj[0].kiosk_id = credit[i].kiosk_id;
                              discountObj[0].customer_account_id = credit[i].customer_account_id;
                              discountObj[0].id = credit[i].id;
-                             discountObj[0].topUpId = credit[i].topUpId;
+                             discountObj[0].top_up_id = credit[i].top_up_id;
                              discountObj[0].updated_at = credit[i].updated_at;
                              result.push({ status: 'success', data: credit[i], message: 'Local Credit has been updated' });
                            
@@ -207,8 +207,8 @@ class CreditRealm {
         });
     }
 
-    checkCredit(date, topUpId) {
-        return this.getAllCredit().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.topUpId === topUpId)
+    checkCredit(date, top_up_id) {
+        return this.getAllCredit().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.top_up_id === top_up_id)
     }
 
 
