@@ -835,8 +835,8 @@ class Transactions extends React.PureComponent {
 			return {
 				active: receipt.active,
 				synched: receipt.synched,
-				id: receipt.topUpId,
-				topUpId: receipt.topUpId,
+				id: receipt.top_up_id,
+				top_up_id: receipt.top_up_id,
 				receiptId: receipt.receipt_id,
 				createdAt: receipt.created_at,
 				sectiontitle: format(parseISO(receipt.created_at), 'iiii d MMM yyyy'),
@@ -866,8 +866,6 @@ class Transactions extends React.PureComponent {
 				? 1
 				: -1;
 		});
-		// receipts = this.filterItems(receipts);
-		console.log("Cosmos " + JSON.stringify(topups));
 		return [...topups];
 	}
 

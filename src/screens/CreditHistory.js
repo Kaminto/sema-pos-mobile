@@ -153,7 +153,7 @@ class CreditHistory extends React.PureComponent {
                     active: topup.active,
                     //id: topup.id,
                     createdAt: topup.created_at,
-                    topUpId: topup.topUpId,
+                    top_up_id: topup.top_up_id,
                     customer_account_id: topup.customer_account_id,
                     total: topup.total,
                     topup: topup.topup,

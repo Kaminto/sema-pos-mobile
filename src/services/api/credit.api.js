@@ -107,7 +107,7 @@ console.log(this._url + url);
 		};
 		return new Promise((resolve, reject) => {
 			fetch(
-				this._url + 'sema/customer_credit/' + topup.topUpId,
+				this._url + 'sema/customer_credit/' + topup.top_up_id,
 				options
 			)
 				.then(response => {
@@ -139,7 +139,7 @@ console.log(this._url + url);
 		};
 		return new Promise((resolve, reject) => {
 			fetch(
-				this._url + 'sema/customer_credit/' + topup.topUpId,
+				this._url + 'sema/customer_credit/' + topup.top_up_id,
 				options
 			)
 				.then(response => {
