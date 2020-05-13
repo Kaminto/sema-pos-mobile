@@ -118,47 +118,47 @@ class Synchronization {
 						let settings = SettingRealm.getAllSetting();
 
 
-						// const promiseSalesChannels = SalesChannelSync.synchronizeSalesChannels();
-						// const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes();
-						// const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes();
-						// const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId);
-						// const promiseProductMrps = ProductMRPSync.synchronizeProductMrps(settings.regionId);
-						// const promiseProducts = ProductSync.synchronizeProducts();				
-						// const promiseMeterReading = MeterReadingSync.synchronizeMeterReading(settings.siteId);
+						const promiseSalesChannels = SalesChannelSync.synchronizeSalesChannels();
+						const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes();
+						const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes();
+						const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId);
+						const promiseProductMrps = ProductMRPSync.synchronizeProductMrps(settings.regionId);
+						const promiseProducts = ProductSync.synchronizeProducts();				
+						const promiseMeterReading = MeterReadingSync.synchronizeMeterReading(settings.siteId);
 
-						// const promiseReminder = ReminderSync.synchronizeCustomerReminders(settings.siteId);
+						const promiseReminder = ReminderSync.synchronizeCustomerReminders(settings.siteId);
 
-						// const promiseInventory = InventorySync.synchronizeInventory(settings.siteId);
+						const promiseInventory = InventorySync.synchronizeInventory(settings.siteId);
 
 
-						// const promiseCustomers = CustomerSync.synchronizeCustomers(settings.siteId);
+						const promiseCustomers = CustomerSync.synchronizeCustomers(settings.siteId);
 						const promiseTopUps = CreditSync.synchronizeCredits();				
 
-						// const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts();
-						// const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId);
-						// const promiseOrders = OrderSync.synchronizeSales(settings.siteId);
+						const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts();
+						const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId);
+						const promiseOrders = OrderSync.synchronizeSales(settings.siteId);
 
 
 
 
 
 						Promise.all([
-							// promiseSalesChannels,
-							// promiseCustomerTypes,
-							// promisePaymentTypes,
-							// promiseDiscounts,
-							// promiseProductMrps,														
-							// promiseProducts,
-							// promiseMeterReading,
-							// promiseInventory,
+							promiseSalesChannels,
+							promiseCustomerTypes,
+							promisePaymentTypes,
+							promiseDiscounts,
+							promiseProductMrps,														
+							promiseProducts,
+							promiseMeterReading,
+							promiseInventory,
 
 
-							// promiseCustomerDebts,						
-							// promiseRecieptPaymentTypes,
+							promiseCustomerDebts,						
+							promiseRecieptPaymentTypes,
 							promiseTopUps,
-							// promiseCustomers,
-							// promiseOrders,
-							// promiseReminder
+							promiseCustomers,
+							promiseOrders,
+							promiseReminder
 
 
 						])
