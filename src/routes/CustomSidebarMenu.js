@@ -247,7 +247,6 @@ class CustomSidebarMenu extends React.PureComponent {
         return i18n.t('data-is-up-to-date');
       } else {
 
-
         let final1 = '';
         let final2 = '';
         let final3 = '';
@@ -297,11 +296,6 @@ class CustomSidebarMenu extends React.PureComponent {
         }
 
 
-
-
-
-
-
         if (
           syncResult.recieptPayments.recieptPayments > 0
         ) {
@@ -349,11 +343,7 @@ class CustomSidebarMenu extends React.PureComponent {
  
         }
 
-
-        console.log('final', final2)
         return final1 + final2 + final3 + final4 + final5 + final6 + final7 + final8 + final9 + final10 + final11
-
-
       }
 
     } catch (error) { }
