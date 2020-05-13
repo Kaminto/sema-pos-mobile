@@ -708,7 +708,7 @@ class Transactions extends React.PureComponent {
 							products={this.props.products}
 							customerActions={this.props.customerActions}
 							paymentTypesActions={this.props.paymentTypesActions}
-							topUpActions={this.props.topUpActions}							
+							topUpActions={this.props.topUpActions}
 							receiptActions={this.props.receiptActions}
 							receipts={this.props.receipts}
 							paymentTypes={this.props.receiptsPaymentTypes}
@@ -867,7 +867,7 @@ class Transactions extends React.PureComponent {
 				: -1;
 		});
 		// receipts = this.filterItems(receipts);
-
+		console.log("Cosmos " + JSON.stringify(topups));
 		return [...topups];
 	}
 
@@ -1014,7 +1014,7 @@ class Transactions extends React.PureComponent {
 								{'Deleted - '.toUpperCase()}
 							</Text>
 						): null}
-						
+
 						{!item.isReceipt ?  !item.synched ? (
 							<View style={{ flexDirection: 'row' }}>
 								<Text style={styles.receiptPendingText}>
