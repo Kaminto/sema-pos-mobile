@@ -247,50 +247,103 @@ class CustomSidebarMenu extends React.PureComponent {
         return i18n.t('data-is-up-to-date');
       } else {
 
+        let final1 = '';
+        let final2 = '';
+        let final3 = '';
+        let final4 = '';
+        let final5 = '';
 
-        return `
-              \n${syncResult.customers.customers > 0 ? syncResult.customers.successError === 'fail' ? syncResult.customers.successMessage.message : syncResult.customers.customers : ''}
-               ${syncResult.customers.customers > 0 ? syncResult.customers.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('customers-updated') : ''}
+        let final6 = '';
+        let final7 = '';
+        let final8 = '';
+        let final9 = '';
+        let final10 = '';
+        let final11 = '';
 
-               \n${syncResult.products.products > 0 ? syncResult.products.successError === 'fail' ? syncResult.products.successMessage.message : syncResult.products.products : ''}
-                ${syncResult.products.products > 0 ? syncResult.meterReading.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('products-updated') : ''}
+        if (syncResult.customers.customers > 0) {
+          final1 = `${syncResult.customers.successError === 'success' ? `${syncResult.customers.customers} ` + i18n.t('customers-updated') : `${syncResult.customers.successMessage.message} Please Synchronise Before making any changes`}`
+        }
 
-              \n${syncResult.orders.orders > 0 ? syncResult.orders.successError === 'fail' ? syncResult.orders.successMessage.message : syncResult.orders.orders : ''}
-              ${syncResult.orders.orders > 0 ? syncResult.orders.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('sales-receipts-updated') : ''}
+        if (syncResult.products.products > 0) {
+          final2 = `\n${syncResult.products.successError === 'success' ? `${syncResult.products.products + i18n.t('products-updated')}` : `${syncResult.products.successMessage.message} Please Synchronise Before making any changes`}`
 
-              \n${syncResult.debt.debt > 0 ? syncResult.debt.successError === 'fail' ? syncResult.debt.successMessage.message : syncResult.debt.debt : ''}
-               ${syncResult.debt.debt > 0 ? syncResult.debt.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('debt-updated') : ''}
+        }
 
-               \n${syncResult.meterReading.meterReading > 0 ? syncResult.meterReading.successError === 'fail' ? syncResult.meterReading.successMessage.message : syncResult.meterReading.meterReading : ''}
-               ${syncResult.meterReading.meterReading > 0 ? syncResult.meterReading.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('meterReading-updated') : ''}
+        if (syncResult.wastageReport.wastageReport > 0) {
+          final3 = `\n${syncResult.wastageReport.successError === 'success' ? `${syncResult.wastageReport.wastageReport} ` + i18n.t('wastageReport-updated') : `${syncResult.wastageReport.successMessage.message} Please Synchronise Before making any changes`}`
 
-
-              \n${syncResult.wastageReport.wastageReport > 0 ? syncResult.wastageReport.successError === 'fail' ? syncResult.wastageReport.successMessage.message : syncResult.wastageReport.wastageReport : ''}
-              ${syncResult.wastageReport.wastageReport > 0 ? syncResult.wastageReport.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('wastageReport-updated') : ''}
-
-
-              \n${syncResult.topups.topups > 0 ? syncResult.topups.successError === 'fail' ? syncResult.topups.successMessage.message : syncResult.topups.topups : ''}
-               ${syncResult.topups.topups > 0 ? syncResult.topups.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('topups-updated') : ''}
-
-
-             \n${syncResult.salesChannels.salesChannels > 0 ? syncResult.salesChannels.successError === 'fail' ? syncResult.salesChannels.successMessage.message : syncResult.salesChannels.salesChannels : ''}
-             ${syncResult.salesChannels.salesChannels > 0 ? syncResult.salesChannels.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('salechannel-updated') : ''}
+        }
 
 
-             \n${syncResult.productMrps.productMrps > 0 ? syncResult.productMrps.successError === 'fail' ? syncResult.productMrps.successMessage.message : syncResult.productMrps.productMrps : ''}
-              ${syncResult.productMrps.productMrps > 0 ? syncResult.productMrps.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('pricing-sheme-updated') : ''}
-
-              \n${syncResult.customerReminder.customerReminder > 0 ? syncResult.customerReminder.successError === 'fail' ? syncResult.customerReminder.successMessage.message : syncResult.customerReminder.customerReminder : ''}
-               ${syncResult.customerReminder.customerReminder > 0 ? syncResult.customerReminder.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('customer-reminder-updated') : ''}
-
-              \n${syncResult.recieptPayments.recieptPayments > 0 ? syncResult.recieptPayments.successError === 'fail' ? syncResult.recieptPayments.successMessage.message : syncResult.recieptPayments.recieptPayments : ''}
-                ${syncResult.recieptPayments.recieptPayments > 0 ? syncResult.recieptPayments.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('recieptPayments-updated') : ''}
+        if (syncResult.orders.orders > 0) {
+          final4 = `\n${syncResult.orders.successError === 'success' ? `${syncResult.orders.orders} ` + i18n.t('sales-receipts-updated') : `${syncResult.orders.successMessage.message} Please Synchronise Before making any changes`}`
+        }
 
 
+        if (syncResult.debt.debt > 0) {
+          final5 = `\n${syncResult.debt.successError === 'success' ? `${syncResult.debt.debt} ` + i18n.t('debt-updated') : `${syncResult.debt.successMessage.message} Please Synchronise Before making any changes`}`          
 
-        `
+        }
 
-          ;
+
+
+        if (
+          syncResult.meterReading.meterReading > 0
+        ) {
+          final6 = `\n${syncResult.meterReading.successError === 'success' ? `${syncResult.meterReading.meterReading} ` + i18n.t('meterReading-updated') : `${syncResult.meterReading.successMessage.message} Please Synchronise Before making any changes`}`
+         
+
+        }
+
+
+        if (
+          syncResult.recieptPayments.recieptPayments > 0
+        ) {
+
+          final7 = `\n${syncResult.recieptPayments.successError === 'success' ? `${syncResult.recieptPayments.recieptPayments} ` + i18n.t('recieptPayments-updated') : `${syncResult.recieptPayments.successMessage.message} Please Synchronise Before making any changes`}`
+          
+        }
+
+
+        if (
+          syncResult.customerReminder.customerReminder > 0
+        ) {
+          final8 = `\n${syncResult.customerReminder.successError === 'success' ? `${syncResult.customerReminder.customerReminder} ` + i18n.t('customer-reminder-updated') : `${syncResult.customerReminder.successMessage.message} Please Synchronise Before making any changes`}`
+          
+        
+        }
+
+
+        if (
+          syncResult.productMrps.productMrps > 0
+        ) {
+          final9 = `\n${syncResult.productMrps.successError === 'success' ? `${syncResult.productMrps.productMrps} ` + i18n.t('pricing-sheme-updated') : `${syncResult.productMrps.successMessage.message} Please Synchronise Before making any changes`}`
+          
+         
+        }
+
+
+        if (
+          syncResult.salesChannels.salesChannels > 0
+        ) {
+          final10 = `\n${syncResult.salesChannels.successError === 'success' ? `${syncResult.salesChannels.salesChannels} ` + i18n.t('salechannel-updated') : `${syncResult.salesChannels.successMessage.message} Please Synchronise Before making any changes`}`
+          
+      
+
+        }
+
+
+
+        if (
+          syncResult.topups.topups > 0
+        ) {
+
+          final10 = `\n${syncResult.topups.successError === 'success' ? `${syncResult.topups.topups} ` + i18n.t('topups-updated') : `${syncResult.topups.successMessage.message} Please Synchronise Before making any changes`}`
+          
+ 
+        }
+
+        return final1 + final2 + final3 + final4 + final5 + final6 + final7 + final8 + final9 + final10 + final11
       }
 
     } catch (error) { }
