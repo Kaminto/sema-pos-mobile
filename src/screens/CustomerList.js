@@ -167,7 +167,6 @@ class CustomerList extends React.Component {
         this.props.paymentTypesActions.resetSelectedPayment();
         this.props.paymentTypesActions.setPaymentTypes(
             PaymentTypeRealm.getPaymentTypes());
-            console.log('eee333');
         this.refs.modal6.close();
     };
 
