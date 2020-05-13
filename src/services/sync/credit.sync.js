@@ -17,8 +17,8 @@ class CreditSync {
                     let remoteTopUps = remoteCredit.topup.length > 0 ?  [...remoteCredit.topup] : [];
                     console.log('localCredits', localCredits)
                     
-                    let onlyInLocal = localCredits.filter(SyncUtils.compareRemoteAndLocal(remoteTopUps,'topUpId'));
-                    let onlyInRemote = remoteTopUps.filter(SyncUtils.compareRemoteAndLocal(localCredits,'topUpId'));
+                    let onlyInLocal = localCredits.filter(SyncUtils.compareRemoteAndLocal(remoteTopUps,'top_up_id'));
+                    let onlyInRemote = remoteTopUps.filter(SyncUtils.compareRemoteAndLocal(localCredits,'top_up_id'));
 
                     let syncResponseArray = [];
                     if (onlyInRemote.length > 0) {

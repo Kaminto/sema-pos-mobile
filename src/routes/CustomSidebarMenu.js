@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image, Text, Alert, ActivityIndicator, ScrollView, TouchableOpacity} from 'react-native';
+import { View, StyleSheet, Image, Text, Alert, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -101,41 +101,41 @@ class CustomSidebarMenu extends React.PureComponent {
   render() {
     return (
       <View style={styles.sideMenuContainer}>
-		<ScrollView style={{ flex: 1 }}>
-        <Image source={require('../images/jibulogo.png')} resizeMode='stretch' style={styles.imageStyle} />
-        {/*Divider between Top Image and Sidebar Option*/}
-        <View
-          style={styles.viewCont}
-        />
-        {/*Setting up Navigation Options from option array using loop*/}
-        <View style={{ flex: 1 }}>
-          {this.items.map((item, key) => (
-            <View style={{ flex: 1 }}  key={key}>
-				  <TouchableOpacity
-				 	style={[styles.drawerItemStyle, {backgroundColor: global.currentScreenIndex === key ? '#e0dbdb' : '#ffffff'}]}
+        <ScrollView style={{ flex: 1 }}>
+          <Image source={require('../images/jibulogo.png')} resizeMode='stretch' style={styles.imageStyle} />
+          {/*Divider between Top Image and Sidebar Option*/}
+          <View
+            style={styles.viewCont}
+          />
+          {/*Setting up Navigation Options from option array using loop*/}
+          <View style={{ flex: 1 }}>
+            {this.items.map((item, key) => (
+              <View style={{ flex: 1 }} key={key}>
+                <TouchableOpacity
+                  style={[styles.drawerItemStyle, { backgroundColor: global.currentScreenIndex === key ? '#e0dbdb' : '#ffffff' }]}
 
-					onPress={() => this.handleOnPress(item, key)}>
-					<View style={{ marginRight: 10, marginLeft: 20 }}>
-						<Icon name={item.navOptionThumb} size={25} color="#808080" />
-					</View>
-					<Text
-						style={{
-						fontSize: 15,
-						color: global.currentScreenIndex === key ? 'red' : 'black',
-						}}
-						>
-						{item.navOptionName}
-					</Text>
-					</TouchableOpacity>
-            </View>
-          ))}
-        </View>
-        {
-          this.state.isLoading && (
-            <ActivityIndicator size={60} color="#ABC1DE" />
-          )
-        }
-    	</ScrollView>
+                  onPress={() => this.handleOnPress(item, key)}>
+                  <View style={{ marginRight: 10, marginLeft: 20 }}>
+                    <Icon name={item.navOptionThumb} size={25} color="#808080" />
+                  </View>
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      color: global.currentScreenIndex === key ? 'red' : 'black',
+                    }}
+                  >
+                    {item.navOptionName}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+          {
+            this.state.isLoading && (
+              <ActivityIndicator size={60} color="#ABC1DE" />
+            )
+          }
+        </ScrollView>
       </View>
     );
   }
@@ -152,8 +152,8 @@ class CustomSidebarMenu extends React.PureComponent {
       settings.uiLanguage,
       '',
       settings.siteId,
-	  false,
-	  settings.currency
+      false,
+      settings.currency
     );
     this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
     //As we are not going to the Login, the reason no reason to disable the token
@@ -219,7 +219,7 @@ class CustomSidebarMenu extends React.PureComponent {
 
         this.props.receiptActions.setReceipts(
           OrderRealm.getAllOrder()
-        );        
+        );
 
         Alert.alert(
           i18n.t('sync-results'),
@@ -232,41 +232,66 @@ class CustomSidebarMenu extends React.PureComponent {
   };
 
   _getSyncResults(syncResult) {
-    console.log('syncResult2', syncResult);
     try {
 
-        if (
-          syncResult.customers.customers == 0 &&
-          syncResult.products.products == 0 &&
-          syncResult.orders.orders == 0 &&
-          syncResult.meterReading.meterReading == 0 &&
-          syncResult.wastageReport.wastageReport == 0 &&
-          syncResult.recieptPayments.recieptPayments == 0 &&
-          syncResult.topups.topups == 0  &&
-          syncResult.customerReminder.customerReminder == 0
-        ) {
-          return i18n.t('data-is-up-to-date');
-        } else {
-          return `
-              ${syncResult.customers.successError === 'fail' ? syncResult.customers.successMessage.message : syncResult.customers.customers } ${syncResult.customers.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('customers-updated')} 
-              \n${syncResult.products.successError === 'fail' ? syncResult.products.successMessage.message : syncResult.products.products } ${syncResult.meterReading.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('products-updated')}           
-              \n${syncResult.orders.successError === 'fail' ? syncResult.orders.successMessage.message : syncResult.orders.orders } ${syncResult.orders.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('sales-receipts-updated')}            
-              \n${syncResult.debt.successError === 'fail' ? syncResult.debt.successMessage.message : syncResult.debt.debt } ${syncResult.debt.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('debt-updated')}              
-       			 \n${syncResult.meterReading.successError === 'fail' ? syncResult.meterReading.successMessage.message : syncResult.meterReading.meterReading } ${syncResult.meterReading.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('meterReading-updated')}
-              \n${syncResult.wastageReport.successError === 'fail' ? syncResult.wastageReport.successMessage.message : syncResult.wastageReport.wastageReport } ${syncResult.wastageReport.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('wastageReport-updated')}
-             \n${syncResult.topups.successError === 'fail' ? syncResult.topups.successMessage.message : syncResult.topups.topups } ${syncResult.topups.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('topups-updated')}             
-             \n${syncResult.salesChannels.successError === 'fail' ? syncResult.salesChannels.successMessage.message : syncResult.salesChannels.salesChannels } ${syncResult.salesChannels.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('salechannel-updated')}
-              \n${syncResult.productMrps.successError === 'fail' ? syncResult.productMrps.successMessage.message : syncResult.productMrps.productMrps } ${syncResult.productMrps.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('pricing-sheme-updated')}
+      if (
+        syncResult.customers.customers == 0 &&
+        syncResult.products.products == 0 &&
+        syncResult.orders.orders == 0 &&
+        syncResult.meterReading.meterReading == 0 &&
+        syncResult.wastageReport.wastageReport == 0 &&
+        syncResult.recieptPayments.recieptPayments == 0 &&
+        syncResult.topups.topups == 0 &&
+        syncResult.customerReminder.customerReminder == 0
+      ) {
+        return i18n.t('data-is-up-to-date');
+      } else {
 
-              \n${syncResult.customerReminder.successError === 'fail' ? syncResult.customerReminder.successMessage.message : syncResult.customerReminder.customerReminder } ${syncResult.customerReminder.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('customer-reminder-updated')}
 
-              \n${syncResult.recieptPayments.successError === 'fail' ? syncResult.recieptPayments.successMessage.message : syncResult.recieptPayments.recieptPayments } ${syncResult.recieptPayments.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('recieptPayments-updated')}
+        return `
+              ${syncResult.customers.customers > 0 ? syncResult.customers.successError === 'fail' ? syncResult.customers.successMessage.message : syncResult.customers.customers : ''}
+               ${syncResult.customers.customers > 0 ? syncResult.customers.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('customers-updated') : ''} 
+              
+               \n${syncResult.products.products > 0 ? syncResult.products.successError === 'fail' ? syncResult.products.successMessage.message : syncResult.products.products : ''}
+                ${syncResult.products.products > 0 ? syncResult.meterReading.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('products-updated') : ''}           
+              
+              \n${syncResult.orders.orders > 0 ? syncResult.orders.successError === 'fail' ? syncResult.orders.successMessage.message : syncResult.orders.orders : ''} 
+              ${syncResult.orders.orders > 0 ? syncResult.orders.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('sales-receipts-updated') : ''}            
+              
+              \n${syncResult.debt.debt > 0 ? syncResult.debt.successError === 'fail' ? syncResult.debt.successMessage.message : syncResult.debt.debt : ''}
+               ${syncResult.debt.debt > 0 ? syncResult.debt.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('debt-updated') : ''}              
+             
+               \n${syncResult.meterReading.meterReading > 0 ? syncResult.meterReading.successError === 'fail' ? syncResult.meterReading.successMessage.message : syncResult.meterReading.meterReading : ''}
+               ${syncResult.meterReading.meterReading > 0 ? syncResult.meterReading.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('meterReading-updated') : ''}
+            
+            
+              \n${syncResult.wastageReport.wastageReport > 0 ? syncResult.wastageReport.successError === 'fail' ? syncResult.wastageReport.successMessage.message : syncResult.wastageReport.wastageReport : ''} 
+              ${syncResult.wastageReport.wastageReport > 0 ? syncResult.wastageReport.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('wastageReport-updated') : ''}
+            
+            
+              \n${syncResult.topups.topups > 0 ? syncResult.topups.successError === 'fail' ? syncResult.topups.successMessage.message : syncResult.topups.topups : ''}
+               ${syncResult.topups.topups > 0 ? syncResult.topups.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('topups-updated') : ''}             
+            
+            
+             \n${syncResult.salesChannels.salesChannels > 0 ? syncResult.salesChannels.successError === 'fail' ? syncResult.salesChannels.successMessage.message : syncResult.salesChannels.salesChannels : ''} 
+             ${syncResult.salesChannels.salesChannels > 0 ? syncResult.salesChannels.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('salechannel-updated') : ''}
+            
+            
+             \n${syncResult.productMrps.productMrps > 0 ? syncResult.productMrps.successError === 'fail' ? syncResult.productMrps.successMessage.message : syncResult.productMrps.productMrps : ''}
+              ${syncResult.productMrps.productMrps > 0 ? syncResult.productMrps.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('pricing-sheme-updated') : ''}
+
+              \n${syncResult.customerReminder.customerReminder > 0 ? syncResult.customerReminder.successError === 'fail' ? syncResult.customerReminder.successMessage.message : syncResult.customerReminder.customerReminder : ''}
+               ${syncResult.customerReminder.customerReminder > 0 ? syncResult.customerReminder.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('customer-reminder-updated') : ''}
+
+              \n${syncResult.recieptPayments.recieptPayments > 0 ? syncResult.recieptPayments.successError === 'fail' ? syncResult.recieptPayments.successMessage.message : syncResult.recieptPayments.recieptPayments : ''} 
+                ${syncResult.recieptPayments.recieptPayments > 0 ? syncResult.recieptPayments.successError === 'fail' ? ": Please Synchronise Before making any changes" : i18n.t('recieptPayments-updated') : ''}
+              
            
 		      
         `
-		
-        ;
-        }
+
+          ;
+      }
 
     } catch (error) { }
   }
@@ -311,11 +336,11 @@ export default connect(
 
 
 const styles = StyleSheet.create({
-	imageStyle: {
-		width: 100,
-		height: 100,
-		alignSelf: 'center'
-	},
+  imageStyle: {
+    width: 100,
+    height: 100,
+    alignSelf: 'center'
+  },
   sideMenuContainer: {
     flex: 1,
     backgroundColor: '#fff',
@@ -323,17 +348,17 @@ const styles = StyleSheet.create({
   },
 
   viewCont: {
-	flex: 1,
-	height: 1,
-	backgroundColor: '#e2e2e2',
-	marginTop: 15,
+    flex: 1,
+    height: 1,
+    backgroundColor: '#e2e2e2',
+    marginTop: 15,
   },
   drawerItemStyle: {
-	flex: 1,
-	flexDirection: 'row',
-	alignItems: 'center',
-	paddingTop: 10,
-	paddingBottom: 10,
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   sideMenuProfileIcon: {
     resizeMode: 'center',
