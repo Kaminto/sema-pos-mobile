@@ -503,6 +503,9 @@ class PaymentModal extends React.PureComponent {
 	closePaymentModal() {
 		PaymentTypeRealm.resetSelected();
 		this.props.paymentTypesActions.resetSelectedPayment();
+		this.props.paymentTypesActions.setPaymentTypes(
+            PaymentTypeRealm.getPaymentTypes());
+		console.log('eee');
 		this.props.closePaymentModal();
 	};
 
