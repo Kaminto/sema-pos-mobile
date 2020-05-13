@@ -219,7 +219,7 @@ class CustomSidebarMenu extends React.PureComponent {
 
         this.props.receiptActions.setReceipts(
           OrderRealm.getAllOrder()
-        );        
+        );
 
         Alert.alert(
           i18n.t('sync-results'),
@@ -248,23 +248,23 @@ class CustomSidebarMenu extends React.PureComponent {
           return i18n.t('data-is-up-to-date');
         } else {
           return `
-              ${syncResult.customers.successError === 'fail' ? syncResult.customers.successMessage.message : syncResult.customers.customers } ${syncResult.customers.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('customers-updated')} 
-              \n${syncResult.products.successError === 'fail' ? syncResult.products.successMessage.message : syncResult.products.products } ${syncResult.meterReading.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('products-updated')}           
-              \n${syncResult.orders.successError === 'fail' ? syncResult.orders.successMessage.message : syncResult.orders.orders } ${syncResult.orders.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('sales-receipts-updated')}            
-              \n${syncResult.debt.successError === 'fail' ? syncResult.debt.successMessage.message : syncResult.debt.debt } ${syncResult.debt.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('debt-updated')}              
+              \n${syncResult.customers.successError === 'fail' ? syncResult.customers.successMessage.message : syncResult.customers.customers } ${syncResult.customers.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('customers-updated')}
+              \n${syncResult.products.successError === 'fail' ? syncResult.products.successMessage.message : syncResult.products.products } ${syncResult.meterReading.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('products-updated')}
+              \n${syncResult.orders.successError === 'fail' ? syncResult.orders.successMessage.message : syncResult.orders.orders } ${syncResult.orders.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('sales-receipts-updated')}
+              \n${syncResult.debt.successError === 'fail' ? syncResult.debt.successMessage.message : syncResult.debt.debt } ${syncResult.debt.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('debt-updated')}
        			 \n${syncResult.meterReading.successError === 'fail' ? syncResult.meterReading.successMessage.message : syncResult.meterReading.meterReading } ${syncResult.meterReading.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('meterReading-updated')}
               \n${syncResult.wastageReport.successError === 'fail' ? syncResult.wastageReport.successMessage.message : syncResult.wastageReport.wastageReport } ${syncResult.wastageReport.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('wastageReport-updated')}
-             \n${syncResult.topups.successError === 'fail' ? syncResult.topups.successMessage.message : syncResult.topups.topups } ${syncResult.topups.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('topups-updated')}             
+             \n${syncResult.topups.successError === 'fail' ? syncResult.topups.successMessage.message : syncResult.topups.topups } ${syncResult.topups.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('topups-updated')}
              \n${syncResult.salesChannels.successError === 'fail' ? syncResult.salesChannels.successMessage.message : syncResult.salesChannels.salesChannels } ${syncResult.salesChannels.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('salechannel-updated')}
               \n${syncResult.productMrps.successError === 'fail' ? syncResult.productMrps.successMessage.message : syncResult.productMrps.productMrps } ${syncResult.productMrps.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('pricing-sheme-updated')}
 
               \n${syncResult.customerReminder.successError === 'fail' ? syncResult.customerReminder.successMessage.message : syncResult.customerReminder.customerReminder } ${syncResult.customerReminder.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('customer-reminder-updated')}
 
               \n${syncResult.recieptPayments.successError === 'fail' ? syncResult.recieptPayments.successMessage.message : syncResult.recieptPayments.recieptPayments } ${syncResult.recieptPayments.successError === 'fail'? ": Please Synchronise Before making any changes" : i18n.t('recieptPayments-updated')}
-           
-		      
+
+
         `
-		
+
         ;
         }
 
