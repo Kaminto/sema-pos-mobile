@@ -14,12 +14,15 @@ class CustomerDebtsSync {
                     
                     let localCustomerDebts = initlocalCustomerDebts.length > 0 ? [...initlocalCustomerDebts] : [];
                     let remoteCustomerDebts = result.length > 0 ? [...result] : [];
-
+                 
 
                     let onlyInLocal = localCustomerDebts.filter(SyncUtils.compareRemoteAndLocal(remoteCustomerDebts, 'customer_debt_id'));
                     let onlyInRemote = remoteCustomerDebts.filter(SyncUtils.compareRemoteAndLocal(localCustomerDebts, 'customer_debt_id'));
 
                     let syncResponseArray = [];
+
+                    console.log('onlyInLocal', onlyInLocal)
+                    console.log('onlyInRemote', onlyInRemote)
 
                     if (onlyInRemote.length > 0) {
                         let localResponse = await CustomerDebtRealm.syncManyCustomerDebt(onlyInRemote);
@@ -107,7 +110,7 @@ class CustomerDebtsSync {
 
             }
 
-            if (localCustomerDebt.synched === false && localCustomerDebt.syncAction === 'update') {
+            if ((localCustomerDebt.synched === false || localCustomerDebt.synched === null) && localCustomerDebt.syncAction === 'update') {
                 CustomerDebtApi.createCustomerDebt(
                     localCustomerDebt
                 )
@@ -129,7 +132,7 @@ class CustomerDebtsSync {
                     });
             }
 
-            if (localCustomerDebt.synched === false && localCustomerDebt.syncAction === 'delete') {
+            if ((localCustomerDebt.synched === false || localCustomerDebt.synched === null) && localCustomerDebt.syncAction === 'delete') {
                 CustomerDebtApi.createCustomerDebt(
                     localCustomerDebt
                 )
@@ -151,7 +154,7 @@ class CustomerDebtsSync {
                     });
             }
 
-            if (localCustomerDebt.synched === false && localCustomerDebt.syncAction === 'create') {
+            if ((localCustomerDebt.synched === false || localCustomerDebt.synched === null) && localCustomerDebt.syncAction === 'create') {
                 CustomerDebtApi.createCustomerDebt(
                     localCustomerDebt
                 )
