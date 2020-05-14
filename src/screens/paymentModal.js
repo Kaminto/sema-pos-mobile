@@ -30,6 +30,7 @@ class PaymentModal extends React.PureComponent {
 			selectedType: {},
 			checkedType: {},
 			topup: "",
+			paymentnote: "",
 			buttonDisabled: false,
 		};
 
@@ -70,6 +71,38 @@ class PaymentModal extends React.PureComponent {
 						numColumns={3}
 						contentContainerStyle={styles.container}
 					/>
+
+					<View
+						style={{
+							height: 1,
+							backgroundColor: '#ddd',
+							marginBottom: 10,
+							width: '100%'
+						}}
+					/>
+
+					<View style={{ flex: 1, flexDirection: 'row' }}>
+						<View style={{ flex: 1 }}>
+							<Text style={[{ textAlign: 'left' }, styles.baseItem]}>NOTES</Text>
+						</View>
+					</View>
+
+					<View style={{ flex: 1, flexDirection: 'row' }}>
+						<View style={{ flex: 1, height: 50 }}>
+							{this.notesValue()}
+						</View>
+					</View>
+
+					<View
+						style={{
+							height: 1,
+							backgroundColor: '#ddd',
+							marginBottom: 10,
+							width: '100%'
+						}}
+					/>
+
+
 					<Card style={{ flex: 1 }}>
 						<PaymentDescription
 							title={`${i18n.t('previous-amount-due')}:`}
@@ -102,6 +135,26 @@ class PaymentModal extends React.PureComponent {
 
 		);
 	}
+
+
+	notesValue() {
+		return (
+			<TextInput
+				style={{
+					padding: 10
+				}}
+				onChangeText={this.setNotes}
+				value={this.state.paymentnote}
+				underlineColorAndroid="transparent"
+				placeholder="Add a Note"
+			/>
+		)
+	}
+
+
+	setNotes = paymentnote => {
+		this.setState({ paymentnote });
+	};
 
 	paymentTypesRow = (item, index, separators) => {
 
@@ -279,111 +332,38 @@ class PaymentModal extends React.PureComponent {
 		}
 	};
 
-	showTextInput2(item) {
-		if (this.props.selectedDebtPaymentTypes.length >= 0) {
-			const itemIndex = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(item.id);
-			if (itemIndex >= 0) {
-				if (this.props.selectedDebtPaymentTypes[itemIndex].isSelected) {
-					return (
-						<TextInput
-							underlineColorAndroid="transparent"
-							onChangeText={(textValue) => {
-								this.valuePaymentChange(textValue, itemIndex);
-							}
-							}
-							onFocus={(text) => {
-								this.setState({
-									selectedType: item
-								});
-							}
-							}
-							keyboardType="numeric"
-							value={(this.props.selectedDebtPaymentTypes[itemIndex].amount).toString()}
-							style={[styles.cashInput]}
-						/>
-					);
-				}
-			}
-		}
+
+	clearDebt(amount, customerId, dueAmount, status) {
+		CustomerDebtRealm.createCustomerDebt(amount, customerId, dueAmount, status, this.state.paymentnote);
+		this.setState({ paymentnote: "" });
+		this.props.paymentTypesActions.setCustomerPaidDebt(CustomerDebtRealm.getCustomerDebts());
 	}
 
-	checkBoxType2(item) {
-		const itemIndex = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(item.id);
+	topUpWallet(customerId, creditsurplus, walletBalance, status) {
+		CreditRealm.createCredit(customerId, creditsurplus, walletBalance, status, this.state.paymentnote);
+		this.setState({ topup: "", paymentnote: "" });
+		this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
+	}
 
-		if (itemIndex >= 0) {
+	updateCustomerDueAmount(customer, dueAmount) {
+		CustomerRealm.updateCustomerDueAmount(customer, dueAmount);
+		this.props.customerActions.CustomerSelected(customer);
+		this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
+	}
 
-			let secondItemObj = this.props.selectedDebtPaymentTypes.filter(obj => obj.id != item.id).map(function (e) { return e.id });
-
-			if (secondItemObj.length > 0) {
-				const seconditemIndex2 = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(secondItemObj[0]);
-				this.props.paymentTypesActions.updateSelectedDebtPaymentType({ ...this.props.selectedDebtPaymentTypes[seconditemIndex2], amount: Number(this.calculateOrderDue()) }, seconditemIndex2);
-
-				PaymentTypeRealm.isSelected(item, false);
-				this.props.paymentTypesActions.removeSelectedDebtPaymentType(item, itemIndex);
-				this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
-			}
-
-			if (secondItemObj.length === 0) {
-				this.props.paymentTypesActions.removeSelectedDebtPaymentType(item, itemIndex);
-				this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
-			}
-			return;
-		}
+	updateCustomerWalletBalance(customer, walletBalance) {
+		CustomerRealm.updateCustomerWalletBalance(customer, walletBalance);
+		this.props.customerActions.CustomerSelected(customer);
+		this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
+	}
 
 
-		this.setState({
-			checkedType: { ...item, isSelected: item.isSelected === true ? false : true }
-		});
-
-
-		if (this.props.selectedDebtPaymentTypes.length === 0) {
-			PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
-			this.props.paymentTypesActions.setSelectedDebtPaymentTypes({ ...item, created_at: new Date(), isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
-		} else {
-			PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
-			this.props.paymentTypesActions.setSelectedDebtPaymentTypes({ ...item, created_at: new Date(), isSelected: item.isSelected === true ? false : true, amount: 0 });
-		}
-
-
-		this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
-	};
-
-	valuePaymentChange = (textValue, itemIndex) => {
-
-		if (this.props.selectedDebtPaymentTypes.length >= 0) {
-			const itemIndex2 = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(this.state.selectedType.id);
-			let secondItemObj = this.props.selectedDebtPaymentTypes.filter(obj => obj.id != this.state.selectedType.id).map(function (e) { return e.id });
-
-			if (itemIndex2 >= 0) {
-				this.props.selectedDebtPaymentTypes[itemIndex].amount = Number(textValue);
-				this.props.paymentTypesActions.updateSelectedDebtPaymentType({
-					...this.props.selectedDebtPaymentTypes[itemIndex2],
-					amount: Number(textValue)
-				}, itemIndex2);
-				this.setState({
-					selectedType: { ...this.props.selectedDebtPaymentTypes[itemIndex2], amount: Number(textValue) }
-				});
-			}
-
-			if (secondItemObj.length > 0) {
-				const seconditemIndex2 = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(secondItemObj[0]);
-				if (Number(this.calculateOrderDue()) <= Number(textValue)) {
-					this.props.selectedDebtPaymentTypes[seconditemIndex2].amount = Number(textValue);
-					this.props.paymentTypesActions.updateSelectedDebtPaymentType({ ...this.props.selectedDebtPaymentTypes[seconditemIndex2], amount: Number(textValue) }, seconditemIndex2);
-				}
-			}
-		}
-
-		this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
-
-	};
 
 	handleOnPress() {
+
 		this.setState({
 			buttonDisabled: true
 		});
-
-		console.log('this.props.selectedPaymentTypes-', this.props.selectedPaymentTypes)
 
 
 		if (this.props.selectedPaymentTypes.length > 0) {
@@ -394,69 +374,28 @@ class PaymentModal extends React.PureComponent {
 			if (amountPaid > 0 && amountPaid < Number(this.props.selectedCustomer.dueAmount)) {
 
 				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - Number(amountPaid);
-				CustomerRealm.updateCustomerDueAmount(
-					this.props.selectedCustomer,
-					this.props.selectedCustomer.dueAmount
-				);
-				this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
-				this.props.customerActions.setCustomers(
-					CustomerRealm.getAllCustomer()
-				);
-
-				CustomerDebtRealm.createCustomerDebt(amountPaid, this.props.selectedCustomer.customerId, this.props.selectedCustomer.dueAmount, null);
-				this.props.paymentTypesActions.setCustomerPaidDebt(
-					CustomerDebtRealm.getCustomerDebts()
-				);
+				this.updateCustomerDueAmount(this.props.selectedCustomer, this.props.selectedCustomer.dueAmount);
+				this.clearDebt(amountPaid, this.props.selectedCustomer.customerId, this.props.selectedCustomer.dueAmount, null)
 
 			} else if (amountPaid > 0 && amountPaid > Number(this.props.selectedCustomer.dueAmount)) {
 
 				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount);
-
 				let creditsurplus = Number(amountPaid) - Number(this.props.selectedCustomer.dueAmount);
-
 
 				if (this.props.selectedCustomer.dueAmount > 0) {
 					let amountCleared = this.props.selectedCustomer.dueAmount;
 					this.props.selectedCustomer.dueAmount = 0;
-
-					CustomerRealm.updateCustomerDueAmount(
-						this.props.selectedCustomer,
-						this.props.selectedCustomer.dueAmount
-					);
-
-					this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
-					this.props.customerActions.setCustomers(
-						CustomerRealm.getAllCustomer()
-					);
-
-					CustomerDebtRealm.createCustomerDebt(amountCleared, this.props.selectedCustomer.customerId, this.props.selectedCustomer.dueAmount, null);
-					this.props.paymentTypesActions.setCustomerPaidDebt(
-						CustomerDebtRealm.getCustomerDebts()
-					);
-
+					this.updateCustomerDueAmount(this.props.selectedCustomer, this.props.selectedCustomer.dueAmount);
+					this.clearDebt(amountCleared, this.props.selectedCustomer.customerId, this.props.selectedCustomer.dueAmount, null)
 				}
 
 
 				if (creditsurplus > 0) {
 					this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + Number(creditsurplus);
-					CustomerRealm.updateCustomerWalletBalance(
-						this.props.selectedCustomer,
-						this.props.selectedCustomer.walletBalance
-					);
-					this.props.customerActions.CustomerSelected(this.props.selectedCustomer);
-					this.props.customerActions.setCustomers(
-						CustomerRealm.getAllCustomer()
-					);
-
-					CreditRealm.createCredit(
-						this.props.selectedCustomer.customerId,
-						creditsurplus,
-						this.props.selectedCustomer.walletBalance,
-						null
-					);
-					this.setState({ topup: "" });
-					this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
+					this.updateCustomerWalletBalance(this.props.selectedCustomer, this.props.selectedCustomer.walletBalance);
+					this.topUpWallet(this.props.selectedCustomer.customerId, creditsurplus, this.props.selectedCustomer.walletBalance, null);
 				}
+
 			}
 
 
@@ -503,8 +442,7 @@ class PaymentModal extends React.PureComponent {
 	closePaymentModal() {
 		PaymentTypeRealm.resetSelected();
 		this.props.paymentTypesActions.resetSelectedPayment();
-		this.props.paymentTypesActions.setPaymentTypes(
-            PaymentTypeRealm.getPaymentTypes());
+		this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
 		this.props.closePaymentModal();
 	};
 
