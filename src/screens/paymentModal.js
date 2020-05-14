@@ -35,7 +35,6 @@ class PaymentModal extends React.PureComponent {
 		};
 
 		this.handleOnPress = this.handleOnPress.bind(this);
-		this.closePaymentModal = this.closePaymentModal.bind(this);
 	}
 
 	render() {
@@ -156,8 +155,7 @@ class PaymentModal extends React.PureComponent {
 		this.setState({ paymentnote });
 	};
 
-	paymentTypesRow = (item, index, separators) => {
-
+	paymentTypesRow = (item, index, separators) => {		
 		let isSelectedAvailable = false;
 		if (this.props.selectedPaymentTypes.length > 0) {
 			const itemIndex = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(item.id);
@@ -165,9 +163,7 @@ class PaymentModal extends React.PureComponent {
 				isSelectedAvailable = true;
 			}
 		}
-
-		// console.log('isSelectedAvailable', isSelectedAvailable);
-		// console.log('item.isSelected', item.isSelected);
+	
 		if (item.name != 'loan' && item.name != 'credit') {
 
 			return (
@@ -283,56 +279,6 @@ class PaymentModal extends React.PureComponent {
 	};
 
 
-	paymentTypesRow2 = (item, index, separators) => {
-
-		let isSelectedAvailable = false;
-		if (this.props.selectedDebtPaymentTypes.length > 0) {
-			const itemIndex = this.props.selectedDebtPaymentTypes.map(function (e) { return e.id }).indexOf(item.id);
-			if (itemIndex >= 0) {
-				isSelectedAvailable = true;
-			}
-		}
-
-		if (this.props.selectedDebtPaymentTypes.length === 0) {
-			if (item.name === 'cash') {
-				PaymentTypeRealm.isSelected(item, item.isSelected === true ? false : true);
-				this.props.paymentTypesActions.setSelectedDebtPaymentTypes({ ...item, created_at: new Date(), isSelected: item.isSelected === true ? false : true, amount: this.calculateOrderDue() });
-				isSelectedAvailable = true;
-			}
-		}
-
-		if (item.name != "loan" && item.name != "credit") {
-			return (
-				<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
-					<View style={{ flex: 1, height: 50 }}>
-						<View style={styles.checkBoxRow}>
-							<View style={[{ flex: 1 }]}>
-								<CheckBox
-									title={item.description}
-									checkedIcon={<Icon
-										name="md-checkbox"
-										size={20}
-										color="black"
-									/>}
-									uncheckedIcon={<Icon
-										name="md-square-outline"
-										size={20}
-										color="black"
-									/>}
-									checked={item.isSelected || isSelectedAvailable}
-									onPress={() => this.checkBoxType(item)}
-								/>
-							</View>
-							<View style={[{ flex: 1 }]}>{this.showTextInput(item)}</View>
-						</View>
-					</View>
-				</View>
-			);
-
-		}
-	};
-
-
 	clearDebt(amount, customerId, dueAmount, status) {
 		CustomerDebtRealm.createCustomerDebt(amount, customerId, dueAmount, status, this.state.paymentnote);
 		this.setState({ paymentnote: "" });
@@ -341,7 +287,7 @@ class PaymentModal extends React.PureComponent {
 
 	topUpWallet(customerId, creditsurplus, walletBalance, status) {
 		CreditRealm.createCredit(customerId, creditsurplus, walletBalance, status, this.state.paymentnote);
-		this.setState({ topup: "", paymentnote: "" });
+		this.setState({ topup: "",paymentnote: "" });
 		this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
 	}
 
@@ -349,7 +295,7 @@ class PaymentModal extends React.PureComponent {
 		CustomerRealm.updateCustomerDueAmount(customer, dueAmount);
 		this.props.customerActions.CustomerSelected(customer);
 		this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
-	}
+	}	
 
 	updateCustomerWalletBalance(customer, walletBalance) {
 		CustomerRealm.updateCustomerWalletBalance(customer, walletBalance);
@@ -406,7 +352,7 @@ class PaymentModal extends React.PureComponent {
 				[{
 					text: 'OK',
 					onPress: () => {
-						this.closePaymentModal();
+						this.props.closePaymentModal();
 					}
 				}],
 				{ cancelable: false }
@@ -418,7 +364,7 @@ class PaymentModal extends React.PureComponent {
 
 	getCancelButton() {
 		return (
-			<TouchableHighlight onPress={() => this.closePaymentModal()}>
+			<TouchableHighlight onPress={() => this.props.closePaymentModal()}>
 				<Icon
 					size={40}
 					name="md-close-circle-outline"
@@ -439,12 +385,6 @@ class PaymentModal extends React.PureComponent {
 		return this.props.selectedCustomer.dueAmount;
 	}
 
-	closePaymentModal() {
-		PaymentTypeRealm.resetSelected();
-		this.props.paymentTypesActions.resetSelectedPayment();
-		this.props.paymentTypesActions.setPaymentTypes(PaymentTypeRealm.getPaymentTypes());
-		this.props.closePaymentModal();
-	};
 
 }
 
