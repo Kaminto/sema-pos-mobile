@@ -240,7 +240,7 @@ class CustomerDebtRealm {
         return this.getCustomerDebts().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.customer_debt_id === customer_debt_id)
     }
 
-    createCustomerDebt(due_amount, customer_account_id, balance, receipt_id) {
+    createCustomerDebt(due_amount, customer_account_id, balance, receipt_id, notes) {
         try {
             realm.write(() => {
                 realm.create('CustomerDebt', {
@@ -248,6 +248,7 @@ class CustomerDebtRealm {
                     customer_debt_id: uuidv1(),
                     balance,
                     due_amount: Number(due_amount),
+                    notes,
                     receipt_id,
                     synched: false,
                     active: true,

@@ -75,7 +75,7 @@ class CreditRealm {
     }
 
 
-    createCredit(customer_account_id, topupval, balanceval, receipt_id) {
+    createCredit(customer_account_id, topupval, balanceval, receipt_id, notes) {
         const nowDate = new Date();
         let topup = Number(topupval);
         let balance = Number(balanceval);
@@ -86,6 +86,7 @@ class CreditRealm {
             topup,
             balance,
             receipt_id,
+            notes,
             created_at: nowDate,
             updated_at: nowDate,
             syncAction: 'create',
@@ -162,7 +163,7 @@ class CreditRealm {
         }
     }
 
- 
+
 
 
     createManycredits(credit) {
@@ -174,27 +175,27 @@ class CreditRealm {
                     for (i = 0; i < credit.length; i++) {
                         let ischeckCredit = this.checkCredit(credit[i].created_at, credit[i].top_up_id).length;
                         if (ischeckCredit === 0) {
-                            console.log('saveing',value)
+                            console.log('saveing', value)
                             let value = realm.create('Credit', {
                                 ...credit[i],
-                                topup: Number(credit[i].topup), 
+                                topup: Number(credit[i].topup),
                                 balance: Number(credit[i].balance),
                                 synched: true
                             });
-                            console.log('saved',value)
+                            console.log('saved', value)
                             result.push({ status: 'success', data: value, message: 'Credit has been set' });
                         } else if (ischeckCredit > 0) {
                             let discountObj = realm.objects('Credit').filtered(`top_up_id = "${credit[i].top_up_id}"`);
-                           
-                             discountObj[0].topup=  Number(credit[i].topup);
-                             discountObj[0].balance=  Number(credit[i].balance);
-                             discountObj[0].kiosk_id = credit[i].kiosk_id;
-                             discountObj[0].customer_account_id = credit[i].customer_account_id;
-                             discountObj[0].id = credit[i].id;
-                             discountObj[0].top_up_id = credit[i].top_up_id;
-                             discountObj[0].updated_at = credit[i].updated_at;
-                             result.push({ status: 'success', data: credit[i], message: 'Local Credit has been updated' });
-                           
+
+                            discountObj[0].topup = Number(credit[i].topup);
+                            discountObj[0].balance = Number(credit[i].balance);
+                            discountObj[0].kiosk_id = credit[i].kiosk_id;
+                            discountObj[0].customer_account_id = credit[i].customer_account_id;
+                            discountObj[0].id = credit[i].id;
+                            discountObj[0].top_up_id = credit[i].top_up_id;
+                            discountObj[0].updated_at = credit[i].updated_at;
+                            result.push({ status: 'success', data: credit[i], message: 'Local Credit has been updated' });
+
 
                         }
                     }
