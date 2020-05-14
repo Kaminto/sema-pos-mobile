@@ -791,6 +791,7 @@ class Transactions extends React.PureComponent {
 			return {
 				active: receipt.active,
 				synched: receipt.synched,
+				notes: receipt.notes,
 				id: receipt.customer_debt_id,
 				customer_debt_id: receipt.customer_debt_id,
 				receiptId: receipt.receipt_id,
@@ -822,8 +823,6 @@ class Transactions extends React.PureComponent {
 				? 1
 				: -1;
 		});
-		// receipts = this.filterItems(receipts);
-
 		return [...debtPayment];
 	}
 
@@ -837,6 +836,7 @@ class Transactions extends React.PureComponent {
 				synched: receipt.synched,
 				id: receipt.top_up_id,
 				top_up_id: receipt.top_up_id,
+				notes: receipt.notes,
 				receiptId: receipt.receipt_id,
 				createdAt: receipt.created_at,
 				sectiontitle: format(parseISO(receipt.created_at), 'iiii d MMM yyyy'),
@@ -1007,13 +1007,13 @@ class Transactions extends React.PureComponent {
 							<Text style={styles.receiptStatusText}>
 								{'Deleted - '.toUpperCase()}
 							</Text>
-						): !item.isReceipt ? !item.active && (
+						) : !item.isReceipt ? !item.active && (
 							<Text style={styles.receiptStatusText}>
 								{'Deleted - '.toUpperCase()}
 							</Text>
-						): null}
+						) : null}
 
-						{!item.isReceipt ?  !item.synched ? (
+						{!item.isReceipt ? !item.synched ? (
 							<View style={{ flexDirection: 'row' }}>
 								<Text style={styles.receiptPendingText}>
 									{' Pending'.toUpperCase()}
@@ -1026,21 +1026,21 @@ class Transactions extends React.PureComponent {
 										{' Synced'.toUpperCase()}
 									</Text>
 								</View>
-							)   :
-						!item.active ? (
-							<View style={{ flexDirection: 'row' }}>
-								<Text style={styles.receiptPendingText}>
-									{' Pending'.toUpperCase()}
-								</Text>
-							</View>
-						) : (
+							) :
+							!item.active ? (
 								<View style={{ flexDirection: 'row' }}>
-									{!item.active && <Text> - </Text>}
-									<Text style={styles.receiptSyncedText}>
-										{' Synced'.toUpperCase()}
+									<Text style={styles.receiptPendingText}>
+										{' Pending'.toUpperCase()}
 									</Text>
 								</View>
-							)}
+							) : (
+									<View style={{ flexDirection: 'row' }}>
+										{!item.active && <Text> - </Text>}
+										<Text style={styles.receiptSyncedText}>
+											{' Synced'.toUpperCase()}
+										</Text>
+									</View>
+								)}
 					</View>
 				</View>
 			</TouchableNativeFeedback>
