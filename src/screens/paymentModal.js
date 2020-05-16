@@ -39,13 +39,15 @@ class PaymentModal extends React.PureComponent {
 
 	render() {
 		return (
-			<ScrollView>
-				<View
-					style={{
-						flex: 1,
-						marginTop: 0,
-						padding: 10
-					}}>
+
+			<View
+				style={{
+					flex: 1,
+					marginTop: 0,
+					padding: 10
+				}}>
+
+				<ScrollView>
 					<View style={{ flex: 1, flexDirection: 'row' }}>
 						<View style={{ flex: 1, height: 50 }}>
 							<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
@@ -82,37 +84,40 @@ class PaymentModal extends React.PureComponent {
 					/>
 					<View style={{ flex: 1, padding: 10 }}>
 
-					<View style={{ flex: 1, flexDirection: 'row', marginTop: 10 }}>
-						<View style={{ flex: 1 }}>
-							<Text style={[{ textAlign: 'left' }, styles.baseItem]}>NOTES</Text>
+						<View style={{ flex: 1, flexDirection: 'row', marginTop: 10 }}>
+							<View style={{ flex: 1 }}>
+								<Text style={[{ textAlign: 'left' }, styles.baseItem]}>NOTES</Text>
+							</View>
+						</View>
+
+						<View style={{ flex: 1, flexDirection: 'row', borderBottomWidth: 1 }}>
+							<View style={{ flex: 1, height: 50 }}>
+								{this.notesValue()}
+							</View>
 						</View>
 					</View>
 
-					<View style={{ flex: 1, flexDirection: 'row', borderBottomWidth: 1 }}>
-						<View style={{ flex: 1, height: 50 }}>
-							{this.notesValue()}
-						</View>
-					</View>
-					</View>
 
-					<View style={styles.completeOrder}>
-						<View style={{ justifyContent: 'center', height: 50 }}>
-							<TouchableHighlight
-								underlayColor="#c0c0c0"
-								disabled={this.state.buttonDisabled}
-								onPress={this.handleOnPress}>
-								<Text
-									style={[
-										{ paddingTop: 20, paddingBottom: 20 },
-										styles.buttonText
-									]}>
-									{this.props.selectedCustomer.dueAmount > 0 ? i18n.t('clear-loan') : 'Topup Customer Wallet'}
-								</Text>
-							</TouchableHighlight>
-						</View>
+				</ScrollView>
+				<View style={styles.completeOrder}>
+					<View style={{ justifyContent: 'center', height: 50 }}>
+						<TouchableHighlight
+							underlayColor="#c0c0c0"
+							disabled={this.state.buttonDisabled}
+							onPress={this.handleOnPress}>
+							<Text
+								style={[
+									{ paddingTop: 20, paddingBottom: 20 },
+									styles.buttonText
+								]}>
+								{this.props.selectedCustomer.dueAmount > 0 ? i18n.t('clear-loan') : 'Topup Customer Wallet'}
+							</Text>
+						</TouchableHighlight>
 					</View>
 				</View>
-			</ScrollView>
+
+			</View>
+
 
 		);
 	}
@@ -266,7 +271,7 @@ class PaymentModal extends React.PureComponent {
 
 	topUpWallet(customerId, creditsurplus, walletBalance, status) {
 		CreditRealm.createCredit(customerId, creditsurplus, walletBalance, status, this.state.paymentnote);
-		this.setState({ topup: "",paymentnote: "" });
+		this.setState({ topup: "", paymentnote: "" });
 		this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
 	}
 
@@ -288,15 +293,15 @@ class PaymentModal extends React.PureComponent {
 			buttonDisabled: true
 		});
 
-
+		console.log('selectedPaymentTypes', this.props.selectedPaymentTypes)
 		if (this.props.selectedPaymentTypes.length > 0) {
 			let amountPaid = this.props.selectedPaymentTypes.reduce((total, item) => {
 				return (total + item.amount);
 			}, 0);
-
+			console.log('amountPaid', amountPaid)
 			if (amountPaid > 0) {
 
-				if (amountPaid < Number(this.props.selectedCustomer.dueAmount)) {
+				if (amountPaid <= Number(this.props.selectedCustomer.dueAmount)) {
 
 					this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - Number(amountPaid);
 					this.updateCustomerDueAmount(this.props.selectedCustomer, this.props.selectedCustomer.dueAmount);

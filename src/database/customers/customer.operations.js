@@ -6,7 +6,8 @@ import { parseISO, format, sub, compareAsc } from 'date-fns';
 class CustomerRealm {
     constructor() {
         this.customer = [];
-        let firstSyncDate = format(sub(new Date(), { days: 480 }), 'yyyy-MM-dd');
+       // let firstSyncDate = format(sub(new Date(), { days: 480 }), 'yyyy-MM-dd');
+        let firstSyncDate = format(new Date('2015-01-01'), 'yyyy-MM-dd');
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerSyncDate')))).length == 0) {
                 realm.create('CustomerSyncDate', { lastCustomerSync: firstSyncDate });

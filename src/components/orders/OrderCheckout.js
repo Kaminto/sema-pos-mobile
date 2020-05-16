@@ -222,10 +222,11 @@ class OrderCheckout extends React.PureComponent {
 					onClosed={() => this.modalOnClose()}
 					isDisabled={this.state.isDisabled}>
 
-					<ScrollView>
+					
 						{/* <TouchableOpacity> */}
 
 						<View style={{ flex: 1, padding: 0, margin: 0 }}>
+						<ScrollView>
 						<View
 								style={{
 									justifyContent: 'flex-end',
@@ -377,6 +378,8 @@ class OrderCheckout extends React.PureComponent {
 									</View>
 								</View>
 							</View>
+						
+							</ScrollView>
 							<View style={styles.completeOrderBtn}>
 								<View style={{ justifyContent: 'center' }}>
 									<TouchableHighlight
@@ -395,7 +398,7 @@ class OrderCheckout extends React.PureComponent {
 							</View>
 						</View>
 						{/* </TouchableOpacity> */}
-					</ScrollView>
+					
 				</Modal>
 
 			</View>
