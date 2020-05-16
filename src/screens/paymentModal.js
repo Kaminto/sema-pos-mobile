@@ -155,7 +155,7 @@ class PaymentModal extends React.PureComponent {
 		this.setState({ paymentnote });
 	};
 
-	paymentTypesRow = (item, index, separators) => {		
+	paymentTypesRow = (item, index, separators) => {
 		let isSelectedAvailable = false;
 		if (this.props.selectedPaymentTypes.length > 0) {
 			const itemIndex = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(item.id);
@@ -163,7 +163,7 @@ class PaymentModal extends React.PureComponent {
 				isSelectedAvailable = true;
 			}
 		}
-	
+
 		if (item.name != 'loan' && item.name != 'credit') {
 
 			return (
@@ -287,7 +287,7 @@ class PaymentModal extends React.PureComponent {
 
 	topUpWallet(customerId, creditsurplus, walletBalance, status) {
 		CreditRealm.createCredit(customerId, creditsurplus, walletBalance, status, this.state.paymentnote);
-		this.setState({ topup: "",paymentnote: "" });
+		this.setState({ topup: "", paymentnote: "" });
 		this.props.topUpActions.setTopups(CreditRealm.getAllCredit());
 	}
 
@@ -295,7 +295,7 @@ class PaymentModal extends React.PureComponent {
 		CustomerRealm.updateCustomerDueAmount(customer, dueAmount);
 		this.props.customerActions.CustomerSelected(customer);
 		this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
-	}	
+	}
 
 	updateCustomerWalletBalance(customer, walletBalance) {
 		CustomerRealm.updateCustomerWalletBalance(customer, walletBalance);
