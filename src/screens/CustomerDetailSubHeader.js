@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		color: 'white',
 		marginBottom: 50,
-		
+
 		paddingBottom: 10
 	},
 
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
 
 	modal3: {
 		width: '70%',
-		height: 400,
+		height: 500,
 	},
 	modal: {
 		justifyContent: 'center',

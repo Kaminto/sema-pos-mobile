@@ -495,6 +495,13 @@ class TransactionDetail extends React.PureComponent {
 
 							{this.renderDebt(this.props.item)}
 
+							<View>
+							 <Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 20 }}>NOTES</Text>
+							</View>
+							<View>
+								<Text style={{ fontSize: 13, fontWeight: "bold", marginTop: 5 }}>{this.props.item.notes}</Text>
+							</View>
+
 						</ScrollView>
 					</View>
 				)
@@ -769,7 +776,8 @@ class Transactions extends React.PureComponent {
 				currency: receipt.currency_code,
 				isReceipt: true,
 				type: 'Receipt',
-				totalAmount: receipt.total
+				totalAmount: receipt.total,
+				notes: receipt.notes
 			};
 		});
 
