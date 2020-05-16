@@ -46,23 +46,23 @@ class PaymentModal extends React.PureComponent {
 					marginTop: 0,
 					padding: 10
 				}}>
-				
-				<ScrollView>
-				<View style={{ flex: 1, flexDirection: 'row' }}>
-					<View style={{ flex: 1, height: 50 }}>
-						<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
 
+				<ScrollView>
+					<View style={{ flex: 1, flexDirection: 'row' }}>
+						<View style={{ flex: 1, height: 50 }}>
+							<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
+
+						</View>
+						<View
+							style={{
+								justifyContent: 'flex-end',
+								flexDirection: 'row',
+								right: 0,
+								top: 10
+							}}>
+							{this.getCancelButton()}
+						</View>
 					</View>
-					<View
-						style={{
-							justifyContent: 'flex-end',
-							flexDirection: 'row',
-							right: 0,
-							top: 10
-						}}>
-						{this.getCancelButton()}
-					</View>
-				</View>
 					<Card style={{ flex: 1, backgroundColor: '#f1f1f1' }}>
 						<PaymentDescription
 							title={`${i18n.t('previous-amount-due')}:`}
@@ -293,15 +293,15 @@ class PaymentModal extends React.PureComponent {
 			buttonDisabled: true
 		});
 
-
+		console.log('selectedPaymentTypes', this.props.selectedPaymentTypes)
 		if (this.props.selectedPaymentTypes.length > 0) {
 			let amountPaid = this.props.selectedPaymentTypes.reduce((total, item) => {
 				return (total + item.amount);
 			}, 0);
-
+			console.log('amountPaid', amountPaid)
 			if (amountPaid > 0) {
 
-				if (amountPaid < Number(this.props.selectedCustomer.dueAmount)) {
+				if (amountPaid <= Number(this.props.selectedCustomer.dueAmount)) {
 
 					this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - Number(amountPaid);
 					this.updateCustomerDueAmount(this.props.selectedCustomer, this.props.selectedCustomer.dueAmount);
