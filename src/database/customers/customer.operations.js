@@ -1,13 +1,12 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
 import SyncUtils from '../../services/sync/syncUtils';
-import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
+import { parseISO, format, sub, compareAsc } from 'date-fns';
 
 class CustomerRealm {
     constructor() {
         this.customer = [];
-       // let firstSyncDate = format(sub(new Date(), { days: 180 }), 'yyyy-MM-dd');
-        let firstSyncDate = format(new Date('2015-01-01'), 'yyyy-MM-dd');
+        let firstSyncDate = format(sub(new Date(), { days: 480 }), 'yyyy-MM-dd');
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerSyncDate')))).length == 0) {
                 realm.create('CustomerSyncDate', { lastCustomerSync: firstSyncDate });

@@ -28,7 +28,7 @@ import CustomerReminderRealm from '../../database/customer-reminder/customer-rem
 import ReceiptPaymentTypeRealm from '../../database/reciept_payment_types/reciept_payment_types.operations';
 const uuidv1 = require('uuid/v1');
 const widthQuanityModal = '70%';
-const heightQuanityModal = 510;
+const heightQuanityModal = 520;
 
 import { withNavigation } from 'react-navigation';
 
@@ -224,8 +224,9 @@ class OrderCheckout extends React.PureComponent {
 
 					<ScrollView>
 						{/* <TouchableOpacity> */}
+
 						<View style={{ flex: 1, padding: 0, margin: 0 }}>
-							<View
+						<View
 								style={{
 									justifyContent: 'flex-end',
 									flexDirection: 'row',
@@ -234,6 +235,35 @@ class OrderCheckout extends React.PureComponent {
 								}}>
 								{this.getCancelButton()}
 							</View>
+						<Card containerStyle={{ backgroundColor: '#ABC1DE', padding: 5 }}>
+
+							<View style={{ flex: 1, flexDirection: 'row' }}>
+								{/* {this.getSaleAmount()} */}
+								<PaymentDescription
+									styles={{ fontWeight: 'bold' }}
+									title={`${i18n.t('sale-amount-due')}: `}
+									total={this.calculateOrderDue()}
+								/>
+								<PaymentDescription
+									style={{ color: 'white' }}
+									title={`${i18n.t('customer-wallet')}:`}
+									total={this.currentCredit()}
+								/>
+							</View>
+
+
+							<View style={{ flex: 1, flexDirection: 'row' }}>
+								<PaymentDescription
+									title={`${i18n.t('previous-amount-due')}:`}
+									total={this.calculateLoanBalance()}
+								/>
+								<PaymentDescription
+									title={`${i18n.t('total-amount-due')}:`}
+									total={this.calculateTotalDue()}
+								/>
+							</View>
+							</Card>
+
 							<View
 								style={{
 									flex: 1,
@@ -241,34 +271,7 @@ class OrderCheckout extends React.PureComponent {
 									marginLeft: 20,
 									marginRight: 20
 								}}>
-								<Card containerStyle={{ backgroundColor: '#ABC1DE', padding: 5 }}>
 
-									<View style={{ flex: 1, flexDirection: 'row' }}>
-										{/* {this.getSaleAmount()} */}
-										<PaymentDescription
-											styles={{ fontWeight: 'bold' }}
-											title={`${i18n.t('sale-amount-due')}: `}
-											total={this.calculateOrderDue()}
-										/>
-										<PaymentDescription
-											style={{ color: 'white' }}
-											title={`${i18n.t('customer-wallet')}:`}
-											total={this.currentCredit()}
-										/>
-									</View>
-
-
-									<View style={{ flex: 1, flexDirection: 'row' }}>
-										<PaymentDescription
-											title={`${i18n.t('previous-amount-due')}:`}
-											total={this.calculateLoanBalance()}
-										/>
-										<PaymentDescription
-											title={`${i18n.t('total-amount-due')}:`}
-											total={this.calculateTotalDue()}
-										/>
-									</View>
-								</Card>
 
 								<View style={{ flex: 1, flexDirection: 'row', padding: 0 }}>
 									<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
@@ -942,7 +945,7 @@ class OrderCheckout extends React.PureComponent {
 
 						this.updateLoanBalance(this.props.selectedCustomer.dueAmount);
 						const loanIndex = this.props.paymentTypes.map(function (e) { return e.name }).indexOf("loan");
-					
+
 						if (loanIndex >= 0) {
 							this.props.paymentTypesActions.setSelectedPaymentTypes({ ...this.props.paymentTypes[loanIndex], created_at: new Date(), isSelected: this.props.paymentTypes[loanIndex].isSelected === true ? false : true, amount: (this.calculateOrderDue() - totalAmountPaid) - this.currentCredit() });
 						}

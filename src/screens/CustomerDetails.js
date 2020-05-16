@@ -391,8 +391,6 @@ class TransactionDetail extends React.PureComponent {
 	render() {
 		var receiptLineItems;
 		var paymentTypes;
-		var credit;
-		var debt;
 
 		if (this.props.item.isReceipt) {
 

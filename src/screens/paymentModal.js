@@ -61,48 +61,7 @@ class PaymentModal extends React.PureComponent {
 							{this.getCancelButton()}
 						</View>
 					</View>
-					<FlatList
-						data={this.props.paymentTypes}
-						renderItem={({ item, index, separators }) => (
-							this.paymentTypesRow(item, index, separators)
-						)}
-						// extraData={this.props.selectedDebtPaymentTypes}
-						numColumns={3}
-						contentContainerStyle={styles.container}
-					/>
-
-					<View
-						style={{
-							height: 1,
-							backgroundColor: '#ddd',
-							marginBottom: 10,
-							width: '100%'
-						}}
-					/>
-
-					<View style={{ flex: 1, flexDirection: 'row' }}>
-						<View style={{ flex: 1 }}>
-							<Text style={[{ textAlign: 'left' }, styles.baseItem]}>NOTES</Text>
-						</View>
-					</View>
-
-					<View style={{ flex: 1, flexDirection: 'row' }}>
-						<View style={{ flex: 1, height: 50 }}>
-							{this.notesValue()}
-						</View>
-					</View>
-
-					<View
-						style={{
-							height: 1,
-							backgroundColor: '#ddd',
-							marginBottom: 10,
-							width: '100%'
-						}}
-					/>
-
-
-					<Card style={{ flex: 1 }}>
+					<Card style={{ flex: 1, backgroundColor: '#f1f1f1' }}>
 						<PaymentDescription
 							title={`${i18n.t('previous-amount-due')}:`}
 							total={this.calculateAmountDue()}
@@ -112,6 +71,29 @@ class PaymentModal extends React.PureComponent {
 							total={this.props.selectedCustomer.walletBalance}
 						/>
 					</Card>
+					<FlatList
+						data={this.props.paymentTypes}
+						renderItem={({ item, index, separators }) => (
+							this.paymentTypesRow(item, index, separators)
+						)}
+						// extraData={this.props.selectedDebtPaymentTypes}
+						numColumns={3}
+						contentContainerStyle={styles.container}
+					/>
+					<View style={{ flex: 1, padding: 10 }}>
+
+					<View style={{ flex: 1, flexDirection: 'row', marginTop: 10 }}>
+						<View style={{ flex: 1 }}>
+							<Text style={[{ textAlign: 'left' }, styles.baseItem]}>NOTES</Text>
+						</View>
+					</View>
+
+					<View style={{ flex: 1, flexDirection: 'row', borderBottomWidth: 1 }}>
+						<View style={{ flex: 1, height: 50 }}>
+							{this.notesValue()}
+						</View>
+					</View>
+					</View>
 
 					<View style={styles.completeOrder}>
 						<View style={{ justifyContent: 'center', height: 50 }}>
@@ -198,8 +180,6 @@ class PaymentModal extends React.PureComponent {
 	};
 
 	showTextInput(item) {
-		//console.log('item', item);
-		///console.log('this.props.selectedPaymentTypes', this.props.selectedPaymentTypes);
 		if (this.props.selectedPaymentTypes.length >= 0) {
 			const itemIndex = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(item.id);
 			if (itemIndex >= 0) {
@@ -243,7 +223,6 @@ class PaymentModal extends React.PureComponent {
 	checkBoxType = (item) => {
 		const itemIndex = this.props.selectedPaymentTypes.map(function (e) { return e.id }).indexOf(item.id);
 
-		//	console.log('itemIndex', itemIndex);
 		if (itemIndex >= 0) {
 
 			let secondItemObj = this.props.selectedPaymentTypes.filter(obj => obj.id != item.id).map(function (e) { return e.id });
@@ -303,8 +282,6 @@ class PaymentModal extends React.PureComponent {
 		this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
 	}
 
-
-
 	handleOnPress() {
 
 		this.setState({
@@ -317,31 +294,34 @@ class PaymentModal extends React.PureComponent {
 				return (total + item.amount);
 			}, 0);
 
-			if (amountPaid > 0 && amountPaid < Number(this.props.selectedCustomer.dueAmount)) {
+			if (amountPaid > 0) {
 
-				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - Number(amountPaid);
-				this.updateCustomerDueAmount(this.props.selectedCustomer, this.props.selectedCustomer.dueAmount);
-				this.clearDebt(amountPaid, this.props.selectedCustomer.customerId, this.props.selectedCustomer.dueAmount, null)
+				if (amountPaid < Number(this.props.selectedCustomer.dueAmount)) {
 
-			} else if (amountPaid > 0 && amountPaid > Number(this.props.selectedCustomer.dueAmount)) {
-
-				this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount);
-				let creditsurplus = Number(amountPaid) - Number(this.props.selectedCustomer.dueAmount);
-
-				if (this.props.selectedCustomer.dueAmount > 0) {
-					let amountCleared = this.props.selectedCustomer.dueAmount;
-					this.props.selectedCustomer.dueAmount = 0;
+					this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount) - Number(amountPaid);
 					this.updateCustomerDueAmount(this.props.selectedCustomer, this.props.selectedCustomer.dueAmount);
-					this.clearDebt(amountCleared, this.props.selectedCustomer.customerId, this.props.selectedCustomer.dueAmount, null)
+					this.clearDebt(amountPaid, this.props.selectedCustomer.customerId, this.props.selectedCustomer.dueAmount, null)
+
+				} else if (amountPaid > Number(this.props.selectedCustomer.dueAmount)) {
+
+					this.props.selectedCustomer.dueAmount = Number(this.props.selectedCustomer.dueAmount);
+					let creditsurplus = Number(amountPaid) - Number(this.props.selectedCustomer.dueAmount);
+
+					if (this.props.selectedCustomer.dueAmount > 0) {
+						let amountCleared = this.props.selectedCustomer.dueAmount;
+						this.props.selectedCustomer.dueAmount = 0;
+						this.updateCustomerDueAmount(this.props.selectedCustomer, this.props.selectedCustomer.dueAmount);
+						this.clearDebt(amountCleared, this.props.selectedCustomer.customerId, this.props.selectedCustomer.dueAmount, null)
+					}
+
+
+					if (creditsurplus > 0) {
+						this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + Number(creditsurplus);
+						this.updateCustomerWalletBalance(this.props.selectedCustomer, this.props.selectedCustomer.walletBalance);
+						this.topUpWallet(this.props.selectedCustomer.customerId, creditsurplus, this.props.selectedCustomer.walletBalance, null);
+					}
+
 				}
-
-
-				if (creditsurplus > 0) {
-					this.props.selectedCustomer.walletBalance = Number(this.props.selectedCustomer.walletBalance) + Number(creditsurplus);
-					this.updateCustomerWalletBalance(this.props.selectedCustomer, this.props.selectedCustomer.walletBalance);
-					this.topUpWallet(this.props.selectedCustomer.customerId, creditsurplus, this.props.selectedCustomer.walletBalance, null);
-				}
-
 			}
 
 
@@ -455,11 +435,6 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		marginTop: '5%',
 		bottom: 0
-	},
-
-	modal3: {
-		width: widthQuanityModal,
-		height: heightQuanityModal,
-	},
+	}
 
 });

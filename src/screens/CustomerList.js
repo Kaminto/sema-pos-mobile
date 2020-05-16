@@ -683,7 +683,7 @@ const styles = StyleSheet.create({
     },
     modal3: {
         width: '70%',
-        height: 400,
+        height: 500,
     },
     modal: {
         justifyContent: 'center',
