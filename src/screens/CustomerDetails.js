@@ -388,237 +388,252 @@ class TransactionDetail extends React.PureComponent {
 		}
 	}
 
+	isEmpty(obj) {
+		for (var key in obj) {
+			if (obj.hasOwnProperty(key))
+				return false;
+		}
+		return true;
+	}
+
 	render() {
 		var receiptLineItems;
 		var paymentTypes;
+		console.log('this.props.item', this.props.item)
 
-		if (this.props.item.isReceipt) {
+		if (!this.isEmpty(this.props.item)) {
+			if (this.props.item.isReceipt) {
 
-			if (this.props.item.receiptLineItems !== undefined) {
-				receiptLineItems = this.props.item.receiptLineItems.map((lineItem, idx) => {
+				if (this.props.item.receiptLineItems !== undefined) {
+					receiptLineItems = this.props.item.receiptLineItems.map((lineItem, idx) => {
+						return (
+							<ReceiptLineItem
+								receiptActions={this.props.receiptActions}
+								remoteReceipts={this.props.receipts}
+								item={lineItem}
+								key={lineItem.receiptId + idx}
+								lineItemIndex={idx}
+								products={this.props.products}
+								handleUpdate={this.handleUpdate.bind(this)}
+								receiptIndex={this.props.item.index}
+							/>
+						);
+					});
+				} else {
+					receiptLineItems = {};
+				}
+
+				if (this.props.item.paymentTypes !== undefined) {
+					paymentTypes = this.props.item.paymentTypes.map((paymentItem, idx) => {
+						return (
+
+							<PaymentTypeItem
+								key={paymentItem.id + idx}
+								item={paymentItem}
+								lineItemIndex={idx}
+							/>
+						);
+					});
+				} else {
+					paymentTypes = {};
+				}
+
+				if (this.props.item.hasOwnProperty("customerAccount")) {
 					return (
-						<ReceiptLineItem
-							receiptActions={this.props.receiptActions}
-							remoteReceipts={this.props.receipts}
-							item={lineItem}
-							key={lineItem.receiptId + idx}
-							lineItemIndex={idx}
-							products={this.props.products}
-							handleUpdate={this.handleUpdate.bind(this)}
-							receiptIndex={this.props.item.index}
-						/>
-					);
-				});
-			} else {
-				receiptLineItems = {};
-			}
+						<View style={{ flex: 1, padding: 15 }}>
+							<ScrollView style={{ flex: 1 }}>
+								<View style={styles.deleteButtonContainer}>
+									<TouchableOpacity
+										onPress={this.onDeleteReceipt(this.props.item)}
+										style={[
+											styles.receiptDeleteButton,
+											{ backgroundColor: (this.props.item.is_delete != 0) ? 'red' : 'grey' }
+										]}>
+										<Text style={styles.receiptDeleteButtonText}>X</Text>
+									</TouchableOpacity>
+								</View>
+								<View style={styles.itemData}>
+									<Text style={styles.customername}>{this.props.item.customerAccount.name}</Text>
+								</View>
+								<Text>
+									{format(parseISO(this.props.item.createdAt), 'iiii d MMM yyyy')}
+								</Text>
+								<View>
 
-			if (this.props.item.paymentTypes !== undefined) {
-				paymentTypes = this.props.item.paymentTypes.map((paymentItem, idx) => {
-					return (
-
-						<PaymentTypeItem
-							key={paymentItem.id + idx}
-							item={paymentItem}
-							lineItemIndex={idx}
-						/>
-					);
-				});
-			} else {
-				paymentTypes = {};
-			}
-
-			if (this.props.item.hasOwnProperty("customerAccount")) {
-				return (
-					<View style={{ flex: 1, padding: 15 }}>
-						<ScrollView style={{ flex: 1 }}>
-							<View style={styles.deleteButtonContainer}>
-								<TouchableOpacity
-									onPress={this.onDeleteReceipt(this.props.item)}
-									style={[
-										styles.receiptDeleteButton,
-										{ backgroundColor: (this.props.item.is_delete != 0) ? 'red' : 'grey' }
-									]}>
-									<Text style={styles.receiptDeleteButtonText}>X</Text>
-								</TouchableOpacity>
-							</View>
-							<View style={styles.itemData}>
-								<Text style={styles.customername}>{this.props.item.customerAccount.name}</Text>
-							</View>
-							<Text>
-								{format(parseISO(this.props.item.createdAt), 'iiii d MMM yyyy')}
-							</Text>
-							<View>
-
-							</View>
-							<View style={styles.receiptStats}>
-								{this.props.item.is_delete === 0 && (
-									<Text style={styles.receiptStatusText}>
-										{'Deleted -'.toUpperCase()}
-									</Text>
-								)}
-								{!this.props.item.active ? (
-									<View style={{ flexDirection: 'row' }}>
-										<Text style={styles.receiptPendingText}>
-											{' Pending'.toUpperCase()}
+								</View>
+								<View style={styles.receiptStats}>
+									{this.props.item.is_delete === 0 && (
+										<Text style={styles.receiptStatusText}>
+											{'Deleted -'.toUpperCase()}
 										</Text>
-									</View>
-								) : (
+									)}
+									{!this.props.item.active ? (
 										<View style={{ flexDirection: 'row' }}>
-											{!this.props.item.active && <Text> - </Text>}
-											<Text style={styles.receiptSyncedText}>
-												{' Synced'.toUpperCase()}
+											<Text style={styles.receiptPendingText}>
+												{' Pending'.toUpperCase()}
 											</Text>
 										</View>
-									)}
-							</View>
-							<View>
-								<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>PAYMENT</Text>
-							</View>
+									) : (
+											<View style={{ flexDirection: 'row' }}>
+												{!this.props.item.active && <Text> - </Text>}
+												<Text style={styles.receiptSyncedText}>
+													{' Synced'.toUpperCase()}
+												</Text>
+											</View>
+										)}
+								</View>
+								<View>
+									<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>PAYMENT</Text>
+								</View>
 
-							{paymentTypes}
+								{paymentTypes}
 
-							<View>
-								<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>PRODUCTS</Text>
-							</View>
+								<View>
+									<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>PRODUCTS</Text>
+								</View>
 
-							{receiptLineItems}
+								{receiptLineItems}
 
-							<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
-								<Text style={[styles.customername, { flex: 3, fontWeight: 'bold' }]}>Items Purchased</Text>
-								<Text style={[styles.customername, { flex: 1, fontWeight: 'bold', paddingRight: 20, alignSelf: 'flex-end' }]}>
-									{this.getCurrency().toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}
-								</Text>
-							</View>
+								<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
+									<Text style={[styles.customername, { flex: 3, fontWeight: 'bold' }]}>Items Purchased</Text>
+									<Text style={[styles.customername, { flex: 1, fontWeight: 'bold', paddingRight: 20, alignSelf: 'flex-end' }]}>
+										{this.getCurrency().toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}
+									</Text>
+								</View>
 
-							{this.renderTopUp(this.props.item)}
+								{this.renderTopUp(this.props.item)}
 
-							{this.renderDebt(this.props.item)}
+								{this.renderDebt(this.props.item)}
 
-						</ScrollView>
-					</View>
-				)
+							</ScrollView>
+						</View>
+					)
+				} else {
+					return (
+						<View style={{ flex: 1 }}>
+						</View>
+					)
+				}
+
 			} else {
 				return (
-					<View style={{ flex: 1 }}>
-					</View>
-				)
-			}
+					<View
+						style={{
+							flex: 1,
+							flexDirection: 'row',
+							marginBottom: 5,
+							marginTop: 5
+						}}>
+						<View style={{ flex: 1, padding: 15 }}>
+							<ScrollView style={{ flex: 1 }}>
+								<View style={styles.deleteButtonContainer}>
+									<TouchableOpacity
+										onPress={this.onTopupCreditDelete(this.props.item)}
+										style={[
+											styles.receiptDeleteButton,
+											{ backgroundColor: (this.props.item.active) ? 'red' : 'grey' }
+										]}>
+										<Text style={styles.receiptDeleteButtonText}>X</Text>
+									</TouchableOpacity>
+								</View>
+								<View style={styles.itemData}>
+									<Text style={styles.customername}>{this.props.item.customerAccount.name}</Text>
+								</View>
+								<Text>
+									{format(parseISO(this.props.item.createdAt), 'iiii d MMM yyyy')}
+								</Text>
+								<View>
 
-		} else {
-			return (
-				<View
-					style={{
-						flex: 1,
-						flexDirection: 'row',
-						marginBottom: 5,
-						marginTop: 5
-					}}>
-					<View style={{ flex: 1, padding: 15 }}>
-						<ScrollView style={{ flex: 1 }}>
-							<View style={styles.deleteButtonContainer}>
-								<TouchableOpacity
-									onPress={this.onTopupCreditDelete(this.props.item)}
-									style={[
-										styles.receiptDeleteButton,
-										{ backgroundColor: (this.props.item.active) ? 'red' : 'grey' }
-									]}>
-									<Text style={styles.receiptDeleteButtonText}>X</Text>
-								</TouchableOpacity>
-							</View>
-							<View style={styles.itemData}>
-								<Text style={styles.customername}>{this.props.item.customerAccount.name}</Text>
-							</View>
-							<Text>
-								{format(parseISO(this.props.item.createdAt), 'iiii d MMM yyyy')}
-							</Text>
-							<View>
-
-							</View>
-							<View style={styles.receiptStats}>
-								{!this.props.item.active && (
-									<Text style={styles.receiptStatusText}>
-										{'Deleted -'.toUpperCase()}
-									</Text>
-								)}
-								{!this.props.item.synched ? (
-									<View style={{ flexDirection: 'row' }}>
-										<Text style={styles.receiptPendingText}>
-											{' Pending'.toUpperCase()}
+								</View>
+								<View style={styles.receiptStats}>
+									{!this.props.item.active && (
+										<Text style={styles.receiptStatusText}>
+											{'Deleted -'.toUpperCase()}
 										</Text>
-									</View>
-								) : (
+									)}
+									{!this.props.item.synched ? (
 										<View style={{ flexDirection: 'row' }}>
-											{!this.props.item.synched && <Text> - </Text>}
-											<Text style={styles.receiptSyncedText}>
-												{' Synced'.toUpperCase()}
+											<Text style={styles.receiptPendingText}>
+												{' Pending'.toUpperCase()}
 											</Text>
 										</View>
-									)}
-							</View>
-							<View>
-								<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>Amount</Text>
-							</View>
-
-							<View
-								style={{
-									flex: 1,
-									flexDirection: 'row',
-									marginBottom: 5,
-									marginTop: 5
-								}}>
-								<View style={[styles.itemData, { flex: 3 }]}>
-									<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
-										{this.props.item.type}</Text>
-
+									) : (
+											<View style={{ flexDirection: 'row' }}>
+												{!this.props.item.synched && <Text> - </Text>}
+												<Text style={styles.receiptSyncedText}>
+													{' Synced'.toUpperCase()}
+												</Text>
+											</View>
+										)}
 								</View>
-								<View style={[styles.itemData, { flex: 1 }]}>
-									<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {this.props.item.totalAmount} </Text>
+								<View>
+									<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>Amount</Text>
 								</View>
-							</View>
 
+								<View
+									style={{
+										flex: 1,
+										flexDirection: 'row',
+										marginBottom: 5,
+										marginTop: 5
+									}}>
+									<View style={[styles.itemData, { flex: 3 }]}>
+										<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
+											{this.props.item.type}</Text>
 
-							<View
-								style={{
-									flex: 1,
-									flexDirection: 'row',
-									marginBottom: 5,
-									marginTop: 5
-								}}>
-								<View style={[styles.itemData, { flex: 3 }]}>
-									<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
-										Balance</Text>
-
+									</View>
+									<View style={[styles.itemData, { flex: 1 }]}>
+										<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {this.props.item.totalAmount} </Text>
+									</View>
 								</View>
-								<View style={[styles.itemData, { flex: 1 }]}>
-									<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {this.props.item.balance} </Text>
+
+
+								<View
+									style={{
+										flex: 1,
+										flexDirection: 'row',
+										marginBottom: 5,
+										marginTop: 5
+									}}>
+									<View style={[styles.itemData, { flex: 3 }]}>
+										<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
+											Balance</Text>
+
+									</View>
+									<View style={[styles.itemData, { flex: 1 }]}>
+										<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {this.props.item.balance} </Text>
+									</View>
 								</View>
-							</View>
 
 
 
-							{/* <View>
-								<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>PRODUCTS</Text>
-							</View>
+								{/* <View>
+							<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>PRODUCTS</Text>
+						</View>
 
-							{receiptLineItems}
+						{receiptLineItems}
 
-							<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
-								<Text style={[styles.customername, { flex: .7, fontWeight: 'bold' }]}>TOTAL AMOUNT</Text>
-								<Text style={[styles.customername, { flex: .3, fontWeight: 'bold', paddingRight: 20, alignSelf: 'flex-end' }]}>
-									{this.getCurrency().toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}
-								</Text>
-							</View> */}
-						</ScrollView>
+						<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
+							<Text style={[styles.customername, { flex: .7, fontWeight: 'bold' }]}>TOTAL AMOUNT</Text>
+							<Text style={[styles.customername, { flex: .3, fontWeight: 'bold', paddingRight: 20, alignSelf: 'flex-end' }]}>
+								{this.getCurrency().toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}
+							</Text>
+						</View> */}
+							</ScrollView>
+						</View>
+
+
+
 					</View>
 
 
-
-				</View>
-
-
-			)
+				)
+			}
+		}else{
+			return null;
 		}
+
+
 
 	}
 
@@ -682,38 +697,6 @@ class CustomerDetails extends React.PureComponent {
 
 	totalTopUp() {
 		return this.prepareTopUpData().reduce((total, item) => { return (total + item.topup) }, 0)
-	}
-
-	prepareTopUpData() {
-
-		if (this.props.topups.length > 0) {
-			const totalCount = this.props.topups.length;
-			let topupLogs = [...new Set(this.props.topups)];
-			let topups = topupLogs.map((topup, index) => {
-				return {
-					active: topup.active,
-					//id: topup.id,
-					createdAt: topup.created_at,
-					top_up_id: topup.top_up_id,
-					customer_account_id: topup.customer_account_id,
-					total: topup.total,
-					topup: topup.topup,
-					balance: topup.balance,
-					totalCount
-				};
-			});
-
-			topups.sort((a, b) => {
-				return isBefore(new Date(new Date(a.createdAt)), new Date(new Date(b.createdAt)))
-					? 1
-					: -1;
-			});
-
-			return topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId);
-		} else {
-			return [];
-		}
-
 	}
 
 	customerCreditPaymentTypeReceipts() {
@@ -813,7 +796,7 @@ class CustomerDetails extends React.PureComponent {
 		if (this.state.selected) {
 			return (
 				// <View style={{ flex: 1, flexDirection: 'row',marginLeft: 20, }}>
-		 <View style={{ flexDirection: 'row', flex: .75, width: '85%', alignSelf: 'center', backgroundColor: '#FFF' }}>
+				<View style={{ flexDirection: 'row', flex: .75, width: '85%', alignSelf: 'center', backgroundColor: '#FFF' }}>
 
 					<View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 1, borderRightColor: '#CCC' }}>
 						<SafeAreaView style={styles.container}>
@@ -905,11 +888,12 @@ class CustomerDetails extends React.PureComponent {
 				? 1
 				: -1;
 		});
-	//
+		//
 
-	//console.log(receipts);
-
-		return [...receipts.filter(r => r.customerAccount.customerId === this.props.selectedCustomer.customerId)];
+		//console.log(receipts);
+		console.log('receipts', receipts)
+		console.log('customerId', this.props.selectedCustomer.customerId)
+		return [...receipts.filter(r => r.customerAccount.id === this.props.selectedCustomer.customerId)];
 	}
 
 	prepareCustomerDebt() {
@@ -998,6 +982,7 @@ class CustomerDetails extends React.PureComponent {
 				: -1;
 		});
 		// receipts = this.filterItems(receipts);
+	
 		return [...topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId)];
 		//return [...topups];
 	}
@@ -1142,13 +1127,13 @@ class CustomerDetails extends React.PureComponent {
 							<Text style={styles.receiptStatusText}>
 								{'Deleted - '.toUpperCase()}
 							</Text>
-						): !item.isReceipt ? !item.active && (
+						) : !item.isReceipt ? !item.active && (
 							<Text style={styles.receiptStatusText}>
 								{'Deleted - '.toUpperCase()}
 							</Text>
-						): null}
+						) : null}
 
-						{!item.isReceipt ?  !item.synched ? (
+						{!item.isReceipt ? !item.synched ? (
 							<View style={{ flexDirection: 'row' }}>
 								<Text style={styles.receiptPendingText}>
 									{' Pending'.toUpperCase()}
@@ -1161,21 +1146,21 @@ class CustomerDetails extends React.PureComponent {
 										{' Synced'.toUpperCase()}
 									</Text>
 								</View>
-							)   :
-						!item.active ? (
-							<View style={{ flexDirection: 'row' }}>
-								<Text style={styles.receiptPendingText}>
-									{' Pending'.toUpperCase()}
-								</Text>
-							</View>
-						) : (
+							) :
+							!item.active ? (
 								<View style={{ flexDirection: 'row' }}>
-									{!item.active && <Text> - </Text>}
-									<Text style={styles.receiptSyncedText}>
-										{' Synced'.toUpperCase()}
+									<Text style={styles.receiptPendingText}>
+										{' Pending'.toUpperCase()}
 									</Text>
 								</View>
-							)}
+							) : (
+									<View style={{ flexDirection: 'row' }}>
+										{!item.active && <Text> - </Text>}
+										<Text style={styles.receiptSyncedText}>
+											{' Synced'.toUpperCase()}
+										</Text>
+									</View>
+								)}
 					</View>
 				</View>
 			</TouchableNativeFeedback>

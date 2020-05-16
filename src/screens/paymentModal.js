@@ -39,28 +39,30 @@ class PaymentModal extends React.PureComponent {
 
 	render() {
 		return (
-			<ScrollView>
-				<View
-					style={{
-						flex: 1,
-						marginTop: 0,
-						padding: 10
-					}}>
-					<View style={{ flex: 1, flexDirection: 'row' }}>
-						<View style={{ flex: 1, height: 50 }}>
-							<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
 
-						</View>
-						<View
-							style={{
-								justifyContent: 'flex-end',
-								flexDirection: 'row',
-								right: 0,
-								top: 10
-							}}>
-							{this.getCancelButton()}
-						</View>
+			<View
+				style={{
+					flex: 1,
+					marginTop: 0,
+					padding: 10
+				}}>
+				
+				<ScrollView>
+				<View style={{ flex: 1, flexDirection: 'row' }}>
+					<View style={{ flex: 1, height: 50 }}>
+						<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
+
 					</View>
+					<View
+						style={{
+							justifyContent: 'flex-end',
+							flexDirection: 'row',
+							right: 0,
+							top: 10
+						}}>
+						{this.getCancelButton()}
+					</View>
+				</View>
 					<Card style={{ flex: 1, backgroundColor: '#f1f1f1' }}>
 						<PaymentDescription
 							title={`${i18n.t('previous-amount-due')}:`}
@@ -82,37 +84,40 @@ class PaymentModal extends React.PureComponent {
 					/>
 					<View style={{ flex: 1, padding: 10 }}>
 
-					<View style={{ flex: 1, flexDirection: 'row', marginTop: 10 }}>
-						<View style={{ flex: 1 }}>
-							<Text style={[{ textAlign: 'left' }, styles.baseItem]}>NOTES</Text>
+						<View style={{ flex: 1, flexDirection: 'row', marginTop: 10 }}>
+							<View style={{ flex: 1 }}>
+								<Text style={[{ textAlign: 'left' }, styles.baseItem]}>NOTES</Text>
+							</View>
+						</View>
+
+						<View style={{ flex: 1, flexDirection: 'row', borderBottomWidth: 1 }}>
+							<View style={{ flex: 1, height: 50 }}>
+								{this.notesValue()}
+							</View>
 						</View>
 					</View>
 
-					<View style={{ flex: 1, flexDirection: 'row', borderBottomWidth: 1 }}>
-						<View style={{ flex: 1, height: 50 }}>
-							{this.notesValue()}
-						</View>
-					</View>
-					</View>
 
-					<View style={styles.completeOrder}>
-						<View style={{ justifyContent: 'center', height: 50 }}>
-							<TouchableHighlight
-								underlayColor="#c0c0c0"
-								disabled={this.state.buttonDisabled}
-								onPress={this.handleOnPress}>
-								<Text
-									style={[
-										{ paddingTop: 20, paddingBottom: 20 },
-										styles.buttonText
-									]}>
-									{this.props.selectedCustomer.dueAmount > 0 ? i18n.t('clear-loan') : 'Topup Customer Wallet'}
-								</Text>
-							</TouchableHighlight>
-						</View>
+				</ScrollView>
+				<View style={styles.completeOrder}>
+					<View style={{ justifyContent: 'center', height: 50 }}>
+						<TouchableHighlight
+							underlayColor="#c0c0c0"
+							disabled={this.state.buttonDisabled}
+							onPress={this.handleOnPress}>
+							<Text
+								style={[
+									{ paddingTop: 20, paddingBottom: 20 },
+									styles.buttonText
+								]}>
+								{this.props.selectedCustomer.dueAmount > 0 ? i18n.t('clear-loan') : 'Topup Customer Wallet'}
+							</Text>
+						</TouchableHighlight>
 					</View>
 				</View>
-			</ScrollView>
+
+			</View>
+
 
 		);
 	}
