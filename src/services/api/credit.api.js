@@ -1,6 +1,5 @@
 class CreditApi {
 	constructor() {
-		//this._url = 'http://192.168.43.153:3002/';
 		this._url = 'http://142.93.115.206:3002/';
 		this._site = '';
 		this._user = '';
@@ -48,8 +47,6 @@ class CreditApi {
 	}
 
 	createTopUp(topup) {
-		// TODO - Resolve topup.... Is it needed, currently hardcoded...
-
 		let options = {
 			method: 'POST',
 			headers: {
@@ -70,7 +67,7 @@ class CreditApi {
 								resolve(responseJson);
 							})
 							.catch(error => {
-								
+
 								reject();
 							});
 					} else {

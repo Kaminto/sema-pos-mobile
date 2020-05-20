@@ -63,7 +63,7 @@ class ReminderApi {
 		return new Promise((resolve, reject) => {
 			fetch(this._url + 'sema/customer_reminders/', options)
 				.then(response => {
-					
+
 					if (response.status === 200) {
 						response
 							.json()
@@ -71,11 +71,11 @@ class ReminderApi {
 								resolve(responseJson);
 							})
 							.catch(error => {
-								
+
 								reject();
 							});
 					} else {
-						
+
 						reject(response.headers.map.message);
 					}
 				})
@@ -106,7 +106,7 @@ class ReminderApi {
 					if (response.status === 200 || response.status === 404) {
 						resolve();
 					} else {
-						
+
 						reject();
 					}
 				})
@@ -139,11 +139,11 @@ class ReminderApi {
 								resolve(responseJson);
 							})
 							.catch(error => {
-								
+
 								reject();
 							});
 					} else {
-						
+
 						reject();
 					}
 				})

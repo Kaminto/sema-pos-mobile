@@ -13,7 +13,6 @@ class ReminderRealm {
                 realm.delete(reminders);
             })
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -47,7 +46,6 @@ class ReminderRealm {
                 realm.create('Reminder', reminder);
             });
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -67,7 +65,6 @@ class ReminderRealm {
 
             })
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -80,7 +77,6 @@ class ReminderRealm {
                 })
             })
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -92,7 +88,6 @@ class ReminderRealm {
 
             })
         } catch (e) {
-            console.log("Error on creation", e);
         }
 
     }
@@ -105,7 +100,6 @@ class ReminderRealm {
                 reminderObj[0].syncAction = null;
             })
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -120,7 +114,6 @@ class ReminderRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -133,7 +126,6 @@ class ReminderRealm {
                 })
             })
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -159,7 +151,6 @@ class ReminderRealm {
                 }
             });
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 

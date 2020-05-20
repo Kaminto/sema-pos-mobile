@@ -11,8 +11,6 @@ class DiscountRealm {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('DiscountSyncDate')))).length == 0) {
                 realm.create('DiscountSyncDate', { lastDiscountSync: firstSyncDate });
             }
-            // let syncDate = realm.objects('DiscountSyncDate');
-            // syncDate[0].lastDiscountSync = firstSyncDate;
         });
     }
 
@@ -24,7 +22,6 @@ class DiscountRealm {
                 realm.delete(discounts);
             })
         } catch (e) {
-            console.log("Error on truncate discounts", e);
         }
     }
 
@@ -77,7 +74,6 @@ class DiscountRealm {
                 realm.create('Discount', discount);
             });
         } catch (e) {
-            console.log("Error on creation discounts", e);
         }
 
 
@@ -105,7 +101,6 @@ class DiscountRealm {
             })
 
         } catch (e) {
-            console.log("Error on update discounts", e);
         }
 
     }
@@ -118,12 +113,9 @@ class DiscountRealm {
                 discountObj.forEach(element=>{
                     element.isSelected = false;
                 })
-
-
             })
 
         } catch (e) {
-            console.log("Error on reset discounts", e);
         }
 
     }
@@ -134,10 +126,9 @@ class DiscountRealm {
                 let discountObj = realm.objects('Discount').filtered(`id = "${discount.id}"`);
                 discountObj[0].isSelected = isSelected;
 
-            })
+            });
 
         } catch (e) {
-            console.log("Error on select discounts", e);
         }
 
     }
@@ -151,7 +142,6 @@ class DiscountRealm {
             })
 
         } catch (e) {
-            console.log("Error on synch discounts", e);
         }
 
     }
@@ -168,7 +158,6 @@ class DiscountRealm {
             })
 
         } catch (e) {
-            console.log("Error on hard delete discount", e);
         }
     }
 
@@ -182,11 +171,10 @@ class DiscountRealm {
             })
 
         } catch (e) {
-            console.log("Error on soft delete discounts", e);
         }
     }
 
-  
+
 
     createManyDiscount(discounts) {
 
@@ -205,7 +193,7 @@ class DiscountRealm {
                             result.push({ status: 'success', data: value, message: 'Discount has been set' });
                         } else if (ischeckdiscounts > 0) {
                             let discountObj = realm.objects('Discount').filtered(`id = "${discounts[i].id}"`);
-                           
+
                              discountObj[0].amount=  Number(discounts[i].amount);
                              discountObj[0].applies_to = discounts[i].applies_to;
                              discountObj[0].start_date = discounts[i].start_date;
@@ -215,10 +203,10 @@ class DiscountRealm {
                              discountObj[0].base64encoded_image = discounts[i].base64encoded_image;
                              discountObj[0].kiosk_id = discounts[i].kiosk_id;
                              discountObj[0].sku = discounts[i].sku;
-                             discountObj[0].type = discounts[i].type; 
+                             discountObj[0].type = discounts[i].type;
                              discountObj[0].updated_at = discounts[i].updated_at;
                              result.push({ status: 'success', data: discounts[i], message: 'Local Discount has been updated' });
-                           
+
 
                         }
                     }
@@ -226,7 +214,6 @@ class DiscountRealm {
                 });
                 resolve(result);
             } catch (e) {
-                console.log("Error on creation", e);
             }
         });
     }
@@ -234,7 +221,6 @@ class DiscountRealm {
     checkdiscounts(date, id) {
         return this.getDiscounts().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.id === id)
     }
-
 
 }
 

@@ -10,10 +10,10 @@ class MeterReadingSync {
             MeterReadingApi.getMeterReading(kiosk_id, InventroyRealm.getLastMeterReadingSync())
                 .then(async remoteResult => {
                     let initlocalMeterReadings = InventroyRealm.getAllMeterReadingByDate(InventroyRealm.getLastMeterReadingSync());
-                
+
                     let localMeterReadings = initlocalMeterReadings.length > 0 ? [...initlocalMeterReadings] : [];
                     let remoteMeterReading = remoteResult.length > 0 ? [...remoteResult] : [];
-                  
+
                     let onlyInLocal = localMeterReadings.filter(SyncUtils.compareRemoteAndLocal(remoteMeterReading, 'meter_reading_id'));
                     let onlyInRemote = remoteMeterReading.filter(SyncUtils.compareRemoteAndLocal(localMeterReadings, 'meter_reading_id'));
 
@@ -55,7 +55,7 @@ class MeterReadingSync {
 
                 })
                 .catch(error => {
-                    
+
                     resolve({
                         error: true,
                         message: error,
@@ -76,12 +76,12 @@ class MeterReadingSync {
                     localMeterReading
                 )
                     .then((response) => {
-                        
+
                         InventroyRealm.setLastMeterReadingSync();
                         resolve({ status: 'success', message: response, data: localMeterReading });
                     })
                     .catch(error => {
-                       
+
                         return { status: 'fail', message: error, data: localMeterReading }
                     });
             }
@@ -93,11 +93,11 @@ class MeterReadingSync {
                 )
                     .then((response) => {
                         InventroyRealm.setLastMeterReadingSync();
-                        
+
                         resolve({ status: 'success', message: 'synched to remote', data: localMeterReading });
                     })
                     .catch(error => {
-                       
+
                         resolve({ status: 'fail', message: error, data: localMeterReading });
                     });
 
@@ -111,11 +111,11 @@ class MeterReadingSync {
                     .then((response) => {
                         InventroyRealm.synchedMeterReading(localMeterReading);
                         InventroyRealm.setLastMeterReadingSync();
-                        
+
                         resolve({ status: 'success', message: 'synched to remote', data: localMeterReading });
                     })
                     .catch(error => {
-                        
+
                         resolve({ status: 'fail', message: error, data: localMeterReading });
                     });
 
@@ -128,11 +128,11 @@ class MeterReadingSync {
                     .then((response) => {
                         InventroyRealm.synchedMeterReading(localMeterReading);
                         InventroyRealm.setLastMeterReadingSync();
-                        
+
                         resolve({ status: 'success', message: response, data: localMeterReading });
                     })
                     .catch(error => {
-                        
+
                         return { status: 'fail', message: error, data: localMeterReading }
                     });
 
@@ -146,11 +146,11 @@ class MeterReadingSync {
                     .then((response) => {
                         InventroyRealm.synchedMeterReading(localMeterReading);
                         InventroyRealm.setLastMeterReadingSync();
-                        
+
                         resolve({ status: 'success', message: 'synched to remote', data: localMeterReading });
                     })
                     .catch(error => {
-                        
+
                         resolve({ status: 'fail', message: error, data: localMeterReading })
                     });
 

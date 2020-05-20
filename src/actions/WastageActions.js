@@ -11,7 +11,6 @@ export function GetInventoryReportData(beginDate, previousDate, products) {
 	return dispatch => {
 		getWastageData(beginDate, previousDate, getMrps(products))
 			.then(inventoryData => {
-				// console.log('inventoryData', JSON.stringify(inventoryData));
 				dispatch({
 					type: INVENTORY_REPORT,
 					data: { inventoryData: inventoryData }
@@ -32,18 +31,6 @@ function groupBySku(objectArray, property) {
 		if (!acc[key]) {
 			acc[key] = [];
 		}
-		acc[key].push(obj);
-		return acc;
-	}, {});
-}
-
-function groupBySku2(objectArray, property) {
-	return objectArray.reduce(function (acc, obj) {
-		let key = obj[property];
-		if (!acc[key]) {
-			acc[key] = [];
-		}
-		delete obj.base64encodedImage;
 		acc[key].push(obj);
 		return acc;
 	}, {});

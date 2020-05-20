@@ -63,7 +63,7 @@ class MeterReadingApi {
 		};
 		return new Promise((resolve, reject) => {
 			fetch(this._url + 'sema/meter_reading/', options)
-				.then(response => {					
+				.then(response => {
 					if (response.status === 200) {
 						response
 							.json()

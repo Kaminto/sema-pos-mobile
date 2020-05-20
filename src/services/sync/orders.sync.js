@@ -64,8 +64,8 @@ class OrderSync {
                         orders: onlyInLocal.concat(onlyInRemote).length,
                         successError: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
                         successMessage: syncResponseArray.length > 0 ? syncResponseArray[0] : 'success'
-                    });                   
- 
+                    });
+
                 })
                 .catch(error => {
                     resolve({
@@ -99,13 +99,12 @@ class OrderSync {
                     localOrder
                 )
                     .then((response) => {
-                        // updateCount = updateCount + 1;
                         OrderRealm.setLastOrderSync();
-                       
+
                         resolve({ status: 'success', message: 'synched', data: localOrder });
                     })
                     .catch(error => {
-                        
+
                         resolve({ status: 'fail', message: 'error', data: localOrder });
                     });
 
@@ -119,11 +118,11 @@ class OrderSync {
                         // updateCount = updateCount + 1;
                         OrderRealm.synched(localOrder);
                         OrderRealm.setLastOrderSync();
-                        
+
                         resolve({ status: 'success', message: 'synched', data: localOrder });
                     })
                     .catch(error => {
-                       
+
                         resolve({ status: 'fail', message: 'error', data: localOrder });
                     });
             }
@@ -135,11 +134,11 @@ class OrderSync {
                     .then((response) => {
                         OrderRealm.synched(localOrder);
                         OrderRealm.setLastOrderSync();
-                       
+
                         resolve({ status: 'success', message: 'synched', data: localOrder });
                     })
                     .catch(error => {
-                        
+
                         resolve({ status: 'fail', message: 'error', data: localOrder });
                     });
             }
@@ -152,11 +151,11 @@ class OrderSync {
                         //  updateCount = updateCount + 1;
                         OrderRealm.synched(localOrder);
                         OrderRealm.setLastOrderSync();
-                        
+
                         resolve({ status: 'success', message: 'synched', data: localOrder });
                     })
                     .catch(error => {
-                        
+
                         resolve({ status: 'fail', message: 'error', data: localOrder });
                     });
             }

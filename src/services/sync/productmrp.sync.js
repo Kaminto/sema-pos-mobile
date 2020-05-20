@@ -32,8 +32,6 @@ class ProductMRPSync {
                         ProductMRPRealm.setLastProductMRPSync();
                     }
 
-
-
                     resolve({
                         success: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
                         productMrps: onlyInLocal.concat(onlyInRemote).length,
@@ -43,7 +41,7 @@ class ProductMRPSync {
 
                 })
                 .catch(error => {
-                    
+
                     resolve({
                         error: true,
                         productMrps: 0
@@ -52,6 +50,6 @@ class ProductMRPSync {
         });
     }
 
-  
+
 }
 export default new ProductMRPSync();

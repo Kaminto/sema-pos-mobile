@@ -109,7 +109,6 @@ class InventoryReport extends React.PureComponent {
 	};
 
 	render() {
-		console.log('this.props.dateFilter', this.props.dateFilter);
 		return (
 			<View style={{ flex: 1, backgroundColor: 'white' }}>
 				<View style={{ flex: .1, flexDirection: 'row' }}>
@@ -456,8 +455,6 @@ class InventoryReport extends React.PureComponent {
 	}
 
 	getInventorySkuForDisplay(currentPrev, item) {
-		//console.log('item', item);
-		//	console.log('currentProductSkus', this.props.wastageData.inventory.currentProductSkus);
 		let inventoryArray = (currentPrev) ? this.props.wastageData.inventory.currentProductSkus : this.props.wastageData.inventory.previousProductSkus;
 		for (let index = 0; index < inventoryArray.length; index++) {
 			if (inventoryArray[index].wastageName === item.wastageName) {
@@ -584,9 +581,6 @@ class InventoryReport extends React.PureComponent {
 		let meter = 0;
 		if (this.props.wastageData.hasOwnProperty("inventory")) {
 			if (!currentPrev) {
-				//console.log('currentDate', this.props.wastageData.inventory.date);
-				//console.log('getAllInventory', InventroyRealm.getMeterReadingLessDate(this.props.wastageData.inventory.date));
-				//console.log('this.props.wastageData.inventory.previousMeter', this.props.wastageData.inventory.previousMeter)
 				if (this.props.wastageData.inventory.previousMeter === 0) {
 					//	this.props.wastageData.inventory.previousMeter
 					meter = InventroyRealm.getMeterReadingLessDate(this.props.wastageData.inventory.date).length === 0 ? 0 : InventroyRealm.getMeterReadingLessDate(this.props.wastageData.inventory.date)[0].meter_value

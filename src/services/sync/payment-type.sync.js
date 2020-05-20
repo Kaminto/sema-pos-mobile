@@ -44,7 +44,7 @@ class PaymentTypeSync {
 
                 })
                 .catch(error => {
-                    
+
                     resolve({
                         error: error,
                         paymentTypes: 0

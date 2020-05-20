@@ -130,14 +130,11 @@ class Login extends React.PureComponent {
 	onSynchronize() {
 		try {
 			this.setState({ isLoading: true });
-			console.log('SettingRealm.getAllSetting()', SettingRealm.getAllSetting())
 			Synchronization.synchronize().then(syncResult => {
-				console.log('data synched', syncResult)
 				this.loadSyncedData().then(results => {
 					this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
 					this.setState({ isLoading: false });
-					console.log('data loaded', results)
-					this.props.navigation.navigate('App')
+					this.props.navigation.navigate('App');
 				});
 
 			});
@@ -184,7 +181,7 @@ class Login extends React.PureComponent {
 			return;
 		}
 		this.setState({ isLoading: true });
-		console.log('this.props.network.isNWConnected', this.props.network.isNWConnected)
+
 		Communications.login(this.state.user, this.state.password)
 			.then(result => {
 				if (result.status === 200) {

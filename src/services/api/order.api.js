@@ -52,7 +52,7 @@ class OrderApi {
 								resolve(responseJson);
 							})
 							.catch(error => {
-								
+
 								reject();
 							});
 					} else if (response.status === 409) {
@@ -88,13 +88,13 @@ class OrderApi {
 								resolve(responseJson);
 							})
 							.catch(error => {
-							
+
 								reject();
 							});
 					} else if (response.status === 409) {
 						// Indicates this receipt has already been added
 						resolve({});
-					} else {						
+					} else {
 						reject(response.status);
 					}
 				})
@@ -116,7 +116,7 @@ class OrderApi {
 
 		return fetch(this._url + url, options)
 		.then(response => response.json())
-		.then(responseJson => { 
+		.then(responseJson => {
 			return responseJson;
 		})
 			.catch(error => {
@@ -135,7 +135,7 @@ class OrderApi {
 		};
 
 		let url = `sema/site/receipts/${siteId}?date=${date}`;
-	
+
 
 		return fetch(this._url + url, options)
 			.then(async response => await response.json())

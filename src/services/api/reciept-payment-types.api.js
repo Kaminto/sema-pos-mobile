@@ -36,7 +36,7 @@ class RecieptPaymentTypesApi {
 			}
 		};
 		let url = `sema/receipt_payment_type/${kiosk_id}/${updatedSince}`;
-		
+
 
 		return fetch(this._url + url, options)
 			.then(response => response.json())
@@ -70,11 +70,11 @@ class RecieptPaymentTypesApi {
 								resolve(responseJson);
 							})
 							.catch(error => {
-								
+
 								reject();
 							});
 					} else {
-						
+
 						reject();
 					}
 				})
@@ -105,7 +105,7 @@ class RecieptPaymentTypesApi {
 					if (response.status === 200 || response.status === 404) {
 						resolve();
 					} else {
-						
+
 						reject();
 					}
 				})
@@ -138,11 +138,11 @@ class RecieptPaymentTypesApi {
 								resolve(responseJson);
 							})
 							.catch(error => {
-								
+
 								reject();
 							});
 					} else {
-						
+
 						reject();
 					}
 				})

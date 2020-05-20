@@ -38,7 +38,6 @@ class SettingRealm {
 
             })
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -111,7 +110,6 @@ class SettingRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation of settings.", e);
         }
 
     }
@@ -125,7 +123,6 @@ class SettingRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
         }
 
     }

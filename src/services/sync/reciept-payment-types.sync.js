@@ -46,7 +46,7 @@ class RecieptPaymentTypesSync {
 
                 })
                 .catch(error => {
-                   
+
                     resolve({
                         error: false,
                         recieptPayments: 0,
@@ -63,12 +63,12 @@ class RecieptPaymentTypesSync {
                     localRecieptPaymentType
                 )
                     .then((response) => {
-                       
+
                         ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
                         resolve({ status: 'success', message: 'synched', data: localRecieptPaymentType });
                     })
                     .catch(error => {
-                      
+
                         resolve({ status: 'fail', message: 'error', data: localRecieptPaymentType });
                     });
             }
@@ -80,11 +80,11 @@ class RecieptPaymentTypesSync {
                     .then((response) => {
                         // updateCount = updateCount + 1;
                         ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
-                        
+
                         resolve({ status: 'success', message: 'synched', data: localRecieptPaymentType });
                     })
                     .catch(error => {
-                       
+
                         resolve({ status: 'fail', message: 'error', data: localRecieptPaymentType });
                     });
 
@@ -98,11 +98,11 @@ class RecieptPaymentTypesSync {
                         // updateCount = updateCount + 1;
                         ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
                         ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
-                     
+
                         resolve({ status: 'success', message: 'synched', data: localRecieptPaymentType });
                     })
                     .catch(error => {
-                        
+
                         resolve({ status: 'fail', message: 'error', data: localRecieptPaymentType });
                     });
             }
@@ -115,11 +115,11 @@ class RecieptPaymentTypesSync {
                         //  updateCount = updateCount + 1;
                         ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
                         ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
-                       
+
                         resolve({ status: 'success', message: 'synched', data: localRecieptPaymentType });
                     })
                     .catch(error => {
-                       
+
                         resolve({ status: 'error', message: 'error', data: localRecieptPaymentType });
                     });
             }
@@ -132,11 +132,11 @@ class RecieptPaymentTypesSync {
                         //  updateCount = updateCount + 1;
                         ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
                         ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
-                        
+
                         resolve({ status: 'success', message: 'synched', data: localRecieptPaymentType });
                     })
                     .catch(error => {
-                        
+
                         resolve({ status: 'fail', message: 'error', data: localRecieptPaymentType });
                     });
             }

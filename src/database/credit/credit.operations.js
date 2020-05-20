@@ -27,7 +27,6 @@ class CreditRealm {
                 realm.delete(credits);
             })
         } catch (e) {
-            console.log("Error on truncate", e);
         }
     }
 
@@ -99,7 +98,6 @@ class CreditRealm {
                 realm.create('Credit', newCredit);
             });
         } catch (e) {
-            console.log("Error on creation credit", e + now);
         }
     }
 
@@ -115,7 +113,6 @@ class CreditRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
         }
 
     }
@@ -134,7 +131,6 @@ class CreditRealm {
                 creditObj[0].syncAction = null;
             })
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -146,7 +142,6 @@ class CreditRealm {
                 realm.delete(deleteCredit);
             })
         } catch (e) {
-            console.log("Error on hard delete", e);
         }
     }
 
@@ -159,7 +154,6 @@ class CreditRealm {
                 creditObj[0].updated_at = new Date();
             })
         } catch (e) {
-            console.log("Error on soft delete", e);
         }
     }
 
@@ -201,7 +195,6 @@ class CreditRealm {
                 });
                 resolve(result);
             } catch (e) {
-                console.log("Error on creation", e);
             }
         });
     }
@@ -209,9 +202,6 @@ class CreditRealm {
     checkCredit(date, top_up_id) {
         return this.getAllCredit().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.top_up_id === top_up_id)
     }
-
-
-
 
 }
 

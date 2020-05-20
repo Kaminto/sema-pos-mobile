@@ -1,7 +1,6 @@
 import realm from '../init';
-const uuidv1 = require('uuid/v1');
 import SyncUtils from '../../services/sync/syncUtils';
-import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
+import { parseISO,  format, sub,  compareAsc } from 'date-fns';
 
 class PaymentTypeRealm {
     constructor() {
@@ -11,8 +10,6 @@ class PaymentTypeRealm {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('PaymentTypeSyncDate')))).length == 0) {
                 realm.create('PaymentTypeSyncDate', { lastPaymentTypeSync: firstSyncDate });
             }
-            // let syncDate = realm.objects('PaymentTypeSyncDate');
-            // syncDate[0].lastPaymentTypeSync = firstSyncDate;
         });
     }
 
@@ -24,7 +21,6 @@ class PaymentTypeRealm {
                 realm.delete(paymentTypes);
             })
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -77,7 +73,6 @@ class PaymentTypeRealm {
                 realm.create('PaymentType', paymentType);
             });
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -94,7 +89,6 @@ class PaymentTypeRealm {
                 paymentTypeObj[0].updated_at = paymentType.updated_at;
             })
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -126,7 +120,6 @@ class PaymentTypeRealm {
                 });
                 resolve(result);
             } catch (e) {
-                console.log("Error on creation", e);
             }
         });
     }
@@ -145,7 +138,6 @@ class PaymentTypeRealm {
                 })
             })
         } catch (e) {
-            console.log("Error on creation", e);
         }
 
     }
@@ -159,7 +151,6 @@ class PaymentTypeRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
         }
 
     }
@@ -173,7 +164,6 @@ class PaymentTypeRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
         }
 
     }
@@ -190,7 +180,6 @@ class PaymentTypeRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -204,7 +193,6 @@ class PaymentTypeRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 

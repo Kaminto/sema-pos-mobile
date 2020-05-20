@@ -54,7 +54,7 @@ class ReminderSync {
 
                 })
                 .catch(error => {
-                    
+
                     resolve({
                         error: true,
                         message: error,
@@ -75,12 +75,12 @@ class ReminderSync {
                     localCustomerReminder
                 )
                     .then((response) => {
-                       
+
                         CustomerReminderRealm.setLastCustomerReminderSync();
                         resolve({ status: 'success', message: response, data: localCustomerReminder });
                     })
                     .catch(error => {
-                       
+
                         return { status: 'fail', message: error, data: localCustomerReminder }
                     });
             }
@@ -92,11 +92,11 @@ class ReminderSync {
                 )
                     .then((response) => {
                         CustomerReminderRealm.setLastCustomerReminderSync();
-                       
+
                         resolve({ status: 'success', message: 'synched to remote', data: localCustomerReminder });
                     })
                     .catch(error => {
-                        
+
                         resolve({ status: 'fail', message: error, data: localCustomerReminder });
                     });
 
@@ -110,11 +110,11 @@ class ReminderSync {
                     .then((response) => {
                         CustomerReminderRealm.synchedCustomerReminder(localCustomerReminder);
                         CustomerReminderRealm.setLastCustomerReminderSync();
-                       
+
                         resolve({ status: 'success', message: 'synched to remote', data: localCustomerReminder });
                     })
                     .catch(error => {
-                        
+
                         resolve({ status: 'fail', message: error, data: localCustomerReminder });
                     });
 
@@ -127,11 +127,11 @@ class ReminderSync {
                     .then((response) => {
                         CustomerReminderRealm.synchedCustomerReminder(localCustomerReminder);
                         CustomerReminderRealm.setLastCustomerReminderSync();
-                       
+
                         resolve({ status: 'success', message: response, data: localCustomerReminder });
                     })
                     .catch(error => {
-                        
+
                         return { status: 'fail', message: error, data: localCustomerReminder }
                     });
 
@@ -145,11 +145,11 @@ class ReminderSync {
                     .then((response) => {
                         CustomerReminderRealm.synchedCustomerReminder(localCustomerReminder);
                         CustomerReminderRealm.setLastCustomerReminderSync();
-                       
+
                         resolve({ status: 'success', message: 'synched to remote', data: localCustomerReminder });
                     })
                     .catch(error => {
-                       
+
                         resolve({ status: 'fail', message: error, data: localCustomerReminder })
                     });
 

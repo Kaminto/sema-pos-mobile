@@ -16,7 +16,6 @@ import * as OrderActions from '../../actions/OrderActions';
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 import randomMC from 'random-material-color';
-import slowlog from 'react-native-slowlog';
 
 class ProductListItem extends React.PureComponent {
 	render() {
@@ -91,7 +90,6 @@ class ProductListItem extends React.PureComponent {
 class ProductList extends React.PureComponent {
 	constructor(props) {
 		super(props);
-		slowlog(this, /.*/);
 	}
 
 	handleOnPress(item){
@@ -120,7 +118,6 @@ class ProductList extends React.PureComponent {
 );
 
 	render() {
-		console.log('salesChannel')
 		return (
 			<View style={styles.container}>
 				<FlatList
@@ -168,7 +165,7 @@ class ProductList extends React.PureComponent {
 	prepareData = () => {
 		let productMrp = ProductMRPRealm.getFilteredProductMRP();
 		let ids = Object.keys(productMrp).map(key => productMrp[key].productId);
-		return result = this.props.products.filter(prod => ids.includes(prod.productId));
+		return this.props.products.filter(prod => ids.includes(prod.productId));
 	};
 
 	getImage = item => {

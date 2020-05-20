@@ -31,7 +31,6 @@ import slowlog from 'react-native-slowlog';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 
 class CustomerListItem extends React.PureComponent {
-    // static whyDidYouRender = true;
     render() {
         let isSelected = false;
         if (
@@ -263,16 +262,8 @@ class CustomerList extends React.Component {
         }
 
         if (this.props.products.length === 0) {
-            console.log('missing products')
+
         }
-
-        // this.props.navigation.dispatch(NavigationActions.reset({
-        // 	index: 0,
-        // 	key: null,
-        // 	actions: [NavigationActions.navigate({ routeName: 'OrderView' })]
-        // }))
-        // });
-
     };
 
     onLongPressItem(item) {

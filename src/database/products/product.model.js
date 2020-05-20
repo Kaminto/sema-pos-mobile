@@ -7,12 +7,12 @@ export const ProductSchema = {
         maximumQuantity: { type: 'int', optional: true },
         minimumQuantity: { type: 'int', optional: true },
         description: { type: 'string', optional: true },
-        priceAmount: { type: 'int', optional: true },
+        priceAmount: { type: 'double', optional: true },
         priceCurrency: { type: 'string', optional: true },
         productId: { type: 'int', optional: true },
         sku: { type: 'string', optional: true },
         unitMeasure: { type: 'string', optional: true },
-        unitPerProduct: { type: 'int', optional: true },
+        unitPerProduct: { type: 'double', optional: true },
         active: { type: 'bool', optional: true },
         wastageName: { type: 'string', optional: true },
         syncAction: { type: 'string', optional: true },
@@ -20,8 +20,8 @@ export const ProductSchema = {
         created_at: { type: 'date', optional: true },
     }
 };
- 
- 
+
+
 
 export const ProductSyncDateSchema = {
     name: 'ProductSyncDate',

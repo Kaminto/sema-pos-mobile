@@ -142,7 +142,6 @@ class TransactionDetail extends React.PureComponent {
 	}
 
 	onDeleteReceipt(item) {
-		//console.log('item-r', item);
 		return () => {
 			if (item.is_delete === 0) {
 				return ToastAndroid.show(
@@ -279,10 +278,6 @@ class TransactionDetail extends React.PureComponent {
 					}}>
 					<View style={{ flex: 1 }}>
 
-						{/* <View>
-							<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>Top Up</Text>
-						</View> */}
-
 						<View
 							style={{
 								flex: 1,
@@ -299,23 +294,6 @@ class TransactionDetail extends React.PureComponent {
 							</View>
 						</View>
 
-
-						{/* <View
-							style={{
-								flex: 1,
-								flexDirection: 'row',
-								marginBottom: 5,
-								marginTop: 5
-							}}>
-							<View style={[styles.itemData, { flex: 3 }]}>
-								<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
-									Wallet Balance</Text>
-
-							</View>
-							<View style={[styles.itemData, { flex: 1 }]}>
-								<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {item.topUp.balance} </Text>
-							</View>
-						</View> */}
 					</View>
 				</View>
 
@@ -358,24 +336,6 @@ class TransactionDetail extends React.PureComponent {
 								<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {item.debt.due_amount} </Text>
 							</View>
 						</View>
-
-
-						{/* <View
-							style={{
-								flex: 1,
-								flexDirection: 'row',
-								marginBottom: 5,
-								marginTop: 5
-							}}>
-							<View style={[styles.itemData, { flex: 3 }]}>
-								<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
-									Balance</Text>
-
-							</View>
-							<View style={[styles.itemData, { flex: 1 }]}>
-								<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {item.debt.balance} </Text>
-							</View>
-						</View> */}
 					</View>
 				</View>
 
@@ -399,8 +359,6 @@ class TransactionDetail extends React.PureComponent {
 	render() {
 		var receiptLineItems;
 		var paymentTypes;
-		console.log('this.props.item', this.props.item)
-
 		if (!this.isEmpty(this.props.item)) {
 			if (this.props.item.isReceipt) {
 
@@ -604,21 +562,6 @@ class TransactionDetail extends React.PureComponent {
 										<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {this.props.item.balance} </Text>
 									</View>
 								</View>
-
-
-
-								{/* <View>
-							<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>PRODUCTS</Text>
-						</View>
-
-						{receiptLineItems}
-
-						<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
-							<Text style={[styles.customername, { flex: .7, fontWeight: 'bold' }]}>TOTAL AMOUNT</Text>
-							<Text style={[styles.customername, { flex: .3, fontWeight: 'bold', paddingRight: 20, alignSelf: 'flex-end' }]}>
-								{this.getCurrency().toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}
-							</Text>
-						</View> */}
 							</ScrollView>
 						</View>
 
@@ -888,11 +831,6 @@ class CustomerDetails extends React.PureComponent {
 				? 1
 				: -1;
 		});
-		//
-
-		//console.log(receipts);
-		console.log('receipts', receipts)
-		console.log('customerId', this.props.selectedCustomer.customerId)
 		return [...receipts.filter(r => r.customerAccount.id === this.props.selectedCustomer.customerId)];
 	}
 
@@ -982,7 +920,7 @@ class CustomerDetails extends React.PureComponent {
 				: -1;
 		});
 		// receipts = this.filterItems(receipts);
-	
+
 		return [...topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId)];
 		//return [...topups];
 	}
@@ -1022,9 +960,6 @@ class CustomerDetails extends React.PureComponent {
 
 
 	filterItems = data => {
-		// let filter = {
-		// 	paymentTypes: this.props.paymentTypeFilter.length > 0 ? this.props.paymentTypeFilter === 'all' ? "" : this.props.paymentTypeFilter : "",
-		// };
 
 		let filteredItems = data.filter(function (item) {
 			for (var key in filter) {

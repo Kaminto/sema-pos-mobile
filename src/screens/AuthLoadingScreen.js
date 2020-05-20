@@ -33,9 +33,6 @@ import CustomerReminderRealm from '../database/customer-reminder/customer-remind
 import ProductsRealm from '../database/products/product.operations';
 import DiscountRealm from '../database/discount/discount.operations';
 import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
-import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
-import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
-import ProductMRPRealm from '../database/productmrp/productmrp.operations';
 
 import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
@@ -66,22 +63,7 @@ class AuthLoadingScreen extends React.PureComponent {
             this.props.settingsActions.setSettings({ ...settings, loginSync: true });
             this.props.navigation.navigate('Login');
         }
-        // CustomerDebtRealm.truncate()
-        // SalesChannelRealm.truncate();
-        //InventroyRealm.truncate();
-        //ProductsRealm.truncate();
-        console.log('last order sync', OrderRealm.getLastOrderSync());
-        console.log('last customer sync', CustomerRealm.getLastCustomerSync());
-        console.log('last meter reading sync', InventroyRealm.getLastMeterReadingSync());
-        console.log('last inventory sync', InventroyRealm.getLastInventorySync());
-        console.log('last CustomerDebtRealm sync', CustomerDebtRealm.getLastCustomerDebtSync());
-        console.log('last SalesChannelRealm sync', SalesChannelRealm.getLastSalesChannelSync());
-        console.log('last PaymentTypeRealm sync', PaymentTypeRealm.getLastPaymentTypeSync());
-        console.log('last DiscountRealm sync', DiscountRealm.getLastDiscountSync());
-        console.log('last ProductMRPRealm sync', ProductMRPRealm.getLastProductMRPSync());
-        console.log('last ProductsRealm sync', ProductsRealm.getLastProductsync());
-      //  console.log('last CreditRealm sync', CreditRealm.truncate()); 
-     //  console.log('inventory data', CustomerDebtRealm.getCustomerDebts());
+
         if (settings.site != "" && settings.siteId > 0) {
             this.loadSyncedData();
             if (settings.token.length > 1) {

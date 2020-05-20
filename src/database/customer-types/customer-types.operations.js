@@ -1,7 +1,7 @@
 import realm from '../init';
 import { capitalizeWord } from '../../services/Utilities';
 import SyncUtils from '../../services/sync/syncUtils';
-import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
+import { parseISO, format, sub, compareAsc } from 'date-fns';
 class CustomerTypeRealm {
     constructor() {
         this.customerTypes = Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerType'))));
@@ -10,8 +10,6 @@ class CustomerTypeRealm {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerTypesSyncDate')))).length == 0) {
                 realm.create('CustomerTypesSyncDate', { lastCustomerTypesSync: firstSyncDate });
             }
-            // let syncDate = realm.objects('CustomerTypesSyncDate');
-            // syncDate[0].lastCustomerTypesSync = firstSyncDate;
         });
     }
 
@@ -22,7 +20,6 @@ class CustomerTypeRealm {
                 realm.delete(realm.objects('CustomerTypesSyncDate'));
             })
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -145,7 +142,6 @@ class CustomerTypeRealm {
                 });
                 resolve(result);
             } catch (e) {
-                console.log("Error on creation", e);
             }
         });
     }
@@ -153,9 +149,6 @@ class CustomerTypeRealm {
     checkcustomerTypes(date, id) {
         return this.getCustomerTypes().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.id === id)
     }
-
-
-
 
 }
 

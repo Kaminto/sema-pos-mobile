@@ -1,7 +1,7 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
 import SyncUtils from '../../services/sync/syncUtils';
-import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
+import { parseISO,  format, sub, compareAsc } from 'date-fns';
 
 
 class ReceiptPaymentTypeRealm {
@@ -32,7 +32,6 @@ class ReceiptPaymentTypeRealm {
                 realm.delete(receiptPaymentTypes);
             })
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -64,8 +63,6 @@ class ReceiptPaymentTypeRealm {
             }
             );
         } catch (e) {
-            console.log("Error on get receipt payment types", e);
-            return e;
         }
     }
 
@@ -80,7 +77,6 @@ class ReceiptPaymentTypeRealm {
                 realm.create('ReceiptPaymentType', { ...receiptPaymentType, active: false });
             });
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -99,7 +95,6 @@ class ReceiptPaymentTypeRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
         }
 
     }
@@ -117,7 +112,6 @@ class ReceiptPaymentTypeRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
         }
 
     }
@@ -131,7 +125,6 @@ class ReceiptPaymentTypeRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
         }
 
     }
@@ -145,7 +138,6 @@ class ReceiptPaymentTypeRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
         }
 
     }
@@ -162,7 +154,6 @@ class ReceiptPaymentTypeRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -176,7 +167,6 @@ class ReceiptPaymentTypeRealm {
             })
 
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -215,7 +205,6 @@ class ReceiptPaymentTypeRealm {
             });
 
         } catch (e) {
-            console.log("Error on Reciept payment creation", e);
         }
     }
 
@@ -245,9 +234,6 @@ class ReceiptPaymentTypeRealm {
                         } else if (ischeckReceiptPaymentType > 0) {
                             let receiptPaymentTypeUpdate = realm.objects('ReceiptPaymentType').filtered(`receipt_payment_type_id = "${receiptPaymentTypes[i].receipt_payment_type_id}"`);
 
-
-
-
                             receiptPaymentTypeUpdate[0].amount = Number(receiptPaymentTypes[i].amount);
                             receiptPaymentTypeUpdate[0].created_at = receiptPaymentTypes[i].created_at;
                             receiptPaymentTypeUpdate[0].id = receiptPaymentTypes[i].id;
@@ -265,7 +251,6 @@ class ReceiptPaymentTypeRealm {
                 });
                 resolve(result);
             } catch (e) {
-                console.log("Error on creation", e);
             }
         });
     }
@@ -274,10 +259,6 @@ class ReceiptPaymentTypeRealm {
     checkReceiptPaymentType(date, receipt_payment_type_id) {
         return this.getReceiptPaymentTypes().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.receipt_payment_type_id === receipt_payment_type_id)
     }
-
-
-
-
 
 
 }

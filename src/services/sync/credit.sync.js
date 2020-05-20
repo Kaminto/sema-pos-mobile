@@ -10,11 +10,11 @@ class CreditSync {
         return new Promise(resolve => {
             CreditApi.getTopUps(kiosk_id, CreditRealm.getLastCreditSync())
                 .then(async remoteCredit => {
-                   
+
                     let initlocalCredits = CreditRealm.getAllCreditByDate(CreditRealm.getLastCreditSync());
                     let localCredits = initlocalCredits.length > 0 ?  [...initlocalCredits] : [];
                     let remoteTopUps = remoteCredit.topup.length > 0 ?  [...remoteCredit.topup] : [];
-                   
+
                     let onlyInLocal = localCredits.filter(SyncUtils.compareRemoteAndLocal(remoteTopUps,'top_up_id'));
                     let onlyInRemote = remoteTopUps.filter(SyncUtils.compareRemoteAndLocal(localCredits,'top_up_id'));
 
@@ -45,7 +45,7 @@ class CreditSync {
 
                 })
                 .catch(error => {
-                   
+
                     resolve({
 						error: false,
                         topups: 0,
@@ -62,12 +62,12 @@ class CreditSync {
                 localCredit
             )
                 .then((response) => {
-                 
+
                     CreditRealm.setLastCreditSync();
                     resolve({ status: 'success', message: response, data: localCredit });
                 })
                 .catch(error => {
-                   
+
                     return { status: 'fail', message: error, data: localCredit }
                 });
         }
@@ -79,12 +79,12 @@ class CreditSync {
                 .then((response) => {
                     // updateCount = updateCount + 1;
                     CreditRealm.setLastCreditSync();
-                   
+
                     resolve({ status: 'success', message: 'synched to remote', data: localCredit });
-                
+
                 })
                 .catch(error => {
-                  
+
                     resolve({ status: 'fail', message: error, data: localCredit });
                 });
 
@@ -98,12 +98,12 @@ class CreditSync {
                     // updateCount = updateCount + 1;
                     CreditRealm.synched(localCredit);
                     CreditRealm.setLastCreditSync();
-                   
+
                     resolve({ status: 'success', message: 'synched to remote', data: localCredit });
-                   
+
                 })
                 .catch(error => {
-                   
+
                     resolve({ status: 'fail', message: 'error', data: localCredit });
                 });
         }
@@ -116,11 +116,11 @@ class CreditSync {
                     //  updateCount = updateCount + 1;
                     CreditRealm.synched(localCredit);
                     CreditRealm.setLastCreditSync();
-                  
+
                     resolve({ status: 'success', message: 'synched to remote', data: localCredit });
                 })
                 .catch(error => {
-                  
+
                     resolve({ status: 'fail', message: 'error', data: localCredit });
                 });
         }
@@ -133,11 +133,11 @@ class CreditSync {
                     //  updateCount = updateCount + 1;
                     CreditRealm.synched(localCredit);
                     CreditRealm.setLastCreditSync();
-                   
+
                     resolve({ status: 'success', message: 'synched to remote', data: localCredit });
                 })
                 .catch(error => {
-                   
+
                     resolve({ status: 'fail', message: 'error', data: localCredit });
                 });
         }

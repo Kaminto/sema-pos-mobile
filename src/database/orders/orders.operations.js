@@ -1,6 +1,6 @@
 import realm from '../init';
 import SyncUtils from '../../services/sync/syncUtils';
-import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
+import { parseISO,  format, sub,  compareAsc } from 'date-fns';
 
 
 class OrderRealm {
@@ -33,7 +33,6 @@ class OrderRealm {
                 realm.delete(orders);
             })
         } catch (e) {
-            console.log("Error on truncate orders", e);
         }
     }
 
@@ -73,8 +72,6 @@ class OrderRealm {
 
                 resolve(orderObj2.filter(r => r.created_at === format(parseISO(date), 'yyyy-MM-dd')));
             } catch (e) {
-                console.log("Error on get orders" + date, e);
-                resolve(e);
             }
 
         });
@@ -94,8 +91,6 @@ class OrderRealm {
             });
 
         } catch (e) {
-            console.log("Error on get orders", e);
-            return e;
         }
     }
 
@@ -156,7 +151,6 @@ class OrderRealm {
             syncAction: 'create',
         };
 
-        //newOrder.uuid = newOrder.receiptId;
         let receipt_line_items = [];
         for (let i in receipt.products) {
 
@@ -191,7 +185,6 @@ class OrderRealm {
                 realm.create('Order', newOrder);
             });
         } catch (e) {
-            console.log("Error on creation orders", e);
         }
 
 
@@ -226,12 +219,9 @@ class OrderRealm {
                     orderObj[0].reminder_date = format(parseISO(order.reminder_date), 'yyyy-MM-dd');
                 }
 
-
-
             })
 
         } catch (e) {
-            console.log("Error on update orders", e);
         }
 
     }
@@ -245,7 +235,6 @@ class OrderRealm {
             })
 
         } catch (e) {
-            console.log("Error on synch orders", e);
         }
 
     }
@@ -263,7 +252,6 @@ class OrderRealm {
             })
 
         } catch (e) {
-            console.log("Error on hard delete orders", e);
         }
     }
 
@@ -277,7 +265,6 @@ class OrderRealm {
             })
 
         } catch (e) {
-            console.log("Error on soft delete orders", e);
         }
     }
 
@@ -334,17 +321,13 @@ class OrderRealm {
                 });
                 resolve(result);
             } catch (e) {
-                console.log("Error on creation", e);
             }
         });
     }
 
-
     checkOrder(date, uuid) {
         return this.getAllOrder().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.uuid === uuid)
     }
-
-
 
 
 }

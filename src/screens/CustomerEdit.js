@@ -6,6 +6,7 @@ import {
 	StyleSheet,
 	Modal,
 	ScrollView,
+	Alert,
 	ActivityIndicator
 } from 'react-native';
 import { Card, Button, Input } from 'react-native-elements';
@@ -42,7 +43,6 @@ class CustomerEdit extends React.PureComponent {
 			customerType: this.props.selectedCustomer.customerTypeId ? this.props.selectedCustomer.customerTypeId : 0,
 			customerChannel: this.props.selectedCustomer.salesChannelId ? this.props.selectedCustomer.salesChannelId : 0
 		};
-
 
 		this.saleschannelid = 0;
 		this.phone = React.createRef();
@@ -88,44 +88,70 @@ class CustomerEdit extends React.PureComponent {
 	onEdit() {
 		this.props.customerActions.setIsLoading(true);
 		try {
-		let salesChannelId = this.state.customerChannel > 0 ? this.state.customerChannel : -1;
-		let customerTypeId = this.state.customerType > 0 ? this.state.customerType : -1;
-		if (this.props.isEdit) {
-			CustomerRealm.updateCustomer(
-				this.props.selectedCustomer,
-				this.state.phoneNumber,
-				this.state.name,
-				this.state.address,
-				salesChannelId,
-				customerTypeId,
-				this.state.reference,
-				this.state.secondPhoneNumber
-			).then(e=>{
-				console.log('eeee', e)
+			let salesChannelId = this.state.customerChannel > 0 ? this.state.customerChannel : -1;
+			let customerTypeId = this.state.customerType > 0 ? this.state.customerType : -1;
+			if (this.props.isEdit) {
+				CustomerRealm.updateCustomer(
+					this.props.selectedCustomer,
+					this.state.phoneNumber,
+					this.state.name,
+					this.state.address,
+					salesChannelId,
+					customerTypeId,
+					this.state.reference,
+					this.state.secondPhoneNumber
+				).then(e => {
+					console.log('eeee', e)
+					this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
+					this.props.customerActions.CustomerSelected({});
+					this.setState({ isEditInProgress: true });
+				});
+			} else {
+				if (this._textIsEmpty(this.state.phoneNumber) ||
+					this._textIsEmpty(this.state.name) ||
+					this._textIsEmpty(this.state.address) ||
+					this._textIsEmpty(this.state.secondPhoneNumber)) {
+					Alert.alert(
+						'Empty Fields',
+						'A customer cannot be created with empty fields!',
+						[
+							{
+								text: 'Cancel',
+								onPress: () => { },
+								style: 'cancel'
+							},
+							{
+								text: 'OK',
+								onPress: () => {
+
+								}
+							}
+						],
+						{ cancelable: false }
+					);
+					return;
+				}
+
+
+				CustomerRealm.createCustomer(
+					this.state.phoneNumber,
+					this.state.name,
+					this.state.address,
+					this.props.settings.siteId,
+					salesChannelId,
+					customerTypeId,
+					this.state.reference,
+					this.state.secondPhoneNumber
+				);
 				this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
 				this.props.customerActions.CustomerSelected({});
-				this.setState({ isEditInProgress: true });
-			});
-		} else {
-			CustomerRealm.createCustomer(
-				this.state.phoneNumber,
-				this.state.name,
-				this.state.address,
-				this.props.settings.siteId,
-				salesChannelId,
-				customerTypeId,
-				this.state.reference,
-				this.state.secondPhoneNumber
-			);
-			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
-			this.props.customerActions.CustomerSelected({});
-			this.setState({ isCreateInProgress: true });
-		}
-		this.props.navigation.goBack();
-	} catch (error) { }
+				this.setState({ isCreateInProgress: true });
+			}
+			this.props.navigation.goBack();
+		} catch (error) { }
 	}
 
-	
+
 
 	render() {
 		const cplaceholder = {
@@ -222,7 +248,6 @@ class CustomerEdit extends React.PureComponent {
 								}}
 								items={this.customerTypesOptions}
 								onValueChange={(value, itemKey) => {
-									console.log(JSON.stringify(this.customerTypesOptions));
 									this.setState({ customerType: value });
 									this.setState({ customerChannel: this.customerTypesOptions[itemKey - 1].key });
 								}}
@@ -276,7 +301,7 @@ class CustomerEdit extends React.PureComponent {
 						</Modal>
 
 
-						
+
 					</View>
 				</ScrollView>
 			</View>
@@ -469,14 +494,6 @@ class CustomerEdit extends React.PureComponent {
 		return test;
 	}
 
-
-	onShowChannel() {
-		this.customerChannel.current.show();
-	}
-
-	onShowCustomerType() {
-		this.customerType.current.show();
-	}
 
 	_textIsEmpty(txt) {
 		if (txt === null || txt.length === 0) {

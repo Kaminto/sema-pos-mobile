@@ -136,10 +136,6 @@ class Synchronization {
 						const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId);
 						const promiseOrders = OrderSync.synchronizeSales(settings.siteId);
 
-
-
-
-
 						Promise.all([
 							promiseSalesChannels,
 							promiseCustomerTypes,
@@ -149,15 +145,12 @@ class Synchronization {
 							promiseProducts,
 							promiseMeterReading,
 							promiseInventory,
-
-
 							promiseCustomerDebts,
 							promiseRecieptPaymentTypes,
 							promiseTopUps,
 							promiseCustomers,
 							promiseOrders,
 							promiseReminder
-
 
 						])
 							.then(values => {
@@ -175,15 +168,11 @@ class Synchronization {
 								syncResult.customers = values[11];
 								syncResult.orders = values[12];
 								syncResult.customerReminder = values[13];
-								console.log('values', values);
-
-
 
 								resolve(syncResult);
 							});
 					})
 					.catch(error => {
-						console.log('errors', error)
 						syncResult.error = error;
 						syncResult.status = 'failure';
 						resolve(syncResult);

@@ -9,7 +9,7 @@ export const DiscountSchema = {
         product_id:{ type: 'int', optional: true },
         region_id: { type: 'int', optional: true },
         isSelected: { type: 'bool', optional: true, default: false },
-        amount: { type: 'int', optional: true },
+        amount: { type: 'double', optional: true },
         kiosk_id: { type: 'int', optional: true },
         sku: { type: 'string', optional: true },
         type: { type: 'string', optional: true },

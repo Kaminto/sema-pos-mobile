@@ -9,7 +9,7 @@ class CustomerSync {
             CustomerApi.getCustomers(CustomerRealm.getLastCustomerSync())
                 .then(async remoteCustomer => {
                     let initlocalCustomers = CustomerRealm.getCustomerBycreated_at(CustomerRealm.getLastCustomerSync());
-                   
+
                     let localCustomers = initlocalCustomers.length > 0 ? [...initlocalCustomers] : [];
                     let remoteCustomers = remoteCustomer.customers.length > 0 ? [...remoteCustomer.customers] : [];
 
@@ -44,7 +44,7 @@ class CustomerSync {
 
                 })
                 .catch(error => {
-                   
+
                     resolve({
                         error: false,
                         customers: 0,
@@ -61,7 +61,7 @@ class CustomerSync {
                     localCustomer
                 )
                     .then((response) => {
-                       
+
                         CustomerRealm.synched(localCustomer);
                         CustomerRealm.setLastCustomerSync();
                         // updateCount = updateCount + 1;
@@ -69,7 +69,7 @@ class CustomerSync {
 
                     })
                     .catch(error => {
-                        
+
                         resolve({ status: 'fail', message: 'error', data: localCustomer });
                     });
             }
@@ -79,13 +79,13 @@ class CustomerSync {
                     localCustomer
                 )
                     .then((response) => {
-                       
+
                         CustomerRealm.synched(localCustomer);
                         CustomerRealm.setLastCustomerSync();
                         resolve({ status: 'success', message: 'synched', data: localCustomer });
                     })
                     .catch(error => {
-                        
+
                         resolve({ status: 'fail', message: 'synched', data: localCustomer });
                     });
 
@@ -96,13 +96,12 @@ class CustomerSync {
                     localCustomer
                 )
                     .then((response) => {
-                        // updateCount = updateCount + 1;
                         CustomerRealm.synched(localCustomer);
                         CustomerRealm.setLastCustomerSync();
-                       
+
                         resolve({ status: 'success', message: 'synched', data: localCustomer });
                     })
-                    .catch(error => {                        
+                    .catch(error => {
                         resolve({ status: 'fail', message: 'error', data: localCustomer });
                     });
             }
@@ -115,11 +114,11 @@ class CustomerSync {
                         // updateCount = updateCount + 1;
                         CustomerRealm.synched(localCustomer);
                         CustomerRealm.setLastCustomerSync();
-                       
+
                         resolve({ status: 'success', message: 'synched', data: localCustomer });
                     })
                     .catch(error => {
-                       
+
                         resolve({ status: 'fail', message: 'error', data: localCustomer });
                     });
             }
@@ -132,11 +131,11 @@ class CustomerSync {
                         // updateCount = updateCount + 1;
                         CustomerRealm.synched(localCustomer);
                         CustomerRealm.setLastCustomerSync();
-                        
+
                         resolve({ status: 'success', message: 'synched', data: localCustomer });
                     })
                     .catch(error => {
-                        
+
                         resolve({ status: 'fail', message: 'error', data: localCustomer });
                     });
             }

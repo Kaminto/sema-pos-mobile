@@ -11,7 +11,7 @@ class InventorySync {
                 .then(async remoteInventory => {
                     let initlocalInventories = InventroyRealm.getAllInventoryByDate(InventroyRealm.getLastInventorySync());
 
-                    
+
                     let onlyInLocal = initlocalInventories.filter(SyncUtils.compareRemoteAndLocal(remoteInventory.closingStock, 'closingStockId'));
                     let onlyInRemote = remoteInventory.closingStock.filter(SyncUtils.compareRemoteAndLocal(initlocalInventories, 'closingStockId'));
 
@@ -46,7 +46,7 @@ class InventorySync {
 
                 })
                 .catch(error => {
-                   
+
                     resolve({
                         error: false,
                         wastageReport: 0,
@@ -63,12 +63,12 @@ class InventorySync {
                     localInventory
                 )
                     .then((response) => {
-                       
+
                         InventroyRealm.setLastInventorySync();
                         resolve({ status: 'success', message: response, data: localInventory });
                     })
                     .catch(error => {
-                       
+
                         return { status: 'fail', message: error, data: localInventory }
                     });
             }
@@ -80,12 +80,12 @@ class InventorySync {
                 )
                     .then((response) => {
                         InventroyRealm.setLastInventorySync();
-                       
+
                         resolve({ status: 'success', message: 'synched to remote', data: localInventory });
 
                     })
                     .catch(error => {
-                       
+
                         resolve({ status: 'fail', message: error, data: localInventory });
                     });
 
@@ -99,12 +99,12 @@ class InventorySync {
                     .then((response) => {
                         InventroyRealm.synched(localInventory);
                         InventroyRealm.setLastInventorySync();
-                       
+
                         resolve({ status: 'success', message: 'synched to remote', data: localInventory });
 
                     })
                     .catch(error => {
-                       
+
                         resolve({ status: 'fail', message: error, data: localInventory });
                     });
 
@@ -117,11 +117,11 @@ class InventorySync {
                     .then((response) => {
                         InventroyRealm.synched(localInventory);
                         InventroyRealm.setLastInventorySync();
-                      
+
                         resolve({ status: 'success', message: 'synched to remote', data: localInventory });
                     })
                     .catch(error => {
-                       
+
                         resolve({ status: 'fail', message: error, data: localInventory });
                     });
 
@@ -134,11 +134,11 @@ class InventorySync {
                     .then((response) => {
                         InventroyRealm.synched(localInventory);
                         InventroyRealm.setLastInventorySync();
-                       
+
                         resolve({ status: 'success', message: 'synched to remote', data: localInventory });
                     })
                     .catch(error => {
-                       
+
                         resolve({ status: 'fail', message: error, data: localInventory });
                     });
 
