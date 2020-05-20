@@ -5,9 +5,9 @@ import * as _ from 'lodash';
 
 class DiscountSync {
 
-    synchronizeDiscount(siteId) {
+    synchronizeDiscount(kiosk_id) {
         return new Promise(resolve => {
-            DiscountApi.getDiscounts(siteId, DiscountRealm.getLastDiscountSync())
+            DiscountApi.getDiscounts(kiosk_id, DiscountRealm.getLastDiscountSync())
                 .then(async remoteDiscount => {
                     let initlocalDiscounts = DiscountRealm.geDiscountsByDate(DiscountRealm.getLastDiscountSync());
                   
@@ -43,9 +43,7 @@ class DiscountSync {
 
                 })
                 .catch(error => {
-                    console.log(
-                        'Get Remtote Discounts - error ' + error
-                    );
+                    
                     resolve({
                         error: error,
                         discounts: 0

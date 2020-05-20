@@ -130,6 +130,7 @@ class Login extends React.PureComponent {
 	onSynchronize() {
 		try {
 			this.setState({ isLoading: true });
+			console.log('SettingRealm.getAllSetting()', SettingRealm.getAllSetting())
 			Synchronization.synchronize().then(syncResult => {
 				console.log('data synched', syncResult)
 				this.loadSyncedData().then(results => {

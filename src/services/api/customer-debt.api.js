@@ -36,14 +36,12 @@ class CustomerDebtApi {
 			}
 		};
 		let url = `sema/customer_debt/${kiosk_id}/${updatedSince}`;
-		console.log('this._url', this._url + url);
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.then(responseJson => {
 				return responseJson;
 			})
 			.catch(error => {
-				console.log('Communications: Customer Debt: ' + error);
 				throw error;
 			});
 	}
@@ -58,7 +56,6 @@ class CustomerDebtApi {
 			},
 			body: JSON.stringify(customerDebt)
 		};
-		console.log('this._url', this._url);
 		return new Promise((resolve, reject) => {
 			fetch(this._url + 'sema/customer_debt', options)
 				.then(response => {
@@ -70,21 +67,13 @@ class CustomerDebtApi {
 								resolve(responseJson);
 							})
 							.catch(error => {
-								console.log(
-									'createCustomerDebt - Parse JSON: ' +
-									error
-								);
 								reject();
 							});
 					} else {
-						console.log(
-							'createCustomerDebt - Fetch status: ' + response.status
-						);
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('createCustomerDebt - Fetch: ' + error);
 					reject();
 				});
 		});
@@ -111,14 +100,10 @@ class CustomerDebtApi {
 					if (response.status === 200 || response.status === 404) {
 						resolve();
 					} else {
-						console.log(
-							'deleteCustomerDebt - Fetch status: ' + response.status
-						);
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('deleteCustomerDebt - Fetch: ' + error);
 					reject();
 				});
 		});
@@ -147,21 +132,13 @@ class CustomerDebtApi {
 								resolve(responseJson);
 							})
 							.catch(error => {
-								console.log(
-									'updateCustomerDebt - Parse JSON: ' +
-									error
-								);
 								reject();
 							});
 					} else {
-						console.log(
-							'updateCustomerDebt - Fetch status: ' + response.status
-						);
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('createCustomerDebt - Fetch: ' + error);
 					reject();
 				});
 		});

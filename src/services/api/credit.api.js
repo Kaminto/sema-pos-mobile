@@ -37,14 +37,12 @@ class CreditApi {
 			}
 		};
 		let url = `sema/customer_credit/${kiosk_id}/${updatedSince}`;
-console.log(this._url + url);
 		return fetch(this._url + url, options)
-		.then(response => response.json())
+			.then(response => response.json())
 			.then(responseJson => {
 				return responseJson;
 			})
 			.catch(error => {
-				console.log('Communications:getTopUps: ' + error);
 				throw error;
 			});
 	}
@@ -61,7 +59,6 @@ console.log(this._url + url);
 			},
 			body: JSON.stringify(topup)
 		};
-		console.log('this._url', this._url);
 		return new Promise((resolve, reject) => {
 			fetch(this._url + 'sema/customer_credit', options)
 				.then(response => {
@@ -73,21 +70,14 @@ console.log(this._url + url);
 								resolve(responseJson);
 							})
 							.catch(error => {
-								console.log(
-									'createTopUp - Parse JSON: ' +
-									error
-								);
+								
 								reject();
 							});
 					} else {
-						console.log(
-							'createTopUp - Fetch status: ' + response.status
-						);
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('createTopUp - Fetch: ' + error);
 					reject();
 				});
 		});
@@ -114,14 +104,10 @@ console.log(this._url + url);
 					if (response.status === 200 || response.status === 404) {
 						resolve();
 					} else {
-						console.log(
-							'deleteTopUp - Fetch status: ' + response.status
-						);
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('deleteTopUp - Fetch: ' + error);
 					reject();
 				});
 		});
@@ -150,21 +136,13 @@ console.log(this._url + url);
 								resolve(responseJson);
 							})
 							.catch(error => {
-								console.log(
-									'updateTopUp - Parse JSON: ' +
-									error
-								);
 								reject();
 							});
 					} else {
-						console.log(
-							'updateTopUp - Fetch status: ' + response.status
-						);
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('createTopUp - Fetch: ' + error);
 					reject();
 				});
 		});

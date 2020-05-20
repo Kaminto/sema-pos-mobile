@@ -202,7 +202,6 @@ class ProductsRealm {
                             result.push({ status: 'success', data: value, message: 'Product has been set' });
                         } else if (ischeckproducts > 0) {
                             let discountObj = realm.objects('Product').filtered(`id = "${products[i].id}"`);
-
                             discountObj[0].productId = products[i].id;
                             discountObj[0].sku = products[i].sku;
                             discountObj[0].description = products[i].description;
@@ -217,9 +216,7 @@ class ProductsRealm {
                             discountObj[0].updated_at = products[i].updated_at;
                             discountObj[0].base64encodedImage = products[i].base64Image;
                             discountObj[0].wastageName = products[i].wastageName;
-
                             result.push({ status: 'success', data: products[i], message: 'Local Product has been updated' });
-
 
                         }
                     }

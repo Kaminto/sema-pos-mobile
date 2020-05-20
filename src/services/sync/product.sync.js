@@ -20,7 +20,6 @@ class ProductSync {
                     delete e.base64encodedImage;
                     return {...e};
                 })
-                console.log('remoteProducts3',remoteProducts3)
 
                 let onlyInLocal = localProducts.filter(SyncUtils.compareRemoteAndLocal(remoteProducts, 'productId'));
                 let onlyInRemote = remoteProducts.filter(SyncUtils.compareRemoteAndLocal(localProducts, 'productId'));
@@ -50,9 +49,7 @@ class ProductSync {
 
             })
             .catch(error => {
-                console.log(
-                    'Synchronization.getProducts - error ' + error
-                );
+                
                 resolve({
                     error: true,
                     products: 0

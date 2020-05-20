@@ -10,7 +10,6 @@ class ReminderSync {
             ReminderApi.getCustomerReminder(kiosk_id, CustomerReminderRealm.getLastCustomerReminderSync())
                 .then(async remoteResult => {
                     let initlocalCustomerReminders = CustomerReminderRealm.getAllCustomerReminderByDate(CustomerReminderRealm.getLastCustomerReminderSync());
-                    console.log('initlocalCustomerReminders', initlocalCustomerReminders)
                     let localCustomerReminders = initlocalCustomerReminders.length > 0 ? [...initlocalCustomerReminders] : [];
                     let remoteCustomerReminder = remoteResult.length > 0 ? [...remoteResult] : [];
 
@@ -55,9 +54,7 @@ class ReminderSync {
 
                 })
                 .catch(error => {
-                    console.log(
-                        'Synchronization.getCustomerReminder - error ' + error
-                    );
+                    
                     resolve({
                         error: true,
                         message: error,
@@ -78,18 +75,12 @@ class ReminderSync {
                     localCustomerReminder
                 )
                     .then((response) => {
-                        console.log(
-                            'Synchronization:synchronizeCustomerReminder - Removing CustomerReminder from pending list - ' +
-                            response
-                        );
+                       
                         CustomerReminderRealm.setLastCustomerReminderSync();
                         resolve({ status: 'success', message: response, data: localCustomerReminder });
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeCustomerReminder Delete CustomerReminder failed ' +
-                            error
-                        );
+                       
                         return { status: 'fail', message: error, data: localCustomerReminder }
                     });
             }
@@ -101,17 +92,11 @@ class ReminderSync {
                 )
                     .then((response) => {
                         CustomerReminderRealm.setLastCustomerReminderSync();
-                        console.log(
-                            'Synchronization:synchronizeCustomerReminder - Removing CustomerReminder from pending list - ' +
-                            response
-                        );
+                       
                         resolve({ status: 'success', message: 'synched to remote', data: localCustomerReminder });
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeCustomerReminder Update CustomerReminder failed ' +
-                            error
-                        );
+                        
                         resolve({ status: 'fail', message: error, data: localCustomerReminder });
                     });
 
@@ -125,16 +110,11 @@ class ReminderSync {
                     .then((response) => {
                         CustomerReminderRealm.synchedCustomerReminder(localCustomerReminder);
                         CustomerReminderRealm.setLastCustomerReminderSync();
-                        console.log(
-                            'Synchronization:synced to remote - ' +
-                            response
-                        );
+                       
                         resolve({ status: 'success', message: 'synched to remote', data: localCustomerReminder });
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeCustomerReminder Create CustomerReminder', error
-                        );
+                        
                         resolve({ status: 'fail', message: error, data: localCustomerReminder });
                     });
 
@@ -147,16 +127,11 @@ class ReminderSync {
                     .then((response) => {
                         CustomerReminderRealm.synchedCustomerReminder(localCustomerReminder);
                         CustomerReminderRealm.setLastCustomerReminderSync();
-                        console.log(
-                            'Synchronization:synced to remote - ' +
-                            response
-                        );
+                       
                         resolve({ status: 'success', message: response, data: localCustomerReminder });
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeCustomerReminder Create CustomerReminder', error
-                        );
+                        
                         return { status: 'fail', message: error, data: localCustomerReminder }
                     });
 
@@ -170,16 +145,11 @@ class ReminderSync {
                     .then((response) => {
                         CustomerReminderRealm.synchedCustomerReminder(localCustomerReminder);
                         CustomerReminderRealm.setLastCustomerReminderSync();
-                        console.log(
-                            'Synchronization:synced to remote - ' +
-                            response
-                        );
+                       
                         resolve({ status: 'success', message: 'synched to remote', data: localCustomerReminder });
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeCustomerReminder Create CustomerReminder,', error
-                        );
+                       
                         resolve({ status: 'fail', message: error, data: localCustomerReminder })
                     });
 
