@@ -1,6 +1,5 @@
 class CreditApi {
 	constructor() {
-		//this._url = 'http://192.168.43.153:3002/';
 		this._url = 'http://142.93.115.206:3002/';
 		this._site = '';
 		this._user = '';

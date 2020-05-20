@@ -17,8 +17,6 @@ import PaymentDescription from '../components/orders/order-checkout/payment-desc
 import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
 import CreditRealm from '../database/credit/credit.operations';
 import CustomerRealm from '../database/customers/customer.operations';
-const widthQuanityModal = '75%';
-const heightQuanityModal = 100;
 
 class PaymentModal extends React.PureComponent {
 
@@ -37,6 +35,12 @@ class PaymentModal extends React.PureComponent {
 		this.handleOnPress = this.handleOnPress.bind(this);
 	}
 
+	handleOnPress() {
+		requestAnimationFrame(() => {
+		this.onClearLoan();
+		});
+	};
+
 	render() {
 		return (
 
@@ -48,11 +52,6 @@ class PaymentModal extends React.PureComponent {
 				}}>
 
 				<ScrollView>
-					<View style={{ flex: 1, flexDirection: 'row' }}>
-						<View style={{ flex: 1, height: 50 }}>
-							<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
-
-						</View>
 						<View
 							style={{
 								justifyContent: 'flex-end',
@@ -62,8 +61,8 @@ class PaymentModal extends React.PureComponent {
 							}}>
 							{this.getCancelButton()}
 						</View>
-					</View>
-					<Card style={{ flex: 1, backgroundColor: '#f1f1f1' }}>
+
+					<Card style={{ flex: 1, backgroundColor: '#f1f1f1', flexDirection: 'row' }}>
 						<PaymentDescription
 							title={`${i18n.t('previous-amount-due')}:`}
 							total={this.calculateAmountDue()}
@@ -73,6 +72,10 @@ class PaymentModal extends React.PureComponent {
 							total={this.props.selectedCustomer.walletBalance}
 						/>
 					</Card>
+
+					<View style={{ flex: 1 }}>
+							<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
+					</View>
 					<FlatList
 						data={this.props.paymentTypes}
 						renderItem={({ item, index, separators }) => (
@@ -287,7 +290,7 @@ class PaymentModal extends React.PureComponent {
 		this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
 	}
 
-	handleOnPress() {
+	onClearLoan() {
 
 		this.setState({
 			buttonDisabled: true

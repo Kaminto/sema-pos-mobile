@@ -33,9 +33,6 @@ import CustomerReminderRealm from '../database/customer-reminder/customer-remind
 import ProductsRealm from '../database/products/product.operations';
 import DiscountRealm from '../database/discount/discount.operations';
 import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
-import SalesChannelRealm from '../database/sales-channels/sales-channels.operations';
-import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
-import ProductMRPRealm from '../database/productmrp/productmrp.operations';
 
 import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
