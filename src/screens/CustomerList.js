@@ -262,7 +262,7 @@ class CustomerList extends React.Component {
         }
 
         if (this.props.products.length === 0) {
-            console.log('missing products')
+
         }
     };
 

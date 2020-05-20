@@ -1,7 +1,7 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
 import SyncUtils from '../../services/sync/syncUtils';
-import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
+import { parseISO,  format, sub, compareAsc } from 'date-fns';
 
 class ProductsRealm {
     constructor() {
@@ -11,8 +11,6 @@ class ProductsRealm {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('ProductSyncDate')))).length == 0) {
                 realm.create('ProductSyncDate', { lastProductSync: firstSyncDate });
             }
-            //      let syncDate = realm.objects('ProductSyncDate');
-            //  syncDate[0].lastProductSync = firstSyncDate;
         });
         this.lastProductSync = firstSyncDate;
     }
@@ -29,7 +27,6 @@ class ProductsRealm {
                 realm.delete(products);
             })
         } catch (e) {
-            console.log("Error on truncate products", e);
         }
     }
 
@@ -54,8 +51,6 @@ class ProductsRealm {
             })
 
         } catch (e) {
-            console.log("Error on get products ", e);
-            return e;
         }
 
 
@@ -100,7 +95,6 @@ class ProductsRealm {
                     realm.create('Product', newProducts);
                 });
             } catch (e) {
-                console.log("Error on create products", e);
             }
         }
 
@@ -121,7 +115,6 @@ class ProductsRealm {
             })
 
         } catch (e) {
-            console.log("Error on update products", e);
         }
 
     }
@@ -135,7 +128,6 @@ class ProductsRealm {
             })
 
         } catch (e) {
-            console.log("Error on synch products", e);
         }
 
     }
@@ -152,7 +144,6 @@ class ProductsRealm {
             })
 
         } catch (e) {
-            console.log("Error on delete hard products", e);
         }
     }
 
@@ -166,7 +157,6 @@ class ProductsRealm {
             })
 
         } catch (e) {
-            console.log("Error on softdelete products", e);
         }
     }
 
@@ -196,7 +186,7 @@ class ProductsRealm {
                                 cogsAmount: Number(products[i].costOfGoods),
                                 updated_at: products[i].updated_at,
                                 base64encodedImage: products[i].base64Image,
-                                wastageName: products[i].wastageName, 
+                                wastageName: products[i].wastageName,
                                 active: true
                             });
                             result.push({ status: 'success', data: value, message: 'Product has been set' });
@@ -224,7 +214,6 @@ class ProductsRealm {
                 });
                 resolve(result);
             } catch (e) {
-                console.log("Error on creation", e);
             }
         });
     }

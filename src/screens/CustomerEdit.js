@@ -40,7 +40,6 @@ class CustomerEdit extends React.PureComponent {
 			customerChannel: this.props.selectedCustomer.salesChannelId ? this.props.selectedCustomer.salesChannelId : 0
 		};
 
-
 		this.saleschannelid = 0;
 		this.phone = React.createRef();
 		this.secondPhoneNumber = React.createRef();
@@ -118,6 +117,12 @@ class CustomerEdit extends React.PureComponent {
 
 
 	}
+
+	handleOnPress() {
+		requestAnimationFrame(() => {
+			this.onEdit();
+		});
+	};
 
 
 	render() {
@@ -440,85 +445,6 @@ class CustomerEdit extends React.PureComponent {
 			);
 		}
 		return test;
-	}
-
-	onEditd() {
-		let salesChannelId = -1;
-		let customerTypeId = -1;
-
-		if (
-			this._textIsEmpty(this.phone.current.state.propertyText) ||
-			!this.isValidPhoneNumber(this.phone.current.state.propertyText)
-		) {
-			this.phone.current.refs.customerNumber.focus();
-			return;
-		}
-
-		if (
-			!this._textIsEmpty(
-				this.secondPhoneNumber.current.state.propertyText
-			) &&
-			!this.isValidPhoneNumber(
-				this.secondPhoneNumber.current.state.propertyText
-			)
-		) {
-			this.secondPhoneNumber.current.refs.secondPhoneNumber.focus();
-			return;
-		}
-
-		if (this._textIsEmpty(this.name.current.state.propertyText)) {
-			this.name.current.refs.customerName.focus();
-			return;
-		}
-
-		if (this._textIsEmpty(this.address.current.state.propertyText)) {
-			this.address.current.refs.customerAddress.focus();
-			return;
-		}
-
-		if (this.customerChannel.current.state.selectedIndex === -1) {
-			this.customerChannel.current.show();
-			return;
-		}
-
-		if (this.customerType.current.state.selectedIndex === -1) {
-			this.customerType.current.show();
-			return;
-		} else {
-			customerTypeId = this.customerTypes[
-				this.customerType.current.state.selectedIndex
-			].id;
-		}
-		if (this.props.isEdit) {
-			this.setReminderIfExists(this.props.selectedCustomer);
-
-			CustomerRealm.updateCustomer(
-				this.props.selectedCustomer,
-				this.phone.current.state.propertyText,
-				this.name.current.state.propertyText,
-				this.address.current.state.propertyText,
-				salesChannelId,
-				customerTypeId,
-				'7',
-				this.secondPhoneNumber.current.state.propertyText);
-			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
-		} else {
-			CustomerRealm.createCustomer(
-				this.phone.current.state.propertyText,
-				this.name.current.state.propertyText,
-				this.address.current.state.propertyText,
-				this.props.settings.siteId,
-				salesChannelId,
-				customerTypeId,
-				'7',
-				this.secondPhoneNumber.current.state.propertyText
-			);
-			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
-			this.props.navigation.navigate('ListCustomers');
-			this.props.customerActions.CustomerSelected(newCustomer);
-		}
-
-		this.setState({ isEditInProgress: true });
 	}
 
 	onShowChannel() {

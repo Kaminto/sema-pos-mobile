@@ -1,19 +1,16 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
 import SyncUtils from '../../services/sync/syncUtils';
-import { parseISO, format, sub, compareAsc } from 'date-fns';
+import { parseISO, format, compareAsc } from 'date-fns';
 
 class CustomerRealm {
     constructor() {
         this.customer = [];
-       // let firstSyncDate = format(sub(new Date(), { days: 480 }), 'yyyy-MM-dd');
-        let firstSyncDate = format(new Date('2015-01-01'), 'yyyy-MM-dd');
+        let firstSyncDate = format(new Date('2017-01-01'), 'yyyy-MM-dd');
         realm.write(() => {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerSyncDate')))).length == 0) {
                 realm.create('CustomerSyncDate', { lastCustomerSync: firstSyncDate });
             }
-            // let syncDate = realm.objects('CustomerSyncDate');
-            // syncDate[0].lastCustomerSync = firstSyncDate;
         });
         this.lastCustomerSync = firstSyncDate;
     }
@@ -30,7 +27,6 @@ class CustomerRealm {
                 realm.delete(customers);
             })
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -63,8 +59,6 @@ class CustomerRealm {
             }
             );
         } catch (e) {
-            console.log("Error on get customers", e);
-            return e;
         }
     }
 
@@ -120,10 +114,7 @@ class CustomerRealm {
                 realm.create('Customer', newCustomer);
             });
         } catch (e) {
-            console.log("Error on creation", e);
-        }
-
-
+		}
 
     }
 
@@ -163,7 +154,6 @@ class CustomerRealm {
             })
 
         } catch (e) {
-            console.log("Error on update customer ", e);
         }
 
     }
@@ -181,7 +171,6 @@ class CustomerRealm {
             })
 
         } catch (e) {
-            console.log("Error on update customer due amount", e);
         }
     }
 
@@ -198,7 +187,6 @@ class CustomerRealm {
                 customerObj[0].walletBalance = walletBalance;
             })
         } catch (e) {
-            console.log("Error on update customer bal", e);
         }
     }
 
@@ -212,7 +200,6 @@ class CustomerRealm {
             })
 
         } catch (e) {
-            console.log("Error on synch", e);
         }
 
     }
@@ -223,14 +210,12 @@ class CustomerRealm {
     hardDeleteCustomer(customer) {
         try {
             realm.write(() => {
-                console.log("customer", customer);
                 let customers = realm.objects('Customer');
                 let deleteCustomer = customers.filtered(`customerId = "${customer.customerId}"`);
                 realm.delete(deleteCustomer);
             })
 
         } catch (e) {
-            console.log("Error on delete hard customer ", e);
         }
     }
 
@@ -244,7 +229,6 @@ class CustomerRealm {
             })
 
         } catch (e) {
-            console.log("Error on soft delete customer ", e);
         }
     }
 
@@ -281,7 +265,6 @@ class CustomerRealm {
                         } else if (ischeckCustomer > 0) {
                             let customerObj = realm.objects('Customer').filtered(`customerId = "${customers[i].id}"`);
 
-
                             customerObj[0].customerId = customers[i].id;
                             customerObj[0].name = customers[i].name;
                             customerObj[0].customerTypeId = customers[i].customer_type_id;
@@ -309,18 +292,13 @@ class CustomerRealm {
                 });
                 resolve(result);
             } catch (e) {
-                console.log("Error on creation", e);
             }
         });
     }
 
-
     checkCustomer(date, customerId) {
         return this.getAllCustomer().filter(e => SyncUtils.isSimilarDay(e.created_at, date) && e.customerId === customerId)
     }
-
-
-
 
 }
 

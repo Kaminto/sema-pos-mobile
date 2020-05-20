@@ -1,7 +1,7 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
 import SyncUtils from '../../services/sync/syncUtils';
-import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
+import { parseISO,  format, sub,  compareAsc } from 'date-fns';
 
 class CustomerDebtRealm {
 
@@ -12,8 +12,6 @@ class CustomerDebtRealm {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('CustomerDebtSyncDate')))).length == 0) {
                 realm.create('CustomerDebtSyncDate', { lastCustomerDebtSync: firstSyncDate });
             }
-            // let syncDate = realm.objects('CustomerDebtSyncDate');
-            // syncDate[0].lastCustomerDebtSync = firstSyncDate;
         });
         this.lastCustomerDebtSync = firstSyncDate;
     }
@@ -36,7 +34,6 @@ class CustomerDebtRealm {
                 realm.delete(customerDebts);
             })
         } catch (e) {
-            console.log("Error on truncate customer debt", e);
         }
     }
 
@@ -92,7 +89,6 @@ class CustomerDebtRealm {
 
             })
         } catch (e) {
-            console.log("Error on update customer debt", e);
         }
     }
 
@@ -105,7 +101,6 @@ class CustomerDebtRealm {
                 })
             })
         } catch (e) {
-            console.log("Error on reset customer debt", e);
         }
     }
 
@@ -117,7 +112,6 @@ class CustomerDebtRealm {
 
             })
         } catch (e) {
-            console.log("Error on isSelected customer debt", e);
         }
 
     }
@@ -130,7 +124,6 @@ class CustomerDebtRealm {
                 customerDebtObj[0].syncAction = null;
             })
         } catch (e) {
-            console.log("Error on synched customer debt", e);
         }
     }
 
@@ -145,7 +138,6 @@ class CustomerDebtRealm {
             })
 
         } catch (e) {
-            console.log("Error on hard delete customer debt", e);
         }
     }
 
@@ -158,14 +150,12 @@ class CustomerDebtRealm {
         try {
             realm.write(() => {
                     let customerDebtObj = realm.objects('CustomerDebt').filtered(`customer_debt_id = "${customerDebt.customer_debt_id}"`);
-                    console.log('customerDebtObj[0]', customerDebtObj[0]);
                     customerDebtObj[0].syncAction = 'delete';
                     customerDebtObj[0].active = false;
                     customerDebtObj[0].updated_at = new Date();
                 })
 
         } catch (e) {
-            console.log("Error on soft delete customer debt", e);
         }
     }
 
@@ -192,7 +182,6 @@ class CustomerDebtRealm {
                 }
             });
         } catch (e) {
-            console.log("Error on create many customer debts", e);
         }
     }
 
@@ -232,7 +221,6 @@ class CustomerDebtRealm {
                 });
                 resolve(result);
             } catch (e) {
-                console.log("Error on creation", e);
             }
         });
     }
@@ -258,7 +246,6 @@ class CustomerDebtRealm {
                 });
             });
         } catch (e) {
-            console.log("Error on create customer debts", e);
         }
     }
 

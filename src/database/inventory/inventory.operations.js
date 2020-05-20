@@ -2,7 +2,7 @@ import realm from '../init';
 const uuidv1 = require('uuid/v1');
 import SyncUtils from '../../services/sync/syncUtils';
 
-import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc, compareDesc } from 'date-fns';
+import { parseISO,  format, sub, set,  getSeconds, getMinutes, getHours, compareAsc, compareDesc } from 'date-fns';
 class InventroyRealm {
     constructor() {
         this.inventory = [];
@@ -17,10 +17,6 @@ class InventroyRealm {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReadingSyncDate')))).length == 0) {
                 realm.create('MeterReadingSyncDate', { lastMeterReadingSync: firstSyncDate });
             }
-            // let syncDate = realm.objects('MeterReadingSyncDate');
-            // syncDate[0].lastMeterReadingSync = firstSyncDate;
-            // let syncDate2 = realm.objects('InventorySyncDate');
-            // syncDate2[0].lastInventorySync = firstSyncDate;
         });
         this.lastInventorySync = firstSyncDate;
     }
@@ -46,7 +42,6 @@ class InventroyRealm {
                 realm.delete(invSync);
             })
         } catch (e) {
-            console.log("Error on truncate inventory", e);
         }
     }
 
@@ -82,17 +77,15 @@ class InventroyRealm {
     getMeterReadingLessDate(date) {
         let meterReding = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
         let filtered = meterReding.filter(r => {
-            //console.log('tt', parseISO(r.created_at), '-', parseISO(SyncUtils.convertDate(date)), '-', compareAsc(parseISO(r.created_at), parseISO(date))); 
-            return compareAsc(parseISO(r.created_at), parseISO(SyncUtils.convertDate(date))) === -1;
+           return compareAsc(parseISO(r.created_at), parseISO(SyncUtils.convertDate(date))) === -1;
         })
         let datesArrays = filtered.map(e => {
             return parseISO(e.created_at)
-        }).sort(compareDesc)
-        //console.log('datesArrays', datesArrays)
+		}).sort(compareDesc)
+
         let checkExistingMeter = Object.values(JSON.parse(JSON.stringify(realm.objects('MeterReading'))));
         const filteredReading = checkExistingMeter.filter(element => SyncUtils.isSimilarDay(element.created_at, datesArrays[0]));
 
-       // console.log('filteredReading', filteredReading)
         return filteredReading;
     }
 
@@ -150,7 +143,6 @@ class InventroyRealm {
                     });
                 }
             } catch (e) {
-                console.log("error on gettting getWastageReportByDate", e)
             }
         })
     }
@@ -184,7 +176,6 @@ class InventroyRealm {
                 }
             });
         } catch (e) {
-            console.log("Error on creation  meter reading", e);
         }
     }
 
@@ -196,7 +187,6 @@ class InventroyRealm {
                 realm.delete(meterUpdateObj);
             })
         } catch (e) {
-            console.log("Error on delete meter reading", e);
         }
     }
 
@@ -208,7 +198,6 @@ class InventroyRealm {
                 realm.delete(inventoryUpdateObj);
             })
         } catch (e) {
-            console.log("Error on delete inventory", e);
         }
     }
 
@@ -266,7 +255,6 @@ class InventroyRealm {
                 }
             });
         } catch (e) {
-            console.log("Error on creation inventory", e);
         }
     }
 
@@ -286,7 +274,6 @@ class InventroyRealm {
             })
 
         } catch (e) {
-            console.log("Error on update inventory", e);
         }
 
     }
@@ -300,7 +287,6 @@ class InventroyRealm {
             })
 
         } catch (e) {
-            console.log("Error on synch inventory", e);
         }
 
     }
@@ -314,7 +300,6 @@ class InventroyRealm {
             })
 
         } catch (e) {
-            console.log("Error on synch MeterReading", e);
         }
 
     }
@@ -328,7 +313,6 @@ class InventroyRealm {
                 realm.delete(deleteInventory);
             })
         } catch (e) {
-            console.log("Error on hard delete inventory", e);
         }
     }
 
@@ -341,7 +325,6 @@ class InventroyRealm {
                 })
             })
         } catch (e) {
-            console.log("Error on soft delete inventory", e);
         }
     }
 
@@ -363,7 +346,6 @@ class InventroyRealm {
                 resolve(result);
 
             } catch (e) {
-                console.log("Error on creation many inventory", e);
             }
         });
     }
@@ -388,8 +370,6 @@ class InventroyRealm {
                 });
                 resolve(result);
             } catch (e) {
-                console.log("Error on creation many MeterReading", e);
-                resolve('errro');
             }
         });
     }

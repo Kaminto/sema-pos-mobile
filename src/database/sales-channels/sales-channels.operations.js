@@ -1,7 +1,7 @@
 import realm from '../init';
 import { capitalizeWord } from '../../services/Utilities';
 import SyncUtils from '../../services/sync/syncUtils';
-import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
+import { parseISO,  format, sub, compareAsc } from 'date-fns';
 class SalesChannelRealm {
     constructor() {
         this.salesChannels = Object.values(JSON.parse(JSON.stringify(realm.objects('SalesChannel'))));
@@ -10,8 +10,6 @@ class SalesChannelRealm {
             if (Object.values(JSON.parse(JSON.stringify(realm.objects('SalesChannelSyncDate')))).length == 0) {
                 realm.create('SalesChannelSyncDate', { lastSalesChannelSync: firstSyncDate });
             }
-            // let syncDate = realm.objects('SalesChannelSyncDate');
-            // syncDate[0].lastSalesChannelSync = firstSyncDate;
         });
     }
 
@@ -22,7 +20,6 @@ class SalesChannelRealm {
                 realm.delete(realm.objects('SalesChannelSyncDate'));
             })
         } catch (e) {
-            console.log("Error on creation", e);
         }
     }
 
@@ -46,8 +43,8 @@ class SalesChannelRealm {
       let salesChannels = Object.values(JSON.parse(JSON.stringify(realm.objects('SalesChannel'))));
         return salesChannels.filter(r => {
             return compareAsc(parseISO(r.created_at), parseISO(date)) === 1 || compareAsc(parseISO(r.updated_at), parseISO(date)) === 1 || r.active === false;
-        }) 
-   
+        })
+
     }
 
     getSalesChannelsForDisplay() {
@@ -111,7 +108,7 @@ class SalesChannelRealm {
                             result.push({ status: 'success', data: value, message: 'Sales Channel has been set' });
                         } else if (ischeckSalesChannels > 0) {
                             result.push({ status: 'success', data: salesChannels[i], message: 'Local Sales Channel has been updated' });
-                            let salesChannelObj = realm.objects('SalesChannel').filtered(`id = "${salesChannels[i].id}"`);                           
+                            let salesChannelObj = realm.objects('SalesChannel').filtered(`id = "${salesChannels[i].id}"`);
                             salesChannelObj[0].description = salesChannels[i].description;
                             salesChannelObj[0].name = salesChannels[i].name;
                             salesChannelObj[0].updated_at = new Date(salesChannels[i].updated_at);
@@ -124,7 +121,6 @@ class SalesChannelRealm {
                 });
                 resolve(result);
             } catch (e) {
-                console.log("Error on creation", e);
             }
         });
     }

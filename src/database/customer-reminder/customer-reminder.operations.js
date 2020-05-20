@@ -1,6 +1,6 @@
 import realm from '../init';
 const uuidv1 = require('uuid/v1');
-import { parseISO, isSameDay, format, sub, set, add, isValid, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
+import { parseISO, format, sub, add, isValid, compareAsc } from 'date-fns';
 import CustomerRealm from '../customers/customer.operations';
 import SyncUtils from '../../services/sync/syncUtils';
 class CustomerReminderRealm {
@@ -23,7 +23,6 @@ class CustomerReminderRealm {
                 realm.delete(customerRemindersSync);
             })
         } catch (e) {
-            console.log("Error on truncate customer reminder", e);
         }
     }
 
@@ -37,7 +36,6 @@ class CustomerReminderRealm {
             })
 
         } catch (e) {
-            console.log("Error on synch Customer Reminder", e);
         }
     }
 
@@ -57,7 +55,6 @@ class CustomerReminderRealm {
                 realm.delete(customerReminderObj);
             })
         } catch (e) {
-            console.log("Error on delete Customer Reminder", e);
         }
     }
 
@@ -109,10 +106,7 @@ class CustomerReminderRealm {
                     let customerReminderUpdateObj = realm.objects('CustomerReminder').filtered(`customer_account_id = "${customerReminder.customer_account_id}"`);
                     customerReminderUpdateObj[0].frequency = customerReminder.avg;
                     customerReminderUpdateObj[0].kiosk_id = customerReminder.kiosk_id;
-                    // customerReminderUpdateObj[0].phone_number = customerReminder.phoneNumber,
-                    //     customerReminderUpdateObj[0].address = customerReminder.address,
-                    //     customerReminderUpdateObj[0].name = customerReminder.name,
-                        customerReminderUpdateObj[0].reminder_date = isValid(new Date(customerReminder.reminder)) ? new Date(customerReminder.reminder) : add(new Date(), { days: 10 });
+                    customerReminderUpdateObj[0].reminder_date = isValid(new Date(customerReminder.reminder)) ? new Date(customerReminder.reminder) : add(new Date(), { days: 10 });
                     customerReminderUpdateObj[0].last_purchase_date = new Date(customerReminder.last_purchase_date);
                     customerReminderUpdateObj[0].syncAction = 'update';
                     customerReminderUpdateObj[0].updated_at = new Date();
@@ -133,10 +127,8 @@ class CustomerReminderRealm {
                     };
                     realm.create('CustomerReminder', ObjSave);
                 }
-                // realm.create('CustomerReminder', customerReminder);
             });
         } catch (e) {
-            console.log("Error on creation customer reminderr", e);
         }
     }
 
@@ -152,7 +144,6 @@ class CustomerReminderRealm {
                 }
             });
         } catch (e) {
-            console.log("Error on set customer reminder", e);
         }
     }
 
@@ -188,7 +179,6 @@ class CustomerReminderRealm {
 
             })
         } catch (e) {
-            console.log("Error on update customer reminder", e);
         }
     }
 
@@ -201,7 +191,6 @@ class CustomerReminderRealm {
                 })
             })
         } catch (e) {
-            console.log("Error on reset customer reminder", e);
         }
     }
 
@@ -213,7 +202,6 @@ class CustomerReminderRealm {
 
             })
         } catch (e) {
-            console.log("Error on select customer reminder", e);
         }
 
     }
@@ -226,7 +214,6 @@ class CustomerReminderRealm {
                 customerReminderObj[0].syncAction = null;
             })
         } catch (e) {
-            console.log("Error on synch customer reminder", e);
         }
     }
 
@@ -241,7 +228,6 @@ class CustomerReminderRealm {
             })
 
         } catch (e) {
-            console.log("Error on hard delete customer reminder", e);
         }
     }
 
@@ -254,7 +240,6 @@ class CustomerReminderRealm {
                 })
             })
         } catch (e) {
-            console.log("Error on soft delete customer reminder", e);
         }
     }
 
@@ -280,7 +265,6 @@ class CustomerReminderRealm {
                 }
             });
         } catch (e) {
-            console.log("Error on creation many customer reminder", e);
         }
     }
 
@@ -300,8 +284,6 @@ class CustomerReminderRealm {
                 });
                 resolve(result);
             } catch (e) {
-                console.log("Error on creation many CustomerReminder", e);
-                resolve('errro');
             }
         });
     }
