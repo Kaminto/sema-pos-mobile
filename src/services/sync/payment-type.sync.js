@@ -44,9 +44,6 @@ class PaymentTypeSync {
 
                 })
                 .catch(error => {
-                    console.log(
-                        'Synchronization.Payment Types - error ' + error
-                    );
                     resolve({
                         error: error,
                         paymentTypes: 0

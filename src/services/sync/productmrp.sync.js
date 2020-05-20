@@ -32,8 +32,6 @@ class ProductMRPSync {
                         ProductMRPRealm.setLastProductMRPSync();
                     }
 
-
-
                     resolve({
                         success: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
                         productMrps: onlyInLocal.concat(onlyInRemote).length,
@@ -43,9 +41,6 @@ class ProductMRPSync {
 
                 })
                 .catch(error => {
-                    console.log(
-                        'Synchronization.getInventory - error ' + error
-                    );
                     resolve({
                         error: true,
                         productMrps: 0
@@ -56,14 +51,10 @@ class ProductMRPSync {
 
     synchronizeProductMrpsBySiteid(siteId) {
         return new Promise(async resolve => {
-            console.log('Synchronization:synchronizeProductMrps - Begin');
             Communications.getProductMrpsBySiteId(siteId)
                 .then(productMrps => {
                     if (productMrps.hasOwnProperty('productMRPs')) {
-                        console.log(
-                            'Synchronization:synchronizeProductMrps. No of remote product MRPs: ' +
-                            productMrps.productMRPs.length
-                        );
+
                         if (
                             !_.isEqual(
                                 savedProductMrps,
@@ -80,9 +71,7 @@ class ProductMRPSync {
                 })
                 .catch(error => {
                     resolve({ error: error, remoteProducts: null });
-                    console.log(
-                        'Synchronization.ProductsMrpsUpdated - error ' + error
-                    );
+
                 });
         });
     }

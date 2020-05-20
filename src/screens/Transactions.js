@@ -140,7 +140,6 @@ class TransactionDetail extends React.PureComponent {
 	}
 
 	onDeleteReceipt(item) {
-		//console.log('item-r', item);
 		return () => {
 			if (item.is_delete === 0) {
 				return ToastAndroid.show(
@@ -389,8 +388,6 @@ class TransactionDetail extends React.PureComponent {
 	render() {
 		var receiptLineItems;
 		var paymentTypes;
-		var credit;
-		var debt;
 
 		if (this.props.item.isReceipt) {
 
@@ -428,7 +425,7 @@ class TransactionDetail extends React.PureComponent {
 				paymentTypes = {};
 			}
 
-			if (this.props.item.hasOwnProperty("customerAccount")) {
+			if (this.props.item.hasOwnProperty("customerAccount") ) {
 				return (
 					<View style={{ flex: 1, padding: 15 }}>
 						<ScrollView style={{ flex: 1 }}>
@@ -681,6 +678,7 @@ class Transactions extends React.PureComponent {
 	});
 
 	getTransactionDetail() {
+		console.log("Stuff Stuff Stuff " + JSON.stringify(this.prepareSectionedData()))
 		if (this.state.selected) {
 			return (
 				<View style={{ flex: 1, flexDirection: 'row' }}>
@@ -892,7 +890,9 @@ class Transactions extends React.PureComponent {
 		// Used for enumerating receipts
 		let receipts = this.prepareData();
 		let topups = this.prepareTopUpData();
+		console.log("Topups " + JSON.stringify(topups));
 		let deptPayment = this.prepareCustomerDebt();
+		// console.log("Debts " + JSON.stringify(debtPayment));
 		let finalArray = (deptPayment.concat(topups)).concat(receipts).sort((a, b) => {
 			return isBefore(new Date(a.createdAt), new Date(b.createdAt))
 				? 1

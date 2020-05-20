@@ -46,9 +46,6 @@ class RecieptPaymentTypesSync {
 
                 })
                 .catch(error => {
-                    console.log(
-                        'Synchronization.getReceiptpaymenttypes - error ' + error
-                    );
                     resolve({
                         error: false,
                         recieptPayments: 0,
@@ -65,18 +62,10 @@ class RecieptPaymentTypesSync {
                     localRecieptPaymentType
                 )
                     .then((response) => {
-                        console.log(
-                            'Synchronization:synchronizeOrder - Removing order from pending list - ' +
-                            response
-                        );
                         ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
                         resolve({ status: 'success', message: 'synched', data: localRecieptPaymentType });
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeOrder Delete Order failed ' +
-                            error
-                        );
                         resolve({ status: 'fail', message: 'error', data: localRecieptPaymentType });
                     });
             }
@@ -88,17 +77,11 @@ class RecieptPaymentTypesSync {
                     .then((response) => {
                         // updateCount = updateCount + 1;
                         ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
-                        console.log(
-                            'Synchronization:synchronizeOrder - Removing Order from pending list - ' +
-                            response
-                        );
+
                         resolve({ status: 'success', message: 'synched', data: localRecieptPaymentType });
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeOrder Update Order failed ' +
-                            error
-                        );
+
                         resolve({ status: 'fail', message: 'error', data: localRecieptPaymentType });
                     });
 
@@ -112,16 +95,11 @@ class RecieptPaymentTypesSync {
                         // updateCount = updateCount + 1;
                         ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
                         ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
-                        console.log(
-                            'Synchronization:synced to remote - ' +
-                            response
-                        );
+
                         resolve({ status: 'success', message: 'synched', data: localRecieptPaymentType });
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeOrder Create Order failed', error
-                        );
+
                         resolve({ status: 'fail', message: 'error', data: localRecieptPaymentType });
                     });
             }
@@ -134,16 +112,11 @@ class RecieptPaymentTypesSync {
                         //  updateCount = updateCount + 1;
                         ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
                         ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
-                        console.log(
-                            'Synchronization:synced to remote - ' +
-                            response
-                        );
+
                         resolve({ status: 'success', message: 'synched', data: localRecieptPaymentType });
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeOrder Create Order failed', error
-                        );
+
                         resolve({ status: 'error', message: 'error', data: localRecieptPaymentType });
                     });
             }
@@ -156,16 +129,11 @@ class RecieptPaymentTypesSync {
                         //  updateCount = updateCount + 1;
                         ReceiptPaymentTypeRealm.synched(localRecieptPaymentType);
                         ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
-                        console.log(
-                            'Synchronization:synced to remote - ',
-                            response
-                        );
+
                         resolve({ status: 'success', message: 'synched', data: localRecieptPaymentType });
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeOrder Create Order failed', error
-                        );
+
                         resolve({ status: 'fail', message: 'error', data: localRecieptPaymentType });
                     });
             }

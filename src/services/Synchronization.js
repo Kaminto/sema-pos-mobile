@@ -123,7 +123,7 @@ class Synchronization {
 						const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes();
 						const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId);
 						const promiseProductMrps = ProductMRPSync.synchronizeProductMrps(settings.regionId);
-						const promiseProducts = ProductSync.synchronizeProducts();				
+						const promiseProducts = ProductSync.synchronizeProducts();
 						const promiseMeterReading = MeterReadingSync.synchronizeMeterReading(settings.siteId);
 
 						const promiseReminder = ReminderSync.synchronizeCustomerReminders(settings.siteId);
@@ -132,7 +132,7 @@ class Synchronization {
 
 
 						const promiseCustomers = CustomerSync.synchronizeCustomers(settings.siteId);
-						const promiseTopUps = CreditSync.synchronizeCredits();				
+						const promiseTopUps = CreditSync.synchronizeCredits();
 
 						const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts();
 						const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId);
@@ -147,13 +147,13 @@ class Synchronization {
 							promiseCustomerTypes,
 							promisePaymentTypes,
 							promiseDiscounts,
-							promiseProductMrps,														
+							promiseProductMrps,
 							promiseProducts,
 							promiseMeterReading,
 							promiseInventory,
 
 
-							promiseCustomerDebts,						
+							promiseCustomerDebts,
 							promiseRecieptPaymentTypes,
 							promiseTopUps,
 							promiseCustomers,
@@ -179,17 +179,10 @@ class Synchronization {
 								syncResult.orders = values[12];
 								syncResult.customerReminder = values[13];
 
-
-
-								console.log('values', values);
-
-
-
 								resolve(syncResult);
 							});
 					})
 					.catch(error => {
-						console.log('errors', error)
 						syncResult.error = error;
 						syncResult.status = 'failure';
 						resolve(syncResult);

@@ -219,7 +219,6 @@ class CustomerEdit extends React.PureComponent {
 								}}
 								items={this.customerTypesOptions}
 								onValueChange={(value, itemKey) => {
-									console.log(JSON.stringify(this.customerTypesOptions));
 									this.setState({ customerType: value });
 									this.setState({ customerChannel: this.customerTypesOptions[itemKey - 1].key });
 								}}

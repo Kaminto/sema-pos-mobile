@@ -761,7 +761,6 @@ class OrderItems extends React.PureComponent {
 		if (Number(value) != 0) {
 
 			if (this.state.selectedItem.product.description.includes('discount')) {
-				console.log('Number(value)', Number(value));
 				if (Number(value) > this.calculateOrderDue()) {
 					Alert.alert("Discount",
 						"Discount cannot exceed Order amount.",

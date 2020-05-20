@@ -246,8 +246,8 @@ class CustomerList extends React.Component {
     };
 
     handleOnPress(item) {
-		// requestAnimationFrame(() => {
-			// InteractionManager.runAfterInteractions(() => {
+		requestAnimationFrame(() => {
+			InteractionManager.runAfterInteractions(() => {
 			this.props.customerActions.CustomerSelected(item);
 			this.props.customerActions.SetCustomerProp(
 			    {
@@ -263,8 +263,8 @@ class CustomerList extends React.Component {
 			// 	index: 0,
 			// 	key: null,
 			// 	actions: [NavigationActions.navigate({ routeName: 'OrderView' })]
-			// }))
-		   // });
+			});
+		   });
 
     };
 

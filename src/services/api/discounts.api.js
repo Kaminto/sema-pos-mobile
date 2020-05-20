@@ -41,7 +41,6 @@ class DiscountApi {
 				return responseJson;
 			})
 			.catch(error => {
-				console.log('Communications:Discount: ' + error);
 				throw error;
 			});
 	}

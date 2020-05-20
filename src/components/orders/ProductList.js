@@ -120,7 +120,6 @@ class ProductList extends React.PureComponent {
 );
 
 	render() {
-		console.log('salesChannel')
 		return (
 			<View style={styles.container}>
 				<FlatList

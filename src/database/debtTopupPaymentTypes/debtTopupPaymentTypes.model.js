@@ -7,7 +7,7 @@ export const DebtTopupPaymentTypeSchema = {
         top_up_id:  { type: 'string', optional: true },
         type:  { type: 'string', optional: true },
         payment_type_id: { type: 'int', optional: true },
-        amount: { type: 'int', optional: true },
+        amount: { type: 'double', optional: true },
         syncAction: { type: 'string', optional: true },
         created_at: { type: 'date', optional: true },
         updated_at: { type: 'date', optional: true },

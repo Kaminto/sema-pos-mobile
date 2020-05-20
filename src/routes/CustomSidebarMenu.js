@@ -207,11 +207,8 @@ class CustomSidebarMenu extends React.PureComponent {
   onSynchronize() {
     try {
       this.setState({ isLoading: true });
-      console.log("Started synching ...");
       Synchronization.synchronize().then(syncResult => {
-        console.log('syncResult', syncResult);
         this.setState({ isLoading: false });
-        console.log("Stopped synching. ")
 
         this.props.customerActions.setCustomers(
           CustomerRealm.getAllCustomer()
@@ -281,7 +278,7 @@ class CustomSidebarMenu extends React.PureComponent {
 
 
         if (syncResult.debt.debt > 0) {
-          final5 = `\n${syncResult.debt.successError === 'success' ? `${syncResult.debt.debt} ` + i18n.t('debt-updated') : `${syncResult.debt.successMessage.message} Please Synchronise Before making any changes`}`          
+          final5 = `\n${syncResult.debt.successError === 'success' ? `${syncResult.debt.debt} ` + i18n.t('debt-updated') : `${syncResult.debt.successMessage.message} Please Synchronise Before making any changes`}`
 
         }
 
@@ -291,7 +288,7 @@ class CustomSidebarMenu extends React.PureComponent {
           syncResult.meterReading.meterReading > 0
         ) {
           final6 = `\n${syncResult.meterReading.successError === 'success' ? `${syncResult.meterReading.meterReading} ` + i18n.t('meterReading-updated') : `${syncResult.meterReading.successMessage.message} Please Synchronise Before making any changes`}`
-         
+
 
         }
 
@@ -301,7 +298,7 @@ class CustomSidebarMenu extends React.PureComponent {
         ) {
 
           final7 = `\n${syncResult.recieptPayments.successError === 'success' ? `${syncResult.recieptPayments.recieptPayments} ` + i18n.t('recieptPayments-updated') : `${syncResult.recieptPayments.successMessage.message} Please Synchronise Before making any changes`}`
-          
+
         }
 
 
@@ -309,8 +306,8 @@ class CustomSidebarMenu extends React.PureComponent {
           syncResult.customerReminder.customerReminder > 0
         ) {
           final8 = `\n${syncResult.customerReminder.successError === 'success' ? `${syncResult.customerReminder.customerReminder} ` + i18n.t('customer-reminder-updated') : `${syncResult.customerReminder.successMessage.message} Please Synchronise Before making any changes`}`
-          
-        
+
+
         }
 
 
@@ -318,8 +315,8 @@ class CustomSidebarMenu extends React.PureComponent {
           syncResult.productMrps.productMrps > 0
         ) {
           final9 = `\n${syncResult.productMrps.successError === 'success' ? `${syncResult.productMrps.productMrps} ` + i18n.t('pricing-sheme-updated') : `${syncResult.productMrps.successMessage.message} Please Synchronise Before making any changes`}`
-          
-         
+
+
         }
 
 
@@ -327,8 +324,8 @@ class CustomSidebarMenu extends React.PureComponent {
           syncResult.salesChannels.salesChannels > 0
         ) {
           final10 = `\n${syncResult.salesChannels.successError === 'success' ? `${syncResult.salesChannels.salesChannels} ` + i18n.t('salechannel-updated') : `${syncResult.salesChannels.successMessage.message} Please Synchronise Before making any changes`}`
-          
-      
+
+
 
         }
 
@@ -339,8 +336,8 @@ class CustomSidebarMenu extends React.PureComponent {
         ) {
 
           final10 = `\n${syncResult.topups.successError === 'success' ? `${syncResult.topups.topups} ` + i18n.t('topups-updated') : `${syncResult.topups.successMessage.message} Please Synchronise Before making any changes`}`
-          
- 
+
+
         }
 
         return final1 + final2 + final3 + final4 + final5 + final6 + final7 + final8 + final9 + final10 + final11

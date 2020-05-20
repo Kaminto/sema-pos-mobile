@@ -11,7 +11,7 @@ class InventorySync {
                 .then(async remoteInventory => {
                     let initlocalInventories = InventroyRealm.getAllInventoryByDate(InventroyRealm.getLastInventorySync());
 
-                    
+
                     let onlyInLocal = initlocalInventories.filter(SyncUtils.compareRemoteAndLocal(remoteInventory.closingStock, 'closingStockId'));
                     let onlyInRemote = remoteInventory.closingStock.filter(SyncUtils.compareRemoteAndLocal(initlocalInventories, 'closingStockId'));
 
@@ -46,9 +46,6 @@ class InventorySync {
 
                 })
                 .catch(error => {
-                    console.log(
-                        'Synchronization.getInventory - error ' + error
-                    );
                     resolve({
                         error: false,
                         wastageReport: 0,
@@ -65,18 +62,10 @@ class InventorySync {
                     localInventory
                 )
                     .then((response) => {
-                        console.log(
-                            'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
-                            response
-                        );
                         InventroyRealm.setLastInventorySync();
                         resolve({ status: 'success', message: response, data: localInventory });
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeInventory Delete Inventory failed ' +
-                            error
-                        );
                         return { status: 'fail', message: error, data: localInventory }
                     });
             }
@@ -88,18 +77,10 @@ class InventorySync {
                 )
                     .then((response) => {
                         InventroyRealm.setLastInventorySync();
-                        console.log(
-                            'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
-                            response
-                        );
                         resolve({ status: 'success', message: 'synched to remote', data: localInventory });
 
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeInventory Update Inventory failed ' +
-                            error
-                        );
                         resolve({ status: 'fail', message: error, data: localInventory });
                     });
 
@@ -113,17 +94,10 @@ class InventorySync {
                     .then((response) => {
                         InventroyRealm.synched(localInventory);
                         InventroyRealm.setLastInventorySync();
-                        console.log(
-                            'Synchronization:synced to remote - ' +
-                            response
-                        );
                         resolve({ status: 'success', message: 'synched to remote', data: localInventory });
 
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeInventory Create Inventory failed'
-                        );
                         resolve({ status: 'fail', message: error, data: localInventory });
                     });
 
@@ -136,16 +110,9 @@ class InventorySync {
                     .then((response) => {
                         InventroyRealm.synched(localInventory);
                         InventroyRealm.setLastInventorySync();
-                        console.log(
-                            'Synchronization:synced to remote - ' +
-                            response
-                        );
                         resolve({ status: 'success', message: 'synched to remote', data: localInventory });
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeInventory Create Inventory failed'
-                        );
                         resolve({ status: 'fail', message: error, data: localInventory });
                     });
 
@@ -158,16 +125,9 @@ class InventorySync {
                     .then((response) => {
                         InventroyRealm.synched(localInventory);
                         InventroyRealm.setLastInventorySync();
-                        console.log(
-                            'Synchronization:synced to remote - ' +
-                            response
-                        );
                         resolve({ status: 'success', message: 'synched to remote', data: localInventory });
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeInventory Create Inventory failed'
-                        );
                         resolve({ status: 'fail', message: error, data: localInventory });
                     });
 

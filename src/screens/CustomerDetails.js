@@ -142,7 +142,6 @@ class TransactionDetail extends React.PureComponent {
 	}
 
 	onDeleteReceipt(item) {
-		//console.log('item-r', item);
 		return () => {
 			if (item.is_delete === 0) {
 				return ToastAndroid.show(
@@ -399,8 +398,6 @@ class TransactionDetail extends React.PureComponent {
 	render() {
 		var receiptLineItems;
 		var paymentTypes;
-		console.log('this.props.item', this.props.item)
-
 		if (!this.isEmpty(this.props.item)) {
 			if (this.props.item.isReceipt) {
 
@@ -888,11 +885,6 @@ class CustomerDetails extends React.PureComponent {
 				? 1
 				: -1;
 		});
-		//
-
-		//console.log(receipts);
-		console.log('receipts', receipts)
-		console.log('customerId', this.props.selectedCustomer.customerId)
 		return [...receipts.filter(r => r.customerAccount.id === this.props.selectedCustomer.customerId)];
 	}
 
@@ -982,7 +974,7 @@ class CustomerDetails extends React.PureComponent {
 				: -1;
 		});
 		// receipts = this.filterItems(receipts);
-	
+
 		return [...topups.filter(r => r.customer_account_id === this.props.selectedCustomer.customerId)];
 		//return [...topups];
 	}

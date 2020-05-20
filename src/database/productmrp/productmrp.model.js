@@ -3,8 +3,8 @@ export const ProductMRPSchema = {
     properties: {
         id: { type: 'int', optional: true },
         currencyCode: 'string',
-        priceAmount: { type: 'int' },
-        cogsAmount: 'int',
+        priceAmount: { type: 'double' },
+        cogsAmount: 'double',
         productId: { type: 'int' },
         salesChannelId: { type: 'int' },
         siteId: { type: 'int' },

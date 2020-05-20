@@ -9,7 +9,7 @@ class CustomerSync {
             CustomerApi.getCustomers(CustomerRealm.getLastCustomerSync())
                 .then(async remoteCustomer => {
                     let initlocalCustomers = CustomerRealm.getCustomerBycreated_at(CustomerRealm.getLastCustomerSync());
-                   
+
                     let localCustomers = initlocalCustomers.length > 0 ? [...initlocalCustomers] : [];
                     let remoteCustomers = remoteCustomer.customers.length > 0 ? [...remoteCustomer.customers] : [];
 
@@ -44,9 +44,7 @@ class CustomerSync {
 
                 })
                 .catch(error => {
-                    console.log(
-                        'Synchronization.getCustomers - error ' + error
-                    );
+
                     resolve({
                         error: false,
                         customers: 0,
@@ -63,10 +61,7 @@ class CustomerSync {
                     localCustomer
                 )
                     .then((response) => {
-                        console.log(
-                            'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
-                            response
-                        );
+
                         CustomerRealm.synched(localCustomer);
                         CustomerRealm.setLastCustomerSync();
                         // updateCount = updateCount + 1;
@@ -74,10 +69,7 @@ class CustomerSync {
 
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeInventory Delete Inventory failed ' +
-                            error
-                        );
+
                         resolve({ status: 'fail', message: 'error', data: localCustomer });
                     });
             }
@@ -87,20 +79,13 @@ class CustomerSync {
                     localCustomer
                 )
                     .then((response) => {
-                        // updateCount = updateCount + 1;
-                        console.log(
-                            'Synchronization:synchronizeInventory - Removing Inventory from pending list - ' +
-                            response
-                        );
+
                         CustomerRealm.synched(localCustomer);
                         CustomerRealm.setLastCustomerSync();
                         resolve({ status: 'success', message: 'synched', data: localCustomer });
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeInventory Update Inventory failed ' +
-                            error
-                        );
+
                         resolve({ status: 'fail', message: 'synched', data: localCustomer });
                     });
 
@@ -111,19 +96,12 @@ class CustomerSync {
                     localCustomer
                 )
                     .then((response) => {
-                        // updateCount = updateCount + 1;
                         CustomerRealm.synched(localCustomer);
                         CustomerRealm.setLastCustomerSync();
-                        console.log(
-                            'Synchronization:synced to remote - ' +
-                            response
-                        );
+
                         resolve({ status: 'success', message: 'synched', data: localCustomer });
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeInventory Create Inventory failed', error
-                        );
                         resolve({ status: 'fail', message: 'error', data: localCustomer });
                     });
             }
@@ -136,16 +114,9 @@ class CustomerSync {
                         // updateCount = updateCount + 1;
                         CustomerRealm.synched(localCustomer);
                         CustomerRealm.setLastCustomerSync();
-                        console.log(
-                            'Synchronization:synced to remote - ' +
-                            response
-                        );
                         resolve({ status: 'success', message: 'synched', data: localCustomer });
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeInventory Create Inventory failed', error
-                        );
                         resolve({ status: 'fail', message: 'error', data: localCustomer });
                     });
             }
@@ -158,16 +129,9 @@ class CustomerSync {
                         // updateCount = updateCount + 1;
                         CustomerRealm.synched(localCustomer);
                         CustomerRealm.setLastCustomerSync();
-                        console.log(
-                            'Synchronization:synced to remote - ' +
-                            response
-                        );
                         resolve({ status: 'success', message: 'synched', data: localCustomer });
                     })
                     .catch(error => {
-                        console.log(
-                            'Synchronization:synchronizeInventory Create Inventory failed', error
-                        );
                         resolve({ status: 'fail', message: 'error', data: localCustomer });
                     });
             }

@@ -66,22 +66,7 @@ class AuthLoadingScreen extends React.PureComponent {
             this.props.settingsActions.setSettings({ ...settings, loginSync: true });
             this.props.navigation.navigate('Login');
         }
-        // CustomerDebtRealm.truncate()
-        // SalesChannelRealm.truncate();
-        //InventroyRealm.truncate();
-        //ProductsRealm.truncate();
-        console.log('last order sync', OrderRealm.getLastOrderSync());
-        console.log('last customer sync', CustomerRealm.getLastCustomerSync());
-        console.log('last meter reading sync', InventroyRealm.getLastMeterReadingSync());
-        console.log('last inventory sync', InventroyRealm.getLastInventorySync());
-        console.log('last CustomerDebtRealm sync', CustomerDebtRealm.getLastCustomerDebtSync());
-        console.log('last SalesChannelRealm sync', SalesChannelRealm.getLastSalesChannelSync());
-        console.log('last PaymentTypeRealm sync', PaymentTypeRealm.getLastPaymentTypeSync());
-        console.log('last DiscountRealm sync', DiscountRealm.getLastDiscountSync());
-        console.log('last ProductMRPRealm sync', ProductMRPRealm.getLastProductMRPSync());
-        console.log('last ProductsRealm sync', ProductsRealm.getLastProductsync());
-      //  console.log('last CreditRealm sync', CreditRealm.truncate()); 
-     //  console.log('inventory data', CustomerDebtRealm.getCustomerDebts());
+
         if (settings.site != "" && settings.siteId > 0) {
             this.loadSyncedData();
             if (settings.token.length > 1) {

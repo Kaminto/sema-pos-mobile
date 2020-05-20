@@ -293,12 +293,11 @@ class PaymentModal extends React.PureComponent {
 			buttonDisabled: true
 		});
 
-		console.log('selectedPaymentTypes', this.props.selectedPaymentTypes)
 		if (this.props.selectedPaymentTypes.length > 0) {
 			let amountPaid = this.props.selectedPaymentTypes.reduce((total, item) => {
 				return (total + item.amount);
 			}, 0);
-			console.log('amountPaid', amountPaid)
+
 			if (amountPaid > 0) {
 
 				if (amountPaid <= Number(this.props.selectedCustomer.dueAmount)) {

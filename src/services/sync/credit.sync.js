@@ -10,13 +10,11 @@ class CreditSync {
         return new Promise(resolve => {
             CreditApi.getTopUps(settings.siteId, CreditRealm.getLastCreditSync())
                 .then(async remoteCredit => {
-                    console.log('remoteCredit', remoteCredit)
-                    
+
                     let initlocalCredits = CreditRealm.getAllCreditByDate(CreditRealm.getLastCreditSync());
                     let localCredits = initlocalCredits.length > 0 ?  [...initlocalCredits] : [];
                     let remoteTopUps = remoteCredit.topup.length > 0 ?  [...remoteCredit.topup] : [];
-                    console.log('localCredits', localCredits)
-                    
+
                     let onlyInLocal = localCredits.filter(SyncUtils.compareRemoteAndLocal(remoteTopUps,'top_up_id'));
                     let onlyInRemote = remoteTopUps.filter(SyncUtils.compareRemoteAndLocal(localCredits,'top_up_id'));
 
@@ -47,9 +45,7 @@ class CreditSync {
 
                 })
                 .catch(error => {
-                    console.log(
-                        'Synchronization.getCredit - error ' + error
-                    );
+
                     resolve({
 						error: false,
                         topups: 0,
@@ -66,18 +62,12 @@ class CreditSync {
                 localCredit
             )
                 .then((response) => {
-                    console.log(
-                        'Synchronization:synchronizeCredit - Removing Credit from pending list - ' +
-                        response
-                    );
+
                     CreditRealm.setLastCreditSync();
                     resolve({ status: 'success', message: response, data: localCredit });
                 })
                 .catch(error => {
-                    console.log(
-                        'Synchronization:synchronizeCredit Delete Credit failed ' +
-                        error
-                    );
+
                     return { status: 'fail', message: error, data: localCredit }
                 });
         }
@@ -89,18 +79,12 @@ class CreditSync {
                 .then((response) => {
                     // updateCount = updateCount + 1;
                     CreditRealm.setLastCreditSync();
-                    console.log(
-                        'Synchronization:synchronizeCredit - Removing Credit from pending list - ' +
-                        response
-                    );
+
                     resolve({ status: 'success', message: 'synched to remote', data: localCredit });
-                
+
                 })
                 .catch(error => {
-                    console.log(
-                        'Synchronization:synchronizeCredit Update Credit failed ' +
-                        error
-                    );
+
                     resolve({ status: 'fail', message: error, data: localCredit });
                 });
 
@@ -114,17 +98,12 @@ class CreditSync {
                     // updateCount = updateCount + 1;
                     CreditRealm.synched(localCredit);
                     CreditRealm.setLastCreditSync();
-                    console.log(
-                        'Synchronization:synced to remote - ' +
-                        response
-                    );
+
                     resolve({ status: 'success', message: 'synched to remote', data: localCredit });
-                   
+
                 })
                 .catch(error => {
-                    console.log(
-                        'Synchronization:synchronizeCredit Create Credit failed', error
-                    );
+
                     resolve({ status: 'fail', message: 'error', data: localCredit });
                 });
         }
@@ -137,16 +116,11 @@ class CreditSync {
                     //  updateCount = updateCount + 1;
                     CreditRealm.synched(localCredit);
                     CreditRealm.setLastCreditSync();
-                    console.log(
-                        'Synchronization:synced to remote - ' +
-                        response
-                    );
+
                     resolve({ status: 'success', message: 'synched to remote', data: localCredit });
                 })
                 .catch(error => {
-                    console.log(
-                        'Synchronization:synchronizeCredit Create Credit failed', error
-                    );
+
                     resolve({ status: 'fail', message: 'error', data: localCredit });
                 });
         }
@@ -159,16 +133,11 @@ class CreditSync {
                     //  updateCount = updateCount + 1;
                     CreditRealm.synched(localCredit);
                     CreditRealm.setLastCreditSync();
-                    console.log(
-                        'Synchronization:synced to remote - ',
-                        response
-                    );
+
                     resolve({ status: 'success', message: 'synched to remote', data: localCredit });
                 })
                 .catch(error => {
-                    console.log(
-                        'Synchronization:synchronizeCredit Create Credit failed', error
-                    );
+
                     resolve({ status: 'fail', message: 'error', data: localCredit });
                 });
         }
