@@ -137,6 +137,9 @@ class CustomerRealm {
         frequency,
         secondPhoneNumber
     ) {
+
+        return new Promise((resolve, reject) => {
+
         try {
             realm.write(() => {
                 let customerObj = realm.objects('Customer').filtered(`customerId = "${customer.customerId}"`);
@@ -158,14 +161,15 @@ class CustomerRealm {
                     customerObj[0].reminder_date = format(parseISO(customer.reminder_date), 'yyyy-MM-dd')
                 }
 
-
+                resolve(true)
 
             })
 
         } catch (e) {
             console.log("Error on update customer ", e);
+            reject(e)
         }
-
+    })
     }
 
     updateCustomerDueAmount(

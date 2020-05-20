@@ -175,14 +175,12 @@ class CreditRealm {
                     for (i = 0; i < credit.length; i++) {
                         let ischeckCredit = this.checkCredit(credit[i].created_at, credit[i].top_up_id).length;
                         if (ischeckCredit === 0) {
-                            console.log('saveing', value)
                             let value = realm.create('Credit', {
                                 ...credit[i],
                                 topup: Number(credit[i].topup),
                                 balance: Number(credit[i].balance),
                                 synched: true
                             });
-                            console.log('saved', value)
                             result.push({ status: 'success', data: value, message: 'Credit has been set' });
                         } else if (ischeckCredit > 0) {
                             let discountObj = realm.objects('Credit').filtered(`top_up_id = "${credit[i].top_up_id}"`);

@@ -5,9 +5,10 @@ import {
 	Text,
 	StyleSheet,
 	Modal,
-	ScrollView
+	ScrollView,
+	ActivityIndicator
 } from 'react-native';
-import { Card, Button, Input} from 'react-native-elements';
+import { Card, Button, Input } from 'react-native-elements';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -29,6 +30,8 @@ class CustomerEdit extends React.PureComponent {
 
 		this.state = {
 			isEditInProgress: false,
+			isCreateInProgress: false,
+			isLoading: true,
 			salescid: 0,
 			language: "",
 			name: this.props.selectedCustomer.name ? this.props.selectedCustomer.name : "",
@@ -83,11 +86,11 @@ class CustomerEdit extends React.PureComponent {
 	}
 
 	onEdit() {
+		this.props.customerActions.setIsLoading(true);
+		try {
 		let salesChannelId = this.state.customerChannel > 0 ? this.state.customerChannel : -1;
 		let customerTypeId = this.state.customerType > 0 ? this.state.customerType : -1;
 		if (this.props.isEdit) {
-			// this.setReminderIfExists(this.props.selectedCustomer);
-
 			CustomerRealm.updateCustomer(
 				this.props.selectedCustomer,
 				this.state.phoneNumber,
@@ -97,11 +100,12 @@ class CustomerEdit extends React.PureComponent {
 				customerTypeId,
 				this.state.reference,
 				this.state.secondPhoneNumber
-			);
-			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
-			this.props.customerActions.CustomerSelected({});
-			this.setState({ isEditInProgress: true });
-			this.props.navigation.goBack();
+			).then(e=>{
+				console.log('eeee', e)
+				this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
+				this.props.customerActions.CustomerSelected({});
+				this.setState({ isEditInProgress: true });
+			});
 		} else {
 			CustomerRealm.createCustomer(
 				this.state.phoneNumber,
@@ -115,12 +119,13 @@ class CustomerEdit extends React.PureComponent {
 			);
 			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
 			this.props.customerActions.CustomerSelected({});
-			this.props.navigation.goBack();
+			this.setState({ isCreateInProgress: true });
 		}
-
-
+		this.props.navigation.goBack();
+	} catch (error) { }
 	}
 
+	
 
 	render() {
 		const cplaceholder = {
@@ -128,13 +133,11 @@ class CustomerEdit extends React.PureComponent {
 			value: null,
 			key: 0,
 		};
-
-
 		return (
 			<View style={{ flex: 1, backgroundColor: '#f1f1f1', justifyContent: 'center' }}>
 				<ScrollView
 					style={{ flex: 1 }}
-					>
+				>
 					<View style={{ flex: 1, alignItems: 'center' }}>
 
 						<Card containerStyle={{ width: '55%', marginTop: 30, padding: 0, borderRadius: 8 }}>
@@ -228,19 +231,19 @@ class CustomerEdit extends React.PureComponent {
 								style={{
 									...pickerSelectStyles,
 									iconContainer: {
-									  top: 20,
-									  left: 30,
-									  color: "black",
-									  marginRight: 10
+										top: 20,
+										left: 30,
+										color: "black",
+										marginRight: 10
 									},
-								  }}
+								}}
 								Icon={() => {
 									return <Ionicons name="md-ribbon" size={24} />;
-								  }}
+								}}
 							/>
 
 							<Button
-								onPress={() => this.onEdit()}
+								onPress={this.onEdit.bind(this)}
 								buttonStyle={{ padding: 20 }}
 								containerStyle={{
 									bottom: 0,
@@ -253,7 +256,10 @@ class CustomerEdit extends React.PureComponent {
 								}}
 								title={this.getSubmitText()} />
 
+
 						</Card>
+
+
 						<Modal
 							visible={this.state.isEditInProgress}
 							backdropColor={'red'}
@@ -261,6 +267,16 @@ class CustomerEdit extends React.PureComponent {
 							onRequestClose={this.closeHandler}>
 							{this.showEditInProgress()}
 						</Modal>
+						<Modal
+							visible={this.state.isCreateInProgress}
+							backdropColor={'red'}
+							transparent={true}
+							onRequestClose={this.closeHandler}>
+							{this.showCreateInProgress()}
+						</Modal>
+
+
+						
 					</View>
 				</ScrollView>
 			</View>
@@ -435,6 +451,7 @@ class CustomerEdit extends React.PureComponent {
 
 	closeHandler() {
 		this.setState({ isEditInProgress: false });
+		this.setState({ isCreateInProgress: false });
 		this.onCancelEdit();
 	}
 
@@ -452,165 +469,6 @@ class CustomerEdit extends React.PureComponent {
 		return test;
 	}
 
-	onMakeSale() {
-		let salesChannelId = -1;
-		let customerTypeId = -1;
-
-		if (
-			this._textIsEmpty(this.phone.current.state.propertyText) ||
-			!this.isValidPhoneNumber(this.phone.current.state.propertyText)
-		) {
-			this.phone.current.refs.customerNumber.focus();
-			return;
-		}
-
-		if (
-			!this._textIsEmpty(
-				this.secondPhoneNumber.current.state.propertyText
-			) &&
-			!this.isValidPhoneNumber(
-				this.secondPhoneNumber.current.state.propertyText
-			)
-		) {
-			this.secondPhoneNumber.current.refs.secondPhoneNumber.focus();
-			return;
-		}
-
-		if (this._textIsEmpty(this.name.current.state.propertyText)) {
-			this.name.current.refs.customerName.focus();
-			return;
-		}
-
-		if (this._textIsEmpty(this.address.current.state.propertyText)) {
-			this.address.current.refs.customerAddress.focus();
-			return;
-		}
-
-		if (this.customerChannel.current.state.selectedIndex === -1) {
-			this.customerChannel.current.show();
-			return;
-		}
-
-		if (this.customerType.current.state.selectedIndex === -1) {
-			this.customerType.current.show();
-			return;
-		} else {
-			customerTypeId = this.customerTypes[
-				this.customerType.current.state.selectedIndex
-			].id;
-		}
-		if (this.props.isEdit) {
-			this.setReminderIfExists(this.props.selectedCustomer);
-
-			CustomerRealm.updateCustomer(
-				this.props.selectedCustomer,
-				this.phone.current.state.propertyText,
-				this.name.current.state.propertyText,
-				this.address.current.state.propertyText,
-				salesChannelId,
-				customerTypeId,
-				'7',
-				this.secondPhoneNumber.current.state.propertyText
-			);
-			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
-
-		} else {
-			CustomerRealm.createCustomer(
-				this.phone.current.state.propertyText,
-				this.name.current.state.propertyText,
-				this.address.current.state.propertyText,
-				this.props.settings.siteId,
-				salesChannelId,
-				customerTypeId,
-				'7',
-				this.secondPhoneNumber.current.state.propertyText
-			)
-			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
-			this.props.customerActions.CustomerSelected(newCustomer);
-		}
-
-		this.setState({ isEditInProgress: true });
-	}
-
-
-	onEditd() {
-		let salesChannelId = -1;
-		let customerTypeId = -1;
-
-		if (
-			this._textIsEmpty(this.phone.current.state.propertyText) ||
-			!this.isValidPhoneNumber(this.phone.current.state.propertyText)
-		) {
-			this.phone.current.refs.customerNumber.focus();
-			return;
-		}
-
-		if (
-			!this._textIsEmpty(
-				this.secondPhoneNumber.current.state.propertyText
-			) &&
-			!this.isValidPhoneNumber(
-				this.secondPhoneNumber.current.state.propertyText
-			)
-		) {
-			this.secondPhoneNumber.current.refs.secondPhoneNumber.focus();
-			return;
-		}
-
-		if (this._textIsEmpty(this.name.current.state.propertyText)) {
-			this.name.current.refs.customerName.focus();
-			return;
-		}
-
-		if (this._textIsEmpty(this.address.current.state.propertyText)) {
-			this.address.current.refs.customerAddress.focus();
-			return;
-		}
-
-		if (this.customerChannel.current.state.selectedIndex === -1) {
-			this.customerChannel.current.show();
-			return;
-		}
-
-		if (this.customerType.current.state.selectedIndex === -1) {
-			this.customerType.current.show();
-			return;
-		} else {
-			customerTypeId = this.customerTypes[
-				this.customerType.current.state.selectedIndex
-			].id;
-		}
-		if (this.props.isEdit) {
-			this.setReminderIfExists(this.props.selectedCustomer);
-
-			CustomerRealm.updateCustomer(
-				this.props.selectedCustomer,
-				this.phone.current.state.propertyText,
-				this.name.current.state.propertyText,
-				this.address.current.state.propertyText,
-				salesChannelId,
-				customerTypeId,
-				'7',
-				this.secondPhoneNumber.current.state.propertyText);
-			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
-		} else {
-			CustomerRealm.createCustomer(
-				this.phone.current.state.propertyText,
-				this.name.current.state.propertyText,
-				this.address.current.state.propertyText,
-				this.props.settings.siteId,
-				salesChannelId,
-				customerTypeId,
-				'7',
-				this.secondPhoneNumber.current.state.propertyText
-			);
-			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
-			this.props.navigation.navigate('ListCustomers');
-			this.props.customerActions.CustomerSelected(newCustomer);
-		}
-
-		this.setState({ isEditInProgress: true });
-	}
 
 	onShowChannel() {
 		this.customerChannel.current.show();
@@ -650,12 +508,39 @@ class CustomerEdit extends React.PureComponent {
 			</View>
 		);
 	}
+
+
+	showCreateInProgress() {
+		let that = this;
+		if (this.state.isCreateInProgress) {
+			setTimeout(() => {
+				that.closeHandler();
+			}, 1000);
+		}
+		return (
+			<View
+				style={{
+					flex: 1,
+					flexDirection: 'column',
+					justifyContent: 'center',
+					alignItems: 'center'
+				}}>
+				<View style={styles.updating}>
+					<Text style={{ fontSize: 24, fontWeight: 'bold' }}>
+						Creating
+					</Text>
+				</View>
+			</View>
+		);
+	}
+
 }
 
 function mapStateToProps(state, props) {
 	return {
 		selectedCustomer: state.customerReducer.selectedCustomer,
 		isEdit: state.customerReducer.isEdit,
+		isLoading: state.customerReducer.isLoading,
 		settings: state.settingsReducer.settings
 	};
 }
