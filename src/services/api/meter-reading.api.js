@@ -36,12 +36,9 @@ class MeterReadingApi {
 		};
 		let url = `sema/meter_reading/${kiosk_id}/${date}`;
 
-<<<<<<< HEAD
-=======
 		// if (updatedSince) {
 		// 	url = url + '&updated-date=' + updatedSince;
 		// }
->>>>>>> 8d3d939beb55e7934742a5967645c1ae75d72e24
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.then(responseJson => {
@@ -66,12 +63,7 @@ class MeterReadingApi {
 		};
 		return new Promise((resolve, reject) => {
 			fetch(this._url + 'sema/meter_reading/', options)
-<<<<<<< HEAD
 				.then(response => {
-
-=======
-				.then(response => {					
->>>>>>> 8d3d939beb55e7934742a5967645c1ae75d72e24
 					if (response.status === 200) {
 						response
 							.json()
