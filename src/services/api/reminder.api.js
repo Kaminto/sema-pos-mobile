@@ -38,17 +38,12 @@ class ReminderApi {
 		};
 		let url = `sema/customer_reminders/${kiosk_id}/${date}`;
 
-		// if (updatedSince) {
-		// 	url = url + '&updated-date=' + updatedSince;
-		// }
-		console.log('Customer Reminder link', this._url + url);
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.then(responseJson => {
 				return responseJson;
 			})
 			.catch(error => {
-				console.log('Communications:getCustomerReminder: ' + error);
 				throw error;
 			});
 	}
@@ -65,11 +60,9 @@ class ReminderApi {
 			},
 			body: JSON.stringify(CustomerReminder)
 		};
-		console.log('this._url', this._url);
 		return new Promise((resolve, reject) => {
 			fetch(this._url + 'sema/customer_reminders/', options)
 				.then(response => {
-					console.log('header', response.headers.map.message);
 					
 					if (response.status === 200) {
 						response
@@ -78,21 +71,15 @@ class ReminderApi {
 								resolve(responseJson);
 							})
 							.catch(error => {
-								console.log(
-									'createCustomerReminder - Parse JSON: ' +
-									error
-								);
+								
 								reject();
 							});
 					} else {
-						console.log(
-							'createCustomerReminder - Fetch message: ' + response.headers.map.message
-						);
+						
 						reject(response.headers.map.message);
 					}
 				})
 				.catch(error => {
-					console.log('createCustomerReminder - messag: ' + response.headers.map.message);
 					reject();
 				});
 		});
@@ -119,14 +106,11 @@ class ReminderApi {
 					if (response.status === 200 || response.status === 404) {
 						resolve();
 					} else {
-						console.log(
-							'deleteCustomerReminder - Fetch status: ' + response.status
-						);
+						
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('deleteCustomerReminder - Fetch: ' + error);
 					reject();
 				});
 		});
@@ -155,21 +139,15 @@ class ReminderApi {
 								resolve(responseJson);
 							})
 							.catch(error => {
-								console.log(
-									'updateCustomerReminder - Parse JSON: ' +
-									error
-								);
+								
 								reject();
 							});
 					} else {
-						console.log(
-							'updateCustomerReminder - Fetch status: ' + response.status
-						);
+						
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('createCustomerReminder - Fetch: ' + error);
 					reject();
 				});
 		});

@@ -35,11 +35,9 @@ class PaymentTypesApi {
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.then(responseJson => {
-				//console.log('Communications:getPaymentTypes: ', responseJson);
 				return responseJson;
 			})
 			.catch(error => {
-				console.log('Communications:getPaymentTypes: ', error);
 				throw error;
 			});
 	}

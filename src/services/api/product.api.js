@@ -35,17 +35,12 @@ class ProductApi {
 			}
 		};
 	     let url = `sema/products/${date}`;
-		//let url = `sema/products?updated-date=${date}`;
-		
-		console.log(this._url + url);
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.then(responseJson => {
-				console.log('Communications:getProducts: ', responseJson.products);
 				return responseJson;
 			})
 			.catch(error => {
-				console.log('Communications:getProducts: ', error);
 				throw error;
 			});
 	}
@@ -66,7 +61,6 @@ class ProductApi {
 				return responseJson;
 			})
 			.catch(error => {
-				console.log('Communications:getProductMrps: ' + error);
 				throw error;
 			});
 	}
@@ -85,7 +79,6 @@ class ProductApi {
 				return responseJson;
 			})
 			.catch(error => {
-				console.log('Communications:getProductMrps: ' + error);
 				throw error;
 			});
 	}

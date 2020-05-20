@@ -42,7 +42,6 @@ class InventoryApi {
 				return responseJson;
 			})
 			.catch(error => {
-				console.log('Communications:getInventories: ' + error);
 				throw error;
 			});
 	}
@@ -59,11 +58,9 @@ class InventoryApi {
 			},
 			body: JSON.stringify(inventory)
 		};
-		console.log('this._url', this._url);
 		return new Promise((resolve, reject) => {
 			fetch(this._url + 'sema/kiosk_closing_stock/', options)
 				.then(response => {
-					console.log('header', response.headers.map.message);
 					if (response.status === 200) {
 						response
 							.json()
@@ -72,21 +69,13 @@ class InventoryApi {
 								resolve(responseJson);
 							})
 							.catch(error => {
-								console.log(
-									'createInventory - Parse JSON: ' +
-									error
-								);
 								reject();
 							});
 					} else {
-						console.log(
-							'createInventory - Fetch message: ' + response.headers.map.message
-						);
 						reject(response.headers.map.message);
 					}
 				})
 				.catch(error => {
-					console.log('createInventory - Fetch: ' + response.headers.map.message);
 					reject();
 				});
 		});
@@ -113,14 +102,10 @@ class InventoryApi {
 					if (response.status === 200 || response.status === 404) {
 						resolve();
 					} else {
-						console.log(
-							'deleteInventory - Fetch status: ' + response.status
-						);
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('deleteInventory - Fetch: ' + error);
 					reject();
 				});
 		});
@@ -149,21 +134,13 @@ class InventoryApi {
 								resolve(responseJson);
 							})
 							.catch(error => {
-								console.log(
-									'updateInventory - Parse JSON: ' +
-									error
-								);
 								reject();
 							});
 					} else {
-						console.log(
-							'updateInventory - Fetch status: ' + response.status
-						);
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('createInventory - Fetch: ' + error);
 					reject();
 				});
 		});

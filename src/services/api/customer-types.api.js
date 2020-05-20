@@ -41,7 +41,6 @@ class CustomerTypeApi {
 				return responseJson;
 			})
 			.catch(error => {
-				console.log('Communications:getCustomerTypes: ' + error);
 				throw error;
 			});
 	}

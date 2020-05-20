@@ -36,10 +36,7 @@ class RecieptPaymentTypesApi {
 			}
 		};
 		let url = `sema/receipt_payment_type/${kiosk_id}/${updatedSince}`;
-		console.log('this._url', this._url);
-		// if (updatedSince) {
-		// 	url = url + '?updated-date=' + updatedSince;
-		// }
+		
 
 		return fetch(this._url + url, options)
 			.then(response => response.json())
@@ -47,14 +44,12 @@ class RecieptPaymentTypesApi {
 				return responseJson;
 			})
 			.catch(error => {
-				console.log('Communications:getReceiptPaymentTypes: ' + error);
 				throw error;
 			});
 	}
 
 	createReceiptPaymentType(receipt_payment_type) {
 		// TODO - Resolve receipt_payment_type.... Is it needed, currently hardcoded...
-		console.log('receipt_payment_type', receipt_payment_type)
 		let options = {
 			method: 'POST',
 			headers: {
@@ -64,7 +59,6 @@ class RecieptPaymentTypesApi {
 			},
 			body: JSON.stringify(receipt_payment_type)
 		};
-		console.log('this._url', this._url);
 		return new Promise((resolve, reject) => {
 			fetch(this._url + 'sema/receipt_payment_type', options)
 				.then(response => {
@@ -76,21 +70,15 @@ class RecieptPaymentTypesApi {
 								resolve(responseJson);
 							})
 							.catch(error => {
-								console.log(
-									'createReceiptPaymentType - Parse JSON: ' +
-									error
-								);
+								
 								reject();
 							});
 					} else {
-						console.log(
-							'createReceiptPaymentType - Fetch status: ' + response.status
-						);
+						
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('createReceiptPaymentType - Fetch: ' + error);
 					reject();
 				});
 		});
@@ -117,14 +105,11 @@ class RecieptPaymentTypesApi {
 					if (response.status === 200 || response.status === 404) {
 						resolve();
 					} else {
-						console.log(
-							'deleteReceiptPaymentType - Fetch status: ' + response.status
-						);
+						
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('deleteReceiptPaymentType - Fetch: ' + error);
 					reject();
 				});
 		});
@@ -153,21 +138,15 @@ class RecieptPaymentTypesApi {
 								resolve(responseJson);
 							})
 							.catch(error => {
-								console.log(
-									'updateReceiptPaymentType - Parse JSON: ' +
-									error
-								);
+								
 								reject();
 							});
 					} else {
-						console.log(
-							'updateReceiptPaymentType - Fetch status: ' + response.status
-						);
+						
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('createReceiptPaymentType - Fetch: ' + error);
 					reject();
 				});
 		});

@@ -39,19 +39,12 @@ class CustomerApi {
         };
 
         let url = `sema/site/customers/${this._siteId}/${updatedSince}`;
-        // if (updatedSince) {
-        //     console.log('updatedSince', typeof updatedSince);
-        //     console.log('updatedSince', updatedSince);
-        //     url = url + '&updated-date=' + updatedSince;
-        // }
-        console.log(this._url + url);
         return fetch(this._url + url, options)
             .then(response => response.json())
             .then(responseJson => {
                 return responseJson;
             })
             .catch(error => {
-                console.log('Communications:getCustomers: ' + error);
                 throw error;
             });
     }
@@ -69,10 +62,8 @@ class CustomerApi {
             body: JSON.stringify(customer)
         };
         return new Promise((resolve, reject) => {
-            console.log(this._url + 'sema/site/customers');
             fetch(this._url + 'sema/site/customers', options)
                 .then(response => {
-                    console.log('createCustomer - Fetchresponse: ', response);
                     if (response.status === 200) {
                         response
                             .json()
@@ -80,21 +71,13 @@ class CustomerApi {
                                 resolve(responseJson);
                             })
                             .catch(error => {
-                                console.log(
-                                    'createCustomer - Parse JSON: ' +
-                                    error
-                                );
                                 reject();
                             });
                     } else {
-                        console.log(
-                            'createCustomer - Fetch status: ' + response.status
-                        );
                         reject();
                     }
                 })
                 .catch(error => {
-                    console.log('createCustomer - Fetch: ' + error);
                     reject();
                 });
         });
@@ -119,14 +102,10 @@ class CustomerApi {
                     if (response.status === 200 || response.status === 404) {
                         resolve();
                     } else {
-                        console.log(
-                            'deleteCustomer - Fetch status: ' + response.status
-                        );
                         reject();
                     }
                 })
                 .catch(error => {
-                    console.log('deleteCustomer - Fetch: ' + error);
                     reject();
                 });
         });
@@ -155,21 +134,13 @@ class CustomerApi {
                                 resolve(responseJson);
                             })
                             .catch(error => {
-                                console.log(
-                                    'updateCustomer - Parse JSON: ' +
-                                    error
-                                );
                                 reject();
                             });
                     } else {
-                        console.log(
-                            'updateCustomer - Fetch status: ' + response.status
-                        );
                         reject();
                     }
                 })
                 .catch(error => {
-                    console.log('createCustomer - Fetch: ' + error);
                     reject();
                 });
         });

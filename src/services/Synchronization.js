@@ -116,14 +116,12 @@ class Synchronization {
 				this._refreshToken()
 					.then(() => {
 						let settings = SettingRealm.getAllSetting();
-
-
 						const promiseSalesChannels = SalesChannelSync.synchronizeSalesChannels();
 						const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes();
 						const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes();
 						const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId);
 						const promiseProductMrps = ProductMRPSync.synchronizeProductMrps(settings.regionId);
-						const promiseProducts = ProductSync.synchronizeProducts();				
+						const promiseProducts = ProductSync.synchronizeProducts();
 						const promiseMeterReading = MeterReadingSync.synchronizeMeterReading(settings.siteId);
 
 						const promiseReminder = ReminderSync.synchronizeCustomerReminders(settings.siteId);
@@ -132,9 +130,9 @@ class Synchronization {
 
 
 						const promiseCustomers = CustomerSync.synchronizeCustomers(settings.siteId);
-						const promiseTopUps = CreditSync.synchronizeCredits();				
+						const promiseTopUps = CreditSync.synchronizeCredits(settings.siteId);
 
-						const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts();
+						const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts(settings.siteId);
 						const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId);
 						const promiseOrders = OrderSync.synchronizeSales(settings.siteId);
 
@@ -147,13 +145,13 @@ class Synchronization {
 							promiseCustomerTypes,
 							promisePaymentTypes,
 							promiseDiscounts,
-							promiseProductMrps,														
+							promiseProductMrps,
 							promiseProducts,
 							promiseMeterReading,
 							promiseInventory,
 
 
-							promiseCustomerDebts,						
+							promiseCustomerDebts,
 							promiseRecieptPaymentTypes,
 							promiseTopUps,
 							promiseCustomers,
@@ -171,16 +169,12 @@ class Synchronization {
 								syncResult.products = values[5];
 								syncResult.meterReading = values[6];
 								syncResult.wastageReport = values[7];
-
 								syncResult.debt = values[8];
 								syncResult.recieptPayments = values[9];
 								syncResult.topups = values[10];
 								syncResult.customers = values[11];
 								syncResult.orders = values[12];
 								syncResult.customerReminder = values[13];
-
-
-
 								console.log('values', values);
 
 

@@ -39,14 +39,12 @@ class MeterReadingApi {
 		// if (updatedSince) {
 		// 	url = url + '&updated-date=' + updatedSince;
 		// }
-		console.log('meter reading link', this._url + url);
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.then(responseJson => {
 				return responseJson;
 			})
 			.catch(error => {
-				console.log('Communications:getMeterReading: ' + error);
 				throw error;
 			});
 	}
@@ -63,12 +61,9 @@ class MeterReadingApi {
 			},
 			body: JSON.stringify(MeterReading)
 		};
-		console.log('this._url', this._url);
 		return new Promise((resolve, reject) => {
 			fetch(this._url + 'sema/meter_reading/', options)
-				.then(response => {
-					console.log('header', response.headers.map.message);
-					
+				.then(response => {					
 					if (response.status === 200) {
 						response
 							.json()
@@ -76,21 +71,13 @@ class MeterReadingApi {
 								resolve(responseJson);
 							})
 							.catch(error => {
-								console.log(
-									'createMeterReading - Parse JSON: ' +
-									error
-								);
 								reject();
 							});
 					} else {
-						console.log(
-							'createMeterReading - Fetch message: ' + response.headers.map.message
-						);
 						reject(response.headers.map.message);
 					}
 				})
 				.catch(error => {
-					console.log('createMeterReading - messag: ' + response.headers.map.message);
 					reject();
 				});
 		});
@@ -117,14 +104,10 @@ class MeterReadingApi {
 					if (response.status === 200 || response.status === 404) {
 						resolve();
 					} else {
-						console.log(
-							'deleteMeterReading - Fetch status: ' + response.status
-						);
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('deleteMeterReading - Fetch: ' + error);
 					reject();
 				});
 		});
@@ -153,21 +136,13 @@ class MeterReadingApi {
 								resolve(responseJson);
 							})
 							.catch(error => {
-								console.log(
-									'updateMeterReading - Parse JSON: ' +
-									error
-								);
 								reject();
 							});
 					} else {
-						console.log(
-							'updateMeterReading - Fetch status: ' + response.status
-						);
 						reject();
 					}
 				})
 				.catch(error => {
-					console.log('createMeterReading - Fetch: ' + error);
 					reject();
 				});
 		});
