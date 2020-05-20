@@ -62,15 +62,17 @@ class PaymentModal extends React.PureComponent {
 							{this.getCancelButton()}
 						</View>
 
-					<Card style={{ flex: 1, backgroundColor: '#f1f1f1', flexDirection: 'row' }}>
-						<PaymentDescription
-							title={`${i18n.t('previous-amount-due')}:`}
-							total={this.calculateAmountDue()}
-						/>
-						<PaymentDescription
-							title={`${i18n.t('customer-wallet')}:`}
-							total={this.props.selectedCustomer.walletBalance}
-						/>
+					<Card containerStyle={{ backgroundColor: '#f1f1f1'}}>
+						<View style={{ flex: 1, flexDirection: 'row' }}>
+							<PaymentDescription
+								title={`${i18n.t('previous-amount-due')}:`}
+								total={this.calculateAmountDue()}
+							/>
+							<PaymentDescription
+								title={`${i18n.t('customer-wallet')}:`}
+								total={this.props.selectedCustomer.walletBalance}
+							/>
+							</View>
 					</Card>
 
 					<View style={{ flex: 1 }}>
