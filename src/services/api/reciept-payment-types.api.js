@@ -37,6 +37,7 @@ class RecieptPaymentTypesApi {
 		};
 		let url = `sema/receipt_payment_type/${kiosk_id}/${updatedSince}`;
 
+
 		return fetch(this._url + url, options)
 			.then(response => response.json())
 			.then(responseJson => {
@@ -48,6 +49,7 @@ class RecieptPaymentTypesApi {
 	}
 
 	createReceiptPaymentType(receipt_payment_type) {
+		// TODO - Resolve receipt_payment_type.... Is it needed, currently hardcoded...
 		let options = {
 			method: 'POST',
 			headers: {

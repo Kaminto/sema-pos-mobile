@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 import SyncUtils from '../../services/sync/syncUtils';
 class CustomerSync {
 
-    synchronizeCustomers(siteId) {
+    synchronizeCustomers(kiosk_id) {
         return new Promise(resolve => {
             CustomerApi.getCustomers(CustomerRealm.getLastCustomerSync())
                 .then(async remoteCustomer => {
@@ -29,7 +29,7 @@ class CustomerSync {
                     if (onlyInLocal.length > 0) {
 
                         for (const property in onlyInLocal) {
-                            let syncResponse = await this.apiSyncOperations({ ...onlyInLocal[property], kiosk_id: siteId });
+                            let syncResponse = await this.apiSyncOperations({ ...onlyInLocal[property], kiosk_id });
                             syncResponseArray.push(syncResponse);
                         }
 
@@ -114,9 +114,11 @@ class CustomerSync {
                         // updateCount = updateCount + 1;
                         CustomerRealm.synched(localCustomer);
                         CustomerRealm.setLastCustomerSync();
+
                         resolve({ status: 'success', message: 'synched', data: localCustomer });
                     })
                     .catch(error => {
+
                         resolve({ status: 'fail', message: 'error', data: localCustomer });
                     });
             }
@@ -129,9 +131,11 @@ class CustomerSync {
                         // updateCount = updateCount + 1;
                         CustomerRealm.synched(localCustomer);
                         CustomerRealm.setLastCustomerSync();
+
                         resolve({ status: 'success', message: 'synched', data: localCustomer });
                     })
                     .catch(error => {
+
                         resolve({ status: 'fail', message: 'error', data: localCustomer });
                     });
             }

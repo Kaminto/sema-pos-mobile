@@ -41,6 +41,7 @@ class ProductMRPSync {
 
                 })
                 .catch(error => {
+
                     resolve({
                         error: true,
                         productMrps: 0
@@ -49,32 +50,6 @@ class ProductMRPSync {
         });
     }
 
-    synchronizeProductMrpsBySiteid(siteId) {
-        return new Promise(async resolve => {
-            Communications.getProductMrpsBySiteId(siteId)
-                .then(productMrps => {
-                    if (productMrps.hasOwnProperty('productMRPs')) {
-
-                        if (
-                            !_.isEqual(
-                                savedProductMrps,
-                                productMrps.productMRPs
-                            )
-                        ) {
-                            Events.trigger('ProductMrpsUpdated', {});
-                        }
-                        resolve({
-                            error: null,
-                            remoteProductMrps: productMrps.productMRPs.length
-                        });
-                    }
-                })
-                .catch(error => {
-                    resolve({ error: error, remoteProducts: null });
-
-                });
-        });
-    }
 
 }
 export default new ProductMRPSync();

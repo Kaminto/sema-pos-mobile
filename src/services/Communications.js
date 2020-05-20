@@ -175,7 +175,6 @@ class Communications {
 				password: password
 			})
 		};
-
 		return new Promise((resolve, reject) => {
 			try {
 				fetch(this._url + 'sema/login', options)

@@ -4,9 +4,9 @@ import * as _ from 'lodash';
 import SyncUtils from '../../services/sync/syncUtils';
 class OrderSync {
 
-    synchronizeSales(siteId) {
+    synchronizeSales(kiosk_id) {
         return new Promise(resolve => {
-            OrderApi.getReceipts(siteId, OrderRealm.getLastOrderSync())
+            OrderApi.getReceipts(kiosk_id, OrderRealm.getLastOrderSync())
                 .then(async remoteOrder => {
                     let initlocalOrders = OrderRealm.getOrdersByDate2(OrderRealm.getLastOrderSync());
                     let localOrders = initlocalOrders.length > 0 ? [...initlocalOrders] : [];
@@ -53,7 +53,7 @@ class OrderSync {
                             delete onlyInLocal[property].receipt_line_items;
                             delete onlyInLocal[property].customer_account;
                             delete onlyInLocal[property].customerAccountId;
-                            let syncResponse = await this.apiSyncOperations({ ...onlyInLocal[property], kiosk_id: siteId });
+                            let syncResponse = await this.apiSyncOperations({ ...onlyInLocal[property], kiosk_id });
                             syncResponseArray.push(syncResponse);
                         }
 
@@ -77,13 +77,13 @@ class OrderSync {
     }
 
 
-    apiSyncOperations(localOrder, siteId) {
+    apiSyncOperations(localOrder, kiosk_id) {
 
         return new Promise(resolve => {
 
             if (localOrder.active === true && localOrder.syncAction === 'delete') {
                 OrderApi.deleteOrder(
-                    localOrder, siteId
+                    localOrder, kiosk_id
                 )
                     .then((response) => {
                         OrderRealm.setLastOrderSync();
@@ -122,6 +122,7 @@ class OrderSync {
                         resolve({ status: 'success', message: 'synched', data: localOrder });
                     })
                     .catch(error => {
+
                         resolve({ status: 'fail', message: 'error', data: localOrder });
                     });
             }
@@ -133,9 +134,11 @@ class OrderSync {
                     .then((response) => {
                         OrderRealm.synched(localOrder);
                         OrderRealm.setLastOrderSync();
+
                         resolve({ status: 'success', message: 'synched', data: localOrder });
                     })
                     .catch(error => {
+
                         resolve({ status: 'fail', message: 'error', data: localOrder });
                     });
             }
@@ -148,9 +151,11 @@ class OrderSync {
                         //  updateCount = updateCount + 1;
                         OrderRealm.synched(localOrder);
                         OrderRealm.setLastOrderSync();
+
                         resolve({ status: 'success', message: 'synched', data: localOrder });
                     })
                     .catch(error => {
+
                         resolve({ status: 'fail', message: 'error', data: localOrder });
                     });
             }

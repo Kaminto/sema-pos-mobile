@@ -106,6 +106,7 @@ class ReminderApi {
 					if (response.status === 200 || response.status === 404) {
 						resolve();
 					} else {
+
 						reject();
 					}
 				})

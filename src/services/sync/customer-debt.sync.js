@@ -6,10 +6,11 @@ import * as _ from 'lodash';
 let settings = SettingRealm.getAllSetting();
 class CustomerDebtsSync {
 
-    synchronizeCustomerDebts() {
+    synchronizeCustomerDebts(kiosk_id) {
         return new Promise(resolve => {
-            CustomerDebtApi.getCustomerDebts(settings.siteId, CustomerDebtRealm.getLastCustomerDebtSync())
+            CustomerDebtApi.getCustomerDebts(kiosk_id, CustomerDebtRealm.getLastCustomerDebtSync())
                 .then(async result => {
+
                     let initlocalCustomerDebts = CustomerDebtRealm.getCustomerDebtsByDate(CustomerDebtRealm.getLastCustomerDebtSync());
 
                     let localCustomerDebts = initlocalCustomerDebts.length > 0 ? [...initlocalCustomerDebts] : [];
@@ -31,7 +32,7 @@ class CustomerDebtsSync {
                     if (onlyInLocal.length > 0) {
 
                         for (const property in onlyInLocal) {
-                            let syncResponse = await this.apiSyncOperations({ ...onlyInLocal[property], kiosk_id: settings.siteId });
+                            let syncResponse = await this.apiSyncOperations({ ...onlyInLocal[property], kiosk_id });
                             syncResponseArray.push(syncResponse);
                         }
 
@@ -48,6 +49,7 @@ class CustomerDebtsSync {
 
                 })
                 .catch(error => {
+
                     resolve({
                         error: true,
                         debt: 0

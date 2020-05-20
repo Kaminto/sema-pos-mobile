@@ -49,6 +49,7 @@ class ProductSync {
 
             })
             .catch(error => {
+
                 resolve({
                     error: true,
                     products: 0

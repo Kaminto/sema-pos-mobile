@@ -46,6 +46,7 @@ class RecieptPaymentTypesSync {
 
                 })
                 .catch(error => {
+
                     resolve({
                         error: false,
                         recieptPayments: 0,
@@ -62,10 +63,12 @@ class RecieptPaymentTypesSync {
                     localRecieptPaymentType
                 )
                     .then((response) => {
+
                         ReceiptPaymentTypeRealm.setLastReceiptPaymentTypeSync();
                         resolve({ status: 'success', message: 'synched', data: localRecieptPaymentType });
                     })
                     .catch(error => {
+
                         resolve({ status: 'fail', message: 'error', data: localRecieptPaymentType });
                     });
             }

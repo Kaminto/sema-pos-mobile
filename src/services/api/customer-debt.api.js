@@ -70,7 +70,6 @@ class CustomerDebtApi {
 								reject();
 							});
 					} else {
-
 						reject();
 					}
 				})
@@ -105,7 +104,6 @@ class CustomerDebtApi {
 					}
 				})
 				.catch(error => {
-
 					reject();
 				});
 		});

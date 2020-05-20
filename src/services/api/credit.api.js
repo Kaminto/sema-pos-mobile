@@ -37,9 +37,8 @@ class CreditApi {
 			}
 		};
 		let url = `sema/customer_credit/${kiosk_id}/${updatedSince}`;
-
 		return fetch(this._url + url, options)
-		.then(response => response.json())
+			.then(response => response.json())
 			.then(responseJson => {
 				return responseJson;
 			})
@@ -69,6 +68,7 @@ class CreditApi {
 								resolve(responseJson);
 							})
 							.catch(error => {
+
 								reject();
 							});
 					} else {

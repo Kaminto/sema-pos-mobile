@@ -39,7 +39,10 @@ class CustomerApi {
         };
 
         let url = `sema/site/customers/${this._siteId}/${updatedSince}`;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8d3d939beb55e7934742a5967645c1ae75d72e24
         return fetch(this._url + url, options)
             .then(response => response.json())
             .then(responseJson => {

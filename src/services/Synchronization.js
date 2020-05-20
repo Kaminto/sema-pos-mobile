@@ -116,8 +116,6 @@ class Synchronization {
 				this._refreshToken()
 					.then(() => {
 						let settings = SettingRealm.getAllSetting();
-
-
 						const promiseSalesChannels = SalesChannelSync.synchronizeSalesChannels();
 						const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes();
 						const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes();
@@ -132,15 +130,11 @@ class Synchronization {
 
 
 						const promiseCustomers = CustomerSync.synchronizeCustomers(settings.siteId);
-						const promiseTopUps = CreditSync.synchronizeCredits();
+						const promiseTopUps = CreditSync.synchronizeCredits(settings.siteId);
 
-						const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts();
+						const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts(settings.siteId);
 						const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId);
 						const promiseOrders = OrderSync.synchronizeSales(settings.siteId);
-
-
-
-
 
 						Promise.all([
 							promiseSalesChannels,
@@ -151,15 +145,12 @@ class Synchronization {
 							promiseProducts,
 							promiseMeterReading,
 							promiseInventory,
-
-
 							promiseCustomerDebts,
 							promiseRecieptPaymentTypes,
 							promiseTopUps,
 							promiseCustomers,
 							promiseOrders,
 							promiseReminder
-
 
 						])
 							.then(values => {
@@ -171,7 +162,6 @@ class Synchronization {
 								syncResult.products = values[5];
 								syncResult.meterReading = values[6];
 								syncResult.wastageReport = values[7];
-
 								syncResult.debt = values[8];
 								syncResult.recieptPayments = values[9];
 								syncResult.topups = values[10];

@@ -6,9 +6,9 @@ import SyncUtils from './syncUtils';
 let settings = SettingRealm.getAllSetting();
 class CreditSync {
 
-    synchronizeCredits() {
+    synchronizeCredits(kiosk_id) {
         return new Promise(resolve => {
-            CreditApi.getTopUps(settings.siteId, CreditRealm.getLastCreditSync())
+            CreditApi.getTopUps(kiosk_id, CreditRealm.getLastCreditSync())
                 .then(async remoteCredit => {
 
                     let initlocalCredits = CreditRealm.getAllCreditByDate(CreditRealm.getLastCreditSync());
@@ -29,7 +29,7 @@ class CreditSync {
                     if (onlyInLocal.length > 0) {
 
                         for (const property in onlyInLocal) {
-                            let syncResponse = await this.apiSyncOperations({...onlyInLocal[property], kiosk_id: settings.siteId});
+                            let syncResponse = await this.apiSyncOperations({...onlyInLocal[property], kiosk_id});
                             syncResponseArray.push(syncResponse);
                         }
 
