@@ -5,7 +5,8 @@ import {
 	CUSTOMERS_TYPE_SEARCH,
 	CUSTOMER_EDIT,
 	CUSTOMER_PROPS,
-	CUSTOMERS_CHANNEL_SEARCH
+	CUSTOMERS_CHANNEL_SEARCH,
+	IS_LOADING
 } from "../actions/CustomerActions";
 let initialState = {
 		selectedCustomer: {},
@@ -19,7 +20,8 @@ let initialState = {
 			customerTypeValue: 'all',
 		},
 		customerTypeFilter: "all",
-		isEdit: false
+		isEdit: false,
+		isLoading: false,
 };
 
 const customerReducer = (state = initialState, action) => {
@@ -53,6 +55,13 @@ const customerReducer = (state = initialState, action) => {
 			newState = { ...state };
 			newState.isEdit = action.data;
 			return newState;
+			case IS_LOADING:
+				newState = { ...state };
+				newState.isLoading = action.data;
+				return newState;
+	
+
+			
 		default:
 			return state;
 	}

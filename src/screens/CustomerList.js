@@ -74,7 +74,7 @@ class CustomerListItem extends React.PureComponent {
                     </View>
                     <View style={{ flex: 1 }}>
                         <Text style={styles.baseItem}>
-                            {this.props.item.dueAmount.toFixed(2)}
+                            {this.props.item.dueAmount ? this.props.item.dueAmount.toFixed(2) : 0}
                         </Text>
                     </View>
                     <View style={{ flex: 1 }}>
