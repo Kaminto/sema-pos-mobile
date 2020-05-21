@@ -63,6 +63,7 @@ class CustomerEdit extends React.PureComponent {
 		this.customerTypesIndicies = this.customerTypes.map(customerType => {
 			return customerType.id;
 		});
+
 	}
 
 	componentDidMount() {

@@ -43,15 +43,13 @@ class PaymentModal extends React.PureComponent {
 
 	render() {
 		return (
-
-			<View
-				style={{
-					flex: 1,
-					marginTop: 0,
-					padding: 10
-				}}>
-
 				<ScrollView>
+					<View
+					style={{
+						flex: 1,
+						marginTop: 0,
+						padding: 10
+					}}>
 						<View
 							style={{
 								justifyContent: 'flex-end',
@@ -102,8 +100,6 @@ class PaymentModal extends React.PureComponent {
 						</View>
 					</View>
 
-
-				</ScrollView>
 				<View style={styles.completeOrder}>
 					<View style={{ justifyContent: 'center', height: 50 }}>
 						<TouchableHighlight
@@ -122,7 +118,7 @@ class PaymentModal extends React.PureComponent {
 				</View>
 
 			</View>
-
+		</ScrollView>
 
 		);
 	}
