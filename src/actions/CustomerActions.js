@@ -3,6 +3,7 @@ export const CUSTOMERS_LOADED = 'CUSTOMERS_LOADED';
 export const CUSTOMERS_SET = 'CUSTOMERS_SET';
 export const CUSTOMERS_SEARCH = 'CUSTOMERS_SEARCH';
 export const CUSTOMER_EDIT = 'CUSTOMER_EDIT';
+export const IS_LOADING = 'IS_LOADING' 
 export const CUSTOMERS_CHANNEL_SEARCH = 'CUSTOMERS_CHANNEL_SEARCH';
 export const CUSTOMERS_TYPE_SEARCH = 'CUSTOMERS_TYPE_SEARCH';
 export const CUSTOMERS_PAYMENT_TYPE_SEARCH = 'CUSTOMERS_PAYMENT_TYPE_SEARCH';
@@ -42,4 +43,8 @@ export function SearchPaymentType(paymentTypeFilter) {
 
 export function setCustomerEditStatus(status) {
 	return (dispatch) => { dispatch({ type: CUSTOMER_EDIT, data: status }) };
+}
+
+export function setIsLoading(status) {
+	return (dispatch) => { dispatch({ type: IS_LOADING, data: status }) };
 }

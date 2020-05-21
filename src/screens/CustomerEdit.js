@@ -5,9 +5,11 @@ import {
 	Text,
 	StyleSheet,
 	Modal,
-	ScrollView
+	ScrollView,
+	Alert,
+	ActivityIndicator
 } from 'react-native';
-import { Card, Button, Input} from 'react-native-elements';
+import { Card, Button, Input } from 'react-native-elements';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -29,6 +31,8 @@ class CustomerEdit extends React.PureComponent {
 
 		this.state = {
 			isEditInProgress: false,
+			isCreateInProgress: false,
+			isLoading: true,
 			salescid: 0,
 			language: "",
 			name: this.props.selectedCustomer.name ? this.props.selectedCustomer.name : "",
@@ -82,55 +86,84 @@ class CustomerEdit extends React.PureComponent {
 	}
 
 	onEdit() {
-		let salesChannelId = this.state.customerChannel > 0 ? this.state.customerChannel : -1;
-		let customerTypeId = this.state.customerType > 0 ? this.state.customerType : -1;
-		if (this.props.isEdit) {
-			CustomerRealm.updateCustomer(
-				this.props.selectedCustomer,
-				this.state.phoneNumber,
-				this.state.name,
-				this.state.address,
-				salesChannelId,
-				customerTypeId,
-				this.state.reference,
-				this.state.secondPhoneNumber
-			);
-			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
-			this.props.customerActions.CustomerSelected({});
-			this.setState({ isEditInProgress: true });
-			this.props.navigation.goBack();
-		} else {
-			CustomerRealm.createCustomer(
-				this.state.phoneNumber,
-				this.state.name,
-				this.state.address,
-				this.props.settings.siteId,
-				salesChannelId,
-				customerTypeId,
-				this.state.reference,
-				this.state.secondPhoneNumber
-			);
-			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
-			this.props.customerActions.CustomerSelected({});
-			this.props.navigation.goBack();
-		}
+		this.props.customerActions.setIsLoading(true);
+		try {
+			let salesChannelId = this.state.customerChannel > 0 ? this.state.customerChannel : -1;
+			let customerTypeId = this.state.customerType > 0 ? this.state.customerType : -1;
+			if (this.props.isEdit) {
+				CustomerRealm.updateCustomer(
+					this.props.selectedCustomer,
+					this.state.phoneNumber,
+					this.state.name,
+					this.state.address,
+					salesChannelId,
+					customerTypeId,
+					this.state.reference,
+					this.state.secondPhoneNumber
+				).then(e => {
+					console.log('eeee', e)
+					this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
+					this.props.customerActions.CustomerSelected({});
+					this.setState({ isEditInProgress: true });
+				});
+			} else {
+				if (this._textIsEmpty(this.state.phoneNumber) ||
+					this._textIsEmpty(this.state.name) ||
+					this._textIsEmpty(this.state.address) ||
+					this._textIsEmpty(this.state.secondPhoneNumber)) {
+					Alert.alert(
+						'Empty Fields',
+						'A customer cannot be created with empty fields!',
+						[
+							{
+								text: 'Cancel',
+								onPress: () => { },
+								style: 'cancel'
+							},
+							{
+								text: 'OK',
+								onPress: () => {
+
+								}
+							}
+						],
+						{ cancelable: false }
+					);
+					return;
+				}
 
 
+				CustomerRealm.createCustomer(
+					this.state.phoneNumber,
+					this.state.name,
+					this.state.address,
+					this.props.settings.siteId,
+					salesChannelId,
+					customerTypeId,
+					this.state.reference,
+					this.state.secondPhoneNumber
+				);
+				this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
+				this.props.customerActions.CustomerSelected({});
+				this.setState({ isCreateInProgress: true });
+			}
+			this.props.navigation.goBack();
+		} catch (error) { }
 	}
 
-	handleOnPress() {
-		requestAnimationFrame(() => {
-			this.onEdit();
-		});
-	};
 
 
 	render() {
+		const cplaceholder = {
+			label: '',
+			value: null,
+			key: 0,
+		};
 		return (
 			<View style={{ flex: 1, backgroundColor: '#f1f1f1', justifyContent: 'center' }}>
 				<ScrollView
 					style={{ flex: 1 }}
-					>
+				>
 					<View style={{ flex: 1, alignItems: 'center' }}>
 
 						<Card containerStyle={{ width: '55%', marginTop: 30, padding: 0, borderRadius: 8 }}>
@@ -223,19 +256,19 @@ class CustomerEdit extends React.PureComponent {
 								style={{
 									...pickerSelectStyles,
 									iconContainer: {
-									  top: 20,
-									  left: 30,
-									  color: "black",
-									  marginRight: 10
+										top: 20,
+										left: 30,
+										color: "black",
+										marginRight: 10
 									},
-								  }}
+								}}
 								Icon={() => {
 									return <Ionicons name="md-ribbon" size={24} />;
-								  }}
+								}}
 							/>
 
 							<Button
-								onPress={() => this.onEdit()}
+								onPress={this.onEdit.bind(this)}
 								buttonStyle={{ padding: 20 }}
 								containerStyle={{
 									bottom: 0,
@@ -248,7 +281,10 @@ class CustomerEdit extends React.PureComponent {
 								}}
 								title={this.getSubmitText()} />
 
+
 						</Card>
+
+
 						<Modal
 							visible={this.state.isEditInProgress}
 							backdropColor={'red'}
@@ -256,6 +292,16 @@ class CustomerEdit extends React.PureComponent {
 							onRequestClose={this.closeHandler}>
 							{this.showEditInProgress()}
 						</Modal>
+						<Modal
+							visible={this.state.isCreateInProgress}
+							backdropColor={'red'}
+							transparent={true}
+							onRequestClose={this.closeHandler}>
+							{this.showCreateInProgress()}
+						</Modal>
+
+
+
 					</View>
 				</ScrollView>
 			</View>
@@ -430,6 +476,7 @@ class CustomerEdit extends React.PureComponent {
 
 	closeHandler() {
 		this.setState({ isEditInProgress: false });
+		this.setState({ isCreateInProgress: false });
 		this.onCancelEdit();
 	}
 
@@ -447,13 +494,6 @@ class CustomerEdit extends React.PureComponent {
 		return test;
 	}
 
-	onShowChannel() {
-		this.customerChannel.current.show();
-	}
-
-	onShowCustomerType() {
-		this.customerType.current.show();
-	}
 
 	_textIsEmpty(txt) {
 		if (txt === null || txt.length === 0) {
@@ -485,12 +525,39 @@ class CustomerEdit extends React.PureComponent {
 			</View>
 		);
 	}
+
+
+	showCreateInProgress() {
+		let that = this;
+		if (this.state.isCreateInProgress) {
+			setTimeout(() => {
+				that.closeHandler();
+			}, 1000);
+		}
+		return (
+			<View
+				style={{
+					flex: 1,
+					flexDirection: 'column',
+					justifyContent: 'center',
+					alignItems: 'center'
+				}}>
+				<View style={styles.updating}>
+					<Text style={{ fontSize: 24, fontWeight: 'bold' }}>
+						Creating
+					</Text>
+				</View>
+			</View>
+		);
+	}
+
 }
 
 function mapStateToProps(state, props) {
 	return {
 		selectedCustomer: state.customerReducer.selectedCustomer,
 		isEdit: state.customerReducer.isEdit,
+		isLoading: state.customerReducer.isLoading,
 		settings: state.settingsReducer.settings
 	};
 }
