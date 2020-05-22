@@ -40,42 +40,6 @@ import { withNavigation } from 'react-navigation';
 
 class CustomerListItem extends React.PureComponent {
 
-	handleOnPress(item) {
-        // requestAnimationFrame(() => {
-        // InteractionManager.runAfterInteractions(() => {
-        this.props.customerActions.CustomerSelected(item);
-        this.props.customerActions.SetCustomerProp(
-            {
-                isDueAmount: item.dueAmount,
-                isCustomerSelected: false,
-                customerName: '',
-                'title': item.name + "'s Order"
-            }
-        );
-
-        // if (this.props.products.length > 0) {
-            this.props.navigation.navigate('OrderView');
-        // }
-
-        // if (this.props.products.length === 0) {
-
-		// }
-		// });
-		// });
-    }
-
-    onLongPressItem(item) {
-        this.props.customerActions.CustomerSelected(item);
-        this.props.customerActions.SetCustomerProp(
-            {
-                isCustomerSelected: true,
-                isDueAmount: item.dueAmount,
-                customerName: item.name,
-                'title': item.name
-            }
-		)
-	}
-
     render() {
         let isSelected = false;
         if (
@@ -86,11 +50,6 @@ class CustomerListItem extends React.PureComponent {
         }
         if (Number(this.props.item.is_delete) !== 0) {
             return (
-				<TouchableHighlight
-					onLongPress={() => this.onLongPressItem(this.props.item)}
-					onPress={() => this.handleOnPress(this.props.item)}
-					onShowUnderlay={this.props.separators.highlight}
-					onHideUnderlay={this.props.separators.unhighlight}>
                 <View
                     style={[
                         this.getRowBackground(this.props.index, isSelected), styles.listStyles
@@ -125,7 +84,6 @@ class CustomerListItem extends React.PureComponent {
                         </Text>
                     </View>
                 </View>
-				</TouchableHighlight>
             );
         } else {
             return <View />;
@@ -171,7 +129,10 @@ class CustomerList extends React.Component {
             hasScrolled: false
         };
 
-        this.props.navigation.setParams({
+	}
+
+	componentDidMount(){
+		this.props.navigation.setParams({
             isCustomerSelected: false,
             customerTypeValue: 'all',
             customerName: '',
@@ -183,10 +144,135 @@ class CustomerList extends React.Component {
 
         this.props.customerActions.CustomerSelected({});
         this.props.customerActions.setCustomerEditStatus(false);
-    }
+	}
     static whyDidYouRender = true;
 
-    searchCustomer = (searchText) => {
+
+	handleOnPress = (item) => {
+        // requestAnimationFrame(() => {
+        // InteractionManager.runAfterInteractions(() => {
+        this.props.customerActions.CustomerSelected(item);
+        this.props.customerActions.SetCustomerProp(
+            {
+                isDueAmount: item.dueAmount,
+                isCustomerSelected: false,
+                customerName: '',
+                'title': item.name + "'s Order"
+            }
+        );
+
+        if (this.props.products.length > 0) {
+            this.props.navigation.navigate('OrderView');
+        }
+
+        // if (this.props.products.length === 0) {
+
+		// }
+		// });
+		// });
+    };
+
+    onLongPressItem = (item) => {
+        this.props.customerActions.CustomerSelected(item);
+        this.props.customerActions.SetCustomerProp(
+            {
+                isCustomerSelected: true,
+                isDueAmount: item.dueAmount,
+                customerName: item.name,
+                'title': item.name
+            }
+        );
+
+        this.props.customerActions.setCustomerEditStatus(true);
+    };
+
+    _renderItem = ({ item, index, separators }) => (
+		<TouchableHighlight
+					onLongPress={() => this.onLongPressItem(item)}
+					onPress={() => this.handleOnPress(item)}
+					onShowUnderlay={separators.highlight}
+					onHideUnderlay={separators.unhighlight}>
+            <CustomerListItem
+                item={item}
+                index={index}
+                selectedCustomer={this.props.selectedCustomer}
+				customerActions={this.props.customerActions}
+            />
+			</TouchableHighlight>
+    );
+
+    onRefresh = () => {
+        this.setState({ refresh: !this.state.refresh });
+    }
+
+    render() {
+        return (
+            <View style={{ backgroundColor: '#fff', flex: 1 }}>
+                <FlatList
+                    ref={ref => {
+                        this.flatListRef = ref;
+                    }}
+                    getItemLayout={this.getItemLayout}
+                    data={this.prepareData()}
+                    ListHeaderComponent={this.showHeader}
+                    stickyHeaderIndices={[0]}
+                    extraData={this.state.refresh}
+                    renderItem={this._renderItem}
+                    keyExtractor={(item, idx) => item.customerId + idx}
+                    windowSize={20}
+                    removeClippedSubviews={true}
+                />
+                <FloatingAction
+                    onOpen={name => {
+                        // this.props.customerActions.CustomerSelected({});
+                        this.props.customerActions.setCustomerEditStatus(false);
+                        // this.props.customerActions.SetCustomerProp(
+                        //     {
+                        //         isCustomerSelected: false,
+                        //         isDueAmount: 0,
+                        //         customerName: '',
+                        //         'title': '',
+                        //     }
+                        // );
+                        this.props.navigation.navigate('EditCustomer');
+                    }}
+                />
+
+                <View style={styles.modalPayment}>
+                    <Modal
+                        style={styles.modal3}
+                        coverScreen={true}
+                        position={"center"} ref={"modal6"}
+                        onClosed={() => this.modalOnClose()}
+                        isDisabled={this.state.isDisabled}>
+                        <PaymentModal
+                            modalOnClose={this.modalOnClose}
+                            closePaymentModal={this.closePaymentModal} />
+                    </Modal>
+                </View>
+                <SearchWatcher parent={this}>
+                    {this.props.searchString}
+                </SearchWatcher>
+            </View>
+        );
+    };
+
+    getItemLayout = (data, index) => ({
+        length: 50,
+        offset: 50 * index,
+        index
+    });
+
+    prepareData = () => {
+        const customerTypes = CustomerTypeRealm.getCustomerTypes();
+        let data = [];
+        if (this.props.customers.length > 0) {
+            data = this.filterItems(this.props.customers);
+        }
+        return data;
+	};
+
+	searchCustomer = (searchText) => {
         this.props.customerActions.SearchCustomers(searchText);
     };
 
@@ -284,125 +370,6 @@ class CustomerList extends React.Component {
             }
         }
 	};
-
-	handleOnPress(item) {
-        // requestAnimationFrame(() => {
-        // InteractionManager.runAfterInteractions(() => {
-        this.props.customerActions.CustomerSelected(item);
-        this.props.customerActions.SetCustomerProp(
-            {
-                isDueAmount: item.dueAmount,
-                isCustomerSelected: false,
-                customerName: '',
-                'title': item.name + "'s Order"
-            }
-        );
-
-        if (this.props.products.length > 0) {
-            this.props.navigation.navigate('OrderView');
-        }
-
-        // if (this.props.products.length === 0) {
-
-		// }
-		// });
-		// });
-    };
-
-    onLongPressItem(item) {
-        this.props.customerActions.CustomerSelected(item);
-        this.props.customerActions.SetCustomerProp(
-            {
-                isCustomerSelected: true,
-                isDueAmount: item.dueAmount,
-                customerName: item.name,
-                'title': item.name
-            }
-        );
-
-        this.props.customerActions.setCustomerEditStatus(true);
-    };
-
-    _renderItem = ({ item, index, separators }) => (
-            <CustomerListItem
-                item={item}
-                index={index}
-                selectedCustomer={this.props.selectedCustomer}
-				separators={separators}
-				customerActions={this.props.customerActions}
-            />
-    );
-
-    onRefresh = () => {
-        this.setState({ refresh: !this.state.refresh });
-    }
-
-    render() {
-        return (
-            <View style={{ backgroundColor: '#fff', flex: 1 }}>
-                <FlatList
-                    ref={ref => {
-                        this.flatListRef = ref;
-                    }}
-                    getItemLayout={this.getItemLayout}
-                    data={this.prepareData()}
-                    ListHeaderComponent={this.showHeader}
-                    stickyHeaderIndices={[0]}
-                    extraData={this.state.refresh}
-                    renderItem={this._renderItem}
-                    keyExtractor={(item, idx) => item.customerId + idx}
-                    windowSize={20}
-                    removeClippedSubviews={true}
-                />
-                <FloatingAction
-                    onOpen={name => {
-                        // this.props.customerActions.CustomerSelected({});
-                        this.props.customerActions.setCustomerEditStatus(false);
-                        // this.props.customerActions.SetCustomerProp(
-                        //     {
-                        //         isCustomerSelected: false,
-                        //         isDueAmount: 0,
-                        //         customerName: '',
-                        //         'title': '',
-                        //     }
-                        // );
-                        this.props.navigation.navigate('EditCustomer');
-                    }}
-                />
-
-                <View style={styles.modalPayment}>
-                    <Modal
-                        style={styles.modal3}
-                        coverScreen={true}
-                        position={"center"} ref={"modal6"}
-                        onClosed={() => this.modalOnClose()}
-                        isDisabled={this.state.isDisabled}>
-                        <PaymentModal
-                            modalOnClose={this.modalOnClose}
-                            closePaymentModal={this.closePaymentModal} />
-                    </Modal>
-                </View>
-                <SearchWatcher parent={this}>
-                    {this.props.searchString}
-                </SearchWatcher>
-            </View>
-        );
-    };
-
-    getItemLayout = (data, index) => ({
-        length: 50,
-        offset: 50 * index,
-        index
-    });
-
-    prepareData = () => {
-        const customerTypes = CustomerTypeRealm.getCustomerTypes();
-        let data = [];
-        if (this.props.customers.length > 0) {
-            data = this.filterItems(this.props.customers);
-        }
-        return data;
-    };
 
     filterItems = data => {
         let filter = {

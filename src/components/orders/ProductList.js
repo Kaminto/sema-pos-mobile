@@ -18,12 +18,21 @@ import SalesChannelRealm from '../../database/sales-channels/sales-channels.oper
 import randomMC from 'random-material-color';
 
 class ProductListItem extends React.PureComponent {
+
+	handleOnPress = (item) => {
+		requestAnimationFrame(() => {
+			// InteractionManager.runAfterInteractions(() => {
+			const unitPrice = this.getItemPrice(item);
+			this.props.orderActions.AddProductToOrder(item, 1, unitPrice);
+			});
+		// });
+	}
 	render() {
 		return(
 			<TouchableOpacity
 							onPress={() => this.handleOnPress(this.props.item)}
-							onShowUnderlay={separators.highlight}
-							onHideUnderlay={separators.unhighlight}>
+							onShowUnderlay={this.props.separators.highlight}
+							onHideUnderlay={this.props.separators.unhighlight}>
 				<View
 						style={[
 							this.getItemBackground(this.props.index), newStyle(this.props.viewWidth).heights
@@ -88,15 +97,6 @@ class ProductList extends React.PureComponent {
 		super(props);
 	}
 
-	handleOnPress(item){
-		requestAnimationFrame(() => {
-			// InteractionManager.runAfterInteractions(() => {
-			const unitPrice = this.getItemPrice(item);
-			this.props.orderActions.AddProductToOrder(item, 1, unitPrice);
-			});
-		// });
-	}
-
 	_renderItem = ({item, index, separators}) => (
 
 							<ProductListItem
@@ -104,6 +104,7 @@ class ProductList extends React.PureComponent {
 								index={index}
 								viewWidth={this.props.viewWidth}
 								filter={this.props.filter}
+								orderActions={this.props.orderActions}
 								separators={separators}
 								/>
 );

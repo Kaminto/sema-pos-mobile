@@ -10,7 +10,7 @@ class ProductListScreen extends React.PureComponent {
 	constructor(props) {
 		super(props);
 
-		let { height, width } = Dimensions.get('window');
+		let { width } = Dimensions.get('window');
 		// Empirically we know that this view has flex of 1 and the view beside it,
 		// (OrderSummaryScreen has a flex of .6 This makes the width of this view 1/1.6 * screen width
 		// Since there is no way to dynamilcally determine view width until the layout is complete, use
