@@ -15,11 +15,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { format, parseISO, isBefore } from 'date-fns';
-import { Card, Button, Input } from 'react-native-elements';
 import CustomerRealm from '../database/customers/customer.operations';
 import CreditRealm from '../database/credit/credit.operations';
 import SettingRealm from '../database/settings/settings.operations';
-import i18n from '../app/i18n';
 import SelectedCustomerDetails from './CustomerDetailSubHeader';
 class CreditHistory extends React.PureComponent {
     constructor(props) {

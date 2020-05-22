@@ -16,49 +16,6 @@ import ToggleSwitch from 'toggle-switch-react-native';
 import slowlog from 'react-native-slowlog';
 const widthQuanityModal = '70%';
 const heightQuanityModal = 500;
-class OrderListItem extends React.PureComponent {
-	render() {
-		return (
-			<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white', padding: 5 }}>
-				<View style={[{ flex: 2 }]}>
-					<Text style={[styles.baseItem, styles.leftMargin]}>{this.props.item.product.description}</Text>
-				</View>
-				<View style={[{ flex: 1.2 }]}>
-					<Text style={[styles.baseItem, { textAlign: 'center' }]}>{this.props.item.quantity}</Text>
-				</View>
-				<View style={[{ flex: 2 }]}>
-					<Text numberOfLines={1} style={[styles.baseItem, { textAlign: 'right', paddingRight: 5 }]}>
-						{this.getCurrency(this.props.item)} {this.getDiscountPrice((this.props.item.quantity * this.props.item.unitPrice), this.props.item)}</Text>
-				</View>
-			</View>
-		)
-	}
-
-	getCurrency = (item) => {
-		if (item.hasOwnProperty('product')) {
-			return item.product.priceCurrency.toUpperCase();
-		}
-	};
-
-	getDiscountPrice = (amountPerQuantity, item) => {
-		if (!item.hasOwnProperty('discount')) {
-			return amountPerQuantity;
-		}
-
-		if (Number(item.discount) === 0) {
-			return amountPerQuantity;
-		}
-
-		if (item.type === 'Flat') {
-			return amountPerQuantity - Number(item.discount);
-		}
-
-		if (item.type === 'Percentage') {
-			return amountPerQuantity * (Number(item.discount) / 100);
-		}
-	};
-
-}
 
 class OrderItems extends React.PureComponent {
 	constructor(props) {
@@ -90,9 +47,6 @@ class OrderItems extends React.PureComponent {
 			onShowUnderlay={separators.highlight}
 			onHideUnderlay={separators.unhighlight}>
 			{this.getRow(item, index, separators)}
-			{/* <OrderListItem
-				 item={item}
-				  /> */}
 		</TouchableHighlight>
 	)
 
@@ -116,7 +70,7 @@ class OrderItems extends React.PureComponent {
 
 					<ScrollView>
 						<TouchableOpacity>
-							<View style={[styles.headerBackground, { flex: 1, flexDirection: 'row', paddingLeft: 20, margin: 0 }]}>
+							<View style={[styles.headerBackground, { paddingLeft: 20, margin: 0 }]}>
 								<View style={{ flex: .3 }}>
 									{this.getProductDescripion()}
 								</View>
@@ -125,23 +79,12 @@ class OrderItems extends React.PureComponent {
 										{this.getCurrency(this.state.selectedItem)} {this.getDiscountPrice((this.state.selectedItem.quantity * this.state.selectedItem.unitPrice), this.state.selectedItem)}</Text>
 								</View>
 								<View
-									style={{
-										flex: .1,
-										justifyContent: 'flex-end',
-										flexDirection: 'row',
-										right: 0,
-										top: 0
-									}}>
+									style={styles.cancelstyle}>
 									{this.getCancelButton()}
 								</View>
 							</View>
 							<View
-								style={{
-									height: 1,
-									backgroundColor: '#ddd',
-									marginBottom: 10,
-									width: '100%'
-								}}
+								style={styles.aseparator}
 							/>
 							<View style={{ flex: 1, paddingRight: 20, paddingLeft: 20 }}>
 								{this.qtyAmount()}
@@ -149,12 +92,7 @@ class OrderItems extends React.PureComponent {
 								{this.bottlesReturned()}
 
 								<View
-									style={{
-										height: 1,
-										backgroundColor: '#ddd',
-										marginBottom: 10,
-										width: '100%'
-									}}
+									style={styles.aseparator}
 								/>
 
 								<View style={{ flex: 1, flexDirection: 'row' }}>
@@ -170,34 +108,22 @@ class OrderItems extends React.PureComponent {
 								</View>
 
 								<View
-									style={{
-										height: 1,
-										backgroundColor: '#ddd',
-										marginBottom: 10,
-										width: '100%'
-									}}
+									style={styles.aseparator}
 								/>
 
 								{this.discountCmpt()}
 
 								<View
-									style={{
-										flex: 1,
-										marginTop: 10,
-										alignContent: 'space-between',
-										flexDirection: 'row',
-										right: 0,
-										bottom: 0
-									}}>
+									style={styles.btmDiv}>
 
 										<TouchableOpacity style={{ flex: 1 }}
 											onPress={() => this.removeDiscount()}>
-											<Text style={{ padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#f00', alignSelf: 'flex-start' }}>REMOVE</Text>
+											<Text style={styles.removebtn}>REMOVE</Text>
 										</TouchableOpacity>
 
 										<TouchableOpacity style={{ flex: 1 }}
 											onPress={() => this.onCancelOrder()}>
-											<Text style={{ padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#036', alignSelf: 'flex-end' }}>SAVE</Text>
+											<Text style={styles.savebtn}>SAVE</Text>
 										</TouchableOpacity>
 
 								</View>
@@ -248,11 +174,7 @@ class OrderItems extends React.PureComponent {
 							</View>
 						</View>
 						<View
-							style={{
-								height: 1,
-								backgroundColor: '#ddd',
-								width: '100%'
-							}}
+							style={styles.aseparator}
 						/>
 					</View>
 				);
@@ -352,7 +274,6 @@ class OrderItems extends React.PureComponent {
 
 		return (
 			<TextInput
-				// ref={input => { this.changeQuantity(input) }}
 				style={{
 					textAlign: 'center',
 					height: 50,
@@ -373,12 +294,7 @@ class OrderItems extends React.PureComponent {
 				return (
 					<View>
 						<View
-							style={{
-								height: 1,
-								backgroundColor: '#ddd',
-								marginBottom: 10,
-								width: '100%'
-							}}
+							style={styles.aseparator}
 						/>
 						<View style={[{ flex: 1, flexDirection: 'row' }]}>
 							<View style={[{ flex: 1 }]}>
@@ -568,7 +484,6 @@ class OrderItems extends React.PureComponent {
 	};
 
 	removeDiscount() {
-		//this.refs.productModel.close();
 		this.refs.productModel.close();
 		let unitPrice = this.getItemPrice(this.state.selectedItem.product);
 		this.props.orderActions.RemoveProductFromOrder(this.state.selectedItem.product, unitPrice);
@@ -855,7 +770,7 @@ class OrderItems extends React.PureComponent {
 
 	showHeader = () => {
 		return (
-			<View style={[{ flex: 1, flexDirection: 'row' }, styles.headerBackground]}>
+			<View style={styles.headerBackground}>
 				<View style={[{ flex: 2 }]}>
 					<Text style={[styles.headerItem, styles.headerLeftMargin]}>{i18n.t('item')}</Text>
 				</View>
@@ -970,7 +885,9 @@ const styles = StyleSheet.create({
 		borderRightWidth: 5,
 	},
 	headerBackground: {
-		backgroundColor: '#ABC1DE'
+		backgroundColor: '#ABC1DE',
+		flex: 1,
+		flexDirection: 'row'
 	},
 	leftMargin: {
 		left: 10
@@ -1003,8 +920,6 @@ const styles = StyleSheet.create({
 		bottom: 120,
 		right: 100,
 		backgroundColor: '#e0e0e0',
-		// padding: 22,
-		// justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 4,
 		borderColor: 'rgba(0, 0, 0, 1)',
@@ -1027,12 +942,34 @@ const styles = StyleSheet.create({
 		flex: .70,
 		flexDirection: 'row',
 	},
+
+	cancelstyle: {
+		flex: .1,
+		justifyContent: 'flex-end',
+		flexDirection: 'row',
+		right: 0,
+		top: 0
+	},
 	modalDone: {
 		flex: .15,
 		backgroundColor: '#2858a7',
 		flexDirection: 'row',
 		alignItems: 'center',
 
+	},
+	aseparator: {
+		height: 1,
+		backgroundColor: '#ddd',
+		marginBottom: 10,
+		width: '100%'
+	},
+
+	removebtn: {
+		padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#f00', alignSelf: 'flex-start'
+	},
+
+	savebtn: {
+		padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#036', alignSelf: 'flex-end'
 	},
 	digitContainer: {
 		flex: 1,
@@ -1075,8 +1012,7 @@ const styles = StyleSheet.create({
 	},
 
 	modal: {
-		justifyContent: 'center',
-		// alignItems: 'center'
+		justifyContent: 'center'
 	},
 
 	modal2: {
@@ -1103,6 +1039,14 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		fontSize: 18,
 		paddingLeft: 10,
+	},
+	btmDiv: {
+		flex: 1,
+		marginTop: 10,
+		alignContent: 'space-between',
+		flexDirection: 'row',
+		right: 0,
+		bottom: 0
 	},
 	btnModal: {
 		position: "absolute",

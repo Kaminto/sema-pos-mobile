@@ -60,10 +60,10 @@ class SalesReport extends React.PureComponent {
 									<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-sales').toUpperCase()}</Text>
 									<Text style={[styles.totalItem, { flex: .6 }]}>{this.getCurrency()} {this.props.salesData.totalSales}</Text>
 								</View>
-								{/* <View style={{ height: 90, flex: 1, color: '#fff' }} >
-								<Text style={[styles.totalLabel, { flex: .4 }]}>DEBT COLLECTED</Text>
-								<Text style={[styles.totalItem, { flex: .6 }]}>{this.props.salesData.totalDebt}</Text>
-							</View> */}
+								<View style={{ height: 90, flex: 1, color: '#fff' }} >
+									<Text style={[styles.totalLabel, { flex: .4 }]}>DEBT COLLECTED</Text>
+									<Text style={[styles.totalItem, { flex: .6 }]}>{this.props.salesData.totalDebt}</Text>
+								</View>
 								<View style={{ height: 90, flex: 1, color: '#fff' }} >
 									<Text style={[styles.totalLabel, { flex: .4 }]}>TOTAL EARNINGS</Text>
 									<Text style={[styles.totalItem, { flex: .6 }]}>

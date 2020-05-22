@@ -20,39 +20,35 @@ import randomMC from 'random-material-color';
 class ProductListItem extends React.PureComponent {
 	render() {
 		return(
-		<View
-				style={[
-					this.getItemBackground(this.props.index),
-					{
-						flex: 1,
-						height: this.props.viewWidth / 4,
-						width: this.props.viewWidth / 4
-					}
-				]}>
-				<Image
-					source={{ uri: this.getImage(this.props.item) }}
-					resizeMethod="scale"
-					style={{ flex: 1 }}
-				/>
-				<Text
-					style={[
-						styles.imageLabel,
-						this.getLabelBackground(this.props.item.categoryId)
-					]}>
-					{this.props.item.description}
-					{'\n'}
-					{this.getItemPrice(this.props.item)}
-				</Text>
-			</View>
+			<TouchableOpacity
+							onPress={() => this.handleOnPress(this.props.item)}
+							onShowUnderlay={separators.highlight}
+							onHideUnderlay={separators.unhighlight}>
+				<View
+						style={[
+							this.getItemBackground(this.props.index), newStyle(this.props.viewWidth).heights
+						]}>
+						<Image
+							source={{ uri: this.getImage(this.props.item) }}
+							resizeMethod="scale"
+							style={{ flex: 1 }}
+						/>
+						<Text
+							style={[
+								styles.imageLabel,
+								this.getLabelBackground(this.props.item.categoryId)
+							]}>
+							{this.props.item.description}
+							{'\n'}
+							{this.getItemPrice(this.props.item)}
+						</Text>
+					</View>
+					</TouchableOpacity>
 		)
 	}
 
 	getImage = item => {
-		//if (item.base64encodedImage.startsWith('data:image')) {
 			return item.base64encodedImage;
-		// } else {
-		// 	return 'data:image/png;base64,' + item.base64encoded_image;
-		// }
 	};
 
 	getItemBackground = index => {
@@ -102,11 +98,7 @@ class ProductList extends React.PureComponent {
 	}
 
 	_renderItem = ({item, index, separators}) => (
-		<TouchableOpacity
-							onPress={() => this.handleOnPress(item)}
-							onShowUnderlay={separators.highlight}
-							onHideUnderlay={separators.unhighlight}>
-							{/* {this.getItem(item, index, separators)} */}
+
 							<ProductListItem
 								item={item}
 								index={index}
@@ -114,7 +106,6 @@ class ProductList extends React.PureComponent {
 								filter={this.props.filter}
 								separators={separators}
 								/>
-						</TouchableOpacity>
 );
 
 	render() {
@@ -133,35 +124,6 @@ class ProductList extends React.PureComponent {
 		);
 	}
 
-	getItem = (item, index) => {
-		return (
-			<View
-				style={[
-					this.getItemBackground(index),
-					{
-						flex: 1,
-						height: this.props.viewWidth / 4,
-						width: this.props.viewWidth / 4
-					}
-				]}>
-				<Image
-					source={{ uri: this.getImage(item) }}
-					resizeMethod="scale"
-					style={{ flex: 1 }}
-				/>
-				<Text
-					style={[
-						styles.imageLabel,
-						this.getLabelBackground(item.categoryId)
-					]}>
-					{item.description}
-					{'\n'}
-					{this.getItemPrice(item)}
-				</Text>
-			</View>
-		);
-	};
-
 	prepareData = () => {
 		let productMrp = ProductMRPRealm.getFilteredProductMRP();
 		let ids = Object.keys(productMrp).map(key => productMrp[key].productId);
@@ -169,11 +131,7 @@ class ProductList extends React.PureComponent {
 	};
 
 	getImage = item => {
-		//if (item.base64encodedImage.startsWith('data:image')) {
 			return item.base64encodedImage;
-		// } else {
-		// 	return 'data:image/png;base64,' + item.base64encoded_image;
-		// }
 	};
 
 	getItemBackground = index => {
@@ -227,11 +185,23 @@ export default connect(
 	mapDispatchToProps
 )(ProductList);
 
+const newStyle = (viewWidth) => StyleSheet.create({
+	heights: {
+		flex: 1,
+		height: viewWidth / 4,
+		width: viewWidth / 4
+	}
+});
+
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		borderColor: '#ABC1DE',
 		borderTopWidth: 5
+	},
+
+	heightStyle: {
+		flex: 1,
 	},
 
 	imageLabel: {

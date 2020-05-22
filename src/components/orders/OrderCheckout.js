@@ -107,8 +107,6 @@ class OrderCheckout extends React.PureComponent {
 	}
 
 	render() {
-		const state = this.state;
-
 		let isRefill = this.props.products.filter(element => {
 			if (element.hasOwnProperty('product')) {
 				if (element.product.description.includes('refill')) {
@@ -221,8 +219,6 @@ class OrderCheckout extends React.PureComponent {
 					position={"center"} ref={"modal6"}
 					onClosed={() => this.modalOnClose()}
 					isDisabled={this.state.isDisabled}>
-
-
 						{/* <TouchableOpacity> */}
 
 						<View style={{ flex: 1, padding: 0, margin: 0 }}>
@@ -358,7 +354,7 @@ class OrderCheckout extends React.PureComponent {
 									</TouchableHighlight>
 
 								</View>
-								<View style={{ flex: 1, flexDirection: 'row' }}>
+								<View style={{ flex: 1, flexDirection: 'row', height: 50 }}>
 									<Text style={[styles.baseItem, { fontSize: 16, paddingTop: 10, textAlign: 'left' }]}>Are you recording an old sale?</Text>
 									<View
 										style={{
@@ -388,7 +384,7 @@ class OrderCheckout extends React.PureComponent {
 										onPress={this.handleOnPress}>
 										<Text
 											style={[
-												{ paddingTop: 10, paddingBottom: 20 },
+												{ paddingTop: 10, paddingBottom: 10 },
 												styles.buttonText
 											]}>
 											{i18n.t('complete-sale')}
@@ -1136,7 +1132,7 @@ class OrderCheckout extends React.PureComponent {
 			);
 
 			Alert.alert(
-				'Payment Made.',
+				'Payment Made',
 				'Loan Cleared: ' + this.state.loanPaid +
 				'\nCustomer Wallet Topup: ' + this.state.topUpExpected +
 				'\nCustomer\'s Loan Balance: ' + this.props.selectedCustomer.dueAmount +

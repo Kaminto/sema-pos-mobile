@@ -157,8 +157,6 @@ class CustomerRealm {
             })
 
         } catch (e) {
-            console.log("Error on update customer ", e);
-            reject(e)
         }
     })
     }

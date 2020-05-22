@@ -102,7 +102,6 @@ class CustomerEdit extends React.PureComponent {
 					this.state.reference,
 					this.state.secondPhoneNumber
 				).then(e => {
-					console.log('eeee', e)
 					this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
 					this.props.customerActions.CustomerSelected({});
 					this.setState({ isEditInProgress: true });
@@ -110,11 +109,10 @@ class CustomerEdit extends React.PureComponent {
 			} else {
 				if (this._textIsEmpty(this.state.phoneNumber) ||
 					this._textIsEmpty(this.state.name) ||
-					this._textIsEmpty(this.state.address) ||
-					this._textIsEmpty(this.state.secondPhoneNumber)) {
+					this._textIsEmpty(this.state.address)) {
 					Alert.alert(
 						'Empty Fields',
-						'A customer cannot be created with empty fields!',
+						'A customer cannot be created without name, phone number and address!',
 						[
 							{
 								text: 'Cancel',
@@ -123,9 +121,7 @@ class CustomerEdit extends React.PureComponent {
 							},
 							{
 								text: 'OK',
-								onPress: () => {
-
-								}
+								onPress: () => {}
 							}
 						],
 						{ cancelable: false }

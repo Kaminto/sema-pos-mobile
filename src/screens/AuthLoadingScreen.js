@@ -37,6 +37,7 @@ import PaymentTypeRealm from '../database/payment_types/payment_types.operations
 import Synchronization from '../services/Synchronization';
 import Communications from '../services/Communications';
 import NetInfo from "@react-native-community/netinfo";
+import { withNavigation } from 'react-navigation';
 
 class AuthLoadingScreen extends React.PureComponent {
 
@@ -130,8 +131,6 @@ class AuthLoadingScreen extends React.PureComponent {
             DiscountRealm.getDiscounts()
         );
 
-
-
         Synchronization.initialize(
             CustomerRealm.getLastCustomerSync(),
             ProductsRealm.getLastProductsync(),
@@ -184,7 +183,7 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(AuthLoadingScreen);
+)(withNavigation(AuthLoadingScreen));
 const styles = StyleSheet.create({
     container: {
         flex: 1,

@@ -156,7 +156,7 @@ class TransactionDetail extends React.PureComponent {
 				[
 					{
 						text: i18n.t('no'),
-						onPress: () => console.log('Cancel Pressed'),
+						onPress: () => { },
 						style: 'cancel'
 					},
 					{
@@ -189,7 +189,7 @@ class TransactionDetail extends React.PureComponent {
 				[
 					{
 						text: i18n.t('no'),
-						onPress: () => console.log('Cancel Pressed'),
+						onPress: () => {},
 						style: 'cancel'
 					},
 					{
@@ -581,6 +581,7 @@ class TransactionDetail extends React.PureComponent {
 	}
 
 }
+
 class CustomerDetails extends React.PureComponent {
 	constructor(props) {
 		super(props);
@@ -1020,7 +1021,7 @@ class CustomerDetails extends React.PureComponent {
 				[
 					{
 						text: i18n.t('no'),
-						onPress: () => console.log('Cancel Pressed'),
+						onPress: () => {},
 						style: 'cancel'
 					},
 					{

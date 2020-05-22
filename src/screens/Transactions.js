@@ -154,7 +154,7 @@ class TransactionDetail extends React.PureComponent {
 				[
 					{
 						text: i18n.t('no'),
-						onPress: () => console.log('Cancel Pressed'),
+						onPress: () => {},
 						style: 'cancel'
 					},
 					{
@@ -187,7 +187,7 @@ class TransactionDetail extends React.PureComponent {
 				[
 					{
 						text: i18n.t('no'),
-						onPress: () => console.log('Cancel Pressed'),
+						onPress: () => {},
 						style: 'cancel'
 					},
 					{
@@ -447,7 +447,7 @@ class TransactionDetail extends React.PureComponent {
 
 								<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
 									<Text style={[styles.customername, { flex: 3, fontWeight: 'bold' }]}>Items Purchased</Text>
-									<Text style={[styles.customername, { flex: 1, fontWeight: 'bold', paddingRight: 20, alignSelf: 'flex-end' }]}>
+									<Text style={[styles.customername, styles.itemsPurchasedValue]}>
 										{this.getCurrency().toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}
 									</Text>
 								</View>
@@ -1106,6 +1106,11 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#fff'
+	},
+
+	itemsPurchasedValue: {
+		flex: 1, fontWeight: 'bold',
+		 paddingRight: 20, alignSelf: 'flex-end'
 	},
 	sectionTitle: {
 		fontSize: 16,

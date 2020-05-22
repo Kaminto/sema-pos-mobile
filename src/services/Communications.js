@@ -11,7 +11,6 @@ import RecieptPaymentTypesApi from './api/reciept-payment-types.api';
 import CustomerDebtApi from './api/customer-debt.api';
 import PaymentTypesApi from './api/payment-types.api';
 
-
 class Communications {
 	constructor() {
 		this._url = 'http://142.93.115.206:3002/';
@@ -21,6 +20,7 @@ class Communications {
 		this._token = '';
 		this._siteId = '';
 	}
+
 	initialize(url, site, user, password, token, siteId) {
 		if (!url.endsWith('/')) {
 			url = url + '/';
@@ -31,7 +31,6 @@ class Communications {
 		this._password = password;
 		this._token = token;
 		this._siteId = siteId;
-
 
 		CreditApi.initialize(
 			'http://142.93.115.206:3002/',
@@ -241,9 +240,7 @@ class Communications {
 
 			response.json()
 
-		).catch(error => console.log("ERROR " + error));
-
-
+		).catch(error => {});
 	}
 
 }

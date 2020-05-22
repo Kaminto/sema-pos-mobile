@@ -76,13 +76,13 @@ class Login extends React.PureComponent {
 			<ImageBackground style={styles.imgBackground}
 				resizeMode='cover'
 				source={require('../images/bottlesrackmin.jpg')}>
-				<ScrollView style={{ flex: 1, backgroundColor: 'transparent' }}>
-					<View style={{ flex: 1, backgroundColor: 'transparent', alignItems: 'center' }}>
+				<ScrollView style={styles.ctnerstyle}>
+					<View style={styles.ctnerstyle}>
 						<Card
 							title={'Welcome to SEMA'}
 							titleStyle={{ fontSize: 26 }}
 							dividerStyle={{ display: 'none' }}
-							containerStyle={{ width: '50%', marginTop: 30, borderRadius: 5, elevation: 10 }}>
+							containerStyle={styles.cardstyle}>
 
 							<Input
 								label={i18n.t('username-or-email-placeholder')}
@@ -96,7 +96,7 @@ class Login extends React.PureComponent {
 								inputContainerStyle={[styles.inputText]}
 							/>
 							<Picker
-								style={{ padding: 10, width: '95%', alignSelf: 'center' }}
+								style={styles.pickerstyle}
 								selectedValue={this.state.selectedLanguage.iso_code}
 								onValueChange={(itemValue, itemIndex) => {
 									this.onLanguageSelected(itemIndex);
@@ -107,7 +107,7 @@ class Login extends React.PureComponent {
 							</Picker>
 							<Button
 								onPress={this.onConnection.bind(this)}
-								buttonStyle={{ borderRadius: 8, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10, padding: 10 }}
+								buttonStyle={styles.btnstyle}
 								title={i18n.t('connect')} />
 
 						</Card>
@@ -431,16 +431,25 @@ export default connect(
 )(Login);
 
 const styles = StyleSheet.create({
+	ctnerstyle: {
+		flex: 1, backgroundColor: 'transparent', alignItems: 'center'
+	},
 	imgBackground: {
 		width: '100%',
 		height: '100%',
 		flex: 1,
+	},
+	cardstyle: {
+		width: '50%', marginTop: 30, borderRadius: 5, elevation: 10
 	},
 	container: {
 		flex: 1,
 		width: '100%',
 		height: '100%',
 		backgroundColor: 'transparent'
+	},
+	btnstyle: {
+		borderRadius: 8, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 10, padding: 10
 	},
 
 	headerText: {
@@ -484,6 +493,10 @@ const styles = StyleSheet.create({
 
 	dropdownText: {
 		fontSize: 24
+	},
+
+	pickerstyle: {
+		padding: 10, width: '95%', alignSelf: 'center'
 	},
 
 	imgBackground: {
