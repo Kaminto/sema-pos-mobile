@@ -101,29 +101,24 @@ class CustomSidebarMenu extends React.PureComponent {
   render() {
     return (
       <View style={styles.sideMenuContainer}>
-        <ScrollView style={{ flex: 1 }}>
+        <ScrollView style={styles.viewFlex}>
           <Image source={require('../images/jibulogo.png')} resizeMode='stretch' style={styles.imageStyle} />
           {/*Divider between Top Image and Sidebar Option*/}
           <View
             style={styles.viewCont}
           />
           {/*Setting up Navigation Options from option array using loop*/}
-          <View style={{ flex: 1 }}>
+          <View style={styles.viewFlex}>
             {this.items.map((item, key) => (
-              <View style={{ flex: 1 }} key={key}>
+              <View style={styles.viewFlex} key={key}>
                 <TouchableOpacity
-                  style={[styles.drawerItemStyle, { backgroundColor: global.currentScreenIndex === key ? '#e0dbdb' : '#ffffff' }]}
+                  style={drwrStyle(key, global.currentScreenIndex).drawerSty}
 
                   onPress={() => this.handleOnPress(item, key)}>
-                  <View style={{ marginRight: 10, marginLeft: 20 }}>
+                  <View style={styles.viewMargins}>
                     <Icon name={item.navOptionThumb} size={25} color="#808080" />
                   </View>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      color: global.currentScreenIndex === key ? 'red' : 'black',
-                    }}
-                  >
+                  <Text style={txtStyle(key, global.currentScreenIndex).txtCol}>
                     {item.navOptionName}
                   </Text>
                 </TouchableOpacity>
@@ -384,8 +379,30 @@ export default connect(
   mapDispatchToProps
 )(CustomSidebarMenu);
 
+const txtStyle = (key, index) => StyleSheet.create({
+	txtCol: {
+		fontSize: 15,
+		color: index === key ? 'red' : 'black',
+	}
+});
 
+const drwrStyle = (key, index) => StyleSheet.create({
+	drawerSty: {
+		flex: 1,
+		flexDirection: 'row',
+		alignItems: 'center',
+		paddingTop: 10,
+		paddingBottom: 10,
+		backgroundColor: index === key ? '#e0dbdb' : '#ffffff'
+	}
+})
 const styles = StyleSheet.create({
+  viewMargins: {
+	marginRight: 10, marginLeft: 20
+  },
+  viewFlex:{
+	  flex: 1
+  },
   imageStyle: {
     width: 100,
     height: 100,

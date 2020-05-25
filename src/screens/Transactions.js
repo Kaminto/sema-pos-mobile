@@ -42,26 +42,22 @@ class ReceiptLineItem extends React.PureComponent {
 	render() {
 		return (
 			<View
-				style={{
-					flex: 1,
-					flexDirection: 'row',
-					marginBottom: 10,
-					marginTop: 10
-				}}>
+				style={styles.receiptlinecont}>
 				<Image
 					source={{ uri: this.getImage(this.props.item.product) }}
-					style={[styles.productImage, { flex: .1 }]}
+					style={styles.productImage}
 				/>
-				<View style={{ justifyContent: 'space-around', flex: .65 }}>
+				<View style={styles.receipttext}>
 					<View style={styles.itemData}>
-						<Text style={[styles.label, { fontSize: 15 }]}>{this.props.item.product.description}</Text>
+						<Text style={styles.label, styles.font15}>{this.props.item.product.description}</Text>
 					</View>
 					<View style={styles.itemData}>
-						<Text style={[styles.label, { fontSize: 16 }]}>{this.props.item.quantity} </Text>
+						<Text style={styles.label, styles.font16}>{this.props.item.quantity} </Text>
 					</View>
 				</View>
-				<View style={[styles.itemData, { flex: .25, alignSelf: 'flex-end' }]}>
-					<Text style={[styles.label, { fontSize: 15, padding: 10, textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}</Text>
+				<View style={styles.itemData, styles.rlidata}>
+					<Text style={[styles.label, styles.receiptitemamt]}>
+						{this.getCurrency().toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}</Text>
 				</View>
 			</View>
 		);
@@ -99,20 +95,15 @@ class PaymentTypeItem extends React.PureComponent {
 	render() {
 		return (
 			<View
-				style={{
-					flex: 1,
-					flexDirection: 'row',
-					marginBottom: 5,
-					marginTop: 5
-				}}>
+				style={styles.receiptlinecont}>
 
 				<View style={[styles.itemData, { flex: 3 }]}>
 					<Icon name={`md-cash`} size={25} color="#808080" />
-					<Text style={[styles.label, { paddingLeft: 10, fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
+					<Text style={[styles.label, styles.payitemname]}>
 						{this.props.item.name == 'credit' ? 'Wallet' : this.props.item.name}</Text>
 				</View>
 				<View style={[styles.itemData, { flex: 1 }]}>
-					<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {this.props.item.amount} </Text>
+					<Text style={[styles.label, styles.payitemamt]}>{this.getCurrency().toUpperCase()} {this.props.item.amount} </Text>
 				</View>
 
 			</View>
@@ -269,11 +260,7 @@ class TransactionDetail extends React.PureComponent {
 		if (item.isTopUp) {
 			return (
 				<View
-					style={{
-						flex: 1,
-						flexDirection: 'row',
-						marginTop: 10
-					}}>
+					style={styles.topupdebtcont}>
 					<View style={{ flex: 1 }}>
 						<View
 							style={{
@@ -282,12 +269,12 @@ class TransactionDetail extends React.PureComponent {
 
 							}}>
 							<View style={[styles.itemData, { flex: 3 }]}>
-								<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
+								<Text style={styles.label, styles.tdlbl}>
 									{'Top Up Amount'}</Text>
 
 							</View>
 							<View style={[styles.itemData, { flex: 1 }]}>
-								<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {item.topUp.topup} </Text>
+								<Text style={styles.label, styles.tdlbamt}>{this.getCurrency().toUpperCase()} {item.topUp.topup} </Text>
 							</View>
 						</View>
 					</View>
@@ -307,11 +294,7 @@ class TransactionDetail extends React.PureComponent {
 		if (item.isDebt) {
 			return (
 				<View
-					style={{
-						flex: 1,
-						flexDirection: 'row',
-						marginTop: 10
-					}}>
+					style={styles.topupdebtcont}>
 					<View style={{ flex: 1 }}>
 						<View
 							style={{
@@ -319,12 +302,12 @@ class TransactionDetail extends React.PureComponent {
 								flexDirection: 'row'
 							}}>
 							<View style={[styles.itemData, { flex: 3 }]}>
-								<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
+								<Text style={styles.label, styles.tdlbl}>
 									{'Loan Cleared'}</Text>
 
 							</View>
 							<View style={[styles.itemData, { flex: 1 }]}>
-								<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {item.debt.due_amount} </Text>
+								<Text style={styles.label, styles.tdlbamt}>{this.getCurrency().toUpperCase()} {item.debt.due_amount} </Text>
 							</View>
 						</View>
 					</View>
@@ -350,8 +333,7 @@ class TransactionDetail extends React.PureComponent {
 	render() {
 		var receiptLineItems;
 		var paymentTypes;
-		var credit;
-		var debt;
+
 		if (!this.isEmpty(this.props.item)) {
 
 			if (this.props.item.isReceipt) {
@@ -391,15 +373,12 @@ class TransactionDetail extends React.PureComponent {
 
 				if (this.props.item.hasOwnProperty("customerAccount")) {
 					return (
-						<View style={{ flex: 1, padding: 15 }}>
+						<View style={styles.transcont}>
 							<ScrollView style={{ flex: 1 }}>
 								<View style={styles.deleteButtonContainer}>
 									<TouchableOpacity
 										onPress={this.onDeleteReceipt(this.props.item)}
-										style={[
-											styles.receiptDeleteButton,
-											{ backgroundColor: (this.props.item.is_delete != 0) ? 'red' : 'grey' }
-										]}>
+										style={ ostyle(this.props.item.active).touchstyle }>
 										<Text style={styles.receiptDeleteButtonText}>X</Text>
 									</TouchableOpacity>
 								</View>
@@ -434,19 +413,19 @@ class TransactionDetail extends React.PureComponent {
 										)}
 								</View>
 								<View>
-									<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>PAYMENT</Text>
+									<Text style={styles.detailheader}>PAYMENT</Text>
 								</View>
 
 								{paymentTypes}
 
 								<View>
-									<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>PRODUCTS</Text>
+									<Text style={styles.detailheader}>PRODUCTS</Text>
 								</View>
 
 								{receiptLineItems}
 
-								<View style={{ flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold' }}>
-									<Text style={[styles.customername, { flex: 3, fontWeight: 'bold' }]}>Items Purchased</Text>
+								<View style={styles.itemspurchcont}>
+									<Text style={styles.customername, styles.itemsplbl}>Items Purchased</Text>
 									<Text style={[styles.customername, styles.itemsPurchasedValue]}>
 										{this.getCurrency().toUpperCase()} {this.props.item.totalAmount ? this.props.item.totalAmount : this.props.item.price_total}
 									</Text>
@@ -457,10 +436,10 @@ class TransactionDetail extends React.PureComponent {
 								{this.renderDebt(this.props.item)}
 
 								<View>
-									<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 20 }}>NOTES</Text>
+									<Text style={styles.detailheader}>NOTES</Text>
 								</View>
 								<View>
-									<Text style={{ fontSize: 13, fontWeight: "bold", marginTop: 5 }}>{this.props.item.notes}</Text>
+									<Text style={styles.notesst}>{this.props.item.notes}</Text>
 								</View>
 
 							</ScrollView>
@@ -476,21 +455,13 @@ class TransactionDetail extends React.PureComponent {
 			} else {
 				return (
 					<View
-						style={{
-							flex: 1,
-							flexDirection: 'row',
-							marginBottom: 5,
-							marginTop: 5
-						}}>
-						<View style={{ flex: 1, padding: 15 }}>
+						style={styles.detcont}>
+						<View style={styles.detsubcont}>
 							<ScrollView style={{ flex: 1 }}>
 								<View style={styles.deleteButtonContainer}>
 									<TouchableOpacity
 										onPress={this.onTopupCreditDelete(this.props.item)}
-										style={[
-											styles.receiptDeleteButton,
-											{ backgroundColor: (this.props.item.active) ? 'red' : 'grey' }
-										]}>
+										style={ ostyle(this.props.item.active).touchstyle }>
 										<Text style={styles.receiptDeleteButtonText}>X</Text>
 									</TouchableOpacity>
 								</View>
@@ -525,49 +496,39 @@ class TransactionDetail extends React.PureComponent {
 										)}
 								</View>
 								<View>
-									<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>Amount</Text>
+									<Text style={styles.detailheader}>Amount</Text>
 								</View>
 
 								<View
-									style={{
-										flex: 1,
-										flexDirection: 'row',
-										marginBottom: 5,
-										marginTop: 5
-									}}>
+									style={styles.detcont}>
 									<View style={[styles.itemData, { flex: 3 }]}>
-										<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
+										<Text style={styles.label, styles.tdlbl}>
 											{this.props.item.type}</Text>
 
 									</View>
 									<View style={[styles.itemData, { flex: 1 }]}>
-										<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {this.props.item.totalAmount} </Text>
+										<Text style={styles.label, styles.tdlbamt}>{this.getCurrency().toUpperCase()} {this.props.item.totalAmount} </Text>
 									</View>
 								</View>
 
 
 								<View
-									style={{
-										flex: 1,
-										flexDirection: 'row',
-										marginBottom: 5,
-										marginTop: 5
-									}}>
+									style={styles.detcont}>
 									<View style={[styles.itemData, { flex: 3 }]}>
-										<Text style={[styles.label, { fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold' }]}>
+										<Text style={styles.label, styles.tdlbl}>
 											Balance</Text>
 
 									</View>
 									<View style={[styles.itemData, { flex: 1 }]}>
-										<Text style={[styles.label, { fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right' }]}>{this.getCurrency().toUpperCase()} {this.props.item.balance} </Text>
+										<Text style={styles.label, styles.tdlbamt}>{this.getCurrency().toUpperCase()} {this.props.item.balance} </Text>
 									</View>
 								</View>
 
 								<View>
-									<Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 20 }}>NOTES</Text>
+									<Text style={styles.detailheader}>NOTES</Text>
 								</View>
 								<View>
-									<Text style={{ fontSize: 13, fontWeight: "bold", marginTop: 5 }}>{this.props.item.notes}</Text>
+									<Text style={styles.notesst}>{this.props.item.notes}</Text>
 								</View>
 							</ScrollView>
 						</View>
@@ -646,8 +607,8 @@ class Transactions extends React.PureComponent {
 
 		if (this.state.selected) {
 			return (
-				<View style={{ flex: 1, flexDirection: 'row' }}>
-					<View style={{ flex: 1, backgroundColor: '#fff', borderRightWidth: 1, borderRightColor: '#CCC' }}>
+				<View style={styles.detmain}>
+					<View style={styles.detailcont}>
 						<SafeAreaView style={styles.container}>
 							<ScrollView
 								style={{ flex: 1 }}
@@ -689,8 +650,8 @@ class Transactions extends React.PureComponent {
 			);
 		} else {
 			return (
-				<View style={{ flex: 1, flexDirection: 'row' }}>
-					<Text style={{ fontSize: 20, fontWeight: 'bold', alignSelf: "center", alignContent: "center", padding: 20 }}>Record customers sales.</Text>
+				<View style={styles.detmain}>
+					<Text style={styles.emptystate}>Record customers sales.</Text>
 
 				</View>
 			);
@@ -939,11 +900,7 @@ class Transactions extends React.PureComponent {
 	renderSeparator() {
 		return (
 			<View
-				style={{
-					height: 1,
-					backgroundColor: '#ddd',
-					width: '100%'
-				}}
+				style={styles.aseparator}
 			/>
 		);
 	}
@@ -963,10 +920,6 @@ class Transactions extends React.PureComponent {
 		return (
 			<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
 				<View key={index} style={{ padding: 10 }}>
-					{/* <View style={styles.itemData}>
-						<Icon name={`md-barcode`} size={25} color="#808080" />
-						<Text style={styles.customername}>{item.type}</Text>
-					</View> */}
 					<View style={styles.itemData}>
 						<Text style={styles.customername}>{item.isReceipt ? item.customerAccount.name : item.customerAccount.name}</Text>
 					</View>
@@ -1021,15 +974,7 @@ class Transactions extends React.PureComponent {
 	showHeader = () => {
 		return (
 			<View
-				style={[
-					{
-						flex: 1,
-						flexDirection: 'row',
-						height: 50,
-						alignItems: 'center'
-					},
-					styles.headerBackground
-				]}>
+				style={styles.headerBg}>
 				<View style={[{ flex: 2 }]}>
 					<Text style={[styles.headerItem, styles.leftMargin]}>
 						{i18n.t('product')}
@@ -1107,10 +1052,48 @@ export default connect(
 	mapDispatchToProps
 )(Transactions);
 
+const ostyle = (actives) => StyleSheet.create({
+	touchstyle: {
+	    width: '100%',
+		height: '100%',
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor: (actives) ? 'red' : 'grey'
+	}
+})
+
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#fff'
+	},
+
+	aseparator: {
+		height: 1,
+		backgroundColor: '#ddd',
+		width: '100%'
+	},
+
+	itemsplbl: {
+		flex: 3, fontWeight: 'bold'
+	},
+
+	detailcont: {
+		flex: 1, backgroundColor: '#fff', borderRightWidth: 1, borderRightColor: '#CCC'
+	},
+
+	font15:{
+		fontSize: 15
+	},
+	font16:{
+		fontSize: 16
+	},
+
+	receiptlinecont: {
+		flex: 1,
+		flexDirection: 'row',
+		marginBottom: 10,
+		marginTop: 10
 	},
 
 	itemsPurchasedValue: {
@@ -1133,12 +1116,28 @@ const styles = StyleSheet.create({
 	leftMargin: {
 		left: 10
 	},
+
+	emptystate: {
+		fontSize: 20, fontWeight: 'bold', alignSelf: "center", alignContent: "center", padding: 20
+	},
+
+	detmain: {
+		flex: 1, flexDirection: 'row'
+	},
 	headerItem: {
 		fontWeight: 'bold',
 		fontSize: 18
 	},
 	headerBackground: {
 		backgroundColor: '#ABC1DE'
+	},
+
+	headerBg: {
+		backgroundColor: '#ABC1DE',
+		flex: 1,
+		flexDirection: 'row',
+		height: 50,
+		alignItems: 'center'
 	},
 	submit: {
 		backgroundColor: '#2858a7',
@@ -1156,6 +1155,9 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: 'center'
 	},
+	detsubcont: {
+		flex: 1, padding: 15
+	},
 	rightToolbar: {
 		flexDirection: 'row-reverse',
 		flex: 0.34,
@@ -1167,6 +1169,13 @@ const styles = StyleSheet.create({
 		color: 'white',
 		textAlign: 'center',
 		width: 300
+	},
+
+	detcont: {
+		flex: 1,
+		flexDirection: 'row',
+		marginBottom: 5,
+		marginTop: 5
 	},
 	commandBarContainer: {
 		flex: 1,
@@ -1192,6 +1201,10 @@ const styles = StyleSheet.create({
 		flexDirection: 'row'
 	},
 
+	notesst: {
+		fontSize: 13, fontWeight: "bold", marginTop: 5
+	},
+
 	container: {
 		flex: 1,
 		backgroundColor: '#fff'
@@ -1200,6 +1213,10 @@ const styles = StyleSheet.create({
 	receiptStatusText: {
 		color: 'red',
 		fontWeight: 'bold'
+	},
+
+	transcont: {
+		flex: 1, padding: 15
 	},
 
 	deleteButtonContainer: {
@@ -1212,6 +1229,10 @@ const styles = StyleSheet.create({
 		zIndex: 1,
 		top: 15,
 		right: 15
+	},
+
+	detailheader: {
+		fontSize: 16, fontWeight: "bold", marginTop: 10
 	},
 
 	receiptDeleteButton: {
@@ -1228,6 +1249,7 @@ const styles = StyleSheet.create({
 	},
 
 	productImage: {
+		flex: .1,
 		width: 80,
 		height: 80,
 		marginRight: 5,
@@ -1258,5 +1280,35 @@ const styles = StyleSheet.create({
 		borderColor: '#2858a7',
 		borderWidth: 5,
 		borderRadius: 10
+	}, payitemname: {
+		paddingLeft: 10, fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold'
+	},
+
+	itemspurchcont: {
+		flex: 1, marginTop: 20, flexDirection: 'row', fontWeight: 'bold'
+	},
+	payitemamt: {
+		fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right'
+	}, receiptitemamt: {
+		fontSize: 15, padding: 10, textAlign: 'right'
+	},
+	receipttext: {
+		justifyContent: 'space-around', flex: .65
+	},
+
+	rlidata:{
+		flex: .25, alignSelf: 'flex-end'
+	},
+
+	topupdebtcont: {
+		flex: 1,
+		flexDirection: 'row',
+		marginTop: 10
+	},
+	tdlbl: {
+		fontSize: 15, textTransform: 'capitalize', fontWeight: 'bold'
+	},
+	tdlbamt: {
+		fontSize: 15, fontWeight: 'bold', alignItems: 'flex-end', textAlign: 'right'
 	}
 });
