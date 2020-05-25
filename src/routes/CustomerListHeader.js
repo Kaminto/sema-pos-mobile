@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { View, Picker, StyleSheet } from 'react-native';
 import * as CustomerActions from '../actions/CustomerActions';
