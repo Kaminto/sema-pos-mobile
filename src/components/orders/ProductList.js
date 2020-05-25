@@ -64,6 +64,15 @@ class ProductListItem extends React.PureComponent {
 		return index % 2 === 0 ? styles.lightBackground : styles.darkBackground;
 	};
 
+	handleOnPress(item){
+		requestAnimationFrame(() => {
+			// InteractionManager.runAfterInteractions(() => {
+			const unitPrice = this.getItemPrice(item);
+			this.props.orderActions.AddProductToOrder(item, 1, unitPrice);
+			});
+		// });
+	}
+
 	getLabelBackground = categoryId => {
 		return {
 			backgroundColor: `${randomMC.getColor({
@@ -103,6 +112,7 @@ class ProductList extends React.PureComponent {
 								item={item}
 								index={index}
 								viewWidth={this.props.viewWidth}
+								orderActions={this.props.orderActions}
 								filter={this.props.filter}
 								orderActions={this.props.orderActions}
 								separators={separators}

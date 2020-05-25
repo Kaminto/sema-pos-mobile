@@ -6,22 +6,24 @@ import {
 	CUSTOMER_EDIT,
 	CUSTOMER_PROPS,
 	CUSTOMERS_CHANNEL_SEARCH,
-	IS_LOADING
+	IS_LOADING,
+	IS_UPDATE
 } from "../actions/CustomerActions";
 let initialState = {
-		selectedCustomer: {},
-		customers: [],
-		searchString: "",
-		paymentTypeFilter: "",
-		customerProps: {
-			isDueAmount: 0,
-			isCustomerSelected: false,
-			customerName: '',
-			customerTypeValue: 'all',
-		},
-		customerTypeFilter: "all",
-		isEdit: false,
-		isLoading: false,
+	selectedCustomer: {},
+	customers: [],
+	searchString: "",
+	paymentTypeFilter: "",
+	customerProps: {
+		isDueAmount: 0,
+		isCustomerSelected: false,
+		customerName: '',
+		customerTypeValue: 'all',
+	},
+	customerTypeFilter: "all",
+	isEdit: false,
+	isLoading: false,
+	isUpdate: false,
 };
 
 const customerReducer = (state = initialState, action) => {
@@ -29,8 +31,8 @@ const customerReducer = (state = initialState, action) => {
 	switch (action.type) {
 		case CUSTOMER_SELECTED:
 			newState = { ...state };
-			newState.selectedCustomer = action.data;
-			return newState;
+			//	newState.selectedCustomer = action.data;
+			return { ...newState, selectedCustomer: action.data };
 		case CUSTOMER_PROPS:
 			newState = { ...state };
 			newState.customerProps = action.data;
@@ -55,13 +57,16 @@ const customerReducer = (state = initialState, action) => {
 			newState = { ...state };
 			newState.isEdit = action.data;
 			return newState;
-			case IS_LOADING:
-				newState = { ...state };
-				newState.isLoading = action.data;
-				return newState;
-	
+		case IS_LOADING:
+			newState = { ...state };
+			newState.isLoading = action.data;
+			return newState;
 
-			
+		case IS_UPDATE:
+			newState = { ...state };
+			newState.isUpdate = action.data;
+			return newState;
+
 		default:
 			return state;
 	}

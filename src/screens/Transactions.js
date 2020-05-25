@@ -564,6 +564,11 @@ class Transactions extends React.PureComponent {
 	}
 
 
+	shouldComponentUpdate(nextProps, nextState) {
+        console.log('transactnextProps')
+        return false;
+    }
+
 	componentDidMount() {
 		this.props.navigation.setParams({ paymentTypeValue: 'all' });
 		this.props.navigation.setParams({ checkPaymentTypefilter: this.checkPaymentTypefilter });
