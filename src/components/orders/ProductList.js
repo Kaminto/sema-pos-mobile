@@ -22,8 +22,9 @@ class ProductListItem extends React.PureComponent {
 		return(
 			<TouchableOpacity
 							onPress={() => this.handleOnPress(this.props.item)}
-							onShowUnderlay={separators.highlight}
-							onHideUnderlay={separators.unhighlight}>
+							// onShowUnderlay={separators.highlight}
+							// onHideUnderlay={separators.unhighlight}
+							>
 				<View
 						style={[
 							this.getItemBackground(this.props.index), newStyle(this.props.viewWidth).heights
@@ -54,6 +55,15 @@ class ProductListItem extends React.PureComponent {
 	getItemBackground = index => {
 		return index % 2 === 0 ? styles.lightBackground : styles.darkBackground;
 	};
+
+	handleOnPress(item){
+		requestAnimationFrame(() => {
+			// InteractionManager.runAfterInteractions(() => {
+			const unitPrice = this.getItemPrice(item);
+			this.props.orderActions.AddProductToOrder(item, 1, unitPrice);
+			});
+		// });
+	}
 
 	getLabelBackground = categoryId => {
 		return {
@@ -88,14 +98,7 @@ class ProductList extends React.PureComponent {
 		super(props);
 	}
 
-	handleOnPress(item){
-		requestAnimationFrame(() => {
-			// InteractionManager.runAfterInteractions(() => {
-			const unitPrice = this.getItemPrice(item);
-			this.props.orderActions.AddProductToOrder(item, 1, unitPrice);
-			});
-		// });
-	}
+
 
 	_renderItem = ({item, index, separators}) => (
 
@@ -103,8 +106,9 @@ class ProductList extends React.PureComponent {
 								item={item}
 								index={index}
 								viewWidth={this.props.viewWidth}
+								orderActions={this.props.orderActions}
 								filter={this.props.filter}
-								separators={separators}
+								// separators={separators}
 								/>
 );
 

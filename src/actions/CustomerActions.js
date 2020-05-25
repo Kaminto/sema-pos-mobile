@@ -8,6 +8,7 @@ export const CUSTOMERS_CHANNEL_SEARCH = 'CUSTOMERS_CHANNEL_SEARCH';
 export const CUSTOMERS_TYPE_SEARCH = 'CUSTOMERS_TYPE_SEARCH';
 export const CUSTOMERS_PAYMENT_TYPE_SEARCH = 'CUSTOMERS_PAYMENT_TYPE_SEARCH';
 export const CUSTOMER_PROPS = 'CUSTOMER_PROPS';
+export const IS_UPDATE = 'IS_UPDATE';
 
 export function CustomerSelected(customer) {
 	const data = customer;
@@ -48,3 +49,7 @@ export function setCustomerEditStatus(status) {
 export function setIsLoading(status) {
 	return (dispatch) => { dispatch({ type: IS_LOADING, data: status }) };
 }
+export function setIsUpate(status) {
+	return (dispatch) => { dispatch({ type: IS_UPDATE, data: status }) };
+}
+
