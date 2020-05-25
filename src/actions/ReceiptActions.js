@@ -8,6 +8,8 @@ export const REMOVE_LOCAL_RECEIPT = 'REMOVE_LOCAL_RECEIPT';
 export const RECEIPT_SEARCH = 'RECEIPT_SEARCH';
 export const CLEAR_LOGGED_RECEIPTS = 'CLEAR_LOGGED_RECEIPTS';
 export const SET_RECEIPTS = 'SET_RECEIPTS';
+export const IS_UPDATE = 'IS_UPDATE';
+export const SET_TRANSACTION = 'SET_TRANSACTION';
 
 export function setRemoteReceipts(remoteReceipts) {
     return (dispatch) => { dispatch({ type: SET_REMOTE_RECEIPTS, data: { remoteReceipts } }) };
@@ -16,6 +18,11 @@ export function setRemoteReceipts(remoteReceipts) {
 
 export function setReceipts(receipts) {
     return (dispatch) => { dispatch({ type: SET_RECEIPTS, data: { receipts } }) };
+}
+
+
+export function setTransaction() {
+    return (dispatch) => { dispatch({ type: SET_TRANSACTION }) };
 }
 
 
@@ -62,6 +69,10 @@ export function updateReceiptLineItem(receiptIndex, lineItemIndex, updatedFields
             }
         })
     };
+}
+
+export function setIsUpate(status) {
+	return (dispatch) => { dispatch({ type: IS_UPDATE, data: status }) };
 }
 
 
