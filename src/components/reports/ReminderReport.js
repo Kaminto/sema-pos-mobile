@@ -84,7 +84,7 @@ class RemindersReport extends React.PureComponent {
 
 	showHeader = () => {
 		return (
-			<View style={[{ flex: 1, flexDirection: 'row', height: 50, alignSelf: 'center' }, styles.headerBackground]}>
+			<View style={styles.headerBackground}>
 				<View style={[{ flex: 2 }]}>
 					<Text style={[styles.headerItem]}>Customer Name</Text>
 				</View>
@@ -106,7 +106,7 @@ class RemindersReport extends React.PureComponent {
 
 	getRow = (item, index, separators) => {
 		return (
-			<View style={{ flex: 1, flexDirection: 'row', height: 50, alignItems: 'center' }}>
+			<View style={styles.rowCont}>
 				<View style={{ flex: 2 }}>
 					<Text style={[styles.baseItem, styles.leftMargin]}>{item.customer.name}</Text>
 				</View>
@@ -125,7 +125,7 @@ class RemindersReport extends React.PureComponent {
 						style={styles.currentInventory}
 						onPress={() => this.showDateTimePicker(item)}
 						underlayColor='#18376A'>
-						<Text style={[styles.currentInventoryText, { padding: 5 }]}>
+						<Text style={styles.currentInventoryText}>
 							{item.custom_reminder_date ? format(new Date(item.custom_reminder_date), 'iiii d MMM yyyy'): 'SET'}
 						</Text>
 					</TouchableHighlight>
@@ -144,8 +144,8 @@ class RemindersReport extends React.PureComponent {
 	displayReminders() {
 		if (this.props.customerReminder.length <= 0) {
 			return (
-				<View style={{ flex: 1, marginTop: '50%' }}>
-					<Text style={[styles.titleText, { textAlign: 'center' }]}>No Reminders Available</Text>
+				<View style={styles.tltxtCont}>
+					<Text style={styles.titleText}>No Reminders Available</Text>
 				</View>
 			);
 
@@ -227,11 +227,11 @@ class RemindersReport extends React.PureComponent {
 
 	render() {
 		return (
-			<View style={{ flex: 1, flexDirection: 'column', backgroundColor: 'white' }}>
-				<View style={{ flex: .15, flexDirection: 'row' }}>
+			<View style={styles.remContainer}>
+				<View style={styles.dateCont}>
 					<DateFilter />
 				</View>
-				<View style={{ flex: .85, backgroundColor: 'white', marginLeft: 10, marginRight: 10 }}>
+				<View style={styles.remindersCont}>
 					{this.displayReminders()}
 				</View>
 			</View>
@@ -298,6 +298,9 @@ const styles = StyleSheet.create({
 	modalPayment: {
 		backgroundColor: 'white',
 	},
+	remindersCont: {
+		flex: .85, backgroundColor: 'white', marginLeft: 10, marginRight: 10
+	},
 	modal3: {
 		width: '70%',
 		height: 400,
@@ -317,15 +320,29 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		color: '#fff',
 		textAlign: 'center',
+		padding: 5
 	},
 	rowBackground: {
 		backgroundColor: 'white'
 	},
 
+	tltxtCont:{
+		flex: 1, marginTop: '50%'
+	},
+
+	dateCont: {
+		flex: .15, flexDirection: 'row'
+	},
+
+	remContainer: {
+		flex: 1, flexDirection: 'column', backgroundColor: 'white'
+	},
+
 	headerBackground: {
 		backgroundColor: '#f1f1f1',
 		borderColor: '#CCC',
-		padding: 5
+		padding: 5,
+		flex: 1, flexDirection: 'row', height: 50, alignSelf: 'center'
 	},
 	totalItem: {
 		fontWeight: "bold",
@@ -340,6 +357,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white',
 		height: 36,
 		flexDirection: 'row',
+		textAlign: 'center'
 	},
 
 	leftHeader: {
@@ -367,5 +385,8 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		fontWeight: 'bold',
 		fontSize: 18
+		},
+		rowCont: {
+			flex: 1, flexDirection: 'row', height: 50, alignItems: 'center'
 		}
 });

@@ -919,7 +919,7 @@ class Transactions extends React.PureComponent {
 	renderReceipt({ item, index }) {
 		return (
 			<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
-				<View key={index} style={{ padding: 10 }}>
+				<View key={index} style={styles.rcptPad}>
 					<View style={styles.itemData}>
 						<Text style={styles.customername}>{item.isReceipt ? item.customerAccount.name : item.customerAccount.name}</Text>
 					</View>
@@ -938,13 +938,13 @@ class Transactions extends React.PureComponent {
 						) : null}
 
 						{!item.isReceipt ? !item.synched ? (
-							<View style={{ flexDirection: 'row' }}>
+							<View style={styles.rowFlex}>
 								<Text style={styles.receiptPendingText}>
 									{' Pending'.toUpperCase()}
 								</Text>
 							</View>
 						) : (
-								<View style={{ flexDirection: 'row' }}>
+								<View style={styles.rowFlex}>
 									{!item.synched && <Text> - </Text>}
 									<Text style={styles.receiptSyncedText}>
 										{' Synced'.toUpperCase()}
@@ -952,13 +952,13 @@ class Transactions extends React.PureComponent {
 								</View>
 							) :
 							!item.active ? (
-								<View style={{ flexDirection: 'row' }}>
+								<View style={styles.rowFlex}>
 									<Text style={styles.receiptPendingText}>
 										{' Pending'.toUpperCase()}
 									</Text>
 								</View>
 							) : (
-									<View style={{ flexDirection: 'row' }}>
+									<View style={styles.rowFlex}>
 										{!item.active && <Text> - </Text>}
 										<Text style={styles.receiptSyncedText}>
 											{' Synced'.toUpperCase()}
@@ -1144,6 +1144,10 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
 		marginTop: '1%'
 	},
+
+	rcptPad: {
+		padding: 10
+	},
 	inputContainer: {
 		borderWidth: 2,
 		borderRadius: 10,
@@ -1198,6 +1202,10 @@ const styles = StyleSheet.create({
 
 	receiptStats: {
 		flex: 1,
+		flexDirection: 'row'
+	},
+
+	rowFlex:{
 		flexDirection: 'row'
 	},
 
