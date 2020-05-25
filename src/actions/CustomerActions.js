@@ -49,6 +49,7 @@ export function setCustomerEditStatus(status) {
 export function setIsLoading(status) {
 	return (dispatch) => { dispatch({ type: IS_LOADING, data: status }) };
 }
+
 export function setIsUpate(status) {
 	return (dispatch) => { dispatch({ type: IS_UPDATE, data: status }) };
 }

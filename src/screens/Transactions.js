@@ -34,7 +34,7 @@ import CustomerDebtRealm from '../database/customer_debt/customer_debt.operation
 import i18n from '../app/i18n';
 import { format, parseISO, isBefore } from 'date-fns';
 
-class ReceiptLineItem extends React.PureComponent {
+class ReceiptLineItem extends React.Component {
 	constructor(props) {
 		super(props);
 	};
@@ -87,7 +87,7 @@ class ReceiptLineItem extends React.PureComponent {
 	};
 }
 
-class PaymentTypeItem extends React.PureComponent {
+class PaymentTypeItem extends React.Component {
 	constructor(props) {
 		super(props);
 	}
@@ -116,7 +116,7 @@ class PaymentTypeItem extends React.PureComponent {
 	};
 }
 
-class TransactionDetail extends React.PureComponent {
+class TransactionDetail extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -129,6 +129,11 @@ class TransactionDetail extends React.PureComponent {
 			refresh: !this.state.refresh
 		});
 	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+        return true;
+    }
+
 
 	onDeleteReceipt(item) {
 		return () => {
@@ -343,7 +348,6 @@ class TransactionDetail extends React.PureComponent {
 						return (
 							<ReceiptLineItem
 								receiptActions={this.props.receiptActions}
-								remoteReceipts={this.props.receipts}
 								item={lineItem}
 								key={lineItem.receiptId + idx}
 								lineItemIndex={idx}
@@ -549,7 +553,7 @@ class TransactionDetail extends React.PureComponent {
 
 }
 
-class Transactions extends React.PureComponent {
+class Transactions extends React.Component {
 	constructor(props) {
 		super(props);
 
@@ -559,14 +563,13 @@ class Transactions extends React.PureComponent {
 			searchString: '',
 			hasScrolled: false,
 			paymentTypeValue: '',
-			selected: this.prepareSectionedData().length > 0 ? this.prepareSectionedData()[0].data[0] : {},
+			selected: this.props.transactions.length > 0 ? this.props.transactions[0].data[0] : {},
 		};
 	}
 
 
 	shouldComponentUpdate(nextProps, nextState) {
-        console.log('transactnextProps')
-        return false;
+        return true;
     }
 
 	componentDidMount() {
@@ -594,6 +597,7 @@ class Transactions extends React.PureComponent {
 	}
 
 	setSelected(item) {
+		this.props.receiptActions.setIsUpate(true);
 		this.setState({ selected: item });
 	}
 
@@ -621,7 +625,7 @@ class Transactions extends React.PureComponent {
 								<SectionList
 									extraData={this.state.refreshing}
 									ItemSeparatorComponent={this.renderSeparator}
-									sections={this.prepareSectionedData()}
+									sections={this.props.transactions}
 									keyExtractor={(item, index) => item + index}
 									renderItem={this.renderReceipt.bind(this)}
 									renderSectionHeader={({ section: { title } }) => (
@@ -634,7 +638,6 @@ class Transactions extends React.PureComponent {
 
 					<View style={{ flex: 2, backgroundColor: '#fff', paddingLeft: 20 }}>
 						<TransactionDetail
-							// key={}
 							item={this.state.selected}
 							products={this.props.products}
 							customerActions={this.props.customerActions}
@@ -996,7 +999,7 @@ class Transactions extends React.PureComponent {
 
 }
 
-class SearchWatcher extends React.PureComponent {
+class SearchWatcher extends React.Component {
 	render() {
 		return this.searchEvent();
 	}
@@ -1024,10 +1027,10 @@ class SearchWatcher extends React.PureComponent {
 function mapStateToProps(state, props) {
 	return {
 		settings: state.settingsReducer.settings,
-		localReceipts: state.receiptReducer.localReceipts,
-		remoteReceipts: state.receiptReducer.remoteReceipts,
 		topups: state.topupReducer.topups,
 		customerPaidDebt: state.paymentTypesReducer.customerPaidDebt,
+		isUpdate: state.receiptReducer.isUpdate,
+		transactions: state.receiptReducer.transactions,
 		receipts: state.receiptReducer.receipts,
 		receiptsPaymentTypes: state.paymentTypesReducer.receiptsPaymentTypes,
 		paymentTypes: state.paymentTypesReducer.paymentTypes,
