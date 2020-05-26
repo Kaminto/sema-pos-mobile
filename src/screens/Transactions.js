@@ -575,7 +575,6 @@ class Transactions extends React.Component {
 	componentDidMount() {
 		this.props.navigation.setParams({ paymentTypeValue: 'all' });
 		this.props.navigation.setParams({ checkPaymentTypefilter: this.checkPaymentTypefilter });
-
 		Events.on(
 			'ScrollCustomerTo',
 			'customerId1',
@@ -644,8 +643,6 @@ class Transactions extends React.Component {
 							paymentTypesActions={this.props.paymentTypesActions}
 							topUpActions={this.props.topUpActions}
 							receiptActions={this.props.receiptActions}
-							receipts={this.props.receipts}
-							paymentTypes={this.props.receiptsPaymentTypes}
 						/>
 					</View>
 				</View>
@@ -674,168 +671,6 @@ class Transactions extends React.Component {
 	}
 
 
-	prepareData() {
-		// Used for enumerating receipts
-		const totalCount = this.props.receipts.length;
-
-		let receipts = this.comparePaymentTypeReceipts().map((receipt, index) => {
-			return {
-				active: receipt.active,
-				synched: receipt.synched,
-				id: receipt.id,
-				receiptId: receipt.id,
-				createdAt: receipt.created_at,
-				topUp: CreditRealm.getCreditByRecieptId(receipt.id),
-				debt: CustomerDebtRealm.getCustomerDebtByRecieptId(receipt.id),
-				isDebt: CustomerDebtRealm.getCustomerDebtByRecieptId(receipt.id) === undefined ? false : true,
-				isTopUp: CreditRealm.getCreditByRecieptId(receipt.id) === undefined ? false : true,
-				sectiontitle: format(parseISO(receipt.created_at), 'iiii d MMM yyyy'),
-				customerAccount: receipt.customer_account,
-				receiptLineItems: receipt.receipt_line_items,
-				paymentTypes: receipt.paymentTypes,
-				isLocal: receipt.isLocal || false,
-				key: receipt.isLocal ? receipt.key : null,
-				index,
-				updated: receipt.updated,
-				is_delete: receipt.is_delete,
-				amountLoan: receipt.amount_loan,
-				totalCount,
-				currency: receipt.currency_code,
-				isReceipt: true,
-				type: 'Receipt',
-				totalAmount: receipt.total,
-				notes: receipt.notes
-			};
-		});
-
-		receipts.sort((a, b) => {
-			return isBefore(new Date(a.createdAt), new Date(b.createdAt))
-				? 1
-				: -1;
-		});
-		receipts = this.filterItems(receipts);
-
-		return [...receipts];
-	}
-
-	prepareCustomerDebt() {
-		let debtArray = CustomerDebtRealm.getCustomerDebtsTransactions();
-		const totalCount = debtArray.length;
-
-		let debtPayment = debtArray.map((receipt, index) => {
-			return {
-				active: receipt.active,
-				synched: receipt.synched,
-				notes: receipt.notes,
-				id: receipt.customer_debt_id,
-				customer_debt_id: receipt.customer_debt_id,
-				receiptId: receipt.receipt_id,
-				createdAt: receipt.created_at,
-				sectiontitle: format(parseISO(receipt.created_at), 'iiii d MMM yyyy'),
-				customerAccount: CustomerRealm.getCustomerById(receipt.customer_account_id) ? CustomerRealm.getCustomerById(receipt.customer_account_id) : receipt.customer_account_id,
-				receiptLineItems: undefined,
-				paymentTypes: undefined,
-				description: [{ amount: receipt.due_amount, name: 'cash' }],
-				isLocal: receipt.isLocal || false,
-				key: null,
-				index,
-				updated: receipt.updated_at,
-				// is_delete: receipt.is_delete,
-				// amountLoan: receipt.amount_loan,
-				totalCount,
-				// currency: receipt.currency_code,
-				isReceipt: false,
-				isDebt: true,
-				isTopUp: false,
-				type: 'Debt Payment',
-				totalAmount: receipt.due_amount,
-				balance: receipt.balance
-			};
-		});
-
-		debtPayment.sort((a, b) => {
-			return isBefore(new Date(a.createdAt), new Date(b.createdAt))
-				? 1
-				: -1;
-		});
-		return [...debtPayment];
-	}
-
-	prepareTopUpData() {
-		// Used for enumerating receipts
-		let creditArray = CreditRealm.getCreditTransactions();
-		const totalCount = creditArray.length;
-		let topups = creditArray.map((receipt, index) => {
-			return {
-				active: receipt.active,
-				synched: receipt.synched,
-				id: receipt.top_up_id,
-				top_up_id: receipt.top_up_id,
-				notes: receipt.notes,
-				receiptId: receipt.receipt_id,
-				createdAt: receipt.created_at,
-				sectiontitle: format(parseISO(receipt.created_at), 'iiii d MMM yyyy'),
-				customerAccount: CustomerRealm.getCustomerById(receipt.customer_account_id) ? CustomerRealm.getCustomerById(receipt.customer_account_id) : receipt.customer_account_id,
-				receiptLineItems: undefined,
-				paymentTypes: undefined,
-				description: [{ amount: receipt.due_amount, name: 'cash' }],
-				isLocal: receipt.isLocal || false,
-				key: null,
-				index,
-				updated: receipt.updated_at,
-				// is_delete: receipt.is_delete,
-				// amountLoan: receipt.amount_loan,
-				totalCount,
-				// currency: receipt.currency_code,
-				isReceipt: false,
-				isDebt: false,
-				isTopUp: true,
-				type: 'Top Up',
-				balance: receipt.balance,
-				totalAmount: receipt.topup
-			};
-		});
-
-		topups.sort((a, b) => {
-			return isBefore(new Date(a.createdAt), new Date(b.createdAt))
-				? 1
-				: -1;
-		});
-		return [...topups];
-	}
-
-	groupBySectionTitle(objectArray, property) {
-		return objectArray.reduce(function (acc, obj) {
-			let key = obj[property];
-			if (!acc[key]) {
-				acc[key] = [];
-			}
-			acc[key].push(obj);
-			return acc;
-		}, {});
-	}
-
-	prepareSectionedData() {
-		// Used for enumerating receipts
-		let receipts = this.prepareData();
-		let topups = this.prepareTopUpData();
-		let deptPayment = this.prepareCustomerDebt();
-		let finalArray = (deptPayment.concat(topups)).concat(receipts).sort((a, b) => {
-			return isBefore(new Date(a.createdAt), new Date(b.createdAt))
-				? 1
-				: -1;
-		});
-
-		let transformedarray = this.groupBySectionTitle(finalArray, 'sectiontitle');
-		let newarray = [];
-		for (let i of Object.getOwnPropertyNames(transformedarray)) {
-			newarray.push({
-				title: i,
-				data: transformedarray[i],
-			});
-		}
-		return newarray;
-	}
 
 	filterItems = data => {
 		let filter = {
@@ -865,40 +700,6 @@ class Transactions extends React.Component {
 		return filteredItems;
 	};
 
-	comparePaymentTypeReceipts() {
-		let receiptsPaymentTypes = this.comparePaymentTypes();
-		let customerReceipts = this.props.receipts;
-		let finalCustomerReceiptsPaymentTypes = [];
-		for (let customerReceipt of customerReceipts) {
-			let paymentTypes = [];
-			for (let receiptsPaymentType of receiptsPaymentTypes) {
-				if (receiptsPaymentType.receipt_id === customerReceipt.id) {
-					paymentTypes.push(receiptsPaymentType);
-				}
-			}
-			customerReceipt.paymentTypes = paymentTypes;
-			finalCustomerReceiptsPaymentTypes.push(customerReceipt);
-
-		}
-		return finalCustomerReceiptsPaymentTypes;
-	}
-
-	comparePaymentTypes() {
-		let receiptsPaymentTypes = this.props.receiptsPaymentTypes;
-		let paymentTypes = this.props.paymentTypes;
-
-		let finalreceiptsPaymentTypes = [];
-
-		for (let receiptsPaymentType of receiptsPaymentTypes) {
-			const rpIndex = paymentTypes.map(function (e) { return e.id }).indexOf(receiptsPaymentType.payment_type_id);
-			if (rpIndex >= 0) {
-				receiptsPaymentType.name = paymentTypes[rpIndex].name;
-				finalreceiptsPaymentTypes.push(receiptsPaymentType);
-
-			}
-		}
-		return finalreceiptsPaymentTypes;
-	}
 
 	renderSeparator() {
 		return (
@@ -1027,15 +828,8 @@ class SearchWatcher extends React.Component {
 function mapStateToProps(state, props) {
 	return {
 		settings: state.settingsReducer.settings,
-		topups: state.topupReducer.topups,
-		customerPaidDebt: state.paymentTypesReducer.customerPaidDebt,
 		isUpdate: state.receiptReducer.isUpdate,
 		transactions: state.receiptReducer.transactions,
-		receipts: state.receiptReducer.receipts,
-		receiptsPaymentTypes: state.paymentTypesReducer.receiptsPaymentTypes,
-		paymentTypes: state.paymentTypesReducer.paymentTypes,
-		customers: state.customerReducer.customers,
-		customerProps: state.customerReducer.customerProps,
 		products: state.productReducer.products,
 		paymentTypeFilter: state.customerReducer.paymentTypeFilter,
 	};
