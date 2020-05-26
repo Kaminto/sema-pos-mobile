@@ -33,7 +33,7 @@ class ProductListItem extends React.PureComponent {
 							onPress={() => this.handleOnPress(this.props.item)}
 							onShowUnderlay={this.props.separators.highlight}
 							onHideUnderlay={this.props.separators.unhighlight}>
-				<View
+				    <View
 						style={[
 							this.getItemBackground(this.props.index), newStyle(this.props.viewWidth).heights
 						]}>

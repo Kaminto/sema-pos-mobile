@@ -76,7 +76,7 @@ class Login extends React.PureComponent {
 			<ImageBackground style={styles.imgBackground}
 				resizeMode='cover'
 				source={require('../images/bottlesrackmin.jpg')}>
-				<ScrollView style={styles.ctnerstyle}>
+				<ScrollView style={styles.scrollst}>
 					<View style={styles.ctnerstyle}>
 						<Card
 							title={'Welcome to SEMA'}
@@ -431,8 +431,14 @@ export default connect(
 )(Login);
 
 const styles = StyleSheet.create({
+	scrollst: {
+		flex: 1,
+		backgroundColor: 'transparent',
+	},
 	ctnerstyle: {
-		flex: 1, backgroundColor: 'transparent', alignItems: 'center'
+		flex: 1,
+		backgroundColor: 'transparent',
+		alignItems: 'center'
 	},
 	imgBackground: {
 		width: '100%',
@@ -440,7 +446,10 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	cardstyle: {
-		width: '50%', marginTop: 30, borderRadius: 5, elevation: 10
+		width: '50%',
+		 marginTop: 30,
+		  borderRadius: 5,
+		   elevation: 10,
 	},
 	container: {
 		flex: 1,
