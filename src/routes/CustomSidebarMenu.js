@@ -213,6 +213,8 @@ class CustomSidebarMenu extends React.PureComponent {
           OrderRealm.getAllOrder()
         );
 
+        this.props.receiptActions.setTransaction();
+
         Alert.alert(
           i18n.t('sync-results'),
           this._getSyncResults(syncResult),

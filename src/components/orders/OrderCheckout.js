@@ -1125,6 +1125,7 @@ class OrderCheckout extends React.PureComponent {
 			this.props.receiptActions.setReceipts(
 				OrderRealm.getAllOrder()
 			);
+			this.props.receiptActions.setTransaction();
 
 			this.saveCustomerFrequency(OrderRealm.getAllOrder().filter(r => r.customer_account_id === this.props.selectedCustomer.customerId));
 			this.props.customerReminderActions.setCustomerReminders(
