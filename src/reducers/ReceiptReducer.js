@@ -10,7 +10,8 @@ import {
     RECEIPT_SEARCH,
     CLEAR_LOGGED_RECEIPTS,
     IS_UPDATE,
-    SET_TRANSACTION
+    SET_TRANSACTION,
+    UPDATE_TRANSACTION
 } from "../actions/ReceiptActions";
 import CreditRealm from '../database/credit/credit.operations';
 import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
@@ -43,6 +44,10 @@ const receiptReducer = (state = initialState, action) => {
             newState.isUpdate = action.data;
             return newState;
         case SET_TRANSACTION:
+            newState = { ...state };
+            newState.transactions = this.prepareSectionedData();
+            return newState;
+        case UPDATE_TRANSACTION:
             newState = { ...state };
             newState.transactions = this.prepareSectionedData();
             return newState;
