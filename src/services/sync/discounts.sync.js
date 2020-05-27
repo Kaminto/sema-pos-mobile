@@ -32,8 +32,6 @@ class DiscountSync {
                         DiscountRealm.setLastDiscountSync();
                     }
 
-
-
                     resolve({
                         success: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
                         discounts: onlyInLocal.concat(onlyInRemote).length,

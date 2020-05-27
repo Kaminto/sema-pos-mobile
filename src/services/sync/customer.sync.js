@@ -3,8 +3,7 @@ import CustomerApi from '../api/customer.api';
 import * as _ from 'lodash';
 import SyncUtils from '../../services/sync/syncUtils';
 class CustomerSync {
-
-    synchronizeCustomers(kiosk_id) {
+  synchronizeCustomers(kiosk_id) {
         return new Promise(resolve => {
             CustomerApi.getCustomers(CustomerRealm.getLastCustomerSync())
                 .then(async remoteCustomer => {

@@ -1,9 +1,7 @@
 import CreditRealm from '../../database/credit/credit.operations';
 import CreditApi from '../api/credit.api';
-import SettingRealm from '../../database/settings/settings.operations';
 import * as _ from 'lodash';
 import SyncUtils from './syncUtils';
-let settings = SettingRealm.getAllSetting();
 class CreditSync {
 
     synchronizeCredits(kiosk_id) {

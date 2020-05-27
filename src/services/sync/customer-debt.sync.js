@@ -1,9 +1,7 @@
 import CustomerDebtRealm from '../../database/customer_debt/customer_debt.operations';
 import CustomerDebtApi from '../api/customer-debt.api';
-import SettingRealm from '../../database/settings/settings.operations';
 import SyncUtils from './syncUtils';
 import * as _ from 'lodash';
-let settings = SettingRealm.getAllSetting();
 class CustomerDebtsSync {
 
     synchronizeCustomerDebts(kiosk_id) {

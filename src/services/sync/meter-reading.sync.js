@@ -2,7 +2,7 @@ import InventroyRealm from '../../database/inventory/inventory.operations';
 import MeterReadingApi from '../api/meter-reading.api';
 import SyncUtils from './syncUtils';
 import * as _ from 'lodash';
-import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
+
 class MeterReadingSync {
 
     synchronizeMeterReading(kiosk_id) {

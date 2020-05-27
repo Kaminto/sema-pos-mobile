@@ -24,8 +24,6 @@ class ProductSync {
                 let onlyInLocal = localProducts.filter(SyncUtils.compareRemoteAndLocal(remoteProducts, 'productId'));
                 let onlyInRemote = remoteProducts.filter(SyncUtils.compareRemoteAndLocal(localProducts, 'productId'));
 
-
-
                 let syncResponseArray = [];
                 if (onlyInLocal.length > 0) {
                     for (const property in onlyInLocal) {
@@ -38,7 +36,6 @@ class ProductSync {
                     syncResponseArray.push(...localResponse);
                     ProductRealm.setLastProductsync();
                 }
-
 
                 resolve({
                     success: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',

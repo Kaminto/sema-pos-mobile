@@ -13,18 +13,13 @@ class CustomerTypeSync {
                     let localCustomerTypes = initlocalCustomerTypes.length > 0 ?  [...initlocalCustomerTypes] : [];
                     let remoteCustomerTypes = remoteCustomerType.customerTypes.length > 0 ?  [...remoteCustomerType.customerTypes] : [];
 
-                   
-
-
                     let onlyInLocal = localCustomerTypes.filter(SyncUtils.compareRemoteAndLocal(remoteCustomerTypes,'id'));
                     let onlyInRemote = remoteCustomerTypes.filter(SyncUtils.compareRemoteAndLocal(localCustomerTypes,'id'));
- 
-                    
 
                     let syncResponseArray = [];
                     if (onlyInLocal.length > 0) {
                         for (const property in onlyInLocal) {
-                            
+
                         }
                     }
 
@@ -34,15 +29,13 @@ class CustomerTypeSync {
                         CustomerTypeRealm.setLastCustomerTypesSync();
                     }
 
-                
-
                     resolve({
                         success: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
                         customerTypes: onlyInLocal.concat(onlyInRemote).length,
                         successError: syncResponseArray.length > 0 ? syncResponseArray[0].status : 'success',
                         successMessage: syncResponseArray.length > 0 ? syncResponseArray[0] : 'success'
                     });
-                
+
                 })
                 .catch(error => {
 

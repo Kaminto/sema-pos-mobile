@@ -25,7 +25,8 @@ class Communications {
 		if (!url.endsWith('/')) {
 			url = url + '/';
 		}
-		this._url = 'http://142.93.115.206:3002/';
+		let produrl = 'http://142.93.115.206:3002/';
+		this._url = produrl;
 		this._site = site;
 		this._user = user;
 		this._password = password;
@@ -33,7 +34,7 @@ class Communications {
 		this._siteId = siteId;
 
 		CreditApi.initialize(
-			'http://142.93.115.206:3002/',
+			produrl,
 			site,
 			user,
 			password,
@@ -43,7 +44,7 @@ class Communications {
 
 
 		InventoryApi.initialize(
-			'http://142.93.115.206:3002/',
+			produrl,
 			site,
 			user,
 			password,
@@ -52,7 +53,7 @@ class Communications {
 		);
 
 		CustomerApi.initialize(
-			'http://142.93.115.206:3002/',
+			produrl,
 			site,
 			user,
 			password,
@@ -61,7 +62,7 @@ class Communications {
 		);
 
 		ProductApi.initialize(
-			'http://142.93.115.206:3002/',
+			produrl,
 			site,
 			user,
 			password,
@@ -70,7 +71,7 @@ class Communications {
 		);
 
 		CustomerTypeApi.initialize(
-			'http://142.93.115.206:3002/',
+			produrl,
 			site,
 			user,
 			password,
@@ -79,7 +80,7 @@ class Communications {
 		);
 
 		SalesChannelApi.initialize(
-			'http://142.93.115.206:3002/',
+			produrl,
 			site,
 			user,
 			password,
@@ -88,7 +89,7 @@ class Communications {
 		);
 
 		OrderApi.initialize(
-			'http://142.93.115.206:3002/',
+			produrl,
 			site,
 			user,
 			password,
@@ -96,7 +97,7 @@ class Communications {
 			siteId
 		);
 		DiscountApi.initialize(
-			'http://142.93.115.206:3002/',
+			produrl,
 			site,
 			user,
 			password,
@@ -104,7 +105,7 @@ class Communications {
 			siteId
 		);
 		CustomerDebtApi.initialize(
-			'http://142.93.115.206:3002/',
+			produrl,
 			site,
 			user,
 			password,
@@ -112,7 +113,7 @@ class Communications {
 			siteId
 		);
 		PaymentTypesApi.initialize(
-			'http://142.93.115.206:3002/',
+			produrl,
 			site,
 			user,
 			password,
@@ -120,7 +121,7 @@ class Communications {
 			siteId
 		);
 		RecieptPaymentTypesApi.initialize(
-			'http://142.93.115.206:3002/',
+			produrl,
 			site,
 			user,
 			password,
