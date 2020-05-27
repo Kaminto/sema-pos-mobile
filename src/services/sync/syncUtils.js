@@ -2,15 +2,7 @@
 import {
   parseISO,
   isSameDay,
-  format,
-  sub,
-  set,
-  add,
-  getSeconds,
-  getMinutes,
-  getHours,
-  differenceInMilliseconds,
-  compareAsc
+  differenceInMilliseconds
 } from "date-fns";
 class SyncUtils {
 
@@ -100,7 +92,7 @@ class SyncUtils {
       return false
     }
     dayRight = typeof dayRight === 'string' ? dayRight.split('T')[0] : dayRight.toISOString().split('T')[0];
-   
+
     return dayRight
   }
 

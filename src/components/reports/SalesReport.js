@@ -34,7 +34,7 @@ class SalesReport extends React.PureComponent {
 
 	render() {
 		return (
-			<View style={{ flex: 1, backgroundColor: 'white' }}>
+			<View style={styles.mainCont}>
 				<ScrollView
 					refreshControl={
 						<RefreshControl
@@ -42,38 +42,32 @@ class SalesReport extends React.PureComponent {
 							onRefresh={this._onRefresh}
 						/>
 					}>
-					<View style={{
-						flex: .2,
-						backgroundColor: 'white',
-						marginLeft: 10,
-						marginRight: 10,
-						marginBottom: 10,
-					}}>
-						<View style={{ flex: 1, flexDirection: 'row' }}>
+					<View style={styles.saleTotals}>
+						<View style={styles.salesubconttotals}>
 							<DateFilter />
-							<View style={{ flex: .7, height: 90, borderRadius: 10, flexDirection: 'row', marginTop: 10, backgroundColor: '#2462a0', overflow: 'hidden', color: '#fff' }}>
-								<View style={{ height: 90, flex: 1, color: '#fff' }} >
-									<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-liters').toUpperCase()}</Text>
-									<Text style={[styles.totalItem, { flex: .6 }]}>{this.props.salesData.totalLiters.toFixed(1)} L</Text>
+							<View style={styles.salesmaincont}>
+								<View style={styles.salestabs} >
+									<Text style={styles.totalLabel4}>{i18n.t('total-liters').toUpperCase()}</Text>
+									<Text style={styles.totalItem6}>{this.props.salesData.totalLiters.toFixed(1)} L</Text>
 								</View>
-								<View style={{ height: 90, flex: 1, color: '#fff' }} >
-									<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-sales').toUpperCase()}</Text>
-									<Text style={[styles.totalItem, { flex: .6 }]}>{this.getCurrency()} {this.props.salesData.totalSales}</Text>
+								<View style={styles.salestabs} >
+									<Text style={styles.totalLabel4}>{i18n.t('total-sales').toUpperCase()}</Text>
+									<Text style={styles.totalItem6}>{this.getCurrency()} {this.props.salesData.totalSales}</Text>
 								</View>
-								<View style={{ height: 90, flex: 1, color: '#fff' }} >
-									<Text style={[styles.totalLabel, { flex: .4 }]}>DEBT COLLECTED</Text>
-									<Text style={[styles.totalItem, { flex: .6 }]}>{this.props.salesData.totalDebt}</Text>
+								<View style={styles.salestabs} >
+									<Text style={styles.totalLabel4}>DEBT COLLECTED</Text>
+									<Text style={styles.totalItem6}>{this.props.salesData.totalDebt}</Text>
 								</View>
-								<View style={{ height: 90, flex: 1, color: '#fff' }} >
-									<Text style={[styles.totalLabel, { flex: .4 }]}>TOTAL EARNINGS</Text>
-									<Text style={[styles.totalItem, { flex: .6 }]}>
+								<View style={styles.salestabs} >
+									<Text style={styles.totalLabel4}>TOTAL EARNINGS</Text>
+									<Text style={styles.totalItem6}>
 										{this.getCurrency()} {this.props.salesData.totalTypes.length > 0 ? this.props.salesData.totalTypes.slice(-1)[0].totalAmount : 0}</Text>
 								</View>
 							</View>
 						</View>
 					</View>
-					<View style={{ flex: .8, flexDirection: 'row', backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10, }}>
-						<View style={{ flex: .6, padding: 10 }}>
+					<View style={styles.salesBreakdown}>
+						<View style={styles.salespart}>
 							<FlatList
 								data={this.getSalesData()}
 								ListHeaderComponent={this.showHeader}
@@ -87,7 +81,7 @@ class SalesReport extends React.PureComponent {
 								initialNumToRender={50}
 							/>
 						</View>
-						<View style={{ flex: .4, padding: 10 }}>
+						<View style={styles.paypart}>
 							<FlatList
 								data={this.props.salesData.totalTypes}
 								ListHeaderComponent={this.showPaymentHeader}
@@ -129,19 +123,19 @@ class SalesReport extends React.PureComponent {
 
 	getRow = (item) => {
 		return (
-			<View style={[{ flex: 1, flexDirection: 'row', alignItems: 'center' }, styles.rowBackground]}>
-				<View style={[{ flex: 1 }]}>
-					<Text numberOfLines={1} style={[styles.rowItem, styles.leftMargin]}>
+			<View style={styles.rowBackground}>
+				<View style={styles.flex1}>
+					<Text numberOfLines={1} style={styles.rowItem, styles.leftMargin}>
 						{item.description}</Text>
 				</View>
-				<View style={[{ flex: 1, }]}>
-					<Text style={[styles.rowItemCenter]}>{item.quantity}</Text>
+				<View style={styles.flex1}>
+					<Text style={styles.rowItemCenter}>{item.quantity}</Text>
 				</View>
-				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.rowItemCenter]}>{!isNaN(item.totalLiters) ? item.totalLiters.toFixed(1) : 0}</Text>
+				<View style={styles.flex1}>
+					<Text style={styles.rowItemCenter}>{!isNaN(item.totalLiters) ? item.totalLiters.toFixed(1) : 0}</Text>
 				</View>
-				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.rowItemCenter]}>{item.totalSales.toFixed(2)}</Text>
+				<View style={styles.flex1}>
+					<Text style={styles.rowItemCenter}>{item.totalSales.toFixed(2)}</Text>
 				</View>
 			</View>
 		);
@@ -149,16 +143,16 @@ class SalesReport extends React.PureComponent {
 
 	getPaymentRow = (item) => {
 		return (
-			<View style={[{ flex: 1, flexDirection: 'row', alignItems: 'center' }, styles.rowBackground]}>
+			<View style={styles.rowBackground}>
 
-				<View style={[{ flex: 1, }]}>
-					<Text style={[styles.rowItemCenter]}>
+				<View style={styles.flex1}>
+					<Text style={styles.rowItemCenter}>
 						{item.name == 'credit' ? 'WALLET' : item.name.toUpperCase()}
 					</Text>
 				</View>
 
-				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.rowItemCenter]}>{item.totalAmount !== null ? item.totalAmount.toFixed(2) : 0}</Text>
+				<View style={styles.flex1}>
+					<Text style={styles.rowItemCenter}>{item.totalAmount !== null ? item.totalAmount.toFixed(2) : 0}</Text>
 				</View>
 			</View>
 		);
@@ -166,18 +160,18 @@ class SalesReport extends React.PureComponent {
 
 	showHeader = () => {
 		return (
-			<View style={[{ flex: 1, flexDirection: 'row', height: 50, alignItems: 'center' }, styles.headerBackground]}>
-				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.headerItem, styles.leftMargin]}>{'Product'.toUpperCase()}</Text>
+			<View style={styles.headerBackground}>
+				<View style={styles.flex1}>
+					<Text style={styles.headerItem, styles.leftMargin}>{'Product'.toUpperCase()}</Text>
 				</View>
-				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.headerItemCenter]}>{i18n.t('quantity').toUpperCase()}</Text>
+				<View style={styles.flex1}>
+					<Text style={styles.headerItemCenter}>{i18n.t('quantity').toUpperCase()}</Text>
 				</View>
-				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.headerItemCenter]}>{i18n.t('total-liters').toUpperCase()}</Text>
+				<View style={styles.flex1}>
+					<Text style={styles.headerItemCenter}>{i18n.t('total-liters').toUpperCase()}</Text>
 				</View>
-				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.headerItemCenter]}>{i18n.t('total-sales').toUpperCase()}</Text>
+				<View style={styles.flex1}>
+					<Text style={styles.headerItemCenter}>{i18n.t('total-sales').toUpperCase()}</Text>
 				</View>
 			</View>
 		);
@@ -185,12 +179,12 @@ class SalesReport extends React.PureComponent {
 
 	showPaymentHeader = () => {
 		return (
-			<View style={[{ flex: 1, flexDirection: 'row', height: 50, alignItems: 'center' }, styles.headerBackground]}>
-				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.headerItemCenter]}>PAYMENT METHOD</Text>
+			<View style={styles.headerBackground}>
+				<View style={styles.flex1}>
+					<Text style={styles.headerItemCenter}>PAYMENT METHOD</Text>
 				</View>
-				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.headerItemCenter]}>AMOUNT</Text>
+				<View style={styles.flex1}>
+					<Text style={styles.headerItemCenter}>AMOUNT</Text>
 				</View>
 			</View>
 		);
@@ -219,6 +213,42 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(SalesReport);
 
 const styles = StyleSheet.create({
+
+	flex2: {
+		flex: 2
+	},
+
+	flex1: {
+		flex: 1
+	},
+
+	mainCont: {
+		flex: 1, backgroundColor: 'white'
+	},
+
+	saleTotals: {
+		flex: .2,
+		backgroundColor: 'white',
+		marginLeft: 10,
+		marginRight: 10,
+		marginBottom: 10,
+	},
+
+	salesubconttotals:{
+		flex: 1, flexDirection: 'row'
+	},
+
+	salesmaincont: {
+		flex: .7, height: 90, borderRadius: 10, flexDirection: 'row', marginTop: 10, backgroundColor: '#2462a0', overflow: 'hidden', color: '#fff'
+	},
+
+	salestabs:{
+		height: 90, flex: 1, color: '#fff'
+	},
+
+	salesBreakdown:{
+		flex: .8, flexDirection: 'row', backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10,
+	},
 
 	headerItem: {
 		fontWeight: "bold",
@@ -250,13 +280,17 @@ const styles = StyleSheet.create({
 		borderTopWidth: 1,
 		borderBottomWidth: 1,
 		borderRightWidth: 1,
-		padding: 5
+		padding: 5,
+		flex: 1, flexDirection: 'row', alignItems: 'center'
 	},
 
 	headerBackground: {
 		backgroundColor: '#f1f1f1',
 		borderColor: '#CCC',
-		padding: 5
+		padding: 5,
+		flex: 1,
+		flexDirection: 'row',
+		 height: 50, alignItems: 'center'
 	},
 	totalItem: {
 		fontWeight: "bold",
@@ -269,6 +303,20 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		color: 'white',
 		paddingLeft: 10,
+	},
+	totalItem6: {
+		fontWeight: "bold",
+		fontSize: 24,
+		color: 'white',
+		paddingLeft: 10,
+		flex: .6
+	},
+	totalLabel4: {
+		fontWeight: "bold",
+		fontSize: 18,
+		color: 'white',
+		paddingLeft: 10,
+		flex: .4
 	},
 	titleItem: {
 		fontWeight: "bold",
@@ -287,5 +335,13 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 
 	},
+
+	salespart:{
+		flex: .6, padding: 10
+	},
+
+	paypart: {
+		flex: .4, padding: 10
+	}
 
 });

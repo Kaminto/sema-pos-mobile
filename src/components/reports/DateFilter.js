@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import * as reportActions from "../../actions/ReportActions";
 import { connect } from "react-redux";
 import Icon from 'react-native-vector-icons/Ionicons';
-import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
+import { set, getSeconds, getMinutes, getHours } from 'date-fns';
 const dayInMilliseconds = 24 * 60 * 60 * 1000;
 
 class DateFilter extends React.PureComponent {

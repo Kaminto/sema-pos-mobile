@@ -24,17 +24,17 @@ class InventoryEdit extends React.PureComponent {
 			<Modal visible={this.isVisible()}
 				transparent={true}
 				onRequestClose={this.closeCurrentSkuHandler.bind(this)}>
-				<View style={{ justifyContent: 'center', alignItems: 'center' }}>
+				<View style={styles.inveditmain}>
 
-					<View style={[styles.editInventory]}>
+					<View style={styles.editInventory}>
 						<View>
-							<Text style={{ fontSize: 24, fontWeight: 'bold' }}>{this.props.headerTitle}</Text>
+							<Text style={styles.invedittitle}>{this.props.headerTitle}</Text>
 						</View>
-						<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 10 }}>
-							<Text style={{ fontSize: 18, fontWeight: 'bold', flex: .7, paddingLeft: 20 }}>{this.props.title}</Text>
+						<View style={styles.inveditcont}>
+							<Text style={styles.inveditconttitle}>{this.props.title}</Text>
 							<TextInput
 								reference='quantityInput'
-								style={[styles.inventoryInput, { flex: .5, paddingRight: 40, marginRight: 20 }]}
+								style={styles.inventoryInput}
 								underlineColorAndroid='transparent'
 								onSubmitEditing={() => this.props.okMethod(this.props.wastageName, this.state.inventoryQuantity)}
 								keyboardType='decimal-pad'
@@ -46,17 +46,17 @@ class InventoryEdit extends React.PureComponent {
 
 							</TextInput>
 						</View>
-						<View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-							<View style={{ backgroundColor: "#2858a7", borderRadius: 10, flex: .3 }}>
+						<View style={styles.inveditbtncont}>
+							<View style={styles.okbtn}>
 								<TouchableHighlight underlayColor='#c0c0c0' onPress={() => {
 									this.props.okMethod(this.props.wastageName, this.state.inventoryQuantity);
 								}}>
 									<Text style={styles.buttonText}>{i18n.t('ok')}</Text>
 								</TouchableHighlight>
 							</View>
-							<View style={{ flex: .1, backgroundColor: 'white' }}>
+							<View style={styles.emptyspace}>
 							</View>
-							<View style={{ backgroundColor: "#2858a7", borderRadius: 10, flex: .3 }}>
+							<View style={styles.cancelbtn}>
 								<TouchableHighlight underlayColor='#c0c0c0' onPress={() => this.props.cancelMethod()}>
 									<Text style={styles.buttonText}>{i18n.t('cancel')}</Text>
 								</TouchableHighlight>
@@ -86,7 +86,6 @@ class InventoryEdit extends React.PureComponent {
 
 }
 
-
 class InventoryReport extends React.PureComponent {
 	constructor(props) {
 		super(props);
@@ -110,12 +109,12 @@ class InventoryReport extends React.PureComponent {
 
 	render() {
 		return (
-			<View style={{ flex: 1, backgroundColor: 'white' }}>
-				<View style={{ flex: .1, flexDirection: 'row' }}>
+			<View style={styles.irmain}>
+				<View style={styles.irdatecont}>
 					<DateFilter />
 				</View>
 
-				<View style={{ flex: .65, backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10 }}>
+				<View style={styles.irclosingcont}>
 					{/* <ScrollView
 						refreshControl={
 						<RefreshControl
@@ -123,9 +122,9 @@ class InventoryReport extends React.PureComponent {
 							onRefresh={this._onRefresh}
 						/>
 					}> */}
-					<View style={{ flex: 1, flexDirection: 'row' }}>
+					<View style={styles.thiscontstyle}>
 						<FlatList
-							style={{ flex: .5 }}
+							style={styles.halfflex}
 							data={this.getInventoryData()}
 							extraData={this.state.refresh}
 							ListHeaderComponent={this.showHeader}
@@ -138,19 +137,13 @@ class InventoryReport extends React.PureComponent {
 							initialNumToRender={50}
 						/>
 
-						<View style={[{ flex: .5, padding: 5 }]}>
-							<View style={{ flex: .3, flexDirection: 'row', alignItems: "center" }}>
-								<Text style={[styles.totalItem, { flex: .45 }]}>{i18n.t('opening-meter')}</Text>
-								<Text style={[styles.rowItemCenter, {
-									flex: .55,
-									borderRadius: 5,
-									fontSize: 22,
-									fontWeight: 'bold',
-									backgroundColor: '#CCC'
-								}]}>{this.getInventoryMeterForDisplay(false)}</Text>
+						<View style={styles.metersCont}>
+							<View style={styles.metertitle}>
+								<Text style={styles.totalItem}>{i18n.t('opening-meter')}</Text>
+								<Text style={styles.rowItemCenterMeter}>{this.getInventoryMeterForDisplay(false)}</Text>
 							</View>
-							<View style={[{ flex: .3, flexDirection: 'row', alignItems: "center" }]}>
-								<Text style={[styles.totalItem, { flex: .45 }]}>{i18n.t('closing-meter')}</Text>
+							<View style={styles.closingMeterStyle}>
+								<Text style={styles.totalItem}>{i18n.t('closing-meter')}</Text>
 								{this.getCurrentMeter()}
 								<InventoryEdit
 									type="currentMeter"
@@ -169,37 +162,22 @@ class InventoryReport extends React.PureComponent {
 					</View>
 				</View>
 
-				<View style={{
-					flex: .25,
-					backgroundColor: '#2462a0',
-					color: '#fff',
-					borderRadius: 8,
-					marginLeft: 10,
-					marginRight: 10,
-					marginBottom: 10,
-				}}>
-					<View style={{
-						flex: 1,
-						borderRadius: 10,
-						flexDirection: 'row',
-						marginTop: 10,
-						overflow: 'hidden',
-						color: '#fff'
-					}}>
-						<View style={{ flex: .33, color: '#fff', padding: 10 }} >
-							<Text style={[styles.totalLabel, { flex: .25, fontWeight: 'bold', color: '#fff' }]}>{i18n.t('output').toUpperCase()}</Text>
-							<Text style={[styles.totalLabel, { flex: .25, color: '#fff', padding: 5 }]}> ({i18n.t('sales')} + {i18n.t('inventory')} +  {i18n.t('not-dispatched').toLowerCase()})</Text>
-							<Text style={[styles.totalItem, { flex: .5, fontSize: 28, color: '#fff' }]}>{this.getOutput()}</Text>
+				<View style={styles.bottomTotalsCont}>
+					<View style={styles.bottomTotalsContSub}>
+						<View style={styles.bottomtotalstab} >
+							<Text style={styles.totalLabelVal}>{i18n.t('output').toUpperCase()}</Text>
+							<Text style={styles.totalLabelTle}> ({i18n.t('sales')} + {i18n.t('inventory')} +  {i18n.t('not-dispatched').toLowerCase()})</Text>
+							<Text style={styles.totalItemBtm}>{this.getOutput()}</Text>
 						</View>
-						<View style={{ flex: .33, color: '#fff', padding: 10 }} >
-							<Text style={[styles.totalLabel, { flex: .25, fontWeight: 'bold', color: '#fff' }]}>{i18n.t('total-production').toUpperCase()}</Text>
-							<Text style={[styles.totalLabel, { flex: .25, color: '#fff', padding: 5 }]}> (Closing Meter - Opening Meter)</Text>
-							<Text style={[styles.totalItem, { flex: .5, fontSize: 28, color: '#fff' }]}>{this.getTotalProduction()}</Text>
+						<View style={styles.bottomtotalstab} >
+							<Text style={styles.totalLabelVal}>{i18n.t('total-production').toUpperCase()}</Text>
+							<Text style={styles.totalLabelTle}> (Closing Meter - Opening Meter)</Text>
+							<Text style={styles.totalItemBtm}>{this.getTotalProduction()}</Text>
 						</View>
-						<View style={{ flex: .33, color: '#fff', padding: 10 }} >
-							<Text style={[styles.totalLabel, { flex: .25, fontWeight: 'bold', color: '#fff' }]}>{i18n.t('wastage').toUpperCase()}</Text>
-							<Text style={[styles.totalLabel, { flex: .25, color: '#fff', padding: 5 }]}> (Production - Output) %</Text>
-							<Text style={[styles.totalItem, { flex: .5, fontSize: 28, color: '#fff' }]}>{this.getWastage()}</Text>
+						<View style={styles.bottomtotalstab} >
+							<Text style={styles.totalLabelVal}>{i18n.t('wastage').toUpperCase()}</Text>
+							<Text style={styles.totalLabelTle}> (Production - Output) %</Text>
+							<Text style={styles.totalItemBtm}>{this.getWastage()}</Text>
 						</View>
 					</View>
 				</View>
@@ -256,12 +234,12 @@ class InventoryReport extends React.PureComponent {
 
 	getRow = (item) => {
 		return (
-			<View style={[{ flex: 1, flexDirection: 'row', alignItems: 'center' }, styles.rowBackground]}>
-				<View style={[{ flex: 1 }]}>
+			<View style={styles.rowBackground}>
+				<View style={styles.flex1}>
 					<Text numberOfLines={1} style={[styles.rowItem, styles.leftMargin]}>{item.wastageName}</Text>
 				</View>
-				<View style={[{ flex: .5 }]}>
-					<Text style={[styles.rowItemCenter]}>{item.quantity}</Text>
+				<View style={styles.halfflex}>
+					<Text style={styles.rowItemCenter}>{item.quantity}</Text>
 				</View>
 
 				{this.getCurrentInventory(item)}
@@ -395,18 +373,18 @@ class InventoryReport extends React.PureComponent {
 	showHeader = () => {
 		return (
 			<View
-				style={[{ flex: 1, flexDirection: 'row', height: 50, alignItems: 'center' }, styles.headerBackground]}>
-				<View style={[{ flex: 1 }]}>
+				style={styles.headerBackground}>
+				<View style={styles.flex1}>
 					<Text style={[styles.headerItem, styles.leftMargin]}>PRODUCT</Text>
 				</View>
-				<View style={[{ flex: 1 }]}>
+				<View style={styles.flex1}>
 					<Text style={[styles.headerItemCenter]}>QUANTITY SOLD</Text>
 				</View>
-				<View style={[{ width: 20 }]} />
-				<View style={[{ flex: 1 }]}>
+				<View style={styles.emptysp} />
+				<View style={styles.flex1}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('closing-stock').toUpperCase()}</Text>
 				</View>
-				<View style={[{ flex: 1 }]}>
+				<View style={styles.flex1}>
 					<Text style={[styles.headerItemCenter]}>{i18n.t('not-dispatched').toUpperCase()}</Text>
 				</View>
 			</View>
@@ -416,12 +394,12 @@ class InventoryReport extends React.PureComponent {
 
 	getCurrentInventory(item) {
 		return (
-			<View style={[{ flex: .7 }]}>
+			<View style={styles.pt7flex}>
 				<TouchableHighlight
 					style={styles.currentInventory}
 					onPress={() => this.displayEditCurrentSku(item.wastageName)}
 					underlayColor='#18376A'>
-					<Text style={[styles.currentInventoryText, { padding: 5 }]}>{this.getInventorySkuForDisplay(true, item)}</Text>
+					<Text style={styles.currentInventoryText}>{this.getInventorySkuForDisplay(true, item)}</Text>
 				</TouchableHighlight>
 			</View>
 		);
@@ -430,12 +408,12 @@ class InventoryReport extends React.PureComponent {
 
 	getCurrentNotDispatched(item) {
 		return (
-			<View style={[{ flex: .7 }]}>
+			<View style={styles.pt7flex}>
 				<TouchableHighlight
 					style={styles.currentInventory}
 					onPress={() => this.displayNotDispatcheModal(item.wastageName)}
 					underlayColor='#18376A'>
-					<Text style={[styles.currentInventoryText, { padding: 5 }]}>{this.getNotDispatchedSkuForDisplay(true, item)}</Text>
+					<Text style={styles.currentInventoryText}>{this.getNotDispatchedSkuForDisplay(true, item)}</Text>
 				</TouchableHighlight>
 			</View>
 		);
@@ -566,12 +544,12 @@ class InventoryReport extends React.PureComponent {
 
 	getCurrentMeter(value) {
 		return (
-			<View style={[{ flex: .6 }]}>
+			<View style={styles.pt6flex}>
 				<TouchableHighlight
 					style={styles.currentInventory}
 					onPress={() => { this.displayCurrentMeter() }}
 					underlayColor='#18376A'>
-					<Text style={[styles.currentInventoryText, { padding: 5, fontWeight: 'bold', fontSize: 22 }]}>{this.getInventoryMeterForDisplay(true)}</Text>
+					<Text style={[styles.currentInventoryText, styles.fontinvmeter]}>{this.getInventoryMeterForDisplay(true)}</Text>
 				</TouchableHighlight>
 			</View>
 		);
@@ -589,8 +567,6 @@ class InventoryReport extends React.PureComponent {
 				if (this.props.wastageData.inventory.previousMeter != 0) {
 					meter = this.props.wastageData.inventory.previousMeter;
 				}
-
-				//	meter = (currentPrev) ? this.props.wastageData.inventory.currentMeter : this.props.wastageData.inventory.previousMeter;
 			}
 
 			if (currentPrev) {
@@ -692,6 +668,96 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(InventoryReport);
 const styles = StyleSheet.create({
+	flex1: {
+		flex: 1
+	},
+	halfflex: {
+		flex: .5
+	},
+
+	pt6flex: {
+		flex: .6
+	},
+
+	pt7flex: {
+		flex: .7
+	},
+
+	emptysp: {
+		width: 20
+	},
+
+	bottomTotalsCont: {
+		flex: .25,
+		backgroundColor: '#2462a0',
+		color: '#fff',
+		borderRadius: 8,
+		marginLeft: 10,
+		marginRight: 10,
+		marginBottom: 10,
+	},
+
+	bottomTotalsContSub: {
+		flex: 1,
+		borderRadius: 10,
+		flexDirection: 'row',
+		marginTop: 10,
+		overflow: 'hidden',
+		color: '#fff'
+	},
+
+	metertitle: { flex: .3, flexDirection: 'row', alignItems: "center" },
+
+	totalLabelTle: {
+		flex: .25, color: '#fff', padding: 5
+	},
+
+	metersCont: {
+		flex: .5, padding: 5
+	},
+
+	totalLabelVal: {
+		flex: .25, fontWeight: 'bold', color: '#fff'
+	},
+
+	bottomtotalstab: { flex: .33, color: '#fff', padding: 10 },
+
+	fontinvmeter:{
+		fontWeight: 'bold', fontSize: 22
+	},
+	irmain: {
+		flex: 1, backgroundColor: 'white'
+	},
+	inveditmain: {
+		justifyContent: 'center', alignItems: 'center'
+	},
+
+	invedittitle: {
+		fontSize: 24, fontWeight: 'bold'
+	},
+
+	inveditcont:{
+		flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 10
+	},
+
+	inveditconttitle: {
+		fontSize: 18, fontWeight: 'bold', flex: .7, paddingLeft: 20
+	},
+
+	inveditbtncont: {
+		flexDirection: 'row', justifyContent: 'center', marginTop: 10
+	},
+	okbtn: {
+		backgroundColor: "#2858a7", borderRadius: 10, flex: .3
+	},
+
+	cancelbtn: {
+		backgroundColor: "#2858a7", borderRadius: 10, flex: .3
+	},
+
+	emptyspace: {
+		flex: .1, backgroundColor: 'white'
+	},
 	headerItem: {
 		fontWeight: "bold",
 		fontSize: 18
@@ -707,12 +773,27 @@ const styles = StyleSheet.create({
 		paddingTop: 5,
 		paddingBottom: 5
 	},
+
+	closingMeterStyle:{ flex: .3, flexDirection: 'row', alignItems: "center" },
 	rowItemCenter: {
 		fontSize: 16,
 		paddingLeft: 10,
 		paddingTop: 5,
 		paddingBottom: 5,
 		textAlign: 'center'
+	},
+
+	rowItemCenterMeter: {
+		fontSize: 16,
+		paddingLeft: 10,
+		paddingTop: 5,
+		paddingBottom: 5,
+		textAlign: 'center',
+		flex: .55,
+		borderRadius: 5,
+		fontSize: 22,
+		fontWeight: 'bold',
+		backgroundColor: '#CCC'
 	},
 	rowBackground: {
 		backgroundColor: 'white',
@@ -721,16 +802,29 @@ const styles = StyleSheet.create({
 		borderTopWidth: 1,
 		borderBottomWidth: 1,
 		borderRightWidth: 1,
-		padding: 5
+		padding: 5,
+		flex: 1, flexDirection: 'row', alignItems: 'center'
 	},
 
 	headerBackground: {
-		backgroundColor: 'white'
+		backgroundColor: 'white',
+		flex: 1,
+		 flexDirection: 'row',
+		 height: 50,
+		  alignItems: 'center'
 	},
 	totalItem: {
 		fontWeight: "bold",
 		fontSize: 18,
 		paddingLeft: 10,
+		flex: .45
+	},
+
+	totalItemBtm: {
+		fontWeight: "bold",
+		fontSize: 18,
+		paddingLeft: 10,
+		flex: .5, fontSize: 28, color: '#fff'
 	},
 	titleItem: {
 		fontWeight: "bold",
@@ -773,6 +867,18 @@ const styles = StyleSheet.create({
 
 	},
 
+	irdatecont:{
+		flex: .1, flexDirection: 'row'
+	},
+
+	thiscontstyle:{
+		flex: 1, flexDirection: 'row'
+	},
+
+	irclosingcont: {
+		flex: .65, backgroundColor: 'white', marginLeft: 10, marginRight: 10, marginTop: 10
+	},
+
 	currentInventory: {
 		marginRight: 2,
 		marginLeft: 2,
@@ -788,6 +894,7 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		color: '#fff',
 		textAlign: 'center',
+		padding: 5,
 	},
 	production: {
 		fontWeight: "bold",
@@ -817,5 +924,8 @@ const styles = StyleSheet.create({
 		borderWidth: 2,
 		fontSize: 20,
 		borderColor: '#404040',
+		flex: .5,
+		paddingRight: 40,
+		marginRight: 20
 	}
 });

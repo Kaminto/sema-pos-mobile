@@ -51,8 +51,8 @@ class SelectedCustomerDetails extends React.PureComponent {
 		return (
 			<>
 				<View style={styles.commandBarContainer}>
-					<View style={{ flexDirection: 'column', flex: 1.4, height: 100, paddingLeft: 10 }}>
-						<Text style={[styles.selectedCustomerText, { fontSize: 18 }]}>
+					<View style={styles.commsubcont}>
+						<Text style={styles.selectedCustomerTextfont}>
 							{this.getName()} . {this.getPhone()}
 						</Text>
 						<Text style={styles.selectedCustomerText}>
@@ -65,18 +65,18 @@ class SelectedCustomerDetails extends React.PureComponent {
 						</Text>
 
 					</View>
-					<View style={{ flexDirection: 'column', flex: 1, height: 100 }}>
-						<Text style={[styles.selectedCustomerText, {padding: 5}]}>
+					<View style={styles.subbalances}>
+						<Text style={styles.selectedCustomerTextpad}>
 							Customer Wallet: {this.props.selectedCustomer.walletBalance}
 						</Text>
 
-						<Text style={[styles.selectedCustomerText, {padding: 5}]}>
+						<Text style={styles.selectedCustomerTextpad}>
 							Loan Balance:  {this.props.selectedCustomer.dueAmount}
 						</Text>
 
 					</View>
 
-					<View style={{ flexDirection: 'column', flex: 1, height: 100, paddingLeft: 20 }}>
+					<View style={styles.subactions}>
 						<View style={styles.completeOrder}>
 							<TouchableHighlight
 								onPress={() => this.props.navigation.navigate('OrderView')}>
@@ -96,7 +96,7 @@ class SelectedCustomerDetails extends React.PureComponent {
 
 				<View style={styles.modalPayment}>
 					<Modal
-						style={[styles.modal, styles.modal3]}
+						style={styles.modal3}
 						coverScreen={true}
 						position={"center"} ref={"modal6"}
 						onClosed={() => this.modalOnClose()}
@@ -194,8 +194,13 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		fontSize: 18,
 		color: 'white',
-
 	},
+
+	commsubcont: { flexDirection: 'column', flex: 1.4, height: 100, paddingLeft: 10 },
+
+	subbalances: { flexDirection: 'column', flex: 1, height: 100 },
+
+	subactions: { flexDirection: 'column', flex: 1, height: 100, paddingLeft: 20 },
 
 	commandBarContainer: {
 		flex: .25,
@@ -220,16 +225,32 @@ const styles = StyleSheet.create({
 	modal3: {
 		width: '70%',
 		height: 500,
-	},
-	modal: {
 		justifyContent: 'center',
 	},
+
 	selectedCustomerText: {
 		marginLeft: 10,
 		alignSelf: 'flex-start',
 		flex: 0.5,
 		fontSize: 18,
 		color: 'black'
+	},
+
+	selectedCustomerTextpad: {
+		marginLeft: 10,
+		alignSelf: 'flex-start',
+		flex: 0.5,
+		fontSize: 18,
+		color: 'black',
+		padding: 5
+	},
+	selectedCustomerText: {
+		marginLeft: 10,
+		alignSelf: 'flex-start',
+		flex: 0.5,
+		fontSize: 18,
+		color: 'black',
+		fontSize: 18
 	},
 
 	completeOrder: {

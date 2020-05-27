@@ -2,7 +2,7 @@ import CustomerReminderRealm from '../../database/customer-reminder/customer-rem
 import ReminderApi from '../api/reminder.api';
 import SyncUtils from './syncUtils';
 import * as _ from 'lodash';
-import { parseISO, isSameDay, format, sub, set, add, getSeconds, getMinutes, getHours, compareAsc } from 'date-fns';
+
 class ReminderSync {
 
     synchronizeCustomerReminders(kiosk_id) {

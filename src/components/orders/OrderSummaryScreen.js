@@ -25,8 +25,6 @@ import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
 import * as DiscountActions from '../../actions/DiscountActions';
 
-
-
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as CustomerReminderActions from '../../actions/CustomerReminderActions';
@@ -35,7 +33,6 @@ import * as PaymentTypesActions from "../../actions/PaymentTypesActions";
 import * as receiptActions from '../../actions/ReceiptActions';
 import * as TopUpActions from '../../actions/TopUpActions';
 import CreditRealm from '../../database/credit/credit.operations';
-import CustomerTypeRealm from '../../database/customer-types/customer-types.operations';
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import CustomerDebtRealm from '../../database/customer_debt/customer_debt.operations';
@@ -47,8 +44,6 @@ import CustomerReminderRealm from '../../database/customer-reminder/customer-rem
 
 import ReceiptPaymentTypeRealm from '../../database/reciept_payment_types/reciept_payment_types.operations';
 const uuidv1 = require('uuid/v1');
-const widthQuanityModal = '70%';
-const heightQuanityModal = 520;
 import { withNavigation } from 'react-navigation';
 class OrderSummaryScreen extends React.PureComponent {
 

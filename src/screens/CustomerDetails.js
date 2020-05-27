@@ -476,14 +476,9 @@ class TransactionDetail extends React.PureComponent {
 			} else {
 				return (
 					<View
-						style={{
-							flex: 1,
-							flexDirection: 'row',
-							marginBottom: 5,
-							marginTop: 5
-						}}>
+						style={styles.editbar}>
 						<View style={{ flex: 1, padding: 15 }}>
-							<ScrollView style={{ flex: 1 }}>
+							<ScrollView style={styles.flex1}>
 								<View style={styles.deleteButtonContainer}>
 									<TouchableOpacity
 										onPress={this.onTopupCreditDelete(this.props.item)}
@@ -1209,6 +1204,13 @@ const styles = StyleSheet.create({
 	},
 	leftMargin: {
 		left: 10
+	},
+
+	editbar: {
+		flex: 1,
+		flexDirection: 'row',
+		marginBottom: 5,
+		marginTop: 5
 	},
 	sectionTitle: {
 		fontSize: 16,

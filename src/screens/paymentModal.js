@@ -45,23 +45,14 @@ class PaymentModal extends React.PureComponent {
 		return (
 				<ScrollView>
 					<View
-					style={{
-						flex: 1,
-						marginTop: 0,
-						padding: 10
-					}}>
+					style={styles.paymodcont}>
 						<View
-							style={{
-								justifyContent: 'flex-end',
-								flexDirection: 'row',
-								right: 0,
-								top: 10
-							}}>
+							style={styles.cancelbtn}>
 							{this.getCancelButton()}
 						</View>
 
-					<Card containerStyle={{ backgroundColor: '#f1f1f1'}}>
-						<View style={{ flex: 1, flexDirection: 'row' }}>
+					<Card containerStyle={styles.paymodcard}>
+						<View style={styles.paymodbalance}>
 							<PaymentDescription
 								title={`${i18n.t('previous-amount-due')}:`}
 								total={this.calculateAmountDue()}
@@ -73,8 +64,8 @@ class PaymentModal extends React.PureComponent {
 							</View>
 					</Card>
 
-					<View style={{ flex: 1 }}>
-							<Text style={[{ textAlign: 'left' }, styles.baseItem]}>Payment Method</Text>
+					<View style={styles.flex1}>
+							<Text style={styles.baseItem}>Payment Method</Text>
 					</View>
 					<FlatList
 						data={this.props.paymentTypes}
@@ -85,32 +76,29 @@ class PaymentModal extends React.PureComponent {
 						numColumns={3}
 						contentContainerStyle={styles.container}
 					/>
-					<View style={{ flex: 1, padding: 10 }}>
+					<View style={styles.flexpad}>
 
-						<View style={{ flex: 1, flexDirection: 'row', marginTop: 10 }}>
-							<View style={{ flex: 1 }}>
-								<Text style={[{ textAlign: 'left' }, styles.baseItem]}>NOTES</Text>
+						<View style={styles.notestxtcont}>
+							<View style={styles.flex1}>
+								<Text style={styles.baseItem}>NOTES</Text>
 							</View>
 						</View>
 
-						<View style={{ flex: 1, flexDirection: 'row', borderBottomWidth: 1 }}>
-							<View style={{ flex: 1, height: 50 }}>
+						<View style={styles.notesvalcont}>
+							<View style={styles.notesval}>
 								{this.notesValue()}
 							</View>
 						</View>
 					</View>
 
 				<View style={styles.completeOrder}>
-					<View style={{ justifyContent: 'center', height: 50 }}>
+					<View style={styles.btnCont}>
 						<TouchableHighlight
 							underlayColor="#c0c0c0"
 							disabled={this.state.buttonDisabled}
 							onPress={this.handleOnPress}>
 							<Text
-								style={[
-									{ paddingTop: 20, paddingBottom: 20 },
-									styles.buttonText
-								]}>
+								style={styles.buttonText}>
 								{this.props.selectedCustomer.dueAmount > 0 ? i18n.t('clear-loan') : 'Topup Customer Wallet'}
 							</Text>
 						</TouchableHighlight>
@@ -127,9 +115,7 @@ class PaymentModal extends React.PureComponent {
 	notesValue() {
 		return (
 			<TextInput
-				style={{
-					padding: 10
-				}}
+				style={styles.padnotes}
 				onChangeText={this.setNotes}
 				value={this.state.paymentnote}
 				underlineColorAndroid="transparent"
@@ -155,10 +141,10 @@ class PaymentModal extends React.PureComponent {
 		if (item.name != 'loan' && item.name != 'credit') {
 
 			return (
-				<View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'white' }}>
-					<View style={{ flex: 1, height: 45 }}>
+				<View style={styles.chkboxcont}>
+					<View style={styles.chkboxwrapper}>
 						<View style={styles.checkBoxRow}>
-							<View style={[{ flex: 1 }]}>
+							<View style={styles.flex1}>
 								<CheckBox
 									title={item.description}
 									checkedIcon={<Icon
@@ -177,7 +163,7 @@ class PaymentModal extends React.PureComponent {
 									}}
 								/>
 							</View>
-							<View style={[{ flex: 1 }]}>{this.showTextInput(item)}</View>
+							<View style={styles.flex1}>{this.showTextInput(item)}</View>
 						</View>
 					</View>
 				</View>
@@ -370,7 +356,6 @@ class PaymentModal extends React.PureComponent {
 		return this.props.selectedCustomer.dueAmount;
 	}
 
-
 }
 
 function mapStateToProps(state, props) {
@@ -402,6 +387,7 @@ const styles = StyleSheet.create({
 		marginTop: '1%',
 		alignItems: 'center'
 	},
+	flex1: { flex: 1 },
 	checkBox: {},
 	checkLabel: {
 		left: 20,
@@ -414,12 +400,32 @@ const styles = StyleSheet.create({
 		color: 'black',
 		alignSelf: 'center'
 	},
+
+	notesvalcont: { flex: 1, flexDirection: 'row', borderBottomWidth: 1 },
+
+	flexpad: { flex: 1, padding: 10 },
+
+	btnCont: { justifyContent: 'center', height: 50 },
+
+	padnotes: {
+		padding: 10
+	},
+
+	notesval: { flex: 1, height: 50 },
+
 	buttonText: {
 		fontWeight: 'bold',
 		fontSize: 24,
 		alignSelf: 'center',
-		color: 'white'
+		color: 'white',
+		paddingTop: 20,
+		paddingBottom: 20
 	},
+
+	notestxtcont: { flex: 1, flexDirection: 'row', marginTop: 10 },
+	chkboxwrapper: { flex: 1, height: 45 },
+	paymodbalance: { flex: 1, flexDirection: 'row' },
+
 	summaryText: {
 		fontWeight: 'bold',
 		fontSize: 18,
@@ -432,14 +438,30 @@ const styles = StyleSheet.create({
 		color: 'black',
 		paddingTop: 4,
 		paddingBottom: 4,
-
+		textAlign: 'left'
 	},
+
+	paymodcard: { backgroundColor: '#f1f1f1'},
 
 	completeOrder: {
 		backgroundColor: '#2858a7',
 		borderRadius: 5,
 		marginTop: '5%',
 		bottom: 0
-	}
+	},
+
+	paymodcont: {
+		flex: 1,
+		marginTop: 0,
+		padding: 10
+	},
+	cancelbtn: {
+		justifyContent: 'flex-end',
+		flexDirection: 'row',
+		right: 0,
+		top: 10
+	},
+
+	chkboxcont: { flex: 1, flexDirection: 'row', backgroundColor: 'white' }
 
 });

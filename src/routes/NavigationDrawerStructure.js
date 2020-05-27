@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { withNavigation } from "react-navigation";
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -10,15 +10,13 @@ class NavigationDrawerStructure extends React.PureComponent {
 
     render() {
         return (
-            <View style={{ flexDirection: 'row' }}>
+            <View style={styles.cont}>
                 <TouchableOpacity onPress={this.toggleDrawer.bind(this)}>
                     <Icon
                         name='md-menu'
                         size={30}
                         color="white"
-                        style={{
-                            width: 50, height: 30, marginLeft: 10, paddingRight:20
-                        }}
+                        style={styles.drawerIcon}
                     />
                 </TouchableOpacity>
             </View>
@@ -27,3 +25,12 @@ class NavigationDrawerStructure extends React.PureComponent {
 }
 
 export default withNavigation(NavigationDrawerStructure);
+
+const styles = StyleSheet.create({
+	cont: {
+		flexDirection: 'row'
+	},
+	drawerIcon: {
+		width: 50, height: 30, marginLeft: 10, paddingRight:20
+	}
+})

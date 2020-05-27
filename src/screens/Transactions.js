@@ -97,12 +97,12 @@ class PaymentTypeItem extends React.Component {
 			<View
 				style={styles.receiptlinecont}>
 
-				<View style={[styles.itemData, { flex: 3 }]}>
+				<View style={styles.itemData3}>
 					<Icon name={`md-cash`} size={25} color="#808080" />
 					<Text style={[styles.label, styles.payitemname]}>
 						{this.props.item.name == 'credit' ? 'Wallet' : this.props.item.name}</Text>
 				</View>
-				<View style={[styles.itemData, { flex: 1 }]}>
+				<View style={styles.itemData1}>
 					<Text style={[styles.label, styles.payitemamt]}>{this.getCurrency().toUpperCase()} {this.props.item.amount} </Text>
 				</View>
 
@@ -266,19 +266,15 @@ class TransactionDetail extends React.Component {
 			return (
 				<View
 					style={styles.topupdebtcont}>
-					<View style={{ flex: 1 }}>
+					<View style={styles.flex1}>
 						<View
-							style={{
-								flex: 1,
-								flexDirection: 'row',
-
-							}}>
-							<View style={[styles.itemData, { flex: 3 }]}>
+							style={styles.flexAndDirection}>
+							<View style={styles.itemData3}>
 								<Text style={styles.label, styles.tdlbl}>
 									{'Top Up Amount'}</Text>
 
 							</View>
-							<View style={[styles.itemData, { flex: 1 }]}>
+							<View style={styles.itemData1}>
 								<Text style={styles.label, styles.tdlbamt}>{this.getCurrency().toUpperCase()} {item.topUp.topup} </Text>
 							</View>
 						</View>
@@ -288,7 +284,7 @@ class TransactionDetail extends React.Component {
 			)
 		} else {
 			return (
-				<View style={{ flex: 1 }}>
+				<View style={styles.flex1}>
 				</View>
 			)
 		}
@@ -300,18 +296,15 @@ class TransactionDetail extends React.Component {
 			return (
 				<View
 					style={styles.topupdebtcont}>
-					<View style={{ flex: 1 }}>
+					<View style={styles.flex1}>
 						<View
-							style={{
-								flex: 1,
-								flexDirection: 'row'
-							}}>
-							<View style={[styles.itemData, { flex: 3 }]}>
+							style={styles.flexAndDirection}>
+							<View style={styles.itemData3}>
 								<Text style={styles.label, styles.tdlbl}>
 									{'Loan Cleared'}</Text>
 
 							</View>
-							<View style={[styles.itemData, { flex: 1 }]}>
+							<View style={styles.itemData1}>
 								<Text style={styles.label, styles.tdlbamt}>{this.getCurrency().toUpperCase()} {item.debt.due_amount} </Text>
 							</View>
 						</View>
@@ -321,7 +314,7 @@ class TransactionDetail extends React.Component {
 			)
 		} else {
 			return (
-				<View style={{ flex: 1 }}>
+				<View style={styles.flex1}>
 				</View>
 			)
 		}
@@ -378,7 +371,7 @@ class TransactionDetail extends React.Component {
 				if (this.props.item.hasOwnProperty("customerAccount")) {
 					return (
 						<View style={styles.transcont}>
-							<ScrollView style={{ flex: 1 }}>
+							<ScrollView style={styles.flex1}>
 								<View style={styles.deleteButtonContainer}>
 									<TouchableOpacity
 										onPress={this.onDeleteReceipt(this.props.item)}
@@ -402,13 +395,13 @@ class TransactionDetail extends React.Component {
 										</Text>
 									)}
 									{!this.props.item.active ? (
-										<View style={{ flexDirection: 'row' }}>
+										<View style={styles.rowFlex}>
 											<Text style={styles.receiptPendingText}>
 												{' Pending'.toUpperCase()}
 											</Text>
 										</View>
 									) : (
-											<View style={{ flexDirection: 'row' }}>
+											<View style={styles.rowFlex}>
 												{!this.props.item.active && <Text> - </Text>}
 												<Text style={styles.receiptSyncedText}>
 													{' Synced'.toUpperCase()}
@@ -451,7 +444,7 @@ class TransactionDetail extends React.Component {
 					)
 				} else {
 					return (
-						<View style={{ flex: 1 }}>
+						<View style={styles.flex1}>
 						</View>
 					)
 				}
@@ -461,7 +454,7 @@ class TransactionDetail extends React.Component {
 					<View
 						style={styles.detcont}>
 						<View style={styles.detsubcont}>
-							<ScrollView style={{ flex: 1 }}>
+							<ScrollView style={styles.flex1}>
 								<View style={styles.deleteButtonContainer}>
 									<TouchableOpacity
 										onPress={this.onTopupCreditDelete(this.props.item)}
@@ -485,13 +478,13 @@ class TransactionDetail extends React.Component {
 										</Text>
 									)}
 									{!this.props.item.synched ? (
-										<View style={{ flexDirection: 'row' }}>
+										<View style={styles.rowFlex}>
 											<Text style={styles.receiptPendingText}>
 												{' Pending'.toUpperCase()}
 											</Text>
 										</View>
 									) : (
-											<View style={{ flexDirection: 'row' }}>
+											<View style={styles.rowFlex}>
 												{!this.props.item.synched && <Text> - </Text>}
 												<Text style={styles.receiptSyncedText}>
 													{' Synced'.toUpperCase()}
@@ -505,12 +498,12 @@ class TransactionDetail extends React.Component {
 
 								<View
 									style={styles.detcont}>
-									<View style={[styles.itemData, { flex: 3 }]}>
+									<View style={styles.itemData3}>
 										<Text style={styles.label, styles.tdlbl}>
 											{this.props.item.type}</Text>
 
 									</View>
-									<View style={[styles.itemData, { flex: 1 }]}>
+									<View style={styles.itemData1}>
 										<Text style={styles.label, styles.tdlbamt}>{this.getCurrency().toUpperCase()} {this.props.item.totalAmount} </Text>
 									</View>
 								</View>
@@ -518,12 +511,12 @@ class TransactionDetail extends React.Component {
 
 								<View
 									style={styles.detcont}>
-									<View style={[styles.itemData, { flex: 3 }]}>
+									<View style={styles.itemData3}>
 										<Text style={styles.label, styles.tdlbl}>
 											Balance</Text>
 
 									</View>
-									<View style={[styles.itemData, { flex: 1 }]}>
+									<View style={styles.itemData1}>
 										<Text style={styles.label, styles.tdlbamt}>{this.getCurrency().toUpperCase()} {this.props.item.balance} </Text>
 									</View>
 								</View>
@@ -614,7 +607,7 @@ class Transactions extends React.Component {
 					<View style={styles.detailcont}>
 						<SafeAreaView style={styles.container}>
 							<ScrollView
-								style={{ flex: 1 }}
+								style={styles.flex1}
 								refreshControl={
 									<RefreshControl
 										refreshing={this.state.refreshing}
@@ -635,7 +628,7 @@ class Transactions extends React.Component {
 						</SafeAreaView>
 					</View>
 
-					<View style={{ flex: 2, backgroundColor: '#fff', paddingLeft: 20 }}>
+					<View style={styles.transdetcont}>
 						<TransactionDetail
 							item={this.state.selected}
 							products={this.props.products}
@@ -660,7 +653,7 @@ class Transactions extends React.Component {
 
 	render() {
 		return (
-			<View style={{ flex: 1 }}>
+			<View style={styles.flex1}>
 				{this.getTransactionDetail()}
 				<SearchWatcher parent={this}>
 					{this.props.paymentTypeFilter}
@@ -723,7 +716,7 @@ class Transactions extends React.Component {
 	renderReceipt({ item, index }) {
 		return (
 			<TouchableNativeFeedback onPress={() => this.setSelected(item)}>
-				<View key={index} style={{ padding: 10 }}>
+				<View key={index} style={styles.rcptPad}>
 					<View style={styles.itemData}>
 						<Text style={styles.customername}>{item.isReceipt ? item.customerAccount.name : item.customerAccount.name}</Text>
 					</View>
@@ -742,13 +735,13 @@ class Transactions extends React.Component {
 						) : null}
 
 						{!item.isReceipt ? !item.synched ? (
-							<View style={{ flexDirection: 'row' }}>
+							<View style={styles.rowFlex}>
 								<Text style={styles.receiptPendingText}>
 									{' Pending'.toUpperCase()}
 								</Text>
 							</View>
 						) : (
-								<View style={{ flexDirection: 'row' }}>
+								<View style={styles.rowFlex}>
 									{!item.synched && <Text> - </Text>}
 									<Text style={styles.receiptSyncedText}>
 										{' Synced'.toUpperCase()}
@@ -756,13 +749,13 @@ class Transactions extends React.Component {
 								</View>
 							) :
 							!item.active ? (
-								<View style={{ flexDirection: 'row' }}>
+								<View style={styles.rowFlex}>
 									<Text style={styles.receiptPendingText}>
 										{' Pending'.toUpperCase()}
 									</Text>
 								</View>
 							) : (
-									<View style={{ flexDirection: 'row' }}>
+									<View style={styles.rowFlex}>
 										{!item.active && <Text> - </Text>}
 										<Text style={styles.receiptSyncedText}>
 											{' Synced'.toUpperCase()}
@@ -779,17 +772,17 @@ class Transactions extends React.Component {
 		return (
 			<View
 				style={styles.headerBg}>
-				<View style={[{ flex: 2 }]}>
+				<View style={styles.flex2}>
 					<Text style={[styles.headerItem, styles.leftMargin]}>
 						{i18n.t('product')}
 					</Text>
 				</View>
-				<View style={[{ flex: 1.5 }]}>
+				<View style={styles.flex15}>
 					<Text style={[styles.headerItem]}>
 						{i18n.t('quantity')}
 					</Text>
 				</View>
-				<View style={[{ flex: 1.5 }]}>
+				<View style={styles.flex15}>
 					<Text style={[styles.headerItem]}>
 						{i18n.t('unitPrice')}
 					</Text>
@@ -864,6 +857,29 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: '#fff'
 	},
+
+	flexAndDirection: {
+		flex: 1,
+		flexDirection: 'row'
+	},
+
+	flex1:{
+		flex: 1
+	},
+
+	flex3: {
+		flex: 3
+	},
+
+	flex2: {
+		flex: 2
+	},
+
+	flex15:{
+		flex: 1.5
+	},
+
+	transdetcont: { flex: 2, backgroundColor: '#fff', paddingLeft: 20 },
 
 	aseparator: {
 		height: 1,
@@ -941,6 +957,10 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
 		marginTop: '1%'
 	},
+
+	rcptPad: {
+		padding: 10
+	},
 	inputContainer: {
 		borderWidth: 2,
 		borderRadius: 10,
@@ -995,6 +1015,10 @@ const styles = StyleSheet.create({
 
 	receiptStats: {
 		flex: 1,
+		flexDirection: 'row'
+	},
+
+	rowFlex:{
 		flexDirection: 'row'
 	},
 
@@ -1065,6 +1089,18 @@ const styles = StyleSheet.create({
 	},
 
 	itemData: {
+		flexDirection: 'row',
+		padding: 1
+	},
+
+	itemData1: {
+		flex: 1,
+		flexDirection: 'row',
+		padding: 1
+	},
+
+	itemData3: {
+		flex: 1,
 		flexDirection: 'row',
 		padding: 1
 	},

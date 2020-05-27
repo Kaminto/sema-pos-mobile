@@ -17,7 +17,6 @@ import OrderSync from './sync/orders.sync';
 import DiscountSync from './sync/discounts.sync';
 import PaymentTypeSync from './sync/payment-type.sync';
 
-
 import RecieptPaymentTypesSync from './sync/reciept-payment-types.sync';
 import CustomerDebtsSync from './sync/customer-debt.sync';
 

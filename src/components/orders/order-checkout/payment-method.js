@@ -15,19 +15,19 @@ class PaymentMethod extends React.PureComponent {
 	render() {
 		return (
 			<View style={styles.checkBoxRow}>
-				<View style={[{ flex: 1 }]}>
+				<View style={styles.flex1}>
 					<CheckBox
 						style={styles.checkBox}
 						value={this.props.checkBox}
 						onValueChange={this.props.checkBoxChange}
 					/>
 				</View>
-				<View style={[{ flex: 3 }]}>
+				<View style={styles.flex3}>
 					<Text style={styles.checkLabel}>
 						{this.props.checkBoxLabel}
 					</Text>
 				</View>
-				<View style={[{ flex: 3 }]}>{this.showTextInput()}</View>
+				<View style={styles.flex3}>{this.showTextInput()}</View>
 			</View>
 		);
 	}
@@ -99,6 +99,14 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(PaymentMethod);
 
 const styles = StyleSheet.create({
+
+	flex: {
+		flex: 1
+	},
+
+	flex3: {
+		flex: 3
+	},
 
 	container: {
 		flex: 1,
