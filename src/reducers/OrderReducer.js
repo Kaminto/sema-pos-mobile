@@ -27,31 +27,79 @@ const orderReducer = (state = initialState, action) => {
 			return newState;
 		case ADD_PRODUCT_TO_ORDER:
 			newState = { ...state };
-			// Check if product exists
-			for (let product of newState.products) {
-				if (product.product.productId === action.data.product.productId) {
-					product.quantity += action.data.quantity;
 
-					if (!product.hasOwnProperty('discount')) {
-						product.finalAmount = (Number(product.quantity)) * Number(product.unitPrice);
-					}
 
-					if (product.hasOwnProperty('discount')) {
-						if (product.type === 'Percentage') {
-							product.finalAmount = ((product.quantity * product.unitPrice) * Number(product.discount)) / 100;
-						}
+			// // Check if product exists
+			// for (let product of newState.products) {
+			// 	if (product.product.productId === action.data.product.productId) {
+			// 		product.quantity += action.data.quantity;
 
-						if (product.type === 'Flat') {
-							product.finalAmount = (product.quantity * product.unitPrice) - Number(product.discount);
-						}
-					}
+			// 		if (!product.hasOwnProperty('discount')) {
+			// 			product.finalAmount = (Number(product.quantity)) * Number(product.unitPrice);
+			// 		}
 
-					newState.products = newState.products.slice();
-					return newState;
-				}
+			// 		if (product.hasOwnProperty('discount')) {
+			// 			if (product.type === 'Percentage') {
+			// 				product.finalAmount = ((product.quantity * product.unitPrice) * Number(product.discount)) / 100;
+			// 			}
+
+			// 			if (product.type === 'Flat') {
+			// 				product.finalAmount = (product.quantity * product.unitPrice) - Number(product.discount);
+			// 			}
+			// 		}
+
+			// 		newState.products = newState.products.slice();
+			// 		return newState;
+			// 	}
+			// }
+			// newState.products = newState.products.concat(action.data);
+
+			const index = newState.products.findIndex(u => u.product.productId === action.data.product.productId);
+			console.log('index', index);
+			if (index === -1) {
+				//newState.products.push(action.data);
+				// return newState;
+				//newState.products = newState.products.concat(action.data);
+				return {
+					...newState,
+					products: [...newState.products, action.data],
+				};
 			}
-			newState.products = newState.products.concat(action.data);
-			return newState;
+
+
+			if (index !== -1) {
+				let updateProducts = newState.products.filter(u => u.product.productId !== newState.products[index].product.productId);
+				
+				
+				//const updateIndex = updateProducts.findIndex(u => u.product.productId === action.data.product.productId);
+			
+
+
+				if (newState.products[index].product.productId === action.data.product.productId) {
+					newState.products[index].quantity += action.data.quantity;
+
+					if (!newState.products[index].hasOwnProperty('discount')) {
+						newState.products[index].finalAmount = (Number(newState.products[index].quantity)) * Number(newState.products[index].unitPrice);
+					}
+
+					if (newState.products[index].hasOwnProperty('discount')) {
+						if (newState.products[index].type === 'Percentage') {
+							newState.products[index].finalAmount = ((newState.products[index].quantity * newState.products[index].unitPrice) * Number(newState.products[index].discount)) / 100;
+						}
+
+						if (newState.products[index].type === 'Flat') {
+							newState.products[index].finalAmount = (newState.products[index].quantity * newState.products[index].unitPrice) - Number(newState.products[index].discount);
+						}
+					}
+				}
+				return {
+					...newState,
+					products: [...updateProducts, newState.products[index]],
+				};
+			}
+
+			return newState
+
 		case CLEAR_ORDER:
 			newState = { ...state };
 			newState.products = [];

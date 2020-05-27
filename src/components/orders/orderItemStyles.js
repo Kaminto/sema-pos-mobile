@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
-
-export const styles = StyleSheet.create({
+const widthQuanityModal = '70%';
+const heightQuanityModal = 500;
+export default orderItemStyles = StyleSheet.create({
 	container: {
 		flex: 6,
 		backgroundColor: "white",
@@ -9,8 +10,17 @@ export const styles = StyleSheet.create({
 		borderRightWidth: 5,
 	},
 	headerBackground: {
-		backgroundColor: '#ABC1DE'
+		backgroundColor: '#ABC1DE',
+		flex: 1,
+		flexDirection: 'row'
 	},
+	orderSideBar:{ flex: .6, backgroundColor: "blue", borderColor: '#2858a7', borderLeftWidth: 5 },
+	flexOne: { flex: 1 },
+	flexTwo: { flex: 2 },
+	flexThree: { flex: 3 },
+	third: { flex: .3 },
+	sixth: { flex: .6 },
+	alignment: { paddingLeft: 20, margin: 0 },
 	leftMargin: {
 		left: 10
 	},
@@ -42,8 +52,6 @@ export const styles = StyleSheet.create({
 		bottom: 120,
 		right: 100,
 		backgroundColor: '#e0e0e0',
-		// padding: 22,
-		// justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 4,
 		borderColor: 'rgba(0, 0, 0, 1)',
@@ -66,6 +74,14 @@ export const styles = StyleSheet.create({
 		flex: .70,
 		flexDirection: 'row',
 	},
+
+	cancelstyle: {
+		flex: .1,
+		justifyContent: 'flex-end',
+		flexDirection: 'row',
+		right: 0,
+		top: 0
+	},
 	modalDone: {
 		flex: .15,
 		backgroundColor: '#2858a7',
@@ -73,10 +89,19 @@ export const styles = StyleSheet.create({
 		alignItems: 'center',
 
 	},
-	inputText: {
-		fontSize: inputFontHeight,
-		alignSelf: 'center',
-		backgroundColor: 'white',
+	aseparator: {
+		height: 1,
+		backgroundColor: '#ddd',
+		marginBottom: 10,
+		width: '100%'
+	},
+
+	removebtn: {
+		padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#f00', alignSelf: 'flex-start'
+	},
+
+	savebtn: {
+		padding: 10, fontWeight: 'bold', color: '#fff', backgroundColor: '#036', alignSelf: 'flex-end'
 	},
 	digitContainer: {
 		flex: 1,
@@ -113,26 +138,35 @@ export const styles = StyleSheet.create({
 		textAlign: 'center'
 	},
 
-
-
 	wrapper: {
 		paddingTop: 50,
 		flex: 1
 	},
 
 	modal: {
-		 justifyContent: 'center',
-		// alignItems: 'center'
+		justifyContent: 'center'
 	},
-
+	center: { textAlign: 'center' },
+	flexAlign: { flex: 1, paddingRight: 20, paddingLeft: 20 },
+	rowDirection: { flex: 1, flexDirection: 'row' },
+	upperCase: { textTransform: 'uppercase' },
+	flexHeigth: { flex: 1, height: 50 },
+	textLeft: { textAlign: 'left' },
+	justifyCenter:{ justifyContent: 'center' },
+	bottleTextInput: {
+		textAlign: 'center',
+		height: 45,
+		fontSize: 20
+	},
+	oldSale: { fontSize: 16, paddingTop: 10, textAlign: 'left' },
+	completeSale:{ paddingTop: 10, paddingBottom: 10 },
+	btnStyle: { padding: 10, margin: 10, borderRadius: 5, color: 'white', backgroundColor: '#036', textAlign: 'center', alignSelf: 'flex-end' },
 	modal2: {
 		height: 230,
 		backgroundColor: "#3B5998"
 	},
 
 	modal3: {
-		// height: 300,
-		// width: 500
 		width: widthQuanityModal,
 		height: heightQuanityModal,
 	},
@@ -140,7 +174,12 @@ export const styles = StyleSheet.create({
 	modal4: {
 		height: 300
 	},
-
+	discountView: { flex: 1, flexDirection: 'row', alignContent: 'center' },
+	emptiesView: { flex: 1, flexDirection: 'row', backgroundColor: 'white', padding: 5 },
+	discountRow: { flex: 1, flexDirection: 'row', backgroundColor: 'white' },
+	bottleTracker: { flex: 1, flexDirection: 'row', height: 50 },
+	paymentMethod: { flex: 1, flexDirection: 'row', padding: 0 },
+	deliveryMode: { flex: 1, flexDirection: 'row', alignContent: 'center', paddingBottom: 10 },
 	btn: {
 		margin: 10,
 		backgroundColor: "#3B5998",
@@ -151,6 +190,14 @@ export const styles = StyleSheet.create({
 		fontWeight: "bold",
 		fontSize: 18,
 		paddingLeft: 10,
+	},
+	btmDiv: {
+		flex: 1,
+		marginTop: 10,
+		alignContent: 'space-between',
+		flexDirection: 'row',
+		right: 0,
+		bottom: 0
 	},
 	btnModal: {
 		position: "absolute",

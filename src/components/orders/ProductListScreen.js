@@ -1,4 +1,14 @@
 import React from "react";
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	const ReactRedux = require('react-redux');
+	whyDidYouRender(React, {
+		trackAllPureComponents: true,
+		trackExtraHooks: [
+			[ReactRedux, 'useSelector']
+		]
+	});
+}
 import {
 	View,
 	Text,
@@ -31,7 +41,12 @@ class ProductListScreen extends React.PureComponent {
 		this.state = {
 			salesChannel: SalesChannelRealm.getSalesChannelFromId(this.props.selectedCustomer.salesChannelId)
 		}
+		this.numColumns = 4;
+		this.horizontal = false;
+		this.removeClippedSubviews =true;
 	};
+
+	static whyDidYouRender = true;
 
 
 	handleOnPress = (item) => {
@@ -42,36 +57,12 @@ class ProductListScreen extends React.PureComponent {
 		});
 		// });
 	}
-	getImage = item => {
-		return item.base64encodedImage;
-	};
 
-	getItemBackground = index => {
-		return index % 2 === 0 ? styles.lightBackground : styles.darkBackground;
-	};
-
-	handleOnPress(item) {
-		requestAnimationFrame(() => {
-			// InteractionManager.runAfterInteractions(() => {
-			const unitPrice = this.getItemPrice(item);
-			this.props.orderActions.AddProductToOrder(item, 1, unitPrice);
-		});
-		// });
-	}
-
-	getLabelBackground = categoryId => {
-		return {
-			backgroundColor: `${randomMC.getColor({
-				text: `${categoryId}-${this.state.salesChannel.name}`
-			})}`
-		};
-	};
 
 	getItemPrice = item => {
 		let salesChannel = SalesChannelRealm.getSalesChannelFromName(
 			this.state.salesChannel.name
 		);
-
 		if (salesChannel) {
 			let productMrp = ProductMRPRealm.getFilteredProductMRP()[
 				ProductMRPRealm.getProductMrpKeyFromIds(
@@ -86,11 +77,9 @@ class ProductListScreen extends React.PureComponent {
 		return item.priceAmount; // Just use product price
 	};
 
-
 	_renderItem = ({ item, index, separators }) => (
 		this.productListItem(item, index, this.viewWidth, separators)
 	);
-
 
 	productListItem = (item, index, viewWidth, separators) => {
 		return (
@@ -105,13 +94,10 @@ class ProductListScreen extends React.PureComponent {
 					<Image
 						source={{ uri: this.getImage(item) }}
 						resizeMethod="scale"
-						style={{ flex: 1 }}
+						style={styles.flexOne}
 					/>
 					<Text
-						style={[
-							styles.imageLabel,
-							this.getLabelBackground(item.categoryId)
-						]}>
+						style={[styles.imageLabel,this.getLabelBackground(item.categoryId)]}>
 						{item.description}
 						{'\n'}
 						{this.getItemPrice(item)}
@@ -130,15 +116,12 @@ class ProductListScreen extends React.PureComponent {
 						data={this.prepareData()}
 						renderItem={this._renderItem}
 						keyExtractor={item => item.productId}
-						numColumns={4}
-						horizontal={false}
-						removeClippedSubviews={true}
-
+						numColumns={this.numColumns}
+						horizontal={this.horizontal}
+						removeClippedSubviews={this.removeClippedSubviews}
 					/>
-					
 				</View>
 			);
-
 		}
 		return null;
 	}
@@ -164,28 +147,7 @@ class ProductListScreen extends React.PureComponent {
 			})}`
 		};
 	};
-
-	getItemPrice = item => {
-		let salesChannel = SalesChannelRealm.getSalesChannelFromName(
-			this.state.salesChannel.name
-		);
-
-		if (salesChannel) {
-			let productMrp = ProductMRPRealm.getFilteredProductMRP()[
-				ProductMRPRealm.getProductMrpKeyFromIds(
-					item.productId,
-					salesChannel.id
-				)
-			];
-			if (productMrp) {
-				return productMrp.priceAmount;
-			}
-		}
-		return item.priceAmount; // Just use product price
-	};
-
 }
-
 
 function mapStateToProps(state, props) {
 	return {
@@ -220,7 +182,7 @@ const styles = StyleSheet.create({
 		borderTopWidth: 5
 	},
 
-	heightStyle: {
+	flexOne: {
 		flex: 1,
 	},
 

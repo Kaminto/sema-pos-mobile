@@ -74,7 +74,7 @@ class CustomerList extends React.Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         console.log('nextProps', this.props.isUpdate)
-        return this.props.isUpdate;
+       // return this.props.isUpdate;
     }
 
     getCustomerTypes = (item) => {
