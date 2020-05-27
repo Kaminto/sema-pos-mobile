@@ -1,7 +1,5 @@
 import React from "react";
 import { View, Text, Button, TouchableOpacity, ScrollView, FlatList, TextInput, TouchableHighlight, StyleSheet, Alert } from "react-native";
-import OrderSummary from "./OrderSummary";
-import OrderTotal from "./OrderTotal";
 import orderItemStyles from "./OrderItems";
 import orderCheckOutStyles from "./OrderCheckout";
 import { connect } from "react-redux";
@@ -17,8 +15,6 @@ import { bindActionCreators } from "redux";
 import * as OrderActions from "../../actions/OrderActions";
 import * as DiscountActions from '../../actions/DiscountActions';
 
-
-
 import { CheckBox, Card } from 'react-native-elements';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as CustomerReminderActions from '../../actions/CustomerReminderActions';
@@ -27,7 +23,6 @@ import * as PaymentTypesActions from "../../actions/PaymentTypesActions";
 import * as receiptActions from '../../actions/ReceiptActions';
 import * as TopUpActions from '../../actions/TopUpActions';
 import CreditRealm from '../../database/credit/credit.operations';
-import CustomerTypeRealm from '../../database/customer-types/customer-types.operations';
 import SalesChannelRealm from '../../database/sales-channels/sales-channels.operations';
 import ProductMRPRealm from '../../database/productmrp/productmrp.operations';
 import CustomerDebtRealm from '../../database/customer_debt/customer_debt.operations';
@@ -39,8 +34,6 @@ import CustomerReminderRealm from '../../database/customer-reminder/customer-rem
 
 import ReceiptPaymentTypeRealm from '../../database/reciept_payment_types/reciept_payment_types.operations';
 const uuidv1 = require('uuid/v1');
-const widthQuanityModal = '70%';
-const heightQuanityModal = 520;
 import { withNavigation } from 'react-navigation';
 class OrderSummaryScreen extends React.PureComponent {
 
@@ -1139,7 +1132,7 @@ class OrderSummaryScreen extends React.PureComponent {
 		console.log('this.state.isPaymentModal', this.state.isPaymentModal)
 		if (this.state.isPaymentModal) {
 			return (
-				
+
 					<View style={{ flex: 1, padding: 0, margin: 0 }}>
 						<ScrollView>
 
@@ -1361,7 +1354,7 @@ class OrderSummaryScreen extends React.PureComponent {
 					onClosed={() => this.modalOnClose()}>
 {this.paymentModalModal(isRefill)}
 					</Modal>
-				
+
 
 
 
@@ -1755,7 +1748,7 @@ class OrderSummaryScreen extends React.PureComponent {
 		this.setState({ isBottleTrackerModal: true })
 		this.refs.modal7.open();
 
-	}; 
+	};
 
 	onNotes = () => {
 		this.setState({ isAdditionalNotesModal: true })

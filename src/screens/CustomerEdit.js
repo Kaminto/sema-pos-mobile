@@ -148,22 +148,14 @@ class CustomerEdit extends React.PureComponent {
 		} catch (error) { }
 	}
 
-
-
 	render() {
-		const cplaceholder = {
-			label: '',
-			value: null,
-			key: 0,
-		};
 		return (
-			<View style={{ flex: 1, backgroundColor: '#f1f1f1', justifyContent: 'center' }}>
+			<View style={styles.custeditcont}>
 				<ScrollView
-					style={{ flex: 1 }}
-				>
-					<View style={{ flex: 1, alignItems: 'center' }}>
+					style={styles.flex1}>
+					<View style={styles.flexCenter}>
 
-						<Card containerStyle={{ width: '55%', marginTop: 30, padding: 0, borderRadius: 8 }}>
+						<Card containerStyle={styles.contCard}>
 
 							<Input
 								placeholder={i18n.t(
@@ -174,7 +166,7 @@ class CustomerEdit extends React.PureComponent {
 								underlineColorAndroid="transparent"
 								keyboardType="default"
 								value={this.state.name}
-								inputContainerStyle={[styles.inputText]}
+								inputContainerStyle={styles.inputText}
 								leftIcon={
 									<Ionicons
 										name='md-person'
@@ -183,15 +175,15 @@ class CustomerEdit extends React.PureComponent {
 									/>
 								}
 							/>
-							<View style={{ flex: 1, flexDirection: 'row' }}>
+							<View style={styles.flexanddirection}>
 								<Input
 									placeholder={i18n.t('telephone-number')}
 									onChangeText={this.onChangeTeleOne.bind(this)}
 									value={this.state.phoneNumber}
 									keyboardType="phone-pad"
 									// label={i18n.t('telephone-number')}
-									inputContainerStyle={[styles.inputText]}
-									containerStyle={{ flex: .5 }}
+									inputContainerStyle={styles.inputText}
+									containerStyle={styles.flexpt5}
 									leftIcon={
 										<Ionicons
 											name='md-contact'
@@ -207,8 +199,8 @@ class CustomerEdit extends React.PureComponent {
 									keyboardType="phone-pad"
 									onChangeText={this.onChangeTeleTwo.bind(this)}
 									// label={i18n.t('second-phone-number')}
-									inputContainerStyle={[styles.inputText]}
-									containerStyle={{ flex: .5 }}
+									inputContainerStyle={styles.inputText}
+									containerStyle={styles.flexpt5}
 									leftIcon={
 										<Ionicons
 											name='md-contact'
@@ -226,7 +218,7 @@ class CustomerEdit extends React.PureComponent {
 								value={this.state.address}
 								onChangeText={this.onChangeAddress.bind(this)}
 								// label={i18n.t('address')}
-								inputContainerStyle={[styles.inputText]}
+								inputContainerStyle={styles.inputText}
 								leftIcon={
 									<Ionicons
 										name='md-map'
@@ -250,15 +242,7 @@ class CustomerEdit extends React.PureComponent {
 								}}
 								value={this.state.customerType}
 								useNativeAndroidPickerStyle={false}
-								style={{
-									...pickerSelectStyles,
-									iconContainer: {
-										top: 20,
-										left: 30,
-										color: "black",
-										marginRight: 10
-									},
-								}}
+								style={[...pickerSelectStyles, styles.inputContainer]}
 								Icon={() => {
 									return <Ionicons name="md-ribbon" size={24} />;
 								}}
@@ -266,21 +250,10 @@ class CustomerEdit extends React.PureComponent {
 
 							<Button
 								onPress={this.onEdit.bind(this)}
-								buttonStyle={{ padding: 20 }}
-								containerStyle={{
-									bottom: 0,
-									borderRadius: 0,
-									flex: 1,
-									marginLeft: 0,
-									marginRight: 0,
-									marginBottom: 0,
-									marginTop: 10
-								}}
+								buttonStyle={styles.subbtn}
+								containerStyle={styles.contBtnStyle}
 								title={this.getSubmitText()} />
-
-
 						</Card>
-
 
 						<Modal
 							visible={this.state.isEditInProgress}
@@ -296,9 +269,6 @@ class CustomerEdit extends React.PureComponent {
 							onRequestClose={this.closeHandler}>
 							{this.showCreateInProgress()}
 						</Modal>
-
-
-
 					</View>
 				</ScrollView>
 			</View>
@@ -508,14 +478,9 @@ class CustomerEdit extends React.PureComponent {
 		}
 		return (
 			<View
-				style={{
-					flex: 1,
-					flexDirection: 'column',
-					justifyContent: 'center',
-					alignItems: 'center'
-				}}>
+				style={styles.createLoader}>
 				<View style={styles.updating}>
-					<Text style={{ fontSize: 24, fontWeight: 'bold' }}>
+					<Text style={styles.loadertext}>
 						{i18n.t('updating')}
 					</Text>
 				</View>
@@ -533,14 +498,9 @@ class CustomerEdit extends React.PureComponent {
 		}
 		return (
 			<View
-				style={{
-					flex: 1,
-					flexDirection: 'column',
-					justifyContent: 'center',
-					alignItems: 'center'
-				}}>
+				style={styles.createLoader}>
 				<View style={styles.updating}>
-					<Text style={{ fontSize: 24, fontWeight: 'bold' }}>
+					<Text style={styles.loadertext}>
 						Creating
 					</Text>
 				</View>
@@ -588,6 +548,41 @@ const pickerSelectStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
+	flex1:{
+		flex: 1
+	},
+
+	iconContainer: {
+		top: 20,
+		left: 30,
+		color: "black",
+		marginRight: 10
+	},
+
+	contBtnStyle: {
+		bottom: 0,
+		borderRadius: 0,
+		flex: 1,
+		marginLeft: 0,
+		marginRight: 0,
+		marginBottom: 0,
+		marginTop: 10
+	},
+
+	loadertext: { fontSize: 24, fontWeight: 'bold' },
+
+	createLoader: {
+		flex: 1,
+		flexDirection: 'column',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+
+	subbtn: {padding: 20},
+
+	flexanddirection: { flex: 1, flexDirection: 'row' },
+	flexCenter: { flex: 1, alignItems: 'center' },
+	custeditcont: { flex: 1, backgroundColor: '#f1f1f1', justifyContent: 'center' },
 	headerText: {
 		fontSize: 24,
 		color: 'black',
@@ -612,6 +607,10 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		width: 300
 	},
+
+	flexpt5: { flex: .5 },
+
+	contCard: { width: '55%', marginTop: 30, padding: 0, borderRadius: 8 },
 
 	inputText: {
 		alignSelf: 'center',

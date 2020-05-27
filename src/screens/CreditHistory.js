@@ -38,16 +38,16 @@ class CreditHistory extends React.PureComponent {
 
     render() {
         return (
-            <View style={{ backgroundColor: '#fff', flex: 1 }}>
+            <View style={styles.selecteddetails}>
                 <SelectedCustomerDetails
                     creditSales={this.customerCreditPaymentTypeReceipts()}
                     navigation={this.props.navigation}
                     topupTotal={this.totalTopUp()}
                     selectedCustomer={this.props.selectedCustomer} />
 
-                <View style={{ flexDirection: 'row', flex: .75, width: '85%', alignSelf: 'center', backgroundColor: '#FFF' }}>
+                <View style={styles.creditcont}>
 
-                    <View style={{ flex: 1 }}>
+                    <View style={styles.flex1}>
                         <FlatList
                             ref={ref => {
                                 this.flatListRef = ref;
@@ -179,21 +179,15 @@ class CreditHistory extends React.PureComponent {
             <View
                 style={[
                     this.getRowBackground(index, isSelected),
-                    {
-                        flex: 1,
-                        padding: 5,
-                        flexDirection: 'row',
-                        height: 50,
-                        alignItems: 'center'
-                    }
+                    styles.rowstyles
                 ]}>
-                <View style={{ flex: 1 }}>
-                    <Text style={[styles.baseItem]}>
+                <View style={styles.flex1}>
+                    <Text style={styles.baseItem}>
 						{format(parseISO(item.createdAt), 'iiii d MMM yyyy')}
                     </Text>
                 </View>
-                <View style={{ flex: 1 }}>
-                    <Text style={[styles.baseItem, styles.leftMargin]}>
+                <View style={styles.flex1}>
+                    <Text style={styles.baseItem, styles.leftMargin}>
 			{this.getCurrency()} {item.topup}
                     </Text>
                 </View>
@@ -205,22 +199,13 @@ class CreditHistory extends React.PureComponent {
     showHeader = () => {
         return (
             <View
-                style={[
-                    {
-                        flex: 1,
-                        flexDirection: 'row',
-                        height: 50,
-                        padding: 10,
-                        alignItems: 'center'
-                    },
-                    styles.headerBackground
-                ]}>
-                <View style={[{ flex: 1 }]}>
-                    <Text style={[styles.headerItem]}>Date</Text>
+                style={styles.headerBackground}>
+                <View style={styles.flex1}>
+                    <Text style={styles.headerItem}>Date</Text>
                 </View>
 
-                <View style={[{ flex: 1 }]}>
-                    <Text style={[styles.headerItem]}>
+                <View style={styles.flex1}>
+                    <Text style={styles.headerItem}>
                         Topup Amount
                     </Text>
                 </View>
@@ -360,6 +345,7 @@ export default connect(
 
 
 const styles = StyleSheet.create({
+	creditCont: { flexDirection: 'row', flex: .75, width: '85%', alignSelf: 'center', backgroundColor: '#FFF' },
     baseItem: {
         fontSize: 18,
         alignContent: 'flex-end'
@@ -370,9 +356,15 @@ const styles = StyleSheet.create({
     headerItem: {
         fontWeight: 'bold',
         fontSize: 18
-    },
+	},
+	flex1: { flex: 1 },
     headerBackground: {
-        backgroundColor: '#ABC1DE'
+		backgroundColor: '#ABC1DE',
+		flex: 1,
+		flexDirection: 'row',
+		height: 50,
+		padding: 10,
+		alignItems: 'center'
     },
     selectedCustomerText: {
         marginLeft: 10,
@@ -388,5 +380,15 @@ const styles = StyleSheet.create({
     },
     selectedBackground: {
         backgroundColor: '#9AADC8'
-    }
+	},
+
+	rowstyles: {
+		flex: 1,
+		padding: 5,
+		flexDirection: 'row',
+		height: 50,
+		alignItems: 'center'
+	},
+
+	selecteddetails: { backgroundColor: '#fff', flex: 1 }
 });

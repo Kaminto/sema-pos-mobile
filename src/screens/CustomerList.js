@@ -12,7 +12,6 @@ import {
     StyleSheet,
     Alert,
     FlatList,
-    InteractionManager,
     TouchableWithoutFeedback
 } from 'react-native';
 import { FloatingAction } from "react-native-floating-action";
@@ -36,7 +35,6 @@ import PaymentModal from './paymentModal';
 import slowlog from 'react-native-slowlog';
 
 import { TouchableHighlight } from 'react-native-gesture-handler';
-import { withNavigation } from 'react-navigation';
 
 
 class CustomerList extends React.Component {
@@ -54,8 +52,10 @@ class CustomerList extends React.Component {
             hasScrolled: false
         };
 
+	}
 
-        this.props.navigation.setParams({
+	componentDidMount() {
+		this.props.navigation.setParams({
             isCustomerSelected: false,
             customerTypeValue: 'all',
             customerName: '',
@@ -67,9 +67,7 @@ class CustomerList extends React.Component {
 
         this.props.customerActions.CustomerSelected({});
         this.props.customerActions.setCustomerEditStatus(false);
-
-
-    }
+	}
     static whyDidYouRender = true;
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -326,7 +324,7 @@ class CustomerList extends React.Component {
         // requestAnimationFrame(() => {
         // InteractionManager.runAfterInteractions(() => {
 
-      
+
         console.log('err');
         this.props.customerActions.CustomerSelected(item);
         this.props.customerActions.SetCustomerProp(
@@ -406,7 +404,7 @@ class CustomerList extends React.Component {
         )
     };
 
-    
+
 
     render() {
         return (
@@ -427,16 +425,16 @@ class CustomerList extends React.Component {
                 />
                  <FloatingAction
                     onOpen={name => {
-                        // this.props.customerActions.CustomerSelected({});
+                        this.props.customerActions.CustomerSelected({});
                         this.props.customerActions.setCustomerEditStatus(false);
-                        // this.props.customerActions.SetCustomerProp(
-                        //     {
-                        //         isCustomerSelected: false,
-                        //         isDueAmount: 0,
-                        //         customerName: '',
-                        //         'title': '',
-                        //     }
-                        // );
+                        this.props.customerActions.SetCustomerProp(
+                            {
+                                isCustomerSelected: false,
+                                isDueAmount: 0,
+                                customerName: '',
+                                'title': '',
+                            }
+                        );
                         this.props.navigation.navigate('EditCustomer');
                     }}
                 />
