@@ -22,8 +22,8 @@ export function setReceipts(receipts) {
 }
 
 
-export function setTransaction() {
-    return (dispatch) => { dispatch({ type: SET_TRANSACTION }) };
+export function setTransaction(data) {
+    return (dispatch) => { dispatch({ type: SET_TRANSACTION, data }) };
 }
 
 export function updateTransaction(data) {
