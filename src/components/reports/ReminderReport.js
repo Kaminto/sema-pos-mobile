@@ -85,20 +85,20 @@ class RemindersReport extends React.PureComponent {
 	showHeader = () => {
 		return (
 			<View style={styles.headerBackground}>
-				<View style={[{ flex: 2 }]}>
-					<Text style={[styles.headerItem]}>Customer Name</Text>
+				<View style={styles.flex2}>
+					<Text style={styles.headerItem}>Customer Name</Text>
 				</View>
-				<View style={[{ flex: 1.5 }]}>
-					<Text style={[styles.headerItem]}>Phone Number</Text>
+				<View style={styles.flex15}>
+					<Text style={styles.headerItem}>Phone Number</Text>
 				</View>
-				<View style={[{ flex: 1.5 }]}>
-					<Text style={[styles.headerItem]}>Address</Text>
+				<View style={styles.flex15}>
+					<Text style={styles.headerItem}>Address</Text>
 				</View>
-				<View style={[{ flex: 2 }]}>
-					<Text style={[styles.headerItem]}>Last Purchase Date</Text>
+				<View style={styles.flex2}>
+					<Text style={styles.headerItem}>Last Purchase Date</Text>
 				</View>
-				<View style={[{ flex: 2 }]}>
-					<Text style={[styles.headerItem]}>Custom Reminder</Text>
+				<View style={styles.flex2}>
+					<Text style={styles.headerItem}>Custom Reminder</Text>
 				</View>
 			</View>
 		);
@@ -107,20 +107,20 @@ class RemindersReport extends React.PureComponent {
 	getRow = (item, index, separators) => {
 		return (
 			<View style={styles.rowCont}>
-				<View style={{ flex: 2 }}>
+				<View style={styles.flex2}>
 					<Text style={[styles.baseItem, styles.leftMargin]}>{item.customer.name}</Text>
 				</View>
-				<View style={{ flex: 1.5 }}>
-					<Text style={[styles.baseItem]}>{item.customer.phoneNumber}</Text>
+				<View style={styles.flex15}>
+					<Text style={styles.baseItem}>{item.customer.phoneNumber}</Text>
 				</View>
-				<View style={{ flex: 1.5 }}>
-					<Text style={[styles.baseItem]}>{item.customer.address}</Text>
+				<View style={styles.flex15}>
+					<Text style={styles.baseItem}>{item.customer.address}</Text>
 				</View>
-				<View style={{ flex: 2 }}>
-					<Text style={[styles.baseItem]}>{format(parseISO(item.last_purchase_date), 'iiii d MMM yyyy')}
+				<View style={styles.flex2}>
+					<Text style={styles.baseItem}>{format(parseISO(item.last_purchase_date), 'iiii d MMM yyyy')}
 					</Text>
 				</View>
-				<View style={{ flex: 2 }}>
+				<View style={styles.flex2}>
 					<TouchableHighlight
 						style={styles.currentInventory}
 						onPress={() => this.showDateTimePicker(item)}
@@ -266,6 +266,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(RemindersReport);
 const styles = StyleSheet.create({
 	baseItem: {
 		fontSize: 18
+	},
+
+	flex2: {
+		flex: 2
+	},
+
+	flex15: {
+		flex: 1.5
 	},
 	headerItem: {
 		fontWeight: "bold",

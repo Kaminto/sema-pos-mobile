@@ -11,12 +11,12 @@ import { connect } from "react-redux";
 class PaymentDescription extends React.PureComponent {
 	render() {
 		return (
-			<View style={[{ flex: 1, flexDirection: 'row', marginTop: '1%' }]}>
-				<View style={[{ flex: 3 }]}>
-					<Text style={[styles.totalTitle]}>{this.props.title}</Text>
+			<View style={styles.paydectitle}>
+				<View style={styles.flex3}>
+					<Text style={styles.totalTitle}>{this.props.title}</Text>
 				</View>
-				<View style={[{ flex: 2 }]}>
-		<Text style={[styles.totalValue]}>{this.getCurrency().toUpperCase()} {this.props.total}</Text>
+				<View style={styles.flex2}>
+		<Text style={styles.totalValue}>{this.getCurrency().toUpperCase()} {this.props.total}</Text>
 				</View>
 			</View>
 		);
@@ -51,6 +51,16 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(PaymentDescription);
 
 const styles = StyleSheet.create({
+
+	paydectitle: { flex: 1, flexDirection: 'row', marginTop: '1%' },
+
+	flex2: {
+		flex: 2
+	},
+
+	flex3: {
+		flex: 3
+	},
 
 	container: {
 		flex: 1,

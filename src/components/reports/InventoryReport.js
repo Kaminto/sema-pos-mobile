@@ -394,7 +394,7 @@ class InventoryReport extends React.PureComponent {
 
 	getCurrentInventory(item) {
 		return (
-			<View style={[{ flex: .7 }]}>
+			<View style={styles.pt7flex}>
 				<TouchableHighlight
 					style={styles.currentInventory}
 					onPress={() => this.displayEditCurrentSku(item.wastageName)}
@@ -408,7 +408,7 @@ class InventoryReport extends React.PureComponent {
 
 	getCurrentNotDispatched(item) {
 		return (
-			<View style={[{ flex: .7 }]}>
+			<View style={styles.pt7flex}>
 				<TouchableHighlight
 					style={styles.currentInventory}
 					onPress={() => this.displayNotDispatcheModal(item.wastageName)}
@@ -544,7 +544,7 @@ class InventoryReport extends React.PureComponent {
 
 	getCurrentMeter(value) {
 		return (
-			<View style={{ flex: .6 }}>
+			<View style={styles.pt6flex}>
 				<TouchableHighlight
 					style={styles.currentInventory}
 					onPress={() => { this.displayCurrentMeter() }}
@@ -673,6 +673,14 @@ const styles = StyleSheet.create({
 	},
 	halfflex: {
 		flex: .5
+	},
+
+	pt6flex: {
+		flex: .6
+	},
+
+	pt7flex: {
+		flex: .7
 	},
 
 	emptysp: {

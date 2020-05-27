@@ -47,20 +47,20 @@ class SalesReport extends React.PureComponent {
 							<DateFilter />
 							<View style={styles.salesmaincont}>
 								<View style={styles.salestabs} >
-									<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-liters').toUpperCase()}</Text>
-									<Text style={[styles.totalItem, { flex: .6 }]}>{this.props.salesData.totalLiters.toFixed(1)} L</Text>
+									<Text style={styles.totalLabel4}>{i18n.t('total-liters').toUpperCase()}</Text>
+									<Text style={styles.totalItem6}>{this.props.salesData.totalLiters.toFixed(1)} L</Text>
 								</View>
 								<View style={styles.salestabs} >
-									<Text style={[styles.totalLabel, { flex: .4 }]}>{i18n.t('total-sales').toUpperCase()}</Text>
-									<Text style={[styles.totalItem, { flex: .6 }]}>{this.getCurrency()} {this.props.salesData.totalSales}</Text>
+									<Text style={styles.totalLabel4}>{i18n.t('total-sales').toUpperCase()}</Text>
+									<Text style={styles.totalItem6}>{this.getCurrency()} {this.props.salesData.totalSales}</Text>
 								</View>
 								<View style={styles.salestabs} >
-									<Text style={[styles.totalLabel, { flex: .4 }]}>DEBT COLLECTED</Text>
-									<Text style={[styles.totalItem, { flex: .6 }]}>{this.props.salesData.totalDebt}</Text>
+									<Text style={styles.totalLabel4}>DEBT COLLECTED</Text>
+									<Text style={styles.totalItem6}>{this.props.salesData.totalDebt}</Text>
 								</View>
 								<View style={styles.salestabs} >
-									<Text style={[styles.totalLabel, { flex: .4 }]}>TOTAL EARNINGS</Text>
-									<Text style={[styles.totalItem, { flex: .6 }]}>
+									<Text style={styles.totalLabel4}>TOTAL EARNINGS</Text>
+									<Text style={styles.totalItem6}>
 										{this.getCurrency()} {this.props.salesData.totalTypes.length > 0 ? this.props.salesData.totalTypes.slice(-1)[0].totalAmount : 0}</Text>
 								</View>
 							</View>
@@ -124,18 +124,18 @@ class SalesReport extends React.PureComponent {
 	getRow = (item) => {
 		return (
 			<View style={styles.rowBackground}>
-				<View style={[{ flex: 1 }]}>
-					<Text numberOfLines={1} style={[styles.rowItem, styles.leftMargin]}>
+				<View style={styles.flex1}>
+					<Text numberOfLines={1} style={styles.rowItem, styles.leftMargin}>
 						{item.description}</Text>
 				</View>
-				<View style={[{ flex: 1, }]}>
-					<Text style={[styles.rowItemCenter]}>{item.quantity}</Text>
+				<View style={styles.flex1}>
+					<Text style={styles.rowItemCenter}>{item.quantity}</Text>
 				</View>
-				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.rowItemCenter]}>{!isNaN(item.totalLiters) ? item.totalLiters.toFixed(1) : 0}</Text>
+				<View style={styles.flex1}>
+					<Text style={styles.rowItemCenter}>{!isNaN(item.totalLiters) ? item.totalLiters.toFixed(1) : 0}</Text>
 				</View>
-				<View style={[{ flex: 1 }]}>
-					<Text style={[styles.rowItemCenter]}>{item.totalSales.toFixed(2)}</Text>
+				<View style={styles.flex1}>
+					<Text style={styles.rowItemCenter}>{item.totalSales.toFixed(2)}</Text>
 				</View>
 			</View>
 		);
@@ -145,14 +145,14 @@ class SalesReport extends React.PureComponent {
 		return (
 			<View style={styles.rowBackground}>
 
-				<View style={{ flex: 1 }}>
-					<Text style={[styles.rowItemCenter]}>
+				<View style={styles.flex1}>
+					<Text style={styles.rowItemCenter}>
 						{item.name == 'credit' ? 'WALLET' : item.name.toUpperCase()}
 					</Text>
 				</View>
 
-				<View style={{ flex: 1 }}>
-					<Text style={[styles.rowItemCenter]}>{item.totalAmount !== null ? item.totalAmount.toFixed(2) : 0}</Text>
+				<View style={styles.flex1}>
+					<Text style={styles.rowItemCenter}>{item.totalAmount !== null ? item.totalAmount.toFixed(2) : 0}</Text>
 				</View>
 			</View>
 		);
@@ -161,17 +161,17 @@ class SalesReport extends React.PureComponent {
 	showHeader = () => {
 		return (
 			<View style={styles.headerBackground}>
-				<View style={{ flex: 1 }}>
-					<Text style={[styles.headerItem, styles.leftMargin]}>{'Product'.toUpperCase()}</Text>
+				<View style={styles.flex1}>
+					<Text style={styles.headerItem, styles.leftMargin}>{'Product'.toUpperCase()}</Text>
 				</View>
-				<View style={{ flex: 1 }}>
-					<Text style={[styles.headerItemCenter]}>{i18n.t('quantity').toUpperCase()}</Text>
+				<View style={styles.flex1}>
+					<Text style={styles.headerItemCenter}>{i18n.t('quantity').toUpperCase()}</Text>
 				</View>
-				<View style={{ flex: 1 }}>
-					<Text style={[styles.headerItemCenter]}>{i18n.t('total-liters').toUpperCase()}</Text>
+				<View style={styles.flex1}>
+					<Text style={styles.headerItemCenter}>{i18n.t('total-liters').toUpperCase()}</Text>
 				</View>
-				<View style={{ flex: 1 }}>
-					<Text style={[styles.headerItemCenter]}>{i18n.t('total-sales').toUpperCase()}</Text>
+				<View style={styles.flex1}>
+					<Text style={styles.headerItemCenter}>{i18n.t('total-sales').toUpperCase()}</Text>
 				</View>
 			</View>
 		);
@@ -180,11 +180,11 @@ class SalesReport extends React.PureComponent {
 	showPaymentHeader = () => {
 		return (
 			<View style={styles.headerBackground}>
-				<View style={{ flex: 1 }}>
-					<Text style={[styles.headerItemCenter]}>PAYMENT METHOD</Text>
+				<View style={styles.flex1}>
+					<Text style={styles.headerItemCenter}>PAYMENT METHOD</Text>
 				</View>
-				<View style={{ flex: 1 }}>
-					<Text style={[styles.headerItemCenter]}>AMOUNT</Text>
+				<View style={styles.flex1}>
+					<Text style={styles.headerItemCenter}>AMOUNT</Text>
 				</View>
 			</View>
 		);
@@ -213,6 +213,14 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(SalesReport);
 
 const styles = StyleSheet.create({
+
+	flex2: {
+		flex: 2
+	},
+
+	flex1: {
+		flex: 1
+	},
 
 	mainCont: {
 		flex: 1, backgroundColor: 'white'
@@ -295,6 +303,20 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		color: 'white',
 		paddingLeft: 10,
+	},
+	totalItem6: {
+		fontWeight: "bold",
+		fontSize: 24,
+		color: 'white',
+		paddingLeft: 10,
+		flex: .6
+	},
+	totalLabel4: {
+		fontWeight: "bold",
+		fontSize: 18,
+		color: 'white',
+		paddingLeft: 10,
+		flex: .4
 	},
 	titleItem: {
 		fontWeight: "bold",
