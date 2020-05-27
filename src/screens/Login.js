@@ -68,10 +68,15 @@ class Login extends React.PureComponent {
 		this.onLanguageSelected = this.onLanguageSelected.bind(this);
 	}
 
+	componentDidMount() {
+
+	}
+
 	render() {
 		let serviceItems = supportedUILanguages.map((s, i) => {
 			return <Picker.Item key={i} value={s.iso_code} label={s.name} />
 		});
+
 		return (
 			<ImageBackground style={styles.imgBackground}
 				resizeMode='cover'
