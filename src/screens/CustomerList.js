@@ -49,13 +49,17 @@ class CustomerList extends React.Component {
             walletcustomers: false,
             customerTypeFilter: '',
             customerTypeValue: '',
-            hasScrolled: false
+            hasScrolled: false,
+            isPaymentModal: true,
         };
+        this.windowSize = 10;
+        this.stickyHeaderIndices = [0];
+        this.removeClippedSubviews = true;
 
-	}
+    }
 
-	componentDidMount() {
-		this.props.navigation.setParams({
+    componentDidMount() {
+        this.props.navigation.setParams({
             isCustomerSelected: false,
             customerTypeValue: 'all',
             customerName: '',
@@ -67,13 +71,13 @@ class CustomerList extends React.Component {
 
         this.props.customerActions.CustomerSelected({});
         this.props.customerActions.setCustomerEditStatus(false);
-	}
+    }
     static whyDidYouRender = true;
 
-    shouldComponentUpdate(nextProps, nextState) {
-        console.log('nextProps', this.props.isUpdate)
-       // return this.props.isUpdate;
-    }
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     console.log('nextProps', this.props.isUpdate)
+    //    // return this.props.isUpdate;
+    // }
 
     getCustomerTypes = (item) => {
         const customerTypeIts = CustomerTypeRealm.getCustomerTypes();
@@ -128,7 +132,6 @@ class CustomerList extends React.Component {
             }
             return true;
         });
-
         return filteredItems;
     };
 
@@ -171,11 +174,13 @@ class CustomerList extends React.Component {
         this.props.paymentTypesActions.resetSelectedDebt();
         this.props.paymentTypesActions.setPaymentTypes(
             PaymentTypeRealm.getPaymentTypes());
+        this.setState({ isPaymentModal: false });
         this.refs.modal6.close();
     };
 
 
     clearLoan = () => {
+        this.setState({ isPaymentModal: true });
         this.refs.modal6.open();
     }
 
@@ -246,30 +251,30 @@ class CustomerList extends React.Component {
                 );
             }
         }
-	};
+    };
 
 
     showHeader = () => {
         return (
             <View
                 style={styles.headerBackground}>
-                <View style={[{ flex: 1.5 }]}>
+                <View style={[styles.OneHalf]}>
                     <Text style={[styles.headerItem, styles.leftMargin]}>
                         {i18n.t('account-name')}
                     </Text>
                 </View>
-                <View style={[{ flex: 1 }]}>
+                <View style={[styles.flexOne]}>
                     <Text style={[styles.headerItem]}>
                         {i18n.t('telephone-number')}
                     </Text>
                 </View>
-                <View style={[{ flex: 1.5 }]}>
+                <View style={[styles.OneHalf]}>
                     <Text style={[styles.headerItem]}>{i18n.t('address')}</Text>
                 </View>
-                <View style={[{ flex: 1 }]}>
+                <View style={[styles.flexOne]}>
                     <Text style={[styles.headerItem]}>{i18n.t('customer-type')}</Text>
                 </View>
-                <View style={[{ flex: 1, flexDirection: 'row' }]}>
+                <View style={[styles.balance]}>
                     <TouchableWithoutFeedback onPress={() => {
                         this.setState({ debtcustomers: !this.state.debtcustomers });
                         this.setState({ refresh: !this.state.refresh });
@@ -285,7 +290,7 @@ class CustomerList extends React.Component {
 
                     </TouchableWithoutFeedback>
                 </View>
-                <View style={[{ flex: 1 }]}>
+                <View style={[styles.flexOne]}>
                     <TouchableWithoutFeedback onPress={() => {
                         this.setState({ walletcustomers: !this.state.walletcustomers });
                         this.setState({ refresh: !this.state.refresh });
@@ -298,7 +303,6 @@ class CustomerList extends React.Component {
                                 style={styles.iconStyle}
                             />
                         </Text>
-
                     </TouchableWithoutFeedback>
                 </View>
 
@@ -321,11 +325,6 @@ class CustomerList extends React.Component {
     };
 
     handleOnPress(item) {
-        // requestAnimationFrame(() => {
-        // InteractionManager.runAfterInteractions(() => {
-
-
-        console.log('err');
         this.props.customerActions.CustomerSelected(item);
         this.props.customerActions.SetCustomerProp(
             {
@@ -335,16 +334,9 @@ class CustomerList extends React.Component {
                 'title': item.name + "'s Order"
             }
         );
-
         if (this.props.products.length > 0) {
-         this.props.navigation.navigate('OrderView');
+            this.props.navigation.navigate('OrderView');
         }
-
-        // if (this.props.products.length === 0) {
-
-        // }
-        // });
-        // });
     }
 
     getRowBackground = (index, isSelected) => {
@@ -370,31 +362,31 @@ class CustomerList extends React.Component {
                     style={[
                         this.getRowBackground(index, isSelected), styles.listStyles
                     ]}>
-                    <View style={{ flex: 1.5 }}>
+                    <View style={styles.OneHalf}>
                         <Text style={[styles.baseItem, styles.leftMargin]}>
                             {item.name}
                         </Text>
                     </View>
-                    <View style={{ flex: 1 }}>
+                    <View style={styles.flexOne}>
                         <Text style={styles.baseItem}>
                             {item.phoneNumber}
                         </Text>
                     </View>
 
-                    <View style={{ flex: 1.5 }}>
+                    <View style={styles.OneHalf}>
                         <Text style={[styles.baseItem]}>{item.address}</Text>
                     </View>
-                    <View style={{ flex: 1 }}>
+                    <View style={styles.flexOne}>
                         <Text style={styles.baseItem}>
                             {this.getCustomerTypes(item)}
                         </Text>
                     </View>
-                    <View style={{ flex: 1 }}>
+                    <View style={styles.flexOne}>
                         <Text style={styles.baseItem}>
                             {item.dueAmount ? item.dueAmount.toFixed(2) : 0}
                         </Text>
                     </View>
-                    <View style={{ flex: 1 }}>
+                    <View style={styles.flexOne}>
                         <Text style={styles.baseItem}>
                             {item.walletBalance.toFixed(2)}
                         </Text>
@@ -408,7 +400,7 @@ class CustomerList extends React.Component {
 
     render() {
         return (
-            <View style={{ backgroundColor: '#fff', flex: 1 }}>
+            <View style={styles.list}>
                 <FlatList
                     ref={ref => {
                         this.flatListRef = ref;
@@ -416,14 +408,14 @@ class CustomerList extends React.Component {
                     getItemLayout={this.getItemLayout}
                     data={this.prepareData()}
                     ListHeaderComponent={this.showHeader}
-                    stickyHeaderIndices={[0]}
+                    stickyHeaderIndices={this.stickyHeaderIndices}
                     extraData={this.state.refresh}
                     renderItem={this._renderItem}
                     keyExtractor={(item, idx) => item.customerId + idx}
-                    windowSize={20}
-                    removeClippedSubviews={true}
+                    windowSize={this.windowSize}
+                    removeClippedSubviews={this.removeClippedSubviews}
                 />
-                 <FloatingAction
+                <FloatingAction
                     onOpen={name => {
                         this.props.customerActions.CustomerSelected({});
                         this.props.customerActions.setCustomerEditStatus(false);
@@ -446,9 +438,10 @@ class CustomerList extends React.Component {
                         position={"center"} ref={"modal6"}
                         onClosed={() => this.modalOnClose()}
                         isDisabled={this.state.isDisabled}>
-                        <PaymentModal
-                            modalOnClose={this.modalOnClose}
-                            closePaymentModal={this.closePaymentModal} />
+
+                        {this.openModal()}
+
+
                     </Modal>
                 </View>
                 <SearchWatcher parent={this}>
@@ -457,6 +450,16 @@ class CustomerList extends React.Component {
             </View>
         );
     };
+
+    openModal() {
+        if (this.state.isPaymentModal) {
+            return (<PaymentModal
+                modalOnClose={this.modalOnClose}
+                closePaymentModal={this.closePaymentModal} />)
+        } else {
+            return null;
+        }
+    }
 
 
 }
@@ -517,13 +520,16 @@ const styles = StyleSheet.create({
     baseItem: {
         fontSize: 17
     },
+    flexOne: { flex: 1 },
     leftMargin: {
         left: 10
     },
+    balance: { flex: 1, flexDirection: 'row' },
     headerItem: {
         fontWeight: 'bold',
         fontSize: 18
     },
+    OneHalf: { flex: 1.5 },
     headerBackground: {
         flex: 1,
         flexDirection: 'row',
@@ -531,6 +537,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#ABC1DE'
     },
+    list: { backgroundColor: '#fff', flex: 1 },
     modalPayment: {
         backgroundColor: 'white',
     },

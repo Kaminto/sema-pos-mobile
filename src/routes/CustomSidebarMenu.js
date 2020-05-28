@@ -41,6 +41,12 @@ class CustomSidebarMenu extends React.PureComponent {
       isLoading: false
     };
 
+    this.resizeMode = 'stretch';
+    this.iconSize = 25;
+    this.activitySize = 60;
+    this.activityColor = "#ABC1DE";
+    this.iconColor = "#808080";
+
     this.items = [
       {
         navOptionThumb: 'md-contact',
@@ -102,7 +108,7 @@ class CustomSidebarMenu extends React.PureComponent {
     return (
       <View style={styles.sideMenuContainer}>
         <ScrollView style={styles.viewFlex}>
-          <Image source={require('../images/jibulogo.png')} resizeMode='stretch' style={styles.imageStyle} />
+          <Image source={require('../images/jibulogo.png')} resizeMode={this.resizeMode} style={styles.imageStyle} />
           {/*Divider between Top Image and Sidebar Option*/}
           <View
             style={styles.viewCont}
@@ -116,7 +122,7 @@ class CustomSidebarMenu extends React.PureComponent {
 
                   onPress={() => this.handleOnPress(item, key)}>
                   <View style={styles.viewMargins}>
-                    <Icon name={item.navOptionThumb} size={25} color="#808080" />
+                    <Icon name={item.navOptionThumb} size={this.iconSize} color={this.iconColor} />
                   </View>
                   <Text style={txtStyle(key, global.currentScreenIndex).txtCol}>
                     {item.navOptionName}
@@ -127,7 +133,7 @@ class CustomSidebarMenu extends React.PureComponent {
           </View>
           {
             this.state.isLoading && (
-              <ActivityIndicator size={60} color="#ABC1DE" />
+              <ActivityIndicator size={this.activitySize} color={this.activityColor} />
             )
           }
         </ScrollView>
