@@ -59,8 +59,6 @@ class OrderRealm {
 
     getOrdersByDate(date) {
         return new Promise(resolve => {
-
-
             try {
                 let orderObj = Object.values(JSON.parse(JSON.stringify(realm.objects('Order'))));
                 let orderObj2 = orderObj.map(
@@ -69,11 +67,9 @@ class OrderRealm {
                             ...item, created_at: format(parseISO(item.created_at), 'yyyy-MM-dd')
                         }
                     });
-
                 resolve(orderObj2.filter(r => r.created_at === format(parseISO(date), 'yyyy-MM-dd')));
             } catch (e) {
             }
-
         });
     }
 
@@ -120,9 +116,9 @@ class OrderRealm {
 
     createOrder(receipt) {
         const now = new Date();
-
         const newOrder = {
             active: false,
+            synched: false,
             status: 'pending',
             amount_cash: receipt.amount_cash,
             amount_loan: receipt.amount_loan,
@@ -153,8 +149,6 @@ class OrderRealm {
 
         let receipt_line_items = [];
         for (let i in receipt.products) {
-
-
             receipt_line_items.push({
                 currency_code: newOrder.currency_code,
                 price_total: receipt.products[i].price_total,
@@ -176,8 +170,6 @@ class OrderRealm {
                 created_at: newOrder.created_at,
                 updated_at: newOrder.updated_at,
             })
-
-
         }
         newOrder.receipt_line_items = JSON.stringify(receipt_line_items);
         try {
@@ -186,9 +178,6 @@ class OrderRealm {
             });
         } catch (e) {
         }
-
-
-
     }
 
     updateOrder(
@@ -285,6 +274,7 @@ class OrderRealm {
                                 cogs: Number(orders[i].cogs),
                                 total: Number(orders[i].total),
                                 active: true,
+                                synched: true,
                                 customer_account: JSON.stringify(orders[i].customer_account),
                                 receipt_line_items: JSON.stringify(orders[i].receipt_line_items),
                             });
@@ -297,6 +287,7 @@ class OrderRealm {
                             orderObj[0].total = Number(orders[i].total);
                             orderObj[0].notes = orders[i].notes;
                             orderObj[0].active = true;
+                            orderObj[0].synched= true;
                             orderObj[0].customer_account = JSON.stringify(orders[i].customer_account);
                             orderObj[0].receipt_line_items = JSON.stringify(orders[i].receipt_line_items);
                             orderObj[0].delivery = orders[i].delivery;

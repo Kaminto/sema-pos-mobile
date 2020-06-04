@@ -44,6 +44,7 @@ export const OrderSchema = {
         status: { type: 'string', optional: true }, // pending - onCredit - fully paid
         syncAction: { type: 'string', optional: true },
         created_at: { type: 'date', optional: true },
+        synched: { type: 'bool', optional: true },
         updated_at: { type: 'date', optional: true },
     }
 };

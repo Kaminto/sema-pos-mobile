@@ -5,7 +5,11 @@ import * as CustomerActions from '../actions/CustomerActions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-class CustomerTitle extends React.PureComponent {
+class CustomerTitle extends React.Component {
+
+    // shouldComponentUpdate(nextProps, nextState) {   
+    //     return false;
+    // }
 
     render() {
         return (
@@ -30,7 +34,7 @@ function mapStateToProps(state, props) {
         searchString: state.customerReducer.searchString,
         customerProps: state.customerReducer.customerProps,
         customerTypeFilter: state.customerReducer.customerTypeFilter,
-        paymentTypes: state.paymentTypesReducer.paymentTypes,
+        //paymentTypes: state.paymentTypesReducer.paymentTypes,
     };
 }
 

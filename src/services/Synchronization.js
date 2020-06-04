@@ -1,24 +1,24 @@
-import CreditRealm from '../database/credit/credit.operations';
-import InventroyRealm from '../database/inventory/inventory.operations';
+//import CreditRealm from '../database/credit/credit.operations';
+//mport InventroyRealm from '../database/inventory/inventory.operations';
 import SettingRealm from '../database/settings/settings.operations';
 import Communications from '../services/Communications';
 
 import * as _ from 'lodash';
-import InventorySync from './sync/inventory.sync';
-import CreditSync from './sync/credit.sync';
-import MeterReadingSync from './sync/meter-reading.sync'
-import ReminderSync from './sync/reminders.sync'
+// import InventorySync from './sync/inventory.sync';
+// import CreditSync from './sync/credit.sync';
+// import MeterReadingSync from './sync/meter-reading.sync'
+// import ReminderSync from './sync/reminders.sync'
 import CustomerSync from './sync/customer.sync';
 import ProductSync from './sync/product.sync';
 import ProductMRPSync from './sync/productmrp.sync';
 import SalesChannelSync from './sync/sales-channel.sync';
 import CustomerTypeSync from './sync/customer-types.sync';
-import OrderSync from './sync/orders.sync';
-import DiscountSync from './sync/discounts.sync';
-import PaymentTypeSync from './sync/payment-type.sync';
+// import OrderSync from './sync/orders.sync';
+// import DiscountSync from './sync/discounts.sync';
+// import PaymentTypeSync from './sync/payment-type.sync';
 
-import RecieptPaymentTypesSync from './sync/reciept-payment-types.sync';
-import CustomerDebtsSync from './sync/customer-debt.sync';
+// import RecieptPaymentTypesSync from './sync/reciept-payment-types.sync';
+// import CustomerDebtsSync from './sync/customer-debt.sync';
 
 class Synchronization {
 
@@ -50,13 +50,13 @@ class Synchronization {
 			clearInterval(this.intervalId);
 		}
 
-		if (
-			CreditRealm.getAllCredit().length == 0 ||
-			InventroyRealm.getAllInventory().length == 0
-		) {
-			// No local customers or products, sync now
-			timeoutX = 1000;
-		}
+		// if (
+		// 	CreditRealm.getAllCredit().length == 0 ||
+		// 	InventroyRealm.getAllInventory().length == 0
+		// ) {
+		// 	// No local customers or products, sync now
+		// 	timeoutX = 1000;
+		// }
 
 		let that = this;
 		this.firstSyncId = setTimeout(() => {
@@ -86,13 +86,13 @@ class Synchronization {
 
 	updateLastTopUpSync() {
 		this.lastCreditSync = new Date();
-		CreditRealm.setLastCreditSync(this.lastCreditSync);
+		//CreditRealm.setLastCreditSync(this.lastCreditSync);
 	}
 
 
 	updateInventorySync() {
 		this.lastInventorySync = new Date();
-		InventroyRealm.setLastInventorySync(this.lastInventorySync);
+		//InventroyRealm.setLastInventorySync(this.lastInventorySync);
 	}
 
 	doSynchronize() {
@@ -115,59 +115,67 @@ class Synchronization {
 				this._refreshToken()
 					.then(() => {
 						let settings = SettingRealm.getAllSetting();
+						const promiseCustomers = CustomerSync.synchronizeCustomers(settings.siteId);
 						const promiseSalesChannels = SalesChannelSync.synchronizeSalesChannels();
 						const promiseCustomerTypes = CustomerTypeSync.synchronizeCustomerTypes();
-						const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes();
-						const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId);
 						const promiseProductMrps = ProductMRPSync.synchronizeProductMrps(settings.regionId);
 						const promiseProducts = ProductSync.synchronizeProducts();
-						const promiseMeterReading = MeterReadingSync.synchronizeMeterReading(settings.siteId);
-
-						const promiseReminder = ReminderSync.synchronizeCustomerReminders(settings.siteId);
-
-						const promiseInventory = InventorySync.synchronizeInventory(settings.siteId);
 
 
-						const promiseCustomers = CustomerSync.synchronizeCustomers(settings.siteId);
-						const promiseTopUps = CreditSync.synchronizeCredits(settings.siteId);
 
-						const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts(settings.siteId);
-						const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId);
-						const promiseOrders = OrderSync.synchronizeSales(settings.siteId);
+						// const promisePaymentTypes = PaymentTypeSync.synchronizePaymentTypes();
+						// const promiseDiscounts = DiscountSync.synchronizeDiscount(settings.siteId);
+						// const promiseMeterReading = MeterReadingSync.synchronizeMeterReading(settings.siteId);
+						// const promiseReminder = ReminderSync.synchronizeCustomerReminders(settings.siteId);
+						// const promiseInventory = InventorySync.synchronizeInventory(settings.siteId);
+						// const promiseTopUps = CreditSync.synchronizeCredits(settings.siteId);
+						// const promiseCustomerDebts = CustomerDebtsSync.synchronizeCustomerDebts(settings.siteId);
+						// const promiseRecieptPaymentTypes = RecieptPaymentTypesSync.synchronizeRecieptPaymentTypes(settings.siteId);
+						// const promiseOrders = OrderSync.synchronizeSales(settings.siteId);
 
 						Promise.all([
+							promiseCustomers,
+							promiseProducts,
+							promiseProductMrps,
 							promiseSalesChannels,
 							promiseCustomerTypes,
-							promisePaymentTypes,
-							promiseDiscounts,
-							promiseProductMrps,
-							promiseProducts,
-							promiseMeterReading,
-							promiseInventory,
-							promiseCustomerDebts,
-							promiseRecieptPaymentTypes,
-							promiseTopUps,
-							promiseCustomers,
-							promiseOrders,
-							promiseReminder
+
+
+							// promisePaymentTypes,
+							// promiseDiscounts,
+							
+							
+							// promiseMeterReading,
+							// promiseInventory,
+							// promiseCustomerDebts,
+							// promiseRecieptPaymentTypes,
+							// promiseTopUps,
+							
+							// promiseOrders,
+							// promiseReminder
 
 						])
 							.then(values => {
-								syncResult.salesChannels = values[0];
-								syncResult.customerTypes = values[1];
-								syncResult.paymentTypes = values[2];
-								syncResult.discounts = values[3];
-								syncResult.productMrps = values[4];
-								syncResult.products = values[5];
-								syncResult.meterReading = values[6];
-								syncResult.wastageReport = values[7];
-								syncResult.debt = values[8];
-								syncResult.recieptPayments = values[9];
-								syncResult.topups = values[10];
-								syncResult.customers = values[11];
-								syncResult.orders = values[12];
-								syncResult.customerReminder = values[13];
+								console.log('values', values);
+								syncResult.customers = values[0];
+								syncResult.products = values[1];
+								syncResult.productMrps = values[2];
+								syncResult.salesChannels = values[3];
+								syncResult.customerTypes = values[4];
+								
+								
+								
 
+								// syncResult.paymentTypes = values[2];
+								// syncResult.discounts = values[3];								
+								// syncResult.meterReading = values[6];
+								// syncResult.wastageReport = values[7];
+								// syncResult.debt = values[8];
+								// syncResult.recieptPayments = values[9];
+								// syncResult.topups = values[10];								
+								// syncResult.orders = values[12];
+								// syncResult.customerReminder = values[13];
+								console.log('syncResult', syncResult);
 								resolve(syncResult);
 							});
 					})

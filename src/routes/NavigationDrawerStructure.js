@@ -3,7 +3,13 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { withNavigation } from "react-navigation";
 import Icon from 'react-native-vector-icons/Ionicons';
 
+
+const size = 30;
+const color = "white";
+const name = 'md-menu';
+
 class NavigationDrawerStructure extends React.PureComponent {
+    
     toggleDrawer = () => {
         this.props.navigation.toggleDrawer();
     };
@@ -11,11 +17,11 @@ class NavigationDrawerStructure extends React.PureComponent {
     render() {
         return (
             <View style={styles.cont}>
-                <TouchableOpacity onPress={this.toggleDrawer.bind(this)}>
+                <TouchableOpacity onPress={this.toggleDrawer}>
                     <Icon
-                        name='md-menu'
-                        size={30}
-                        color="white"
+                        name={name}
+                        size={size}
+                        color={color}
                         style={styles.drawerIcon}
                     />
                 </TouchableOpacity>
@@ -27,10 +33,10 @@ class NavigationDrawerStructure extends React.PureComponent {
 export default withNavigation(NavigationDrawerStructure);
 
 const styles = StyleSheet.create({
-	cont: {
-		flexDirection: 'row'
-	},
-	drawerIcon: {
-		width: 50, height: 30, marginLeft: 10, paddingRight:20
-	}
+    cont: {
+        flexDirection: 'row'
+    },
+    drawerIcon: {
+        width: 50, height: 30, marginLeft: 10, paddingRight: 20
+    }
 })

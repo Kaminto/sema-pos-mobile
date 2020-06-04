@@ -8,7 +8,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import i18n from '../app/i18n';
 import {withNavigation} from 'react-navigation';
-class CustomerListHeader extends React.PureComponent {
+class CustomerListHeader extends React.Component {
+
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     return false;
+    // }
 
     render() {
         return (
@@ -125,6 +129,7 @@ class CustomerListHeader extends React.PureComponent {
     }
 
     searchCustomer = (searchText) => {
+        this.props.customerActions.setIsUpate(true);
         this.props.customerActions.SearchCustomers(searchText);
     };
 
@@ -140,7 +145,6 @@ function mapStateToProps(state, props) {
         searchString: state.customerReducer.searchString,
         customerProps: state.customerReducer.customerProps,
         customerTypeFilter: state.customerReducer.customerTypeFilter,
-        paymentTypes: state.paymentTypesReducer.paymentTypes,
     };
 }
 

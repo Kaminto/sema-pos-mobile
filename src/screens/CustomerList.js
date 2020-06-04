@@ -12,6 +12,7 @@ import {
     StyleSheet,
     Alert,
     FlatList,
+    VirtualizedList,
     TouchableWithoutFeedback
 } from 'react-native';
 import { FloatingAction } from "react-native-floating-action";
@@ -25,19 +26,19 @@ import CustomerRealm from '../database/customers/customer.operations';
 import CustomerTypeRealm from '../database/customer-types/customer-types.operations';
 import i18n from '../app/i18n';
 
-import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
-import * as PaymentTypesActions from "../actions/PaymentTypesActions";
+//import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
+//import * as PaymentTypesActions from "../actions/PaymentTypesActions";
 
 import Icons from 'react-native-vector-icons/FontAwesome';
 
-import PaymentModal from './paymentModal';
+//import PaymentModal from './paymentModal';
 
 import slowlog from 'react-native-slowlog';
 
 import { TouchableHighlight } from 'react-native-gesture-handler';
 
-
-class CustomerList extends React.Component {
+const initialNumToRender = 50;
+class CustomerList extends React.PureComponent {
     constructor(props) {
         super(props);
         slowlog(this, /.*/);
@@ -55,29 +56,32 @@ class CustomerList extends React.Component {
         this.windowSize = 10;
         this.stickyHeaderIndices = [0];
         this.removeClippedSubviews = true;
+        this.isSelected = false;
 
     }
 
     componentDidMount() {
-        this.props.navigation.setParams({
-            isCustomerSelected: false,
-            customerTypeValue: 'all',
-            customerName: '',
-            searchCustomer: this.searchCustomer,
-            checkCustomerTypefilter: this.checkCustomerTypefilter,
-            onDelete: this.onDelete,
-            clearLoan: this.clearLoan,
-        });
+        // this.props.navigation.setParams({
+        //     isCustomerSelected: false,
+        //     customerTypeValue: 'all',
+        //     customerName: '',
+        //     searchCustomer: this.searchCustomer,
+        //     checkCustomerTypefilter: this.checkCustomerTypefilter,
+        //     onDelete: this.onDelete,
+        //     clearLoan: this.clearLoan,
+        // });
 
-        this.props.customerActions.CustomerSelected({});
-        this.props.customerActions.setCustomerEditStatus(false);
+        // this.props.customerActions.CustomerSelected({});
+        // this.props.customerActions.setCustomerEditStatus(false);
     }
     static whyDidYouRender = true;
 
     // shouldComponentUpdate(nextProps, nextState) {
-    //     console.log('nextProps', this.props.isUpdate)
+    //     console.log('nextProps', this.props.isUpdate);
     //    // return this.props.isUpdate;
+    //     return this.props.isUpdate;
     // }
+
 
     getCustomerTypes = (item) => {
         const customerTypeIts = CustomerTypeRealm.getCustomerTypes();
@@ -154,28 +158,26 @@ class CustomerList extends React.Component {
         this.props.customerActions.SearchCustomers(searchText);
     };
 
-
     checkCustomerTypefilter = (searchText) => {
         this.props.customerActions.SearchCustomerTypes(searchText);
     };
 
-
     modalOnClose() {
-        PaymentTypeRealm.resetSelected();
-        this.props.paymentTypesActions.resetSelectedDebt();
-        this.props.paymentTypesActions.resetSelectedPayment();
-        this.props.paymentTypesActions.setPaymentTypes(
-            PaymentTypeRealm.getPaymentTypes());
+        // PaymentTypeRealm.resetSelected();
+        // this.props.paymentTypesActions.resetSelectedDebt();
+        // this.props.paymentTypesActions.resetSelectedPayment();
+        // this.props.paymentTypesActions.setPaymentTypes(
+        //     PaymentTypeRealm.getPaymentTypes());
     }
 
     closePaymentModal = () => {
-        PaymentTypeRealm.resetSelected();
-        this.props.paymentTypesActions.resetSelectedPayment();
-        this.props.paymentTypesActions.resetSelectedDebt();
-        this.props.paymentTypesActions.setPaymentTypes(
-            PaymentTypeRealm.getPaymentTypes());
-        this.setState({ isPaymentModal: false });
-        this.refs.modal6.close();
+        // PaymentTypeRealm.resetSelected();
+        // this.props.paymentTypesActions.resetSelectedPayment();
+        // this.props.paymentTypesActions.resetSelectedDebt();
+        // this.props.paymentTypesActions.setPaymentTypes(
+        //     PaymentTypeRealm.getPaymentTypes());
+        // this.setState({ isPaymentModal: false });
+        // this.refs.modal6.close();
     };
 
 
@@ -253,6 +255,13 @@ class CustomerList extends React.Component {
         }
     };
 
+    sortDebtList = () => {
+        this.setState({ debtcustomers: !this.state.debtcustomers, refresh: !this.state.refresh });
+    }
+
+    sortWalletList = () => {
+        this.setState({ walletcustomers: !this.state.walletcustomers, refresh: !this.state.refresh });
+    }
 
     showHeader = () => {
         return (
@@ -275,10 +284,7 @@ class CustomerList extends React.Component {
                     <Text style={[styles.headerItem]}>{i18n.t('customer-type')}</Text>
                 </View>
                 <View style={[styles.balance]}>
-                    <TouchableWithoutFeedback onPress={() => {
-                        this.setState({ debtcustomers: !this.state.debtcustomers });
-                        this.setState({ refresh: !this.state.refresh });
-                    }}>
+                    <TouchableWithoutFeedback onPress={this.sortDebtList}>
                         <Text style={styles.headerItem}>{i18n.t('balance')}
                             <Icons
                                 name='sort'
@@ -291,10 +297,7 @@ class CustomerList extends React.Component {
                     </TouchableWithoutFeedback>
                 </View>
                 <View style={[styles.flexOne]}>
-                    <TouchableWithoutFeedback onPress={() => {
-                        this.setState({ walletcustomers: !this.state.walletcustomers });
-                        this.setState({ refresh: !this.state.refresh });
-                    }}>
+                    <TouchableWithoutFeedback onPress={this.sortWalletList}>
                         <Text style={[styles.headerItem]}>Wallet
                             <Icons
                                 name='sort'
@@ -310,7 +313,8 @@ class CustomerList extends React.Component {
         );
     };
 
-    onLongPressItem(item) {
+    onLongPressItem = (item) => {
+        this.props.customerActions.setIsUpate(false);
         this.props.customerActions.CustomerSelected(item);
         this.props.customerActions.SetCustomerProp(
             {
@@ -320,11 +324,10 @@ class CustomerList extends React.Component {
                 'title': item.name
             }
         );
-
         this.props.customerActions.setCustomerEditStatus(true);
     };
 
-    handleOnPress(item) {
+    handleOnPress = (item) => {
         this.props.customerActions.CustomerSelected(item);
         this.props.customerActions.SetCustomerProp(
             {
@@ -351,16 +354,15 @@ class CustomerList extends React.Component {
 
 
     _renderItem = ({ item, index, separators }) => {
-        let isSelected = false;
         return (
             <TouchableHighlight
-                onLongPress={() => this.onLongPressItem(item)}
-                onPress={() => this.handleOnPress(item)}
+                onLongPress={this.onLongPressItem(item)}
+                onPress={this.handleOnPress(item)}
                 onShowUnderlay={separators.highlight}
                 onHideUnderlay={separators.unhighlight}>
                 <View
                     style={[
-                        this.getRowBackground(index, isSelected), styles.listStyles
+                        this.getRowBackground(index, this.isSelected), styles.listStyles
                     ]}>
                     <View style={styles.OneHalf}>
                         <Text style={[styles.baseItem, styles.leftMargin]}>
@@ -383,12 +385,12 @@ class CustomerList extends React.Component {
                     </View>
                     <View style={styles.flexOne}>
                         <Text style={styles.baseItem}>
-                            {item.dueAmount ? item.dueAmount.toFixed(2) : 0}
+                            {item.dueAmount}
                         </Text>
                     </View>
                     <View style={styles.flexOne}>
                         <Text style={styles.baseItem}>
-                            {item.walletBalance.toFixed(2)}
+                            {item.walletBalance}
                         </Text>
                     </View>
                 </View>
@@ -397,40 +399,41 @@ class CustomerList extends React.Component {
     };
 
 
+    floatAction = () => {
+        console.log('floating');
+        this.props.customerActions.CustomerSelected({});
+        this.props.customerActions.setCustomerEditStatus(false);
+        this.props.customerActions.SetCustomerProp(
+            {
+                isCustomerSelected: false,
+                isDueAmount: 0,
+                customerName: '',
+                'title': '',
+            }
+        );
+        this.props.navigation.navigate('EditCustomer');
+    }
+
 
     render() {
         return (
             <View style={styles.list}>
                 <FlatList
-                    ref={ref => {
-                        this.flatListRef = ref;
-                    }}
                     getItemLayout={this.getItemLayout}
-                    data={this.prepareData()}
+                    data={this.props.customers}
                     ListHeaderComponent={this.showHeader}
                     stickyHeaderIndices={this.stickyHeaderIndices}
                     extraData={this.state.refresh}
                     renderItem={this._renderItem}
-                    keyExtractor={(item, idx) => item.customerId + idx}
+                    keyExtractor={(item) => item.customerId}
                     windowSize={this.windowSize}
+                    initialNumToRender={initialNumToRender}
                     removeClippedSubviews={this.removeClippedSubviews}
                 />
                 <FloatingAction
-                    onOpen={name => {
-                        this.props.customerActions.CustomerSelected({});
-                        this.props.customerActions.setCustomerEditStatus(false);
-                        this.props.customerActions.SetCustomerProp(
-                            {
-                                isCustomerSelected: false,
-                                isDueAmount: 0,
-                                customerName: '',
-                                'title': '',
-                            }
-                        );
-                        this.props.navigation.navigate('EditCustomer');
-                    }}
+                    onOpen={this.floatAction}
                 />
-
+                {/*
                 <View style={styles.modalPayment}>
                     <Modal
                         style={styles.modal3}
@@ -438,27 +441,24 @@ class CustomerList extends React.Component {
                         position={"center"} ref={"modal6"}
                         onClosed={() => this.modalOnClose()}
                         isDisabled={this.state.isDisabled}>
-
                         {this.openModal()}
-
-
                     </Modal>
                 </View>
                 <SearchWatcher parent={this}>
                     {this.props.searchString}
-                </SearchWatcher>
+                </SearchWatcher> */}
             </View>
         );
     };
 
     openModal() {
-        if (this.state.isPaymentModal) {
-            return (<PaymentModal
-                modalOnClose={this.modalOnClose}
-                closePaymentModal={this.closePaymentModal} />)
-        } else {
-            return null;
-        }
+        // if (this.state.isPaymentModal) {
+        //     return (<PaymentModal
+        //         modalOnClose={this.modalOnClose}
+        //         closePaymentModal={this.closePaymentModal} />)
+        // } else {
+        //     return null;
+        // }
     }
 
 
@@ -474,19 +474,21 @@ class SearchWatcher extends React.PureComponent {
 
         let that = this;
 
-        setTimeout(() => {
-            if (
-                that.props.parent.props.searchString !==
-                that.props.parent.state.searchString
-            ) {
-                that.props.parent.state.searchString =
-                    that.props.parent.props.searchString;
-                that.props.parent.setState({
-                    refresh: !that.props.parent.state.refresh
-                });
-            }
-        }, 50);
-        return null;
+        //   setTimeout(() => {
+        if (
+            that.props.parent.props.searchString.length
+        ) {
+            that.props.parent.state.searchString =
+                that.props.parent.props.searchString;
+            that.props.parent.setState({
+                refresh: !that.props.parent.state.refresh
+            });
+            this.props.customerActions.setIsUpate(false);
+        } else {
+            return null
+        }
+        // }, 50);
+        // return null;
     }
 }
 
@@ -499,14 +501,12 @@ function mapStateToProps(state, props) {
         products: state.productReducer.products,
         searchString: state.customerReducer.searchString,
         customerTypeFilter: state.customerReducer.customerTypeFilter,
-        paymentTypes: state.paymentTypesReducer.paymentTypes,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         customerActions: bindActionCreators(CustomerActions, dispatch),
-        paymentTypesActions: bindActionCreators(PaymentTypesActions, dispatch),
     };
 }
 

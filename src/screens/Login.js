@@ -1,4 +1,14 @@
 import React from 'react';
+if (process.env.NODE_ENV === 'development') {
+	const whyDidYouRender = require('@welldone-software/why-did-you-render');
+	const ReactRedux = require('react-redux');
+	whyDidYouRender(React, {
+		trackAllPureComponents: true,
+		trackExtraHooks: [
+			[ReactRedux, 'useSelector']
+		]
+	});
+}
 import {
 	View,
 	ScrollView,
@@ -12,32 +22,19 @@ import {
 import { Card, Button, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+
 import Synchronization from '../services/Synchronization';
-import * as WastageActions from "../actions/WastageActions";
-import CustomerReminderRealm from '../database/customer-reminder/customer-reminder.operations';
-import SettingRealm from '../database/settings/settings.operations';
-import CreditRealm from '../database/credit/credit.operations';
 import CustomerRealm from '../database/customers/customer.operations';
-import InventroyRealm from '../database/inventory/inventory.operations';
 import ProductsRealm from '../database/products/product.operations';
-import DiscountRealm from '../database/discount/discount.operations';
-import OrderRealm from '../database/orders/orders.operations';
-import * as CustomerReminderActions from '../actions/CustomerReminderActions';
-import * as TopUpActions from '../actions/TopUpActions';
+import SettingRealm from '../database/settings/settings.operations';
+
 import * as SettingsActions from '../actions/SettingsActions';
 import * as CustomerActions from '../actions/CustomerActions';
 import * as NetworkActions from '../actions/NetworkActions';
-import * as AuthActions from '../actions/AuthActions';
 import * as ProductActions from '../actions/ProductActions';
-import * as receiptActions from '../actions/ReceiptActions';
-import * as InventoryActions from '../actions/InventoryActions';
-import * as discountActions from '../actions/DiscountActions';
-import * as paymentTypesActions from '../actions/PaymentTypesActions';
-import PaymentTypeRealm from '../database/payment_types/payment_types.operations';
-import ReceiptPaymentTypeRealm from '../database/reciept_payment_types/reciept_payment_types.operations';
-import CustomerDebtRealm from '../database/customer_debt/customer_debt.operations';
-import Events from 'react-native-simple-events';
 
+import Events from 'react-native-simple-events';
+import slowlog from 'react-native-slowlog';
 import Communications from '../services/Communications';
 import i18n from '../app/i18n';
 
@@ -49,13 +46,16 @@ const supportedUILanguages = [
 	{ name: 'Français', iso_code: 'fr' }
 ];
 
+const resizeMode = 'cover';
+const color="#ABC1DE";
+const appTitle='Welcome to SEMA';
+const secureTextEntry = true;
 class Login extends React.PureComponent {
 	constructor(props) {
 
 		super(props);
-
 		this.supportedLanguages = React.createRef();
-
+		slowlog(this, /.*/);
 		this.state = {
 			language: '',
 			user: null,
@@ -63,41 +63,39 @@ class Login extends React.PureComponent {
 			selectedLanguage: {},
 			isLoading: false
 		};
-
 		this.onShowLanguages = this.onShowLanguages.bind(this);
 		this.onLanguageSelected = this.onLanguageSelected.bind(this);
-	}
-
-	componentDidMount() {
-
-	}
-
-	render() {
-		let serviceItems = supportedUILanguages.map((s, i) => {
+		this.image = require('../images/bottlesrackmin.jpg');
+		this.size=100;
+		this.serviceItems = supportedUILanguages.map((s, i) => {
 			return <Picker.Item key={i} value={s.iso_code} label={s.name} />
 		});
+	}
+	static whyDidYouRender = true;
+	componentDidMount() {}
 
-		return (
+	render() {
+	return (
 			<ImageBackground style={styles.imgBackground}
-				resizeMode='cover'
-				source={require('../images/bottlesrackmin.jpg')}>
+				resizeMode={resizeMode}
+				source={this.image}>
 				<ScrollView style={styles.scrollst}>
 					<View style={styles.ctnerstyle}>
 						<Card
-							title={'Welcome to SEMA'}
-							titleStyle={{ fontSize: 26 }}
-							dividerStyle={{ display: 'none' }}
+							title={appTitle}
+							titleStyle={styles.titleStyle}
+							dividerStyle={this.dividerStyle}
 							containerStyle={styles.cardstyle}>
 
 							<Input
 								label={i18n.t('username-or-email-placeholder')}
-								onChangeText={this.onChangeEmail.bind(this)}
+								onChangeText={this.onChangeEmail}
 								inputContainerStyle={[styles.inputText]}
 							/>
 							<Input
 								label={i18n.t('password-placeholder')}
-								secureTextEntry={true}
-								onChangeText={this.onChangePassword.bind(this)}
+								secureTextEntry={secureTextEntry}
+								onChangeText={this.onChangePassword}
 								inputContainerStyle={[styles.inputText]}
 							/>
 							<Picker
@@ -108,10 +106,10 @@ class Login extends React.PureComponent {
 								}
 								}
 							>
-								{serviceItems}
+								{this.serviceItems}
 							</Picker>
 							<Button
-								onPress={this.onConnection.bind(this)}
+								onPress={this.onConnection}
 								buttonStyle={styles.btnstyle}
 								title={i18n.t('connect')} />
 
@@ -119,7 +117,7 @@ class Login extends React.PureComponent {
 					</View>
 					{
 						this.state.isLoading && (
-							<ActivityIndicator size={100} color="#ABC1DE" />
+							<ActivityIndicator size={this.size} color={color} />
 						)
 					}
 				</ScrollView>
@@ -150,17 +148,10 @@ class Login extends React.PureComponent {
 
 	_clearDataAndSync() {
 		try {
-
 			Events.trigger('ClearLoggedSales', {});
 			this.props.settingsActions.setSettings(SettingRealm.getAllSetting());
 			this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
 			const saveConnected = Synchronization.isConnected;
-			Synchronization.initialize(
-				CustomerRealm.getLastCustomerSync(),
-				ProductsRealm.getLastProductsync(),
-				CreditRealm.getLastCreditSync(),
-				InventroyRealm.getLastInventorySync(),
-			);
 			Synchronization.setConnected(saveConnected);
 		} catch (error) { }
 	}
@@ -175,7 +166,7 @@ class Login extends React.PureComponent {
 		//this.props.parent.forceUpdate();
 	};
 
-	onConnection() {
+	onConnection=()=> {
 		if (!this.state.user || !this.state.password) {
 			Alert.alert(
 				i18n.t('no-username'),
@@ -295,61 +286,8 @@ class Login extends React.PureComponent {
 
 			try {
 
-				this.props.customerActions.setCustomers(
-					CustomerRealm.getAllCustomer()
-				);
-
-				this.props.productActions.setProducts(
-					ProductsRealm.getProducts()
-				);
-
-				//PaymentTypeRealm.truncate();
-				this.props.paymentTypesActions.setPaymentTypes(
-					PaymentTypeRealm.getPaymentTypes()
-				);
-
-				this.props.paymentTypesActions.setRecieptPaymentTypes(
-					ReceiptPaymentTypeRealm.getReceiptPaymentTypes()
-				);
-
-				this.props.topUpActions.setTopups(
-					CreditRealm.getAllCredit()
-				);
-
-				this.props.wastageActions.GetInventoryReportData(this.subtractDays(new Date(), 1), new Date(), ProductsRealm.getProducts());
-
-
-				this.props.inventoryActions.setInventory(
-					InventroyRealm.getAllInventory()
-				);
-
-
-				this.props.receiptActions.setReceipts(
-					OrderRealm.getAllOrder()
-				);
-
-
-				this.props.customerReminderActions.setCustomerReminders(
-					CustomerReminderRealm.getCustomerReminders()
-				);
-
-				this.props.paymentTypesActions.setCustomerPaidDebt(
-					CustomerDebtRealm.getCustomerDebts()
-				);
-
-				this.props.discountActions.setDiscounts(
-					DiscountRealm.getDiscounts()
-				);
-
-
-
-				Synchronization.initialize(
-					CustomerRealm.getLastCustomerSync(),
-					ProductsRealm.getLastProductsync(),
-					'',
-					CreditRealm.getLastCreditSync(),
-					InventroyRealm.getLastInventorySync(),
-				);
+				this.props.customerActions.setCustomers(CustomerRealm.getAllCustomer());
+				this.props.productActions.setProducts(ProductsRealm.getProducts()); 
 				Synchronization.setConnected(this.props.network.isNWConnected);
 				resolve(true)
 			} catch (error) {
@@ -406,27 +344,17 @@ class Login extends React.PureComponent {
 
 function mapStateToProps(state, props) {
 	return {
-		settings: state.settingsReducer.settings,
-		auth: state.authReducer,
-		network: state.networkReducer.network,
-		discounts: state.discountReducer.discounts,
+		settings: state.settingsReducer.settings,		
+		network: state.networkReducer.network,		
 		products: state.productReducer.products,
 	};
 }
 function mapDispatchToProps(dispatch) {
 	return {
 		networkActions: bindActionCreators(NetworkActions, dispatch),
-		topUpActions: bindActionCreators(TopUpActions, dispatch),
-		settingsActions: bindActionCreators(SettingsActions, dispatch),
-		customerActions: bindActionCreators(CustomerActions, dispatch),
-		wastageActions: bindActionCreators(WastageActions, dispatch),
-		authActions: bindActionCreators(AuthActions, dispatch),
-		inventoryActions: bindActionCreators(InventoryActions, dispatch),
 		productActions: bindActionCreators(ProductActions, dispatch),
-		receiptActions: bindActionCreators(receiptActions, dispatch),
-		discountActions: bindActionCreators(discountActions, dispatch),
-		customerReminderActions: bindActionCreators(CustomerReminderActions, dispatch),
-		paymentTypesActions: bindActionCreators(paymentTypesActions, dispatch),
+		customerActions: bindActionCreators(CustomerActions, dispatch),
+		settingsActions: bindActionCreators(SettingsActions, dispatch),
 	};
 }
 
@@ -490,7 +418,8 @@ const styles = StyleSheet.create({
 		backgroundColor: '#f1f1f1',
 		margin: 5
 	},
-
+	titleStyle:{ fontSize: 26 },
+	dividerStyle:{ display: 'none' },
 	buttonText: {
 		fontWeight: 'bold',
 		fontSize: 24,
